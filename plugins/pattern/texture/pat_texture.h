@@ -24,26 +24,49 @@
 #include "llapi/pattern.h"
 #include "hlapi/plugin_manager.h"
 
+enum EMappings
+{
+
+  FX_SPHERICAL = 0,
+  FX_CYLINDRICAL,
+  FX_PLANAR
+
+};  /* enum ELFTypes */
+
 class TPatternTexture : public TPattern
 {
 
   protected:
 
-    size_t    zTextureWidth, zTextureHeight;
-    TImage*   ptImage;
+    TColor      tColor;
+    TImage*     ptImage;
+    TVector2    tTiling;
+    TVector2    tOffset;
+    TVector     tRotation;
+    TVector     tScaling;
+    TVector     tTranslation;
+    bool        gMirror;
+    bool        gTile;
+    EMappings   eMapping;
 
+    TMatrix    tMatrix;
+    size_t     zTextureWidth, zTextureHeight;
+ 
     int correctTexel (int iVALUE, const size_t& rkzMAX) const;
     
-    TColor lerpTexel (TScalar ut, TScalar vt) const;
+    TColor lerpTexel (const TVector2& rktUVCOORD) const;
 
-    void sphericalMap (const TVector& rktPOINT, TScalar& rtTHETA, TScalar& rtPHI) const;
+    void sphericalMap (const TVector& rktPOINT, TVector2& rtUVCOORD) const;
+    void cylindricalMap (const TVector& rktPOINT, TVector2& rtUVCOORD) const;
+    void planarMap (const TVector& rktPOINT, TVector2& rtUVCOORD) const;
+    
+    void recalculateMatrix (void);
 
   public:
 
     static TBaseClass* _create (const TBaseClass* pktPARENT);
 
-    TPatternTexture (void) :
-      TPattern() {}
+    TPatternTexture (void);
     
     TColor pattern (const TSurfaceData& rktDATA) const;
 
