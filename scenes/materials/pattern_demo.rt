@@ -1,0 +1,146 @@
+/*
+*  Pattern demonstration
+*/
+
+#include "materials.inc"
+
+define camera c
+{
+  translate	<-250, 0, 400>
+  look_at	<0, 0, 400>
+}
+
+define light l
+{
+  translate	<-400, -50, 450>
+  color		CWhite
+}
+
+define material MPatternDemo : extends MPlastic
+{
+  bsdf : class BsdfPhong
+  {
+    exponent         10
+  }
+
+  specular      0.2
+  diffuse       0.5
+}
+
+define pattern PNoise1 : class PatternNoise
+{
+  base_color    CBlack
+  color         CCyan
+  zoom          <0.4, 0.4, 0.4>
+}
+
+define pattern PNoise2 : class PatternNoise
+{
+  base_color    { red 0.6 green 0.6 blue 0.6 }
+  color         CBlack
+  zoom          <0.5, 0.4, 0.5>
+}
+
+// Upper left
+torus
+{
+  scale         <15, 15, 15>
+  translate	<0, 50, 350>
+  rotate        <0, 0, 90>
+  radius_a      2
+  radius_b      1
+
+  material : extends MPatternDemo
+  {
+    color       PNoise1
+  }
+}
+
+// Upper right
+sphere
+{
+  scale         <45, 45, 45>
+  translate	<0, 50, 450>
+
+  material : extends MPatternDemo
+  {
+    color       PNoise2
+    opacity     PNoise1
+    caustics    PNoise1
+  }
+}
+
+// Lower left
+box
+{
+  scale         <60, 60, 60>
+  translate	<0, -50, 350>
+  rotate        <30, 30, 30>
+
+  material : extends MPatternDemo
+  {
+    color : extends PNoise1
+    {
+      color     CGreen 
+    }
+    specular    PNoise1
+    diffuse     PNoise1
+  }
+}
+
+// Lower right
+cylinder
+{
+  scale         <30, -40, 30>
+  translate	<0, -50, 450>
+
+  material : extends MPatternDemo
+  {
+    color : extends PNoise2
+    {
+      color        CMagenta     
+      base_color   CBlue     
+    }
+    specular    PNoise1
+    diffuse     PNoise1
+    opacity     PNoise2
+    ior : class PatternAmplifier
+    {
+      source          PNoise1
+      offset          1
+      amplification   0.5
+     }
+  }
+}
+
+plane
+{
+  translate     <450, 0, 400>
+  rotate        <80, 0, 0>
+  normal	<-1, 0, 0>
+
+  material : extends MChecker
+  {
+    color : class PatternChecker
+    {
+      color       CWhite
+      base_color  CLightWood
+      size        65    
+    }
+  }
+}
+
+scene
+{
+  camera	c
+  light		l
+  width		500
+  height	500
+  background    CBlack
+  output
+  {
+    type        "png"
+    name	"pattern_demo.png"
+  }
+  renderer : class Raytracer {}
+}
