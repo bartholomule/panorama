@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 1999 Jon Frydensbjerg
+ *  Copyright (C) 1999, 2000 Jon Frydensbjerg
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@
 DEFINE_IMAGE_IO_PLUGIN ("gif", TImageGif);
 
 extern "C" {
-/* Remember to configure libungif without X Windows support */
+/* NB: Configure libungif without X Windows support! */
 #include <gif_lib.h> 
 }
 
@@ -63,10 +63,10 @@ int TImageGif::save (const TImage* pktIMAGE) {
   zWidth  = pktIMAGE->width();
   zHeight = pktIMAGE->height();
 
-  ptRed         = (GifByteType *) malloc(zWidth * zHeight);
-  ptGreen       = (GifByteType *) malloc(zWidth * zHeight);
-  ptBlue        = (GifByteType *) malloc(zWidth * zHeight);
-  ptOutputImage = (GifByteType *) malloc(zWidth * zHeight);
+  ptRed         = (GifByteType *) malloc (zWidth * zHeight);
+  ptGreen       = (GifByteType *) malloc (zWidth * zHeight);
+  ptBlue        = (GifByteType *) malloc (zWidth * zHeight);
+  ptOutputImage = (GifByteType *) malloc (zWidth * zHeight);
 
   ptTempRed     = ptRed;
   ptTempGreen   = ptGreen;
@@ -78,55 +78,29 @@ int TImageGif::save (const TImage* pktIMAGE) {
       tPixel.clamp();
       tColor = tPixel.convertTo24Bits();
 
-      *( ptTempRed++ )   = (GifByteType) tColor.red();
-      *( ptTempGreen++ ) = (GifByteType) tColor.green();
-      *( ptTempBlue++ )  = (GifByteType) tColor.blue();
+      *(ptTempRed++)   = (GifByteType) tColor.red();
+      *(ptTempGreen++) = (GifByteType) tColor.green();
+      *(ptTempBlue++)  = (GifByteType) tColor.blue();
     }
   }
 
   iMapSize = 256;
 
-  QuantizeBuffer(zWidth, zHeight, &iMapSize, ptRed, ptGreen, ptBlue, ptOutputImage, atOutputColorMap);
+  QuantizeBuffer (zWidth, zHeight, &iMapSize, ptRed, ptGreen, ptBlue, ptOutputImage, atOutputColorMap);
 
   /* Calculate no. bits necessary to code image */
-  iBPP = 0;
-
-  if ( iMapSize <= 2 )
+  if ( iMapSize == 1 )
   {
     iBPP = 1;
   }
-  else if ( iMapSize <= 4 )
+  else
   {
-    iBPP = 2;
-  }
-  else if ( iMapSize <= 8 )
-  {
-    iBPP = 3;
-  }
-  else if ( iMapSize <= 16 )
-  {
-    iBPP = 4;
-  }
-  else if ( iMapSize <= 32 )
-  {
-    iBPP = 5;
-  }
-  else if ( iMapSize <= 64 )
-  {
-    iBPP = 6;
-  }
-  else if ( iMapSize <= 128 )
-  {
-    iBPP = 7;
-  }
-  else if ( iMapSize <= 256 )
-  {
-    iBPP = 8;
+    iBPP = (Byte) ceil (log (iMapSize) / log (2));
   }
 
-  ptOutputMapObject = MakeMapObject( (1 << iBPP) , atOutputColorMap);  
+  ptOutputMapObject = MakeMapObject (1 << iBPP, atOutputColorMap);  
 
-  iErrorCode = EGifPutScreenDesc(ptOutput, zWidth, zHeight, ptOutputMapObject->BitsPerPixel, ptOutput->SBackGroundColor, ptOutputMapObject);
+  iErrorCode = EGifPutScreenDesc (ptOutput, zWidth, zHeight, ptOutputMapObject->BitsPerPixel, ptOutput->SBackGroundColor, ptOutputMapObject);
   if ( iErrorCode == GIF_ERROR )
   { 
     cerr << "TImageGif::save : Error saving " << tFileName << endl;
@@ -140,21 +114,21 @@ int TImageGif::save (const TImage* pktIMAGE) {
     return -1;
   }
  
-  iErrorCode = EGifPutLine(ptOutput, ptOutputImage, (zWidth * zHeight) );
+  iErrorCode = EGifPutLine (ptOutput, ptOutputImage, (zWidth * zHeight));
   if ( iErrorCode == GIF_ERROR )
   { 
     cerr << "TImageGif::save : Error saving " << tFileName << endl;
     return -1;
   }
 
-  EGifCloseFile(ptOutput);
+  EGifCloseFile (ptOutput);
 
-  FreeMapObject(ptOutputMapObject);
+  FreeMapObject (ptOutputMapObject);
 
-  free(ptRed);
-  free(ptGreen);
-  free(ptBlue);
-  free(ptOutputImage);
+  free (ptRed);
+  free (ptGreen);
+  free (ptBlue);
+  free (ptOutputImage);
 
   cout << "Warning: No image compression performed - LZW algorithm is patented by UniSys." << endl;
 
@@ -166,18 +140,18 @@ int TImageGif::save (const TImage* pktIMAGE) {
 TImage* TImageGif::load (void)
 {
 
-  TColor        tColor;
-  TImage*       ptImage;
-  size_t        zWidth, zHeight;
-  GifFileType*  ptInput;
-  GifPixelType* ptDecodedImage;
-  GifColorType  tRGBValue;
-  GifColorType* ptColors;  
-  int           iInterlace;
-  Word*         awDeinterlaceTable;
-  Word          wCurrentLine;  
+  TColor         tColor;
+  TImage*        ptImage;
+  size_t         zWidth, zHeight;
+  GifFileType*   ptInput;
+  GifPixelType*  ptDecodedImage;
+  GifColorType   tRGBValue;
+  GifColorType*  ptColors;  
+  int            iInterlace;
+  Word*          awDeinterlaceTable;
+  Word           wCurrentLine;  
 
-  ptInput = DGifOpenFileName(tFileName.c_str());
+  ptInput = DGifOpenFileName (tFileName.c_str());
   
   if ( !ptInput )
   {
@@ -185,7 +159,7 @@ TImage* TImageGif::load (void)
     return NULL;
   }
   
-  if ( DGifSlurp(ptInput) == GIF_ERROR )
+  if ( DGifSlurp (ptInput) == GIF_ERROR )
   { 
     cerr << "TImageGif::load : Error loading " << tFileName << endl;
     return NULL;
@@ -200,14 +174,14 @@ TImage* TImageGif::load (void)
   zWidth  = ptInput->SWidth;
   zHeight = ptInput->SHeight;
   
-  awDeinterlaceTable = (Word *) malloc(zHeight * sizeof(Word));
+  awDeinterlaceTable = (Word *) malloc (zHeight * sizeof(Word));
 
   if ( iInterlace ) 
   {
 
     for (Word I = 0, N = 0; (I < 4) ;I++)
     {
-      for (Word J = _abInterlaceStart[I]; (J < zHeight) ; (J += _abInterlaceRate[I]) )
+      for (Word J = _abInterlaceStart[I]; (J < zHeight) ;(J += _abInterlaceRate[I]))
       {
         awDeinterlaceTable[N++] = J;
       }
@@ -221,7 +195,7 @@ TImage* TImageGif::load (void)
     }
   }
 
-  ptImage = new TImage(zWidth, zHeight);
+  ptImage = new TImage (zWidth, zHeight);
 
   for (Word I = 0; (I < zHeight) ;I++)
   {
@@ -229,23 +203,24 @@ TImage* TImageGif::load (void)
 
     for (Word J = 0; (J < zWidth) ;J++)
     { 
-      tRGBValue = ptColors[ *( ptDecodedImage++ ) ];
+      tRGBValue = ptColors[ *(ptDecodedImage++) ];
 
-      tColor.setRed (tRGBValue.Red);
+      tColor.setRed   (tRGBValue.Red);
       tColor.setGreen (tRGBValue.Green);
-      tColor.setBlue (tRGBValue.Blue);
+      tColor.setBlue  (tRGBValue.Blue);
       tColor = tColor.convertFrom24Bits();
       ptImage->setPixel (J, wCurrentLine, tColor);
     }
   }
   
-  DGifCloseFile(ptInput);
+  DGifCloseFile (ptInput);
 
-  free(awDeinterlaceTable);
+  free (awDeinterlaceTable);
 
   return ptImage;
   
 }  /* TImageGif::load() */
+
 
 
 
