@@ -1,18 +1,136 @@
 
-  C++ Programming Style Guide
-  ---------------------------
+                    C++ Coding Style Guide
+                    ======================
 
- 1 .- GENERAL
+  Version 0.3
+  Copyright (C) 1998 Angel Jimenez Jimenez
 
-   - Indentation
+
+ 0 .- INTRODUCTION
+
+   These rules have been developed during 8+ years of C/C++ programming. They
+  are intended to make the code easier to read, and thus easier to maintain.
+  They have been used in several projects, with lots of thousands of lines of
+  code written by several people. Anyway, they are considered a work in
+  development.
+
+   If you have some addition, correction or suggestion for this document,
+  please contact ajimenez@vnet.es.
+  
+
+ 1 .- CODE FORMATTING
+
+   - Indentation:
 
      Every indentation step must be 2 spaces, NEVER filling with a tab
      character, even if possible, as the tab character could be missasigned
      in another platform.
 
-   - Algebraic expresions
+   - Class declaration:
 
-     In expressions, every operator must have a space at each side, as in
+     Class declaration will be aligned in the following way:
+
+       :
+       :
+       class TSon : public TMother, virtual public TFather
+       {
+
+         . . .
+        
+       };  /* class TSon */
+       :
+       :
+
+     Every class declaration will be followed by two spaces, and a comment
+     with the word 'class' and the class name, as in the example (a closed
+     comment will be used to preserve C visual style).
+
+   - Function definition:
+
+     Function definitions will be aligned in the following way:
+
+       :
+       :
+       int ExampleFunction (void)
+       {
+
+         . . .
+          
+       }  /* ExampleFunction() */
+        
+     A comment must be added after the function definition, leaving 2 spaces
+     after the closing bracket. This comments includes the name of the
+     function, with no parameters (e.g. 'function()'). Methods are treated in
+     the same way, but the class name is removed. Example:
+
+       void TClass::method (void)
+       {
+
+         . . .
+          
+       }  /* method() */
+
+   - A blank line should be added after the opening bracket and before the
+     closing bracket in a function definition, class definition, etc. The only
+     exception to this rule are inline methods defined inside the class
+     definition.
+
+   - Preprocessor directives:
+
+     Preprocessor directives will always begin in the first column. As an
+     exception to this rule, directives that are local to another scope
+     (e.g. inside a function body) will be indented at the same level as
+     this scope.
+
+   - Comments:
+
+     Comment text will be in English language whenever possible. Multiline
+     comments will be formatted as in the next example:
+
+       :
+       :
+       //
+       //  This is an example of comment,
+       //  and this is the second part of the line.
+       //  This is the second line of comments.
+       //
+       :
+       :
+
+     That is, text begins two spaces after the '//'.
+
+     Warnings will be labeled as such, in this way:
+
+       :
+       :
+       //
+       //  Warning: This is an example of comment with
+       //           two lines length.
+       //           This is the second line of comments.
+       //
+       :
+       :
+
+   - Variable declaration:
+
+     Variable declaration will be at the top of the scope (whenever
+     possible). Type begins at normal indentation (2 spaces). Pointers and
+     references will have the '*' or '&' symbol attached as a sufix to the
+     type. Between this type (including this symbol) and variable identifier,
+     there will be at least 3 spaces, with all variable names left aligned.
+     Explicitly assigned variables will always be at the bottom, with
+     equal signs preferably aligned at the same column:
+
+       int*          piExample1;
+       char*         pcExample2;
+       const char*   pkcExample3;
+       iostream      tExample4Iostream = cin;
+       long int      liExample5        = 5;
+       FILE*         ptInputFILE       = NULL;
+
+   - Algebraic expresions:
+
+     In expressions, every operator must have a space on each side, as in
      the next example:
 
        (a + b) * (c / d) / (e * (f * (g + h)))
@@ -20,15 +138,43 @@
      Parenthesis will enclose its content without any space (boolean
      expressions being the exception, as next point explains).
 
-   - Boolean expressions
+   - Boolean expressions:
 
      Boolean expressions must have one space between every parenthesis and
      its content, as in this example:
 
        ( expression == value ) ? a : b;
 
+   - There should be 2 blank lines between function definitions.
 
- 2 .- IDENTIFIER SYNTAX
+   - Always leave a blank line between variable declarations and code
+     beginning.
+
+   - ALWAYS use brackets to enclose the action in an if, while, conditional,
+     etc., even if this action is only one line.
+
+   - When calling a function, always leave a space before the opening
+     parenthesis, unless the function has no parameters. In that case, no space
+     should be left. Example:
+
+       TestFunction (a, b, c);
+
+       AnotherFunction();
+
+   - Every source file should end with a newline character.
+
+   - Always put parameter names in function prototipes. Example:
+
+       int ExampleFunction (int iEXAMPLE_PARAM);
+
+   - System includes go before user includes. System includes use '<>', while
+     user includes use '""'. Example:
+
+       #include <cstdio>
+       #include "user_include_header.h"
+
+
+ 2 .- NAMING CONVENTIONS
 
    - Variables
 
@@ -82,85 +228,142 @@
 
      A class name will always begin with a capital 'T', optionally followed
      by one or more capital letters as a code for a given project and a
-     mixed format description string (e.g. TCamera).
+     mixed format description string (e.g. TPinholeCamera).
 
    - Member function names
 
      Member function names will be a mixed format description string. This
      string must begin with a lower case (e.g. getArrayLength).
 
+   - Normal function names
+
+     Normal (non member) function names will be a mixed format description
+     string. This string must begin with an upper case (e.g. ExampleFunction).
+
    - Class attributes
 
      Class attribute names will have the same format as normal variables.
 
+   - Function parameters are always upper case. Example:
 
- 3 .- CODE FORMATTING
+       void TestFunction (int iTEST_PARAM, float fANOTHER_PARAM);
 
-   - Class declaration:
+   - Static function names should begin with '_' (like static variables).
 
-     Class declaration will be aligned in the following way:
+   - As an exception to variable naming rules, variables with short names (one
+     or two characters), don't have to use that rules (it is left to the
+     programmer's criterion to choose the most intuitive name).
 
-        :
-        :
-        class TSon : public TMother, virtual public TFather
-        {
-        };  /* class TSon */
-        :
-        :
+   - A 'get' method should have the name of the attribute it returns. A 'set'
+     method should add 'set' as a prefix. Example:
 
-     Every class declaration will be followed by two spaces, and a comment
-     with the words class and the class name, as in the example (a closed
-     comment will be used to preserve C visual style).
+       boundingBox();
 
-   - Preprocessor directives.
+       setBoundingBox();
 
-     Preprocessor directives will always begin in the first column. As an
-     exception to this rule, directives that are local to another scope
-     (e.g. inside a function body) will be indented at the same level as
-     this scope.
 
-   - Comments:
+ 3 .- CODING
 
-     Comment text will be in English language whenever possible. Multiline
-     comments will be formatted as in the next example:
+   - Don't implement something you don't need. Specially, never implement
+     something you are not going to test immediately.
 
-       :
-       :
-       //
-       //  This is an example of comment,
-       //  and this is the second part of the line.
-       //  This is the second line of comments.
-       //
-       :
-       :
+   - Always use 'size_t' type for variables containing an index into an STL
+     container.
 
-     That is, text begins two spaces after the '//'.
+   - NEVER use multiple variable assignments (like 'a = b = c = 0').
 
-     Warnings will be labeled as such, in this way:
+   - Whenever possible, don't put more than one sentence in a single line.
+   
+   - Whenever possible, use Byte, Word or DWord types, instead of int, long,
+     unsigned, etc. This way, type size is always known.
 
-       :
-       :
-       //
-       //  Warning: This is an example of comment with
-       //           two lines length.
-       //           This is the second line of comments.
-       //
-       :
-       :
+   - For variables used as indices in a 'for' loop, always use the smaller
+     possible type (Byte < Word < DWord). Whenever possible, these variables
+     should have local scope, instead of being declared in an outer scope.
 
-   - Variable declaration:
+   - Non trivial objects should always be passed by reference. If they are not
+     going to be modified, const reference should be used.
 
-     Variable declaration will be at the top of the scope (whenever
-     possible). Type begins at normal indentation (2 spaces). Pointers and
-     references will have the '*' or '&' symbol attached as a sufix to the type.
-     Between this type (including this symbol) and variable identifier, there
-     will be at least 3 spaces, with all variable names left aligned.
-     Explicitly assigned variables will always be at the bottom, with
-     equal signs preferably aligned at the same column:
+   - Header files should begin and end with:
 
-       int*          piExample1;
-       char*         pcExample2;
-       const char*   pkcExample3;
-       iostream      tExample4Iostream = cin;
-       long int      liExample5        = 5;
-       FILE*         ptInputFILE       = NULL;
+       #ifndef _SYMBOL__
+       #define _SYMBOL__
+
+       . . .
+
+       #endif  /* _SYMBOL__ */
+
+   - Never use a signed type for a magnitude that is not going to have negative
+     values.
+
+ 
+ 4 .- C++ SPECIFICS
+ 
+   - When iterating through STL containers, iterators should be used whenever
+     possible. Example:
+
+     Use
+
+       for (vector<int>::iterator tIter = tVector.begin(); ( tIter != tVector.end() ) ;tIter++)
+       {
+         int   i = *tIter;
+
+         . . .
+       }
+
+     instead of
+
+       for (size_t J = 0; ( J < tVector.size() ) ;J++)
+       {
+         int   i = tVector [J];
+
+         . . .
+       }
+
+   - ANSI C++ standard must be used for include header names. Use 'iostream'
+     instead of 'iostream.h' and 'cstdio' instead of 'stdio.h'.
+
+   - Whenever possible, use iostream instead of stdio for I/O.
+
+   - Whenever possible, use C++ constants instead of #define's.
+
+   - Data members should be private or protected. If necessary, 'set'/'get'
+     methods will be provided.
+
+   - Always declare methods that do not modify attributes as const.
+
+   - Class members should be declared in the order: friend, private, protected,
+     and public. Indentation is done in the following way:
+
+       class TClassName
+       {
+
+         friend TAnotherClassName;
+
+         private:
+
+           int   iSomePrivateData;
+
+         protected:
+
+           int   iSomeProtectedData;
+
+         public:
+
+           TClassName()
+           {
+             . . .
+           }
+
+       };  /* class TClassName */
+
+   - For boolean variables, always use C++ bool type.
+
+   - Use C++ string instead of char* whenever possible.
+
+
+ 5 .- SOURCE FILES
+
+   - Source file names are always lower case, with '_' separating words.
+     Extensions are '.cpp' and '.h'.
+
