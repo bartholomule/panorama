@@ -28,7 +28,12 @@ TScene::TScene (void) :
   ptRenderer (NULL),
   gParticipatingMedia (false),
   wNeededBuffers (0),
-  ptImageIO (NULL) {}
+  ptImageIO (NULL) 
+{
+
+  ptBackgroundColor = new TPattern (TColor::_black());
+
+}
 
 
 bool TScene::initialize (void)
@@ -173,9 +178,17 @@ int TScene::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType 
 
   if ( rktNAME == "background" )
   {
-    if ( eTYPE == FX_COLOR )
+    if ( eTYPE == FX_PATTERN )
     {
-      setBackgroundColor (*((TColor*) nVALUE.pvValue));
+      setBackgroundColor ((TPattern*) nVALUE.pvValue);
+    }
+    else if ( eTYPE == FX_REAL )
+    {
+      setBackgroundColor (new TPattern (nVALUE.dValue));
+    }
+    else if ( eTYPE == FX_COLOR )
+    {
+      setBackgroundColor (new TPattern (*((TColor*) nVALUE.pvValue)));
     }
     else
     {
@@ -252,7 +265,7 @@ int TScene::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 
   if ( rktNAME == "background" )
   {
-    rnVALUE.pvValue = &tBackgroundColor;
+    rnVALUE.pvValue = ptBackgroundColor;
   }
   else if ( rktNAME == "camera" )
   {
@@ -289,7 +302,7 @@ void TScene::getAttributeList (TAttributeList& rtLIST) const
 
   TProcedural::getAttributeList (rtLIST);
 
-  rtLIST ["background"]    = FX_COLOR;
+  rtLIST ["background"]    = FX_PATTERN;
   rtLIST ["camera"]        = FX_CAMERA;
   rtLIST ["renderer"]      = FX_RENDERER;
   rtLIST ["width"]         = FX_REAL;
@@ -320,9 +333,9 @@ void TScene::printDebug (void) const
 
   TDebug::_push();
   
-  cerr << TDebug::_indent() << "Height     : " << zHeight << endl;
-  cerr << TDebug::_indent() << "Width      : " << zWidth << endl;
-  cerr << TDebug::_indent() << "Background : "; tBackgroundColor.printDebug(); cerr << endl;
+  cerr << TDebug::_indent() << "Height               : " << zHeight << endl;
+  cerr << TDebug::_indent() << "Width                : " << zWidth << endl;
+  cerr << TDebug::_indent() << "Last background color: "; ptBackgroundColor->lastColor().printDebug(); cerr << endl;
 
   ptWorld->printDebug();
 

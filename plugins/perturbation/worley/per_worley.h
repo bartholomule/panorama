@@ -70,7 +70,7 @@ inline TVector TPerturbationWorley::perturbNormal (const TSurfaceData& rktDATA) 
       exit (1);
     }
 
-    tPoint   = rktDATA.localPoint() * ptWorleyPattern->tZoom;
+    tPoint   = ptWorleyPattern->warp (rktDATA.localPoint()) * ptWorleyPattern->tZoom;
     ptPQueue = ptWorleyPattern->tWorleyBasis.evaluate (tPoint);
 
     tVector = (*ptPQueue)[0].tData.tVector;

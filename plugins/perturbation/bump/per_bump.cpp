@@ -136,7 +136,7 @@ TVector TPerturbationBump::perturbNormal (const TSurfaceData& rktDATA) const
 
         for (size_t ix = 0; ( ix < (size_t) tSamples.x() ); ix++)
         {
-          tTemp = rktDATA.localPoint() + (tGradientU * x) + (tGradientV * y);
+          tTemp = ptPattern->warp (rktDATA.localPoint()) + (tGradientU * x) + (tGradientV * y);
           tData.setPoint (tTemp);
           tColor = ptPattern->color (tData);
 

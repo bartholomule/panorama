@@ -71,7 +71,7 @@ inline TVector TPerturbationLeopard::perturbNormal (const TSurfaceData& rktDATA)
       exit (1);
     }
 
-    tPoint = rktDATA.localPoint() * ptLeopardPattern->tZoom;
+    tPoint = ptLeopardPattern->warp (rktDATA.localPoint()) * ptLeopardPattern->tZoom;
 
     ptLeopardPattern->evaluate (tPoint, &tGradient);
 

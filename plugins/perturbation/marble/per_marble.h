@@ -72,7 +72,7 @@ inline TVector TPerturbationMarble::perturbNormal (const TSurfaceData& rktDATA) 
       exit (1);
     }
 
-    tPoint = rktDATA.localPoint() * ptMarblePattern->tZoom;
+    tPoint = ptMarblePattern->warp (rktDATA.localPoint()) * ptMarblePattern->tZoom;
 
     ptMarblePattern->evaluate (tPoint, &tGradient);
 

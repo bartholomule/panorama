@@ -93,7 +93,14 @@ inline TColor TRaytracer::getRadiance (TSurfaceData& rtDATA, Word wDEPTH) const
     //
     // There was no intersection
     //
-    tRadiance = mediaRadiance (rtDATA, ptScene->backgroundColor());
+    TVector  tDirection;
+   
+    tDirection = rtDATA.ray().direction();
+
+    rtDATA.setPoint  ( tDirection);
+    rtDATA.setNormal (-tDirection);
+
+    tRadiance = mediaRadiance (rtDATA, ptScene->backgroundColor (rtDATA));
   }
 
   return tRadiance;
@@ -749,7 +756,7 @@ TColor TRaytracer::specularReflectedLight (const TSurfaceData& rktDATA, Word wDE
   TSurfaceData   tSurfaceData;
   TSurfaceData   tTempSurfaceData = rktDATA;
   TVector        tNormal          = rktDATA.normal();
-  TVector        tOrigNormal      = rktDATA.object()->normal(tTempSurfaceData);
+  TVector        tOrigNormal      = rktDATA.object()->normal (tTempSurfaceData, tNormal);
   TMaterial*     ptMaterial       = rktDATA.object()->material();
 
   if ( wDEPTH-- )

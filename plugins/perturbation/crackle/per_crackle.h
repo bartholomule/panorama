@@ -72,7 +72,7 @@ inline TVector TPerturbationCrackle::perturbNormal (const TSurfaceData& rktDATA)
       exit (1);
     }
 
-    tPoint = rktDATA.localPoint() * ptCracklePattern->tZoom;
+    tPoint = ptCracklePattern->warp (rktDATA.localPoint()) * ptCracklePattern->tZoom;
 
     ptCracklePattern->evaluate (tPoint, &tGradient);
 

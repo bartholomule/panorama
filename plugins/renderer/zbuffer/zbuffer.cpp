@@ -121,12 +121,22 @@ void TZBufferRenderer::getAttributeList (TAttributeList& rtLIST) const
 
 inline void TZBufferRenderer::initBuffers (SBuffers& rsBUFFERS) const
 {
+  TRay          tRay;
+  TSurfaceData  tData;
+  TVector       tDirection;
 
   for (size_t J = 0; ( J < rsBUFFERS.ptImage->height() ) ;J++)
   {
     for (size_t I = 0; ( I < rsBUFFERS.ptImage->width() ) ;I++)
     {
-      rsBUFFERS.ptImage->setPixel (I, J, ptScene->backgroundColor());
+      ptScene->camera()->getRay(I, J, tRay);
+
+      tDirection = tRay.direction();
+
+      tData.setPoint  ( tDirection);
+      tData.setNormal (-tDirection);
+
+      rsBUFFERS.ptImage->setPixel (I, J, ptScene->backgroundColor(tData));
       rsBUFFERS.ptZBuffer->setPixel (I, J, SCALAR_MAX);
     }
   }

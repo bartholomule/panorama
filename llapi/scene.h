@@ -29,6 +29,8 @@
 #include "llapi/renderer.h"
 #include "llapi/image_filter.h"
 #include "llapi/atmosphere.h"
+#include "llapi/pattern.h"
+#include "llapi/surface_data.h"
 #include "llapi/image_io.h"
 
 struct SBuffers
@@ -60,7 +62,7 @@ class TScene : public TProcedural
     size_t                zWidth;
     size_t                zHeight;
     SBuffers              sBuffers;
-    TColor                tBackgroundColor;
+    TPattern*             ptBackgroundColor;
     vector<TLight*>       tLightList;
     list<TImageFilter*>   tFilterList;
     TImageIO*             ptImageIO;
@@ -70,7 +72,7 @@ class TScene : public TProcedural
 
     TScene (void);
 
-    TColor backgroundColor (void) const { return tBackgroundColor; }
+    TColor backgroundColor (const TSurfaceData& rktDATA) const { return ptBackgroundColor->color (rktDATA); }
     TCamera* camera (void) const { return ptCamera; }
     TObject* world (void) const { return ptWorld; }
     vector<TLight*>& lightList (void) { return tLightList; }
@@ -86,7 +88,7 @@ class TScene : public TProcedural
     int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
     void getAttributeList (TAttributeList& rtLIST) const;
 
-    void setBackgroundColor (const TColor& rktCOLOR) { tBackgroundColor = rktCOLOR; }
+    void setBackgroundColor (TPattern* ptPATTERN) { ptBackgroundColor = ptPATTERN; }
     void setWorld (TObject* ptWORLD) { ptWorld = ptWORLD; }
     void setCamera (TCamera* ptCAMERA) { ptCamera = ptCAMERA; }
     void addLight (TLight* ptLIGHT) { tLightList.push_back (ptLIGHT); }

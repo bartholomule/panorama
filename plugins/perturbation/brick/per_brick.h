@@ -71,9 +71,7 @@ inline TVector TPerturbationBrick::perturbNormal (const TSurfaceData& rktDATA) c
       exit (1);
     }
 
-    tPoint = rktDATA.localPoint() * ptBrickPattern->tZoom;
-
-    tPoint = tPoint + tNewNormal * ptBrickPattern->evaluate (tPoint);
+    tPoint = ptBrickPattern->warp (rktDATA.localPoint()) * ptBrickPattern->tZoom;
 
     ptBrickPattern->evaluate (tPoint, &tGradient);
 

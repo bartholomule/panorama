@@ -65,7 +65,6 @@ inline TVector TPerturbationNoise::perturbNormal (const TSurfaceData& rktDATA) c
   if ( tBumpFactor )
   {
     TVector   tGradient;
-    TScalar   tNoiseValue;
     TVector   tPoint;
 
     if ( !ptNoisePattern )
@@ -74,12 +73,9 @@ inline TVector TPerturbationNoise::perturbNormal (const TSurfaceData& rktDATA) c
       exit (1);
     }
 
-    tPoint = rktDATA.localPoint() * ptNoisePattern->tZoom;
+    tPoint = ptNoisePattern->warp (rktDATA.localPoint()) * ptNoisePattern->tZoom;
 
-    tNoiseValue = ptNoisePattern->tNoise.noise (tPoint);
-
-    tPoint      = tPoint + rktDATA.normal() * tNoiseValue;
-    tNoiseValue = ptNoisePattern->tNoise.noise (tPoint, &tGradient);
+    ptNoisePattern->tNoise.noise (tPoint, &tGradient);
 
     tNewNormal = rktDATA.normal() + tGradient * tBumpFactor;
     tNewNormal.normalize();
