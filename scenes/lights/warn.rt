@@ -31,7 +31,7 @@ sphere
 {
   translate     <0, -60, 0>
   radius        40
-  material : extends MLambertian
+  material : extends MPlastic
   {
     color       CWhite
   }
