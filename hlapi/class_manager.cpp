@@ -64,7 +64,11 @@ TBaseClass* TClassManager::_newObject (const string& rktCLASS, const TBaseClass*
   STATIC_CLASS (TPointLight, "PointLight");
   STATIC_CLASS (TProjector, "Projector");
   STATIC_CLASS (TWarnLight, "WarnLight");
+  STATIC_CLASS (TMaterialBrick, "MaterialBrick");
   STATIC_CLASS (TMaterialChecker, "MaterialChecker");
+  STATIC_CLASS (TMaterialCrackle, "MaterialCrackle");
+  STATIC_CLASS (TMaterialLeopard, "MaterialLeopard");
+  STATIC_CLASS (TMaterialMarble, "MaterialMarble");
   STATIC_CLASS (TMaterialNoise, "MaterialNoise");
   STATIC_CLASS (TMaterialWorley, "MaterialWorley");
   STATIC_CLASS (TBezierSurface, "BezierSurface");
