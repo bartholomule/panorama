@@ -19,6 +19,8 @@
 #ifndef _MACHINE__
 #define _MACHINE__
 
+using namespace std;
+
 #ifdef WORDS_BIGENDIAN
 #define FX_BIG_ENDIAN_SYSTEM               (1)
 #else
