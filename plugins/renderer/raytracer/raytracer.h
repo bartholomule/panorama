@@ -50,8 +50,8 @@ class TRaytracer : public TRenderer
     Byte              bMaxAADepth;
     Word              wNeededBuffers;
 
+    virtual TColor getRadiance (TSurfaceData& rtDATA, Word wDEPTH) const;
     void traceRay (TRay& rtRAY, TSurfaceData& rtDATA) const;
-    TColor getRadiance (TSurfaceData& rtDATA, Word wDEPTH) const;
     bool traceShadowRay (const TRay& rktRAY, const TLight& rktLIGHT, TColor& rtRAD) const;
     TColor shadePrimaryRay (TScalar I, TScalar J, TSurfaceData& rtDATA);
     void singleSample (TScalar I, TScalar J, SBuffers& rsBUFFERS);
