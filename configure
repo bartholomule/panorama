@@ -4378,7 +4378,7 @@ if test $have_so_reg = "yes"; then
   ARCH_MAKE_SHARED_OPTS="$ARCH_MAKE_SHARED_OPTS -Wl,-update_registry,\${BUILD_TOP}/so_locations"
 fi
 
-ac_config_files="$ac_config_files Makefile Makefile.vars Makefile.targets data/Makefile data/gradient/Makefile data/include/Makefile data/texture/Makefile doc/Makefile doc/config doc/pluginrc doc/developers/Makefile doc/users/Makefile doc/api/Makefile doc/api/Doxyfile llapi/Makefile hlapi/Makefile plugins/Makefile plugins/atm_object/Makefile plugins/atm_object/atm_const/Makefile:Makefile.plugin.in plugins/bsdf/Makefile plugins/bsdf/cook_torrance/Makefile:Makefile.plugin.in plugins/bsdf/lambertian/Makefile:Makefile.plugin.in plugins/bsdf/phong/Makefile:Makefile.plugin.in plugins/bsdf/schlick/Makefile:Makefile.plugin.in plugins/bsdf/schlick_double/Makefile:Makefile.plugin.in plugins/bsdf/ward/Makefile:Makefile.plugin.in plugins/camera/Makefile plugins/camera/parallel/Makefile:Makefile.plugin.in plugins/camera/pinhole/Makefile:Makefile.plugin.in plugins/camera/thinlens/Makefile:Makefile.plugin.in plugins/image_filter/Makefile plugins/image_filter/cartoon/Makefile:Makefile.plugin.in plugins/image_filter/convert_to_grey/Makefile:Makefile.plugin.in plugins/image_filter/fog/Makefile:Makefile.plugin.in plugins/image_filter/lens_flare/Makefile:Makefile.plugin.in plugins/image_filter/text/Makefile:Makefile.plugin.in plugins/image_io/Makefile plugins/image_io/gif/Makefile:Makefile.plugin.in plugins/image_io/jpeg/Makefile:Makefile.plugin.in plugins/image_io/png/Makefile:Makefile.plugin.in plugins/image_io/tga/Makefile:Makefile.plugin.in plugins/image_io/tiff/Makefile:Makefile.plugin.in plugins/light/Makefile plugins/light/point_light/Makefile:Makefile.plugin.in plugins/light/projector/Makefile:Makefile.plugin.in plugins/light/warn_light/Makefile:Makefile.plugin.in plugins/pattern/Makefile plugins/pattern/amplifier/Makefile:Makefile.plugin.in plugins/pattern/brick/Makefile:Makefile.plugin.in plugins/pattern/checker/Makefile:Makefile.plugin.in plugins/pattern/composite/Makefile:Makefile.plugin.in plugins/pattern/crackle/Makefile:Makefile.plugin.in plugins/pattern/cylgrad/Makefile:Makefile.plugin.in plugins/pattern/leopard/Makefile:Makefile.plugin.in plugins/pattern/marble/Makefile:Makefile.plugin.in plugins/pattern/noise/Makefile:Makefile.plugin.in plugins/pattern/parquet/Makefile:Makefile.plugin.in plugins/pattern/texture/Makefile:Makefile.plugin.in plugins/pattern/wood/Makefile:Makefile.plugin.in plugins/pattern/worley/Makefile:Makefile.plugin.in plugins/perturbation/Makefile plugins/perturbation/brick/Makefile:Makefile.plugin.in plugins/perturbation/bump/Makefile:Makefile.plugin.in plugins/perturbation/crackle/Makefile:Makefile.plugin.in plugins/perturbation/leopard/Makefile:Makefile.plugin.in plugins/perturbation/marble/Makefile:Makefile.plugin.in plugins/perturbation/noise/Makefile:Makefile.plugin.in plugins/perturbation/wave/Makefile:Makefile.plugin.in plugins/perturbation/worley/Makefile:Makefile.plugin.in plugins/object/Makefile plugins/object/abvh/Makefile:Makefile.plugin.in plugins/object/aggregate_uniform_grid/Makefile:Makefile.plugin.in plugins/object/bezier/Makefile:Makefile.plugin.in plugins/object/subdiv/Makefile:Makefile.plugin.in plugins/object/height_field/Makefile:Makefile.plugin.in plugins/object/lwo/Makefile:Makefile.plugin.in plugins/object/polyhedron/Makefile:Makefile.plugin.in plugins/object_filter/Makefile plugins/object_filter/cartoon/Makefile:Makefile.plugin.in plugins/object_filter/convert_to_grey/Makefile:Makefile.plugin.in plugins/renderer/Makefile plugins/renderer/raytracer/Makefile:Makefile.plugin.in plugins/renderer/zbuffer/Makefile:Makefile.plugin.in plugins/scene_io/Makefile plugins/scene_io/rt/Makefile:Makefile.plugin.in plugins/scene_io/psl/Makefile:Makefile.plugin.in programs/Makefile programs/render/Makefile programs/barf/Makefile programs/gui/Makefile scenes/Makefile scenes/atmospheric/Makefile scenes/lights/Makefile scenes/materials/Makefile scenes/misc/Makefile scenes/objects/Makefile"
+ac_config_files="$ac_config_files Makefile Makefile.vars Makefile.targets data/Makefile data/gradient/Makefile data/include/Makefile data/texture/Makefile doc/Makefile doc/config doc/pluginrc doc/developers/Makefile doc/users/Makefile doc/api/Makefile doc/api/Doxyfile llapi/Makefile hlapi/Makefile plugins/Makefile plugins/atm_object/Makefile plugins/atm_object/atm_const/Makefile:Makefile.plugin.in plugins/bsdf/Makefile plugins/bsdf/cook_torrance/Makefile:Makefile.plugin.in plugins/bsdf/lambertian/Makefile:Makefile.plugin.in plugins/bsdf/phong/Makefile:Makefile.plugin.in plugins/bsdf/schlick/Makefile:Makefile.plugin.in plugins/bsdf/schlick_double/Makefile:Makefile.plugin.in plugins/bsdf/ward/Makefile:Makefile.plugin.in plugins/camera/Makefile plugins/camera/parallel/Makefile:Makefile.plugin.in plugins/camera/pinhole/Makefile:Makefile.plugin.in plugins/camera/thinlens/Makefile:Makefile.plugin.in plugins/image_filter/Makefile plugins/image_filter/cartoon/Makefile:Makefile.plugin.in plugins/image_filter/convert_to_grey/Makefile:Makefile.plugin.in plugins/image_filter/fog/Makefile:Makefile.plugin.in plugins/image_filter/lens_flare/Makefile:Makefile.plugin.in plugins/image_filter/text/Makefile:Makefile.plugin.in plugins/image_io/Makefile plugins/image_io/gif/Makefile:Makefile.plugin.in plugins/image_io/jpeg/Makefile:Makefile.plugin.in plugins/image_io/png/Makefile:Makefile.plugin.in plugins/image_io/tga/Makefile:Makefile.plugin.in plugins/image_io/tiff/Makefile:Makefile.plugin.in plugins/light/Makefile plugins/light/point_light/Makefile:Makefile.plugin.in plugins/light/projector/Makefile:Makefile.plugin.in plugins/light/warn_light/Makefile:Makefile.plugin.in plugins/pattern/Makefile plugins/pattern/amplifier/Makefile:Makefile.plugin.in plugins/pattern/brick/Makefile:Makefile.plugin.in plugins/pattern/checker/Makefile:Makefile.plugin.in plugins/pattern/composite/Makefile:Makefile.plugin.in plugins/pattern/crackle/Makefile:Makefile.plugin.in plugins/pattern/cylgrad/Makefile:Makefile.plugin.in plugins/pattern/leopard/Makefile:Makefile.plugin.in plugins/pattern/marble/Makefile:Makefile.plugin.in plugins/pattern/noise/Makefile:Makefile.plugin.in plugins/pattern/parquet/Makefile:Makefile.plugin.in plugins/pattern/texture/Makefile:Makefile.plugin.in plugins/pattern/wood/Makefile:Makefile.plugin.in plugins/pattern/worley/Makefile:Makefile.plugin.in plugins/perturbation/Makefile plugins/perturbation/brick/Makefile:Makefile.plugin.in plugins/perturbation/bump/Makefile:Makefile.plugin.in plugins/perturbation/crackle/Makefile:Makefile.plugin.in plugins/perturbation/leopard/Makefile:Makefile.plugin.in plugins/perturbation/marble/Makefile:Makefile.plugin.in plugins/perturbation/noise/Makefile:Makefile.plugin.in plugins/perturbation/wave/Makefile:Makefile.plugin.in plugins/perturbation/worley/Makefile:Makefile.plugin.in plugins/object/Makefile plugins/object/abvh/Makefile:Makefile.plugin.in plugins/object/aggregate_uniform_grid/Makefile:Makefile.plugin.in plugins/object/bezier/Makefile:Makefile.plugin.in plugins/object/subdiv/Makefile:Makefile.plugin.in plugins/object/height_field/Makefile:Makefile.plugin.in plugins/object/lwo/Makefile:Makefile.plugin.in plugins/object/polyhedron/Makefile:Makefile.plugin.in plugins/object_filter/Makefile plugins/object_filter/cartoon/Makefile:Makefile.plugin.in plugins/object_filter/convert_to_grey/Makefile:Makefile.plugin.in plugins/renderer/Makefile plugins/renderer/raytracer/Makefile:Makefile.plugin.in plugins/renderer/zbuffer/Makefile:Makefile.plugin.in plugins/scene_io/Makefile plugins/scene_io/rt/Makefile:Makefile.plugin.in plugins/scene_io/psl/Makefile:Makefile.plugin.in programs/Makefile programs/render/Makefile programs/rt_convert/Makefile programs/barf/Makefile programs/gui/Makefile scenes/Makefile scenes/atmospheric/Makefile scenes/lights/Makefile scenes/materials/Makefile scenes/misc/Makefile scenes/objects/Makefile"
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
 # tests run on this system so they can be shared between configure
@@ -4763,6 +4763,7 @@ Try \`$0 --help' for more information." >&2;}
   'plugins/scene_io/psl/Makefile' ) CONFIG_FILES="$CONFIG_FILES plugins/scene_io/psl/Makefile:Makefile.plugin.in" ;;
   'programs/Makefile' ) CONFIG_FILES="$CONFIG_FILES programs/Makefile" ;;
   'programs/render/Makefile' ) CONFIG_FILES="$CONFIG_FILES programs/render/Makefile" ;;
+  'programs/rt_convert/Makefile' ) CONFIG_FILES="$CONFIG_FILES programs/rt_convert/Makefile" ;;
   'programs/barf/Makefile' ) CONFIG_FILES="$CONFIG_FILES programs/barf/Makefile" ;;
   'programs/gui/Makefile' ) CONFIG_FILES="$CONFIG_FILES programs/gui/Makefile" ;;
   'scenes/Makefile' ) CONFIG_FILES="$CONFIG_FILES scenes/Makefile" ;;
@@ -4773,12 +4774,12 @@ Try \`$0 --help' for more information." >&2;}
   'scenes/objects/Makefile' ) CONFIG_FILES="$CONFIG_FILES scenes/objects/Makefile" ;;
 
   # This is an error.
-  -*) { { echo "$as_me:4776: error: unrecognized option: $1
+  -*) { { echo "$as_me:4777: error: unrecognized option: $1
 Try \`$0 --help' for more information." >&5
 echo "$as_me: error: unrecognized option: $1
 Try \`$0 --help' for more information." >&2;}
    { (exit 1); exit 1; }; } ;;
-  *) { { echo "$as_me:4781: error: invalid argument: $1" >&5
+  *) { { echo "$as_me:4782: error: invalid argument: $1" >&5
 echo "$as_me: error: invalid argument: $1" >&2;}
    { (exit 1); exit 1; }; };;
   esac
@@ -5032,7 +5033,7 @@ done; }
   esac
 
   if test x"$ac_file" != x-; then
-    { echo "$as_me:5035: creating $ac_file" >&5
+    { echo "$as_me:5036: creating $ac_file" >&5
 echo "$as_me: creating $ac_file" >&6;}
     rm -f "$ac_file"
   fi
@@ -5050,7 +5051,7 @@ echo "$as_me: creating $ac_file" >&6;}
       -) echo $tmp/stdin ;;
       [\\/$]*)
          # Absolute (can't be DOS-style, as IFS=:)
-         test -f "$f" || { { echo "$as_me:5053: error: cannot find input file: $f" >&5
+         test -f "$f" || { { echo "$as_me:5054: error: cannot find input file: $f" >&5
 echo "$as_me: error: cannot find input file: $f" >&2;}
    { (exit 1); exit 1; }; }
          echo $f;;
@@ -5063,7 +5064,7 @@ echo "$as_me: error: cannot find input file: $f" >&2;}
            echo $srcdir/$f
          else
            # /dev/null tree
-           { { echo "$as_me:5066: error: cannot find input file: $f" >&5
+           { { echo "$as_me:5067: error: cannot find input file: $f" >&5
 echo "$as_me: error: cannot find input file: $f" >&2;}
    { (exit 1); exit 1; }; }
          fi;;
