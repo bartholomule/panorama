@@ -43,5 +43,6 @@
 #include "plugins/object/lwo/lwo.h"
 #include "plugins/object/polyhedron/polyhedron.h"
 #include "plugins/object_filter/cartoon/of_cartoon.h"
+#include "plugins/object_filter/convert_to_grey/of_convert_to_grey.h"
 #include "plugins/renderer/raytracer/raytracer.h"
 #include "plugins/renderer/zbuffer/zbuffer.h"

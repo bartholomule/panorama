@@ -81,6 +81,7 @@ TBaseClass* TClassManager::_newObject (const string& rktCLASS, const TBaseClass*
   STATIC_CLASS (TLightWaveObject, "LightWaveObject");
   STATIC_CLASS (TPolyhedron, "Polyhedron");
   STATIC_CLASS (TOF_Cartoon, "OF_Cartoon");
+  STATIC_CLASS (TOF_ConvertToGrey, "OF_ConvertToGrey");
   STATIC_CLASS (TRaytracer, "Raytracer");
   STATIC_CLASS (TZBufferRenderer, "ZBufferRenderer");
 #endif

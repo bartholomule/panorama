@@ -171,6 +171,7 @@ AC_OUTPUT(\
         plugins/object/polyhedron/Makefile:Makefile.plugin.in \
         plugins/object_filter/Makefile \
         plugins/object_filter/cartoon/Makefile:Makefile.plugin.in \
+        plugins/object_filter/convert_to_grey/Makefile:Makefile.plugin.in \
         plugins/renderer/Makefile \
         plugins/renderer/raytracer/Makefile:Makefile.plugin.in \
         plugins/renderer/zbuffer/Makefile:Makefile.plugin.in \

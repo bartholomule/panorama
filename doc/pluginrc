@@ -44,6 +44,7 @@ bezier.plg
 
 # Object filters
 of_cartoon.plg
+of_convert_to_grey.plg
 
 # Renderers
 raytracer.plg
