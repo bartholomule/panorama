@@ -12,6 +12,7 @@ DIRS  = developers \
 FILES = AUTHORS \
 	BUGS \
         CREDITS \
+        EXPERIMENTAL \
         FAQ \
         INSTALL \
         LICENSE \

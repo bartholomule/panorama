@@ -1,0 +1,12 @@
+
+ Code which is still labeled "experimental" (i.e. you have to use the
+'--enable-experimental' switch in configure to include that code in the
+compilation):
+
+ plugins/object/abvh           Automatic Bounding Volume Hierarchy
+ plugins/object/height_field   Height field
+ plugins/object/lwo            LightWave object
+ plugins/object/polyhedron     Polyhedron object
+ plugins/renderer/zbuffer      ZBuffer renderer
+ plugins/scene_io/psl          Procedural scene language
+
