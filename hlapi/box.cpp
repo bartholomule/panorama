@@ -25,27 +25,27 @@ TVector TBox::localNormal (const TVector& rktPOINT) const
 
   TVector   tNormal;
 
-  if ( fabs (rktPOINT.x() + 0.5) <= FX_EPSILON  )
+  if ( fabs (rktPOINT.x() - tXmin) <= FX_EPSILON  )
   {
     tNormal.set (-1, 0, 0);
   }
-  else if ( fabs (rktPOINT.x() - 0.5) <= FX_EPSILON )
+  else if ( fabs (rktPOINT.x() - tXmax) <= FX_EPSILON )
   {
     tNormal.set (1, 0, 0);
   }
-  else if ( fabs (rktPOINT.y() + 0.5) <= FX_EPSILON  )
+  else if ( fabs (rktPOINT.y() - tYmin) <= FX_EPSILON  )
   {
     tNormal.set (0, -1, 0);
   }
-  else if ( fabs (rktPOINT.y() - 0.5) <= FX_EPSILON )
+  else if ( fabs (rktPOINT.y() - tYmax) <= FX_EPSILON )
   {
     tNormal.set (0, 1, 0);
   }
-  else if ( fabs (rktPOINT.z() + 0.5) <= FX_EPSILON  )
+  else if ( fabs (rktPOINT.z() - tZmin) <= FX_EPSILON  )
   {
     tNormal.set (0, 0, -1);
   }
-  else if ( fabs (rktPOINT.z() - 0.5) <= FX_EPSILON )
+  else if ( fabs (rktPOINT.z() - tZmax) <= FX_EPSILON )
   {
     tNormal.set (0, 0, 1);
   }
@@ -62,12 +62,11 @@ TVector TBox::localNormal (const TVector& rktPOINT) const
 
 void TBox::initialize (void)
 {
-
-  tBoundingBox.set (TVector (-0.5, -0.5, -0.5), TVector (0.5, 0.5, 0.5));
+  tBoundingBox.set (TVector (tXmin, tYmin, tZmin), TVector (tXmax, tYmax, tZmax));
   tBoundingBox.applyTransform (*ptMatrix);
 
   TObject::initialize();
-
+  
 }  /* initialize() */
 
 
@@ -93,7 +92,7 @@ bool TBox::findFirstIntersection (const TRay& rktRAY, TSurfaceData& rtDATA) cons
   if ( fabs (tRayIT.direction().x()) < FX_EPSILON )
   {
     // Ray is parallel to YZ plane
-    if ( !( ( tRayIT.location().x() >= -0.5 ) && ( tRayIT.location().x() <= 0.5 ) ) )
+    if ( !( ( tRayIT.location().x() >= tXmin ) && ( tRayIT.location().x() <= tXmax ) ) )
     {
       return false;
     }
@@ -101,13 +100,13 @@ bool TBox::findFirstIntersection (const TRay& rktRAY, TSurfaceData& rtDATA) cons
   }
   else
   {
-    tIntX.set ((-0.5 - tRayIT.location().x()) / tRayIT.direction().x(), (0.5 - tRayIT.location().x()) / tRayIT.direction().x());
+    tIntX.set ((tXmin - tRayIT.location().x()) / tRayIT.direction().x(), (tXmax - tRayIT.location().x()) / tRayIT.direction().x());
   }
 
   if ( fabs (tRayIT.direction().y()) < FX_EPSILON )
   {
     // Ray is parallel to ZX plane
-    if ( !( ( tRayIT.location().y() >= -0.5 ) && ( tRayIT.location().y() <= 0.5 ) ) )
+    if ( !( ( tRayIT.location().y() >= tYmin ) && ( tRayIT.location().y() <= tYmax ) ) )
     {
       return false;
     }
@@ -115,13 +114,13 @@ bool TBox::findFirstIntersection (const TRay& rktRAY, TSurfaceData& rtDATA) cons
   }
   else
   {
-    tIntY.set ((-0.5 - tRayIT.location().y()) / tRayIT.direction().y(), (0.5 - tRayIT.location().y()) / tRayIT.direction().y());
+    tIntY.set ((tYmin - tRayIT.location().y()) / tRayIT.direction().y(), (tYmax - tRayIT.location().y()) / tRayIT.direction().y());
   }
 
   if ( fabs (tRayIT.direction().z()) < FX_EPSILON )
   {
     // Ray is parallel to XY plane
-    if ( !( ( tRayIT.location().z() >= -0.5 ) && ( tRayIT.location().z() <= 0.5 ) ) )
+    if ( !( ( tRayIT.location().z() >= tZmin ) && ( tRayIT.location().z() <= tZmax ) ) )
     {
       return false;
     }
@@ -129,7 +128,7 @@ bool TBox::findFirstIntersection (const TRay& rktRAY, TSurfaceData& rtDATA) cons
   }
   else
   {
-    tIntZ.set ((-0.5 - tRayIT.location().z()) / tRayIT.direction().z(), (0.5 - tRayIT.location().z()) / tRayIT.direction().z());
+    tIntZ.set ((tZmin - tRayIT.location().z()) / tRayIT.direction().z(), (tZmax - tRayIT.location().z()) / tRayIT.direction().z());
   }
 
   tIntTmp = Intersection (tIntX, tIntY);
@@ -188,7 +187,7 @@ bool TBox::findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) const
   if ( fabs (tRayIT.direction().x()) < FX_EPSILON )
   {
     // Ray is parallel to YZ plane
-    if ( !( ( tRayIT.location().x() >= -0.5 ) && ( tRayIT.location().x() <= 0.5 ) ) )
+    if ( !( ( tRayIT.location().x() >= tXmin ) && ( tRayIT.location().x() <= tXmax ) ) )
     {
       return false;
     }
@@ -196,13 +195,13 @@ bool TBox::findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) const
   }
   else
   {
-    tIntX.set ((-0.5 - tRayIT.location().x()) / tRayIT.direction().x(), (0.5 - tRayIT.location().x()) / tRayIT.direction().x());
+    tIntX.set ((tXmin - tRayIT.location().x()) / tRayIT.direction().x(), (tXmax - tRayIT.location().x()) / tRayIT.direction().x());
   }
 
   if ( fabs (tRayIT.direction().y()) < FX_EPSILON )
   {
     // Ray is parallel to ZX plane
-    if ( !( ( tRayIT.location().y() >= -0.5 ) && ( tRayIT.location().y() <= 0.5 ) ) )
+    if ( !( ( tRayIT.location().y() >= tYmin ) && ( tRayIT.location().y() <= tYmax ) ) )
     {
       return false;
     }
@@ -210,13 +209,13 @@ bool TBox::findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) const
   }
   else
   {
-    tIntY.set ((-0.5 - tRayIT.location().y()) / tRayIT.direction().y(), (0.5 - tRayIT.location().y()) / tRayIT.direction().y());
+    tIntY.set ((tYmin - tRayIT.location().y()) / tRayIT.direction().y(), (tYmax - tRayIT.location().y()) / tRayIT.direction().y());
   }
 
   if ( fabs (tRayIT.direction().z()) < FX_EPSILON )
   {
     // Ray is parallel to XY plane
-    if ( !( ( tRayIT.location().z() >= -0.5 ) && ( tRayIT.location().z() <= 0.5 ) ) )
+    if ( !( ( tRayIT.location().z() >= tZmin ) && ( tRayIT.location().z() <= tZmax ) ) )
     {
       return false;
     }
@@ -224,7 +223,7 @@ bool TBox::findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) const
   }
   else
   {
-    tIntZ.set ((-0.5 - tRayIT.location().z()) / tRayIT.direction().z(), (0.5 - tRayIT.location().z()) / tRayIT.direction().z());
+    tIntZ.set ((tZmin - tRayIT.location().z()) / tRayIT.direction().z(), (tZmax - tRayIT.location().z()) / tRayIT.direction().z());
   }
 
   tIntTmp = Intersection (tIntX, tIntY);
@@ -270,13 +269,13 @@ void TBox::getMesh (list<TMesh*>& rtMESH_LIST) const
   // Upper face
   ptMesh = new TMesh;
   
-  ptMesh->addFace ((*ptMatrix) * TVector (-0.5, 0.5, -0.5),
-                   (*ptMatrix) * TVector (-0.5, 0.5, 0.5),
-                   (*ptMatrix) * TVector (0.5, 0.5, -0.5),
+  ptMesh->addFace ((*ptMatrix) * TVector (tXmin, tYmax, tZmin),
+                   (*ptMatrix) * TVector (tXmin, tYmax, tZmax),
+                   (*ptMatrix) * TVector (tXmax, tYmax, tZmin),
                    this);
-  ptMesh->addFace ((*ptMatrix) * TVector (0.5, 0.5, -0.5),
-                   (*ptMatrix) * TVector (-0.5, 0.5, 0.5),
-                   (*ptMatrix) * TVector (0.5, 0.5, 0.5),
+  ptMesh->addFace ((*ptMatrix) * TVector (tXmax, tYmax, tZmin),
+                   (*ptMatrix) * TVector (tXmin, tYmax, tZmax),
+                   (*ptMatrix) * TVector (tXmax, tYmax, tZmax),
                    this);
   
   rtMESH_LIST.push_back (ptMesh);
@@ -284,13 +283,13 @@ void TBox::getMesh (list<TMesh*>& rtMESH_LIST) const
   // Lower face
   ptMesh = new TMesh;
   
-  ptMesh->addFace ((*ptMatrix) * TVector (-0.5, -0.5, -0.5),
-                   (*ptMatrix) * TVector (0.5, -0.5, -0.5),
-                   (*ptMatrix) * TVector (-0.5, -0.5, 0.5),
+  ptMesh->addFace ((*ptMatrix) * TVector (tXmin, tYmin, tZmin),
+                   (*ptMatrix) * TVector (tXmax, tYmin, tZmin),
+                   (*ptMatrix) * TVector (tXmin, tYmin, tZmax),
                    this);
-  ptMesh->addFace ((*ptMatrix) * TVector (0.5, -0.5, -0.5),
-                   (*ptMatrix) * TVector (0.5, -0.5, 0.5),
-                   (*ptMatrix) * TVector (-0.5, -0.5, 0.5),
+  ptMesh->addFace ((*ptMatrix) * TVector (tXmax, tYmin, tZmin),
+                   (*ptMatrix) * TVector (tXmax, tYmin, tZmax),
+                   (*ptMatrix) * TVector (tXmin, tYmin, tZmax),
                    this);
   
   rtMESH_LIST.push_back (ptMesh);
@@ -298,13 +297,13 @@ void TBox::getMesh (list<TMesh*>& rtMESH_LIST) const
   // Left face
   ptMesh = new TMesh;
   
-  ptMesh->addFace ((*ptMatrix) * TVector (-0.5, 0.5, -0.5),
-                   (*ptMatrix) * TVector (-0.5, -0.5, -0.5),
-                   (*ptMatrix) * TVector (-0.5, -0.5, 0.5),
+  ptMesh->addFace ((*ptMatrix) * TVector (tXmin, tYmax, tZmin),
+                   (*ptMatrix) * TVector (tXmin, tYmin, tZmin),
+                   (*ptMatrix) * TVector (tXmin, tYmin, tZmax),
                    this);
-  ptMesh->addFace ((*ptMatrix) * TVector (-0.5, 0.5, -0.5),
-                   (*ptMatrix) * TVector (-0.5, -0.5, 0.5),
-                   (*ptMatrix) * TVector (-0.5, 0.5, 0.5),
+  ptMesh->addFace ((*ptMatrix) * TVector (tXmin, tYmax, tZmin),
+                   (*ptMatrix) * TVector (tXmin, tYmin, tZmax),
+                   (*ptMatrix) * TVector (tXmin, tYmax, tZmax),
                    this);
 
   rtMESH_LIST.push_back (ptMesh);
@@ -312,13 +311,13 @@ void TBox::getMesh (list<TMesh*>& rtMESH_LIST) const
   // Right face
   ptMesh = new TMesh;
   
-  ptMesh->addFace ((*ptMatrix) * TVector (0.5, 0.5, 0.5),
-                   (*ptMatrix) * TVector (0.5, -0.5, 0.5),
-                   (*ptMatrix) * TVector (0.5, -0.5, -0.5),
+  ptMesh->addFace ((*ptMatrix) * TVector (tXmax, tYmax, tZmax),
+                   (*ptMatrix) * TVector (tXmax, tYmin, tZmax),
+                   (*ptMatrix) * TVector (tXmax, tYmin, tZmin),
                    this);
-  ptMesh->addFace ((*ptMatrix) * TVector (0.5, 0.5, 0.5),
-                   (*ptMatrix) * TVector (0.5, -0.5, -0.5),
-                   (*ptMatrix) * TVector (0.5, 0.5, -0.5),
+  ptMesh->addFace ((*ptMatrix) * TVector (tXmax, tYmax, tZmax),
+                   (*ptMatrix) * TVector (tXmax, tYmin, tZmin),
+                   (*ptMatrix) * TVector (tXmax, tYmax, tZmin),
                    this);
   
   rtMESH_LIST.push_back (ptMesh);
@@ -326,13 +325,13 @@ void TBox::getMesh (list<TMesh*>& rtMESH_LIST) const
   // Front face
   ptMesh = new TMesh;
   
-  ptMesh->addFace ((*ptMatrix) * TVector (-0.5, 0.5, 0.5),
-                   (*ptMatrix) * TVector (-0.5, -0.5, 0.5),
-                   (*ptMatrix) * TVector (0.5, -0.5, 0.5),
+  ptMesh->addFace ((*ptMatrix) * TVector (tXmin, tYmax, tZmax),
+                   (*ptMatrix) * TVector (tXmin, tYmin, tZmax),
+                   (*ptMatrix) * TVector (tXmax, tYmin, tZmax),
                    this);
-  ptMesh->addFace ((*ptMatrix) * TVector (-0.5, 0.5, 0.5),
-                   (*ptMatrix) * TVector (0.5, -0.5, 0.5),
-                   (*ptMatrix) * TVector (0.5, 0.5, 0.5),
+  ptMesh->addFace ((*ptMatrix) * TVector (tXmin, tYmax, tZmax),
+                   (*ptMatrix) * TVector (tXmax, tYmin, tZmax),
+                   (*ptMatrix) * TVector (tXmax, tYmax, tZmax),
                    this);
   
   rtMESH_LIST.push_back (ptMesh);
@@ -340,15 +339,94 @@ void TBox::getMesh (list<TMesh*>& rtMESH_LIST) const
   // Back face
   ptMesh = new TMesh;
   
-  ptMesh->addFace ((*ptMatrix) * TVector (0.5, 0.5, -0.5),
-                   (*ptMatrix) * TVector (0.5, -0.5, -0.5),
-                   (*ptMatrix) * TVector (-0.5, -0.5, -0.5),
+  ptMesh->addFace ((*ptMatrix) * TVector (tXmax, tYmax, tZmin),
+                   (*ptMatrix) * TVector (tXmax, tYmin, tZmin),
+                   (*ptMatrix) * TVector (tXmin, tYmin, tZmin),
                    this);
-  ptMesh->addFace ((*ptMatrix) * TVector (0.5, 0.5, -0.5),
-                   (*ptMatrix) * TVector (-0.5, -0.5, -0.5),
-                   (*ptMatrix) * TVector (-0.5, 0.5, -0.5),
+  ptMesh->addFace ((*ptMatrix) * TVector (tXmax, tYmax, tZmin),
+                   (*ptMatrix) * TVector (tXmin, tYmin, tZmin),
+                   (*ptMatrix) * TVector (tXmin, tYmax, tZmin),
                    this);
   
   rtMESH_LIST.push_back (ptMesh);
   
 }  /* getMesh() */
+
+
+int TBox::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
+{
+  if ( rktNAME == "point1" )
+  {
+    if ( eTYPE == FX_VECTOR )
+    {
+      tP1 = *((TVector*) nVALUE.pvValue);
+      tXmin = min (tP1.x(), tP2.x());
+      tYmin = min (tP1.y(), tP2.y());
+      tZmin = min (tP1.z(), tP2.z());
+      tXmax = max (tP1.x(), tP2.x());
+      tYmax = max (tP1.y(), tP2.y());
+      tZmax = max (tP1.z(), tP2.z());
+    }
+    else
+    {
+      return FX_ATTRIB_WRONG_TYPE;
+    }
+  }
+  else if ( rktNAME == "point2" )
+  {
+    if ( eTYPE == FX_VECTOR )
+    {
+      tP2 = *((TVector*) nVALUE.pvValue);
+      tXmin = min (tP1.x(), tP2.x());
+      tYmin = min (tP1.y(), tP2.y());
+      tZmin = min (tP1.z(), tP2.z());
+      tXmax = max (tP1.x(), tP2.x());
+      tYmax = max (tP1.y(), tP2.y());
+      tZmax = max (tP1.z(), tP2.z());
+    }
+    else
+    {
+      return FX_ATTRIB_WRONG_TYPE;
+    }
+  }
+  else
+  {
+    return TObject::setAttribute (rktNAME, nVALUE, eTYPE);
+  }
+
+  return FX_ATTRIB_OK;
+
+}  /* setAttribute() */
+
+
+int TBox::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
+{
+
+  if ( rktNAME == "point1" )
+  {
+    rnVALUE.pvValue = &tP1;
+  }
+  else if ( rktNAME == "point2" )
+  {
+    rnVALUE.pvValue = &tP2;
+  }
+  else
+  {
+    return TObject::getAttribute (rktNAME, rnVALUE);
+  }
+
+  return FX_ATTRIB_OK;
+
+}  /* getAttribute() */
+
+
+void TBox::getAttributeList (TAttributeList& rtLIST) const
+{
+
+  TObject::getAttributeList (rtLIST);
+
+  rtLIST ["point1"] = FX_VECTOR;
+  rtLIST ["point2"] = FX_VECTOR;
+
+}  /* getAttributeList() */
+
