@@ -229,7 +229,7 @@ inline bool Disjoint (TBaseInterval<TItem> tINT1, TBaseInterval<TItem> tINT2)
     return true;
   }
 
-  return ( ( tINT1 < tINT2 ) || ( tINT1 > tINT2 ) );
+  return ( ( tINT1 < tINT2 ) || ( tINT2 < tINT1 ) );
 
 }  /* Disjoint() */
 
