@@ -1,3 +1,57 @@
+debug(off);
+
+define correct_cases 0;
+define incorrect_cases 0;
+
+print("Reached 1");
+if( true ) // 1
+{
+  define correct_cases correct_cases + 1;
+
+  print("Reached 2");
+  if( true ) // 2
+  {
+    define correct_cases correct_cases + 1;
+  }
+  print("Reached 3");
+
+  if ( true ) // 3
+  {
+    print("Inside 3");
+    define correct_cases correct_cases + 1;
+  }
+  else
+  {
+    define incorrect_cases incorrect_cases + 1;
+    print("error in 3");
+
+    print("Reached 4"); // shouldn't display...
+    if( true ) // 4 -- neither should execute.
+    {
+      define incorrect_cases incorrect_cases + 1;
+      print("error in 4(t)");      
+    }
+    else
+    {
+      define incorrect_cases incorrect_cases + 1;
+      print("error in 4(f)");      
+    }
+  }
+  print("Reached 5");
+}
+else
+{
+  define incorrect_cases incorrect_cases + 1;
+  print("error in 1");
+}
+
+
+print("Correct cases=" + correct_cases);
+print("Incorrect cases=" + incorrect_cases);
+
+
+
+/*
 print(envnull("ICK"));
 
 if ( envnull("ICK") != "" )
@@ -11,8 +65,7 @@ else
 
 print(ick);
 
-/*
-if( 0 < 1 )
+if( 0 <. 1 )
 {
   define result "It Worked!";
 }
