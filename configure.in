@@ -78,6 +78,18 @@ dnl Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
 AC_C_BIGENDIAN
 AC_TYPE_SIZE_T
+dnl 
+dnl Under Irix 6.5, g++ does not define fileno when stdio.h is included 
+dnl by a lex generated file.
+dnl
+AC_CACHE_CHECK([for fileno being properly defined with C++],
+  ac_cv_fileno_ok, 
+[AC_TRY_COMPILE([#include <stdio.h>
+], [int s = fileno(STDOUT)], ac_cv_fileno_ok=yes, ac_cv_fileno_ok=no)])
+if test $ac_cv_fileno_ok = no; then
+  AC_DEFINE(BROKEN_FILENO_INCLUDE)
+fi
+
 
 dnl Checks for static-link option.
 AC_MSG_CHECKING(whether to link statically or not)
@@ -155,6 +167,13 @@ alpha-dec-osf*)
 	ARCH_PROG_SETLIBPATH="-Wl,-rpath,\${LIB_DIR}"
 	have_so_reg=yes
 	;;
+mips-sgi-irix6*)
+	echo "Adding shared library rules for IRIX 6.* system"
+	#ARCH_MAKE_SHARED_OPTS="-Wl,-expect_unresolved,\*"
+	ARCH_MAKE_SHARED_OPTS=""
+	ARCH_PROG_SETLIBPATH="-Wl,-rpath,\${LIB_DIR}"
+	have_so_reg=yes
+	;;
 *)
 	ARCH_MAKE_SHARED_OPTS=""
 	ARCH_PROG_SETLIBPATH=""
@@ -225,6 +244,7 @@ AC_OUTPUT(\
         plugins/material/worley/Makefile:Makefile.plugin.in \
         plugins/object/Makefile \
         plugins/object/abvh/Makefile:Makefile.plugin.in \
+        plugins/object/aggregate_uniform_grid/Makefile:Makefile.plugin.in \
         plugins/object/bezier/Makefile:Makefile.plugin.in \
         plugins/object/subdiv/Makefile:Makefile.plugin.in \
         plugins/object/height_field/Makefile:Makefile.plugin.in \
