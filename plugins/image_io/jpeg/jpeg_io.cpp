@@ -25,26 +25,26 @@ extern "C" {
 }
 #include "jpeg_io.h"
 
-DEFINE_IMAGE_IO_PLUGIN ("jpeg", TImageJpeg);
+DEFINE_IMAGE_IO_PLUGIN_WITH_ALIAS ("jpeg", "jpg", TImageJpeg);
 
 int TImageJpeg::save (const TImage* pktIMAGE)
 {
 
   FILE*                          tOutFile;
-  static struct jpeg_error_mgr   tWriteJerr;
-  struct jpeg_compress_struct    tComp;
+  static struct jpeg_error_mgr   _sWriteJerr;
+  struct jpeg_compress_struct    sComp;
   Byte*                          pbScanline;
   TColor                         tPixel;
   TColor                         tColor;
   
-  tOutFile = fopen(tFileName.c_str(),"w");
+  tOutFile = fopen (tFileName.c_str(),"w");
   
   if ( !tOutFile )
   {
     return -1;
   }
 
-  pbScanline = new Byte[pktIMAGE->width()*3];
+  pbScanline = new Byte[pktIMAGE->width() * 3];
 
   if ( !pbScanline )
   {
@@ -53,49 +53,49 @@ int TImageJpeg::save (const TImage* pktIMAGE)
 
   /* Set the standard error routine and some other parameters */
   
-  tComp.err = jpeg_std_error(&tWriteJerr);
-  jpeg_create_compress(&tComp);
+  sComp.err = jpeg_std_error (&_sWriteJerr);
+  jpeg_create_compress (&sComp);
 
   /* Set output file */
-  jpeg_stdio_dest(&tComp, tOutFile);
+  jpeg_stdio_dest (&sComp, tOutFile);
   
   /* Set some parameters. */
-  tComp.image_width = pktIMAGE->width();
-  tComp.image_height = pktIMAGE->height();
-  tComp.input_components = 3; /* Number of channels -> RGB */
-  tComp.in_color_space = JCS_RGB;
+  sComp.image_width  = pktIMAGE->width();
+  sComp.image_height = pktIMAGE->height();
+  sComp.input_components = 3; /* Number of channels -> RGB */
+  sComp.in_color_space = JCS_RGB;
 
-  jpeg_set_defaults(&tComp); /* Other defaults values */
+  jpeg_set_defaults (&sComp); /* Other defaults values */
 
-  /* Set pluggin parameters */
-  jpeg_set_quality(&tComp,(int)fQuality,TRUE);
-  tComp.smoothing_factor = (int)fSmoothing;
+  /* Set plugin parameters */
+  jpeg_set_quality (&sComp,(int) fQuality,TRUE);
+  sComp.smoothing_factor = (int) fSmoothing;
 
   /* Start compression */
-  jpeg_start_compress(&tComp, TRUE);
+  jpeg_start_compress (&sComp, TRUE);
 
-  for (size_t J = 0; J < pktIMAGE->height() ;J++)
+  for (size_t J = 0; ( J < pktIMAGE->height() ) ;J++)
   {
     /* Each scanline */
-    for (size_t I = 0;  ( I < pktIMAGE->width() *3 ) ;I+=3)
+    for (size_t I = 0;  ( I < pktIMAGE->width() * 3 ) ;I+=3)
     {
       tPixel = pktIMAGE->getPixel (I/3, J);
       tPixel.clamp();
       tColor = tPixel.convertTo24Bits();
 
-      pbScanline [I ]     = (Byte) tColor.red();
+      pbScanline [I ]    = (Byte) tColor.red();
       pbScanline [I + 1] = (Byte) tColor.green();
       pbScanline [I + 2] = (Byte) tColor.blue();
     }
     /* Write the scanline to the output file */
-    jpeg_write_scanlines(&tComp, &pbScanline, 1);
+    jpeg_write_scanlines (&sComp, &pbScanline, 1);
   }  
 
   /* Finish compression and free allocated memory */
-  jpeg_finish_compress(&tComp);
-  jpeg_destroy_compress(&tComp);
+  jpeg_finish_compress  (&sComp);
+  jpeg_destroy_compress (&sComp);
 
-  fclose(tOutFile);
+  fclose (tOutFile);
 
   delete[] pbScanline;
   
@@ -108,30 +108,31 @@ TImage* TImageJpeg::load (void)
 {
 
   FILE*                          tInputFile;
-  static struct jpeg_error_mgr   tReadJerr;
-  struct jpeg_decompress_struct  tDecomp;
+  static struct jpeg_error_mgr   _sReadJerr;
+  struct jpeg_decompress_struct  sDecomp;
   size_t                         zWidth, zHeight;
   TColor                         tColor;
   TImage*                        ptImage;
   Byte*                          pbScanline;
 
-  tInputFile = fopen(tFileName.c_str(),"r");
+  tInputFile = fopen (tFileName.c_str(),"r");
+
   if ( !tInputFile )
   {
     return NULL;
   }
 
-  tDecomp.err = jpeg_std_error(&tReadJerr);
+  sDecomp.err = jpeg_std_error (&_sReadJerr);
 
-  jpeg_create_decompress(&tDecomp);
-  jpeg_stdio_src(&tDecomp, tInputFile);
-  jpeg_read_header(&tDecomp, TRUE);
+  jpeg_create_decompress (&sDecomp);
+  jpeg_stdio_src (&sDecomp, tInputFile);
+  jpeg_read_header (&sDecomp, TRUE);
 
-  zWidth = tDecomp.image_width;
-  zHeight = tDecomp.image_height;
+  zWidth  = sDecomp.image_width;
+  zHeight = sDecomp.image_height;
   //What happen if num_chans  != 3  more or less color components ?
   
-  ptImage = new TImage(zWidth, zHeight);
+  ptImage = new TImage (zWidth, zHeight);
 
   if ( !ptImage )
   {
@@ -146,24 +147,25 @@ TImage* TImageJpeg::load (void)
     return NULL;
   }
 
-  jpeg_start_decompress(&tDecomp);
+  jpeg_start_decompress (&sDecomp);
 
   for (size_t J = 0; ( J < zHeight ) ;J++)
   {
-    jpeg_read_scanlines(&tDecomp,&pbScanline,1);
+    jpeg_read_scanlines (&sDecomp, &pbScanline, 1);
+
     //Process the scanline
     for (size_t I = 0; ( I < zWidth * 3 ) ;I+=3)
     {
-      tColor = TColor (pbScanline[I],pbScanline[I + 1],pbScanline[I + 2]);
+      tColor = TColor (pbScanline[I], pbScanline[I + 1], pbScanline[I + 2]);
       tColor = tColor.convertFrom24Bits();
       ptImage->setPixel (I / 3, J, tColor);
     }    
   }
 
-  jpeg_finish_decompress(&tDecomp);
-  jpeg_destroy_decompress(&tDecomp);
+  jpeg_finish_decompress  (&sDecomp);
+  jpeg_destroy_decompress (&sDecomp);
 
-  fclose(tInputFile);  
+  fclose (tInputFile);  
   
   delete[] pbScanline;
 
