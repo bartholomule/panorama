@@ -34,17 +34,29 @@ point_light.plg
 projector.plg
 warn_light.plg
 
-# Materials
-mat_brick.plg
-mat_checker.plg
-mat_crackle.plg
-mat_cylgrad.plg
-mat_leopard.plg
-mat_marble.plg
-mat_noise.plg
-mat_parquet.plg
-mat_wood.plg
-mat_worley.plg
+# Patterns
+pat_amplifier.plg
+pat_brick.plg
+pat_checker.plg
+pat_composite.plg
+pat_crackle.plg
+pat_cylgrad.plg
+pat_leopard.plg
+pat_marble.plg
+pat_noise.plg
+pat_parquet.plg
+pat_texture.plg
+pat_wood.plg
+pat_worley.plg
+
+# Perturbations
+per_brick.plg
+per_bump.plg
+per_crackle.plg
+per_leopard.plg
+per_marble.plg
+per_noise.plg
+per_worley.plg
 
 # Objects
 bezier.plg
