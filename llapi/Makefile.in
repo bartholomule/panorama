@@ -51,9 +51,14 @@ install:        all
 		@rm -f ${LIB_DIR}/libllapi.so
 		@ln -s ${LIBNAME} ${LIB_DIR}/libllapi.so
 
+ifneq (@STATIC_LINK@,1)
+# When doing a static link, this rule should be covered already.  This is only
+# useful for shared libraries. 
 ${LLAPI_LIB}:	${OBJ}
 		@echo Making library ${LLAPI_LIB}...
 		@${CXX} -fPIC -shared ${CXXFLAGS} -Wl,-soname,${LIBNAME} -o ${LLAPI_LIB} ${OBJ} ${ARCH_MAKE_SHARED_OPTS}
+endif
+
 
 ${STATIC_LLAPI_LIB}:    ${OBJ}
 		@echo Making static library ${STATIC_LLAPI_LIB}...

@@ -48,6 +48,8 @@ OPT = -O6
 endif
 
 ifeq (@STATIC_LINK@,1)
+LLAPI_LIB = ${STATIC_LLAPI_LIB}
+HLAPI_LIB = ${STATIC_HLAPI_LIB}
 STAT =
 else
 STAT =
