@@ -1,4 +1,15 @@
 
+ - Added bicubic Bezier patches (done by Matt Kimball).
+ 
+ - Fixed problem with built-in 'install-sh' in SGI (thanks to Ezra Peisach for
+   this one).
+
+ - Changed included headers to ANSI C++ standards ('cstdio' instead of
+   'stdio.h', 'iostream' instead of 'iostream.h', etc.).
+
+ - Fixed a bug in raytracer. Reflections/refractions had a wrong ray limit
+   (thanks to Matt Kimball for this).
+
 >> Version 0.10.0 released.
 
  - Added options in configure script to choose between static and dynamic
