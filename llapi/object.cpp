@@ -39,6 +39,8 @@ void TObject::initialize (void)
 
   ptMaterial->initialize();
 
+  tLocation = (*ptMatrix) * tLocation;
+  
 }  /* initialize() */
 
 
