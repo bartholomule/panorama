@@ -21,7 +21,7 @@
 
 #include <vector>
 #include "hlapi/class_manager.h"
-#include "llapi/transform_object.h"
+#include "llapi/object.h"
 
 class TAggregate : public TObject
 {

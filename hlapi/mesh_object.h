@@ -20,7 +20,7 @@
 #define _MESH_OBJECT__
 
 #include "llapi/mesh.h"
-#include "llapi/transform_object.h"
+#include "llapi/object.h"
 #include "hlapi/triangle.h"
 
 class TMeshObject : public TObject

@@ -19,7 +19,7 @@
 #ifndef _BOX__
 #define _BOX__
 
-#include "llapi/transform_object.h"
+#include "llapi/object.h"
 
 class TBox : public TObject
 {

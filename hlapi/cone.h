@@ -19,7 +19,7 @@
 #ifndef _CONE__
 #define _CONE__
 
-#include "llapi/transform_object.h"
+#include "llapi/object.h"
 
 class TCone : public TObject
 {

@@ -19,7 +19,7 @@
 #ifndef _CYLINDER__
 #define _CYLINDER__
 
-#include "llapi/transform_object.h"
+#include "llapi/object.h"
 
 class TCylinder : public TObject
 {

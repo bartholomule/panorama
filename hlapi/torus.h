@@ -19,7 +19,7 @@
 #ifndef _TORUS__
 #define _TORUS__
 
-#include "llapi/transform_object.h"
+#include "llapi/object.h"
 
 class TTorus : public TObject
 {

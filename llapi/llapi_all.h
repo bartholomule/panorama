@@ -49,7 +49,6 @@
 #include "llapi/scene.h"
 #include "llapi/span_list.h"
 #include "llapi/surface_data.h"
-#include "llapi/transform_object.h"
 #include "llapi/vector.h"
 #include "llapi/vector2d.h"
 #include "llapi/vector3d.h"
