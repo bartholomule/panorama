@@ -12,4 +12,8 @@
 
    Matt Kimball (mkimball@xmission.com)                Bezier bicubic path object
 
-   Peter Barnett (pbarnett@pjbcn.demon.co.uk)          Several materials
+   Peter Barnett (pbarnett@pjbcn.demon.co.uk)          Several materials and API functions
+
+   Jose Antonio Robles Ordoñez (ganimedes@apdo.com)    JPEG file format
+
+   Ken Geis (kgeis@cchemnt.cchem.berkeley.edu)         PNG file format
