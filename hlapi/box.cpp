@@ -143,7 +143,7 @@ bool TBox::findFirstIntersection (const TRay& rktRAY, TSurfaceData& rtDATA) cons
     return false;
   }
 
-  if ( ( tIntTmp.min() >= FX_EPSILON ) && ( tIntTmp.min() <= rktRAY.limit() ) )
+  if ( ( tIntTmp.min() >= FX_EPSILON ) && ( tIntTmp.min() <= tRayIT.limit() ) )
   {
     rtDATA.setup (this, rktRAY);
     rtDATA.setPoint (tIntTmp.min() * tFactor);
@@ -151,7 +151,7 @@ bool TBox::findFirstIntersection (const TRay& rktRAY, TSurfaceData& rtDATA) cons
     return true;
   }
   
-  if ( ( tIntTmp.max() >= FX_EPSILON ) && ( tIntTmp.max() <= rktRAY.limit() ) )
+  if ( ( tIntTmp.max() >= FX_EPSILON ) && ( tIntTmp.max() <= tRayIT.limit() ) )
   {
     rtDATA.setup (this, rktRAY);
     rtDATA.setPoint (tIntTmp.max() * tFactor);
@@ -240,7 +240,7 @@ bool TBox::findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) const
 
   tSurfaceData.setup (this, rktRAY);
   
-  if ( ( tIntTmp.min() >= FX_EPSILON ) && ( tIntTmp.min() <= rktRAY.limit() ) )
+  if ( ( tIntTmp.min() >= FX_EPSILON ) && ( tIntTmp.min() <= tRayIT.limit() ) )
   {
     if ( tSurfaceData.setPoint (tIntTmp.min() * tFactor) )
     {
@@ -248,7 +248,7 @@ bool TBox::findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) const
       gIntersection = true;
     }
   }
-  if ( ( tIntTmp.max() >= FX_EPSILON ) && ( tIntTmp.max() <= rktRAY.limit() ) )
+  if ( ( tIntTmp.max() >= FX_EPSILON ) && ( tIntTmp.max() <= tRayIT.limit() ) )
   {
     if ( tSurfaceData.setPoint (tIntTmp.max() * tFactor) )
     {
