@@ -1,0 +1,2 @@
+PLUGIN_NAME = mat_marble
+OBJ         = mat_marble.o
