@@ -1,7 +1,7 @@
 
 BUILD_TOP = ..
 
-DIRS = render 
+DIRS = render utils
 #\
 #       @GUI_PROGRAM@
 

@@ -2,15 +2,19 @@
 %.o: %.cpp
 		@echo Compiling $<...
 		${CXX} -c ${CXXFLAGS} $< -o $@
-
 %.cpp: %.l
 		@echo Generating scanner...
 		${LEX} ${LEXFLAGS} $< > $@
 
 %.cpp: %.y
 		@echo Generating parser...
-		@BISON_SIMPLE=${BUILD_TOP}/bison.simple ${YACC} ${BISONFLAGS} -do $(basename $@).c $<
-		@mv $(basename $@).c $@
+		@${YACC} ${BISONFLAGS} -do $(basename $@).c -S lalr1.cc -o $@ $<
+
+# This here was the old method, from back when bison supported the
+# 'bison.simple' interface. As of now, bison 1.7 and above (which I've tried)
+# do not support it.
+#		BISON_SIMPLE=${BUILD_TOP}/bison.simple ${YACC} ${BISONFLAGS} -do $(basename $@).c -S ${PWD}/${BUILD_TOP}/bison.simple $<
+#		mv $(basename $@).c $@
 
 # Rules for generating dependency files
 %.d: %.cpp

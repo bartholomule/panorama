@@ -780,6 +780,7 @@ AC_OUTPUT(\
         plugins/scene_io/psl/Makefile:Makefile.plugin.in \
         programs/Makefile \
         programs/render/Makefile \
+        programs/utils/Makefile \
         programs/rt_convert/Makefile \
 	programs/barf/Makefile \
         programs/gui/Makefile \

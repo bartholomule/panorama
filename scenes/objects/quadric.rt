@@ -9,30 +9,65 @@
 
 define c pas_35mm
 {
-  translate( <0,0,-8> );
-//  translate( <-8,0,0> );
-//  translate( <-8,0,-2> );
+  //  translate( <0,0,-8> );
+  // translate( <-8,0,0> );
+  translate( <-8,0,-2> );
   look_at = <0,0,0>;
 };
 
+/*
 define s class Quadric 
 {
-  setCoefsV(0, <1,1,1>);
-  setCoef(9, -1);
+  //  setCoefsV(0, <1,1,1>);
+  //  setCoef(9, -1);
 
-  translate( <0,0,0> );
- 
+  setCoefs( <1,1,1, 0,0,0, 0,0,0, -1> );
   material = MPlastic
   {
     color = CGreen;
   };
   name = "quadric";
 };
+*/
 
-s { translate(<0,2,0>); name = "green"; };
-s { translate(<-2,0,0>); name = "red"; material = MPlastic { color = CRed; }; };
-s { translate(< 2,0,0>); name = "blue"; material = MPlastic { color = CBlue; }; };
+define CX 0;
+define CY 2;
+define CZ 0;
+define R  1;
+class Quadric 
+{
+  setCoefs( <1,1,1, 0,0,0, -2*CX,-2*CY,-2*CZ, -R + CX*CX + CY*CY + CZ*CZ> );
+  material = MPlastic {  color = CGreen;  };
+  name = "green";
+};
 
+define CX -2;
+define CY 0;
+define CZ 0;
+define R  1;
+class Quadric 
+{
+  setCoefs( <1,1,1, 0,0,0, -2*CX,-2*CY,-2*CZ, -R + CX*CX + CY*CY + CZ*CZ> );
+  material = MPlastic {  color = CRed;  };
+  name = "red";
+};
+
+define CX 2;
+define CY 0;
+define CZ 0;
+define R  1;
+class Quadric 
+{
+  setCoefs( <1,1,1, 0,0,0, -2*CX,-2*CY,-2*CZ, -R + CX*CX + CY*CY + CZ*CZ> );
+  material = MPlastic {  color = CBlue;  };
+  name = "blue";
+};
+
+//s { translate(<0,2,0>); name = "green"; };
+//s { translate(<-2,0,0>); name = "red"; material = MPlastic { color = CRed; }; };
+//s { translate(< 2,0,0>); name = "blue"; material = MPlastic { color = CBlue; }; };
+
+/*
 class Cone 
 { 
   min_circle_point = <0,1,0>;
@@ -42,6 +77,7 @@ class Cone
 
   material = MPlastic { color = CMagenta; };
 };
+*/
 
 circle { translate( <2,-3,2> );  radius=3; material = MPlastic { color = CYellow; }; };
 
