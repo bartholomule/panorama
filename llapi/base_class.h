@@ -25,6 +25,8 @@ using std::string;
 #include <iosfwd>
 using std::ostream;
 
+#include "llapi/outputmanager.h"
+
 enum EClass
 {
 

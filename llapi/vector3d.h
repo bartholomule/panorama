@@ -233,7 +233,7 @@ template <class TItem>
 inline void TVector3D<TItem>::printDebug (const string& indent) const
 {
 
-  cerr << "TVector3D <" << x() << ", " << y() << ", " << z() << ">";
+  GOM.debug() << "TVector3D <" << x() << ", " << y() << ", " << z() << ">";
 
 }  /* printDebug() */
 

@@ -18,12 +18,11 @@
 
 #include "llapi/base_class.h"
 #include <iostream>
-using std::cerr;
 using std::endl;
 
 void TBaseClass::printDebug (const string& indent) const
 {
-  streamDebug (cerr, indent);
+  streamDebug (GOM.debug(), indent);
 }
 
 void TBaseClass::streamDebug (ostream& o, const string& indent) const

@@ -392,7 +392,7 @@ void TBaseMatrix<TItem>::printDebug (const string& indent) const
   char buffer[1024];
   int index = 0;
 
-  cerr << endl;
+  GOM.debug() << endl;
   for (Byte I = 0; ( I < 4 ) ;I++)
   {
     index = sprintf(buffer, "%s", indent.c_str());
@@ -400,7 +400,7 @@ void TBaseMatrix<TItem>::printDebug (const string& indent) const
     {
       index += sprintf(buffer + index,"%-10.03f ", (double)atElement[I][J]);
     }
-    cerr << buffer << endl;
+    GOM.debug() << buffer << endl;
   }
 }  /* printDebug() */
 

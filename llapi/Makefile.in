@@ -45,7 +45,8 @@ OBJ = entity.o \
       surface_data.o \
       wood.o \
       worley_basis.o \
-      type_functions.o 
+      type_functions.o \
+      outputmanager.o
 
 
 ALL_FILES = $(strip $(wildcard $(OBJ:%.o=%.cpp)))

@@ -80,7 +80,7 @@ bool TGradient::loadGradient (const string& rktNAME)
   
   if ( !tFile )
   {
-    cerr << "Error opening gradient file " << rktNAME << endl; 
+    GOM.error() << "Error opening gradient file " << rktNAME << endl; 
     bLoaded = false;
     
     return bLoaded;
@@ -90,7 +90,7 @@ bool TGradient::loadGradient (const string& rktNAME)
   
   if( tGimp != "GIMP" || tGradient != "Gradient")
   {
-    cerr << "Incorrect header in gradient file " << rktNAME << endl; 
+    GOM.error() << "Incorrect header in gradient file " << rktNAME << endl; 
     bLoaded = false;
     
     return bLoaded;
@@ -100,7 +100,7 @@ bool TGradient::loadGradient (const string& rktNAME)
   
   if ( iNumSegments < 1 )
   {
-    cerr << "Illegal segment count in gradient file " << rktNAME << endl; 
+    GOM.error() << "Illegal segment count in gradient file " << rktNAME << endl; 
     bLoaded = false;
     
     return bLoaded;
@@ -117,7 +117,7 @@ bool TGradient::loadGradient (const string& rktNAME)
 
     if (tFile.eof())
     {      
-      cerr << "EOF reading gradient file " << rktNAME << endl; 
+      GOM.error() << "EOF reading gradient file " << rktNAME << endl; 
       bLoaded = false;
       tSegmentList.clear();
       
@@ -432,13 +432,13 @@ TColor TGradient::getColorAt (const TScalar& rktPOS) const
     
     default:
     {
-      cerr << "Unknown gradient type " << (int) ptSegment->eGradientType << endl;
+      GOM.error() << "Unknown gradient type " << (int) ptSegment->eGradientType << endl;
       tFactor = 0.0;
     }
     break;
   }  /* switch */
   
-  //cerr << tFactor << endl;
+  //GOM.debug() << tFactor << endl;
   
   if ( ptSegment->eGradientColorType == FX_GRAD_RGB )
   {
@@ -492,7 +492,7 @@ TColor TGradient::getColorAt (const TScalar& rktPOS) const
 
       default:
       {
-        cerr << "Unknown gradient color type " << (int) ptSegment->eGradientColorType << endl;
+        GOM.error() << "Unknown gradient color type " << (int) ptSegment->eGradientColorType << endl;
         tFactor = 0.0;
       }
       break;

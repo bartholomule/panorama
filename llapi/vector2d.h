@@ -121,7 +121,7 @@ template <class TItem>
 inline void TVector2D<TItem>::printDebug (const string& indent) const
 {
 
-  cerr << indent << "TVector2D <" << vx << ", " << vy << ">" << endl;
+  GOM.debug() << indent << "TVector2D <" << vx << ", " << vy << ">" << endl;
 
 }  /* printDebug() */
 

@@ -557,28 +557,28 @@ void TMaterial::getAttributeList (TAttributeList& rtLIST) const
 void TMaterial::printDebug (const string& indent) const
 {
 
-  cerr << indent << "[_Material_]" << endl;
-  cerr << indent << "FIX THIS!  It does not print out patterns correctly (fix pattern too)" << endl;
+  GOM.debug() << indent << "[_Material_]" << endl;
+  GOM.debug() << indent << "FIX THIS!  It does not print out patterns correctly (fix pattern too)" << endl;
 
   string new_indent = TDebug::Indent(indent);
   
-  cerr << new_indent << "Color    : "; ptColor->lastColor().printDebug(new_indent); cerr << endl;
-  cerr << new_indent << "Opacity  : " << ptOpacity->lastScalar() << endl;
-  cerr << new_indent << "Ambient  : " << ptAmbientReflection->lastScalar() << endl;
-  cerr << new_indent << "Diffuse  : " << ptDiffuseReflection->lastScalar() << endl;
-  cerr << new_indent << "Specular : " << ptSpecularReflection->lastScalar() << endl;
-  cerr << new_indent << "IOR      : " << ptIor->lastScalar() << endl;
-  cerr << new_indent << "Caustics : " << ptCaustics->lastScalar() << endl;
-  cerr << new_indent << "Emission : ";
+  GOM.debug() << new_indent << "Color    : "; ptColor->lastColor().printDebug(new_indent); GOM.debug() << endl;
+  GOM.debug() << new_indent << "Opacity  : " << ptOpacity->lastScalar() << endl;
+  GOM.debug() << new_indent << "Ambient  : " << ptAmbientReflection->lastScalar() << endl;
+  GOM.debug() << new_indent << "Diffuse  : " << ptDiffuseReflection->lastScalar() << endl;
+  GOM.debug() << new_indent << "Specular : " << ptSpecularReflection->lastScalar() << endl;
+  GOM.debug() << new_indent << "IOR      : " << ptIor->lastScalar() << endl;
+  GOM.debug() << new_indent << "Caustics : " << ptCaustics->lastScalar() << endl;
+  GOM.debug() << new_indent << "Emission : ";
   if( ptEmission  )
   {
     ptEmission->lastColor().printDebug(new_indent);
   }
   else
   {
-    cerr << "NULL";
+    GOM.debug() << "NULL";
   }
-  cerr << endl << indent << "." << endl;
+  GOM.debug() << endl << indent << "." << endl;
 
 }  /* printDebug() */
 

@@ -38,7 +38,7 @@ TCatRom2::TCatRom2()
     {
       atTable [i] = 0.5 * (4 + tX * (-8 + tX * (5 - tX)));
     }
-    //cout << tX << "\t" << atTable [i] << endl;
+    //GOM.debug() << tX << "\t" << atTable [i] << endl;
   }
 }
 

@@ -205,14 +205,14 @@ bool types_match(const magic_pointer<TAttribute>& a1,
 {
   if( !a1 || !a2 )
   {
-    cerr << "One of the args is NULL!" << endl;
+    GOM.error() << "One of the args is NULL!" << endl;
     if( !a1 )
-      cerr << "it is a1! [ the required parameter ]" << endl;
+      GOM.error() << "it is a1! [ the required parameter ]" << endl;
     else
-      cerr << "it is a2! [ the coerceable argument passed in ]" << endl;
+      GOM.error() << "it is a2! [ the coerceable argument passed in ]" << endl;
     return false;
   }
-  //  cout << "types_match: comparing " << a1->AttributeName()
+  //  GOM.debug() << "types_match: comparing " << a1->AttributeName()
   //       << " and " << a2->AttributeName() << endl;
   
   if( a1->eType == a2->eType )

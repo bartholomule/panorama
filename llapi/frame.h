@@ -120,9 +120,9 @@ template <class TItem>
 void TFrame<TItem>::printDebug (const string& indent) const
 {
 
-  cerr << indent << "[_Frame_]" << endl;
-  cerr << indent << standardIndent() << "Height : " << zHeight << endl;
-  cerr << indent << standardIndent() << "Width  : " << zWidth << endl;
+  GOM.debug() << indent << "[_Frame_]" << endl;
+  GOM.debug() << indent << standardIndent() << "Height : " << zHeight << endl;
+  GOM.debug() << indent << standardIndent() << "Width  : " << zWidth << endl;
 
 }  /* printDebug() */
 

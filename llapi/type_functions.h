@@ -61,8 +61,8 @@ template <class T>
 inline EAttribType type_to_etype(T t)
 {
   t.BREAK_HERE();
-  cerr << "Specialize this function, or try including <llapi/extended_type_functions.h>" << endl
-       << __PRETTY_FUNCTION__ << endl;
+  GOM.error() << "Specialize this function, or try including <llapi/extended_type_functions.h>" << endl
+	      << __PRETTY_FUNCTION__ << endl;
   exit(1);
 }
 
@@ -73,7 +73,7 @@ template <class T>
 inline magic_pointer<TAttribute> type_to_attrib(T t)
 {
   t.BREAK_HERE();
-  cerr << "Specialize this function, or try including <llapi/extended_type_functions.h>" << endl
+  GOM.error() << "Specialize this function, or try including <llapi/extended_type_functions.h>" << endl
        << __PRETTY_FUNCTION__ << endl;  
   exit(1);
 }
@@ -90,7 +90,7 @@ inline T attrib_to_type(magic_pointer<TAttribute> atp,
 {
   T t;
   t.BREAK_HERE();
-  cerr << "Specialize this function, or try including <llapi/extended_type_functions.h>" << endl
+  GOM.error() << "Specialize this function, or try including <llapi/extended_type_functions.h>" << endl
        << __PRETTY_FUNCTION__ << endl;  
   exit(1);
 }
@@ -103,7 +103,7 @@ inline magic_pointer<TAttribute> get_attrib()
 {
   T t;
   t.BREAK_HERE();
-  cerr << "Specialize this function, or try including <llapi/extended_type_functions.h>" << endl
+  GOM.error() << "Specialize this function, or try including <llapi/extended_type_functions.h>" << endl
        << __PRETTY_FUNCTION__ << endl;  
   exit(1);
 }
@@ -397,7 +397,7 @@ inline const string& attrib_to_type<const string&>(magic_pointer<TAttribute> atp
     data = rcp_static_cast<TAttribute>(str);
     return str->tValue;
   }
-  cerr << "Error: Cannot extract string." << endl;
+  GOM.error() << "Error: Cannot extract string." << endl;
   exit(1);
 }
 
@@ -499,7 +499,7 @@ attrib_to_type<const TColor&>(magic_pointer<TAttribute> atp,
     data = rcp_static_cast<TAttribute>(col);
     return col->tValue;
   }
-  cerr << "Error: Cannot extract color." << endl;
+  GOM.error() << "Error: Cannot extract color." << endl;
   exit(1);
 }
 
@@ -568,7 +568,7 @@ attrib_to_type<const TVector&>(magic_pointer<TAttribute> atp,
     data = rcp_static_cast<TAttribute>(vec);
     return vec->tValue;
   }
-  cerr << "Error: Cannot extract vector." << endl;
+  GOM.error() << "Error: Cannot extract vector." << endl;
   exit(1);
 }
 
@@ -638,7 +638,7 @@ attrib_to_type<const TVector2&>(magic_pointer<TAttribute> atp,
     data = rcp_static_cast<TAttribute>(vec);
     return vec->tValue;
   }
-  cerr << "Error: Cannot extract vector2." << endl;
+  GOM.error() << "Error: Cannot extract vector2." << endl;
   exit(1);
 }
 
@@ -675,7 +675,7 @@ attrib_to_type<std::vector<TScalar> >(magic_pointer<TAttribute> atp,
     data = rcp_static_cast<TAttribute>(vec);
     return vec->tValue;
   }
-  cerr << "Error: Cannot extract array." << endl;
+  GOM.error() << "Error: Cannot extract array." << endl;
   exit(1);
 }
 
@@ -711,7 +711,7 @@ attrib_to_type<std::vector<TScalar>&>(magic_pointer<TAttribute> atp,
     data = rcp_static_cast<TAttribute>(vec);
     return vec->tValue;
   }
-  cerr << "Error: Cannot extract array." << endl;
+  GOM.error() << "Error: Cannot extract array." << endl;
   exit(1);
 }
 
@@ -748,7 +748,7 @@ attrib_to_type<const std::vector<TScalar>&>(magic_pointer<TAttribute> atp,
     data = rcp_static_cast<TAttribute>(vec);
     return vec->tValue;
   }
-  cerr << "Error: Cannot extract array." << endl;
+  GOM.error() << "Error: Cannot extract array." << endl;
   exit(1);
 }
 

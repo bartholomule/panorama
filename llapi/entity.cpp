@@ -20,24 +20,24 @@
 
 void TEntity::translate (const TVector& rktNEW_POS)
 {
-  //  cout << className() << "::" << __FUNCTION__ << " - as TEntity" << endl;
+  //  GOM.debug() << className() << "::" << __FUNCTION__ << " - as TEntity" << endl;
   tLocation += rktNEW_POS;
   update();
 }
 
 void TEntity::rotate (const TVector& rktAXISPOINT1, const TVector& rktAXISPOINT2, TScalar tANGLE)
 {
-  //  cout << className() << "::" << __FUNCTION__ << " - as TEntity (empty)" << endl;
+  //  GOM.debug() << className() << "::" << __FUNCTION__ << " - as TEntity (empty)" << endl;
 }
 
 void TEntity::rotate (const TVector& rktANGLESXYZ)
 {
-  //  cout << className() << "::" << __FUNCTION__ << " - as TEntity (empty)" << endl;
+  //  GOM.debug() << className() << "::" << __FUNCTION__ << " - as TEntity (empty)" << endl;
 }
 
 void TEntity::rotate (const TQuaternion& rktQUAT)
 {
-  //  cout << className() << "::" << __FUNCTION__ << " - as TEntity (empty)" << endl;
+  //  GOM.debug() << className() << "::" << __FUNCTION__ << " - as TEntity (empty)" << endl;
 }
 
 TUserFunctionMap TEntity::getUserFunctions()

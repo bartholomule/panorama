@@ -46,18 +46,18 @@ public:
 
   virtual user_arg_type call(const user_arg_vector& args)
   { 
-    //    cout << __PRETTY_FUNCTION__ << endl;
+    //    GOM.debug() << __PRETTY_FUNCTION__ << endl;
     if(args.size() != 2)
     {
       // [REPORT ERROR HERE]
-      cerr << "Incorrect number of arguments (should be 2)" << endl;
+      GOM.error() << "Incorrect number of arguments (should be 2)" << endl;
       return (user_arg_type)new TAttribute();
     }
     // Perform type checking...
     user_arg_vector fn_args = required_args();
     if( types_match(fn_args[0], args[0]) )
     {
-      //      cout << "Calling for reals now..." << endl;
+      //      GOM.debug() << "Calling for reals now..." << endl;
       magic_pointer<TAttribute> c1;
       magic_pointer<TAttribute> c2;      
       return type_to_attrib(sig(attrib_to_type<fn_arg_type1>(args[0],c1),
@@ -66,7 +66,7 @@ public:
     else
     {
       // [REPORT ERROR HERE]
-      cerr << "Types did not match." << endl;
+      GOM.error() << "Types did not match." << endl;
       return (user_arg_type)new TAttribute();
     }
   }
@@ -97,18 +97,18 @@ public:
 
   virtual user_arg_type call(const user_arg_vector& args)
   { 
-    //    cout << __PRETTY_FUNCTION__ << endl;
+    //    GOM.debug() << __PRETTY_FUNCTION__ << endl;
     if(args.size() != 2)
     {
       // [REPORT ERROR HERE]
-      cerr << "Incorrect number of arguments (should be 2)" << endl;
+      GOM.error() << "Incorrect number of arguments (should be 2)" << endl;
       return (user_arg_type)new TAttribute();
     }
     // Perform type checking...
     user_arg_vector fn_args = required_args();
     if( types_match(fn_args[0], args[0]) )
     {
-      //      cout << "Calling for reals now..." << endl;
+      //      GOM.debug() << "Calling for reals now..." << endl;
       magic_pointer<TAttribute> c1;      
       magic_pointer<TAttribute> c2;
       sig(attrib_to_type<fn_arg_type1>(args[0],c1),
@@ -118,7 +118,7 @@ public:
     else
     {
       // [REPORT ERROR HERE]
-      cerr << "Types did not match." << endl;
+      GOM.error() << "Types did not match." << endl;
       return (user_arg_type)new TAttribute();
     }
   }
@@ -157,14 +157,14 @@ public:
     if(args.size() != 2)
     {
       // [REPORT ERROR HERE]
-      cerr << "Incorrect number of arguments (should be 2)" << endl;      
+      GOM.error() << "Incorrect number of arguments (should be 2)" << endl;      
       return (user_arg_type)new TAttribute();
     }
     // Perform type checking...
     user_arg_vector fn_args = required_args();
     if( types_match(fn_args[0], args[0]) )
     {
-      //      cout << "Calling for reals now..." << endl;
+      //      GOM.debug() << "Calling for reals now..." << endl;
       magic_pointer<TAttribute> c1;
       magic_pointer<TAttribute> c2;            
       return type_to_attrib<ret_type>((instance_ptr->*sig)(attrib_to_type<fn_arg_type1>(args[0],c1),
@@ -173,7 +173,7 @@ public:
     else
     {
       // [REPORT ERROR HERE]
-      cerr << "Types did not match." << endl;      
+      GOM.error() << "Types did not match." << endl;      
       return (user_arg_type)new TAttribute();
     }
   }  
@@ -214,14 +214,14 @@ public:
     if(args.size() != 2)
     {
       // [REPORT ERROR HERE]
-      cerr << "Incorrect number of arguments (should be 2)" << endl;      
+      GOM.error() << "Incorrect number of arguments (should be 2)" << endl;      
       return (user_arg_type)new TAttribute();
     }
     // Perform type checking...
     user_arg_vector fn_args = required_args();
     if( types_match(fn_args[0], args[0]) )
     {
-      //      cout << "Calling for reals now..." << endl;
+      //      GOM.debug() << "Calling for reals now..." << endl;
       magic_pointer<TAttribute> c1;
       magic_pointer<TAttribute> c2;
       (instance_ptr->*sig)(attrib_to_type<fn_arg_type1>(args[0],c1),
@@ -231,7 +231,7 @@ public:
     else
     {
       // [REPORT ERROR HERE]
-      cerr << "Types did not match." << endl;      
+      GOM.error() << "Types did not match." << endl;      
       return (user_arg_type)new TAttribute();
     }
   }  
@@ -247,7 +247,7 @@ template <class class_type, class ret_type, class arg_type1, class arg_type2>
 inline magic_pointer<user_function>
 create_user_function(class_type* t, ret_type (class_type::*f)(arg_type1,arg_type2))
 {
-  //  cout << __PRETTY_FUNCTION__ << endl;
+  //  GOM.debug() << __PRETTY_FUNCTION__ << endl;
   return (magic_pointer<user_function>)new user_member_function_2<class_type,arg_type1,arg_type2,ret_type>(t,f);
 }
 
@@ -260,7 +260,7 @@ create_user_function(const class_type* t,
   typedef ret_type (class_type::*function_type)(arg_type1,arg_type2);
   typedef user_member_function_2<class_type,arg_type1,arg_type2,ret_type> classtype;
   
-  //  cout << __PRETTY_FUNCTION__ << endl;
+  //  GOM.debug() << __PRETTY_FUNCTION__ << endl;
   return (magic_pointer<user_function>)new classtype(const_cast<class_type*>(t),(function_type)f);
 }
 
@@ -269,7 +269,7 @@ template <class class_type, class arg_type1, class arg_type2>
 inline magic_pointer<user_function>
 create_user_function(class_type* t, void (class_type::*f)(arg_type1,arg_type2))
 {
-  //  cout << __PRETTY_FUNCTION__ << endl;
+  //  GOM.debug() << __PRETTY_FUNCTION__ << endl;
   return magic_pointer<user_function>(new void_user_member_function_2<class_type,arg_type1,arg_type2>(t,f));
 }
 
@@ -283,7 +283,7 @@ create_user_function(const class_type* t,
   typedef void (class_type::*function_type)(arg_type1,arg_type2);
   typedef void_user_member_function_2<class_type,arg_type1,arg_type2> classtype;
   
-  //  cout << __PRETTY_FUNCTION__ << endl;
+  //  GOM.debug() << __PRETTY_FUNCTION__ << endl;
   return (magic_pointer<user_function>)new classtype(const_cast<class_type*>(t),(function_type)f);
 }
 // Non-member, 2 args
@@ -291,7 +291,7 @@ template <class ret_type, class arg_type1, class arg_type2>
 inline magic_pointer<user_function>
 create_user_function(ret_type (*f)(arg_type1, arg_type2))
 {
-  //  cout << __PRETTY_FUNCTION__ << endl;
+  //  GOM.debug() << __PRETTY_FUNCTION__ << endl;
   return (magic_pointer<user_function>)new user_function_2<arg_type1,arg_type2,ret_type>(f);
 }
 
@@ -299,7 +299,7 @@ create_user_function(ret_type (*f)(arg_type1, arg_type2))
 template <class arg_type1, class arg_type2>
 inline magic_pointer<user_function> create_user_function(void (*f)(arg_type1, arg_type2))
 {
-  //  cout << __PRETTY_FUNCTION__ << endl;
+  //  GOM.debug() << __PRETTY_FUNCTION__ << endl;
   return (magic_pointer<user_function>)new void_user_function_2<arg_type1,arg_type2>(f);
 }
 

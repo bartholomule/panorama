@@ -23,7 +23,7 @@
 int TImageIO::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
 
-  cerr << __FUNCTION__ << "(" << rktNAME << ")" << endl;
+  GOM.debug() << __FUNCTION__ << "(" << rktNAME << ")" << endl;
   if ( rktNAME == "name" )
   {
 #if !defined(NEW_ATTRIBUTES)    

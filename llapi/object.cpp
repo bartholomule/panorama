@@ -56,7 +56,7 @@ bool TObject::initialize (void)
     if(!contains_objects && !is_light_only)
     {
       val = false;
-      cerr << "Object of type " << className() << " has no material." << endl;
+      GOM.error() << "Object of type " << className() << " has no material." << endl;
     }
   }
   else
@@ -70,7 +70,7 @@ bool TObject::initialize (void)
 
 void TObject::translate (const TVector& rktNEW_POS)
 {
-  //  cerr << "TObject: Translating:"; rktNEW_POS.printDebug(""); cerr << endl;
+  //  GOM.debug() << "TObject: Translating:"; rktNEW_POS.printDebug(""); GOM.debug() << endl;
   ptMatrix.copy_for_write();
   ptInverseMatrix.copy_for_write();  
   
@@ -84,7 +84,7 @@ void TObject::translate (const TVector& rktNEW_POS)
   // FIXME!  If it proves that translations are not working correctly, fix this:
   //TVolume::translate (rktNEW_POS);
 
-  //  cerr << "TObject: translate: new location="; location().printDebug(""); cerr << endl;
+  //  GOM.debug() << "TObject: translate: new location="; location().printDebug(""); GOM.debug() << endl;
   
 }  /* translate() */
 
@@ -147,10 +147,10 @@ void TObject::rotate (const TQuaternion& rktQUAT)
   (*ptInverseMatrix) = (*ptInverseMatrix) * invert(mat);
   
 #if DEBUG_IT
-  cerr << "mat=";
+  GOM.debug() << "mat=";
   mat.printDebug("");
   
-  cerr << "rotate... m,i=";
+  GOM.debug() << "rotate... m,i=";
   ptMatrix->printDebug("");
   ptInverseMatrix->printDebug("");
 #endif /* DEBUG_IT */

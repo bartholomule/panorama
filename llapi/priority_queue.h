@@ -194,7 +194,7 @@ template <class TItem>
 void TPriorityQueue<TItem>::printDebug (const string& indent) const
 {
 
-  cerr << indent << "[_TPriorityQueue_]" << endl;
+  GOM.debug(indent + "[_TPriorityQueue_]") << endl;
 
   string new_indent = indent + TBaseClass::standardIndent();
   
@@ -202,7 +202,7 @@ void TPriorityQueue<TItem>::printDebug (const string& indent) const
   for (size_t J = 1; ( J <= zSize ) ;J++)
   {
     tString << atData[J] + ", " << afPriority[J];
-    cerr << new_indent << tString << endl;
+    GOM.debug(new_indent + tString) << endl;
   }
   
 }  /* printDebug() */

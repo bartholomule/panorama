@@ -78,7 +78,7 @@ void TScene::addLight(magic_pointer<TLight> ptLIGHT)
   if( ! instance )
   {
     string err = "Cannot instantiate pure light " + ptLIGHT->className();
-    cerr << err << endl;
+    GOM.error() << err << endl;
     exit(1);
   }
   // Now that we have an object, set it's matricies to those already
@@ -88,7 +88,7 @@ void TScene::addLight(magic_pointer<TLight> ptLIGHT)
   instance->setInverseTransformMatrix(inverse);
   instance->setLocation(location);
 
-  cout << "Adding pure light \"" << instance->className()
+  GOM.debug() << "Adding pure light \"" << instance->className()
        << "\" at <" << location.x() << ", " << location.y() << ", " << location.z() << ">" << endl;
   
   // The instance should be ok at this point... 
@@ -97,7 +97,7 @@ void TScene::addLight(magic_pointer<TLight> ptLIGHT)
 
 void TScene::addAreaLight(magic_pointer<TObject> ptALIGHT)
 {
-  cout << "Adding area light with shape \"" << ptALIGHT->className() << "\"" << endl;	
+  GOM.debug() << "Adding area light with shape \"" << ptALIGHT->className() << "\"" << endl;	
   tAreaLightList.push_back(ptALIGHT);
 }
 
@@ -177,7 +177,7 @@ bool TScene::recursiveLocateLights(magic_pointer<TObject> obj, TObjectVector& li
 	else
 	{
 	  string err = "Cannot instantiate pure light " + obj->className();
-	  cerr << err << endl;
+	  GOM.error() << err << endl;
 	  exit(1);	  
 	}
 	return true;
@@ -224,7 +224,7 @@ bool TScene::recursiveLocateLights(magic_pointer<TObject> obj, TObjectVector& li
 	{
 	  if(recursiveLocateLights ((*tol)[i], light_manip_list, addlights) )
 	  {
-	    cout << "FIXME: erase light from object list (for speed)" << endl;
+	    GOM.error() << "FIXME: erase light from object list (for speed)" << endl;
 	    // Note here... If the light is deleted, and it happens to be in an
 	    // aggregate which was duplicated some number of times, all of the
 	    // duplicate lights will be deleted.  A more intelligent check is
@@ -263,7 +263,7 @@ bool TScene::recursiveLocateLights(magic_pointer<TObject> obj, TObjectVector& li
 	mat = obj->material ();
 	if( !mat )
 	{
-	  cerr << "Object \"" << obj->className() << "\" has no material, and 'defaultmaterial' is not set in the scene." << endl;
+	  GOM.error() << "Object \"" << obj->className() << "\" has no material, and 'defaultmaterial' is not set in the scene." << endl;
 	  exit(1);
 	}
       }
@@ -333,14 +333,14 @@ bool TScene::initialize (void)
   
   if ( tag->objectList()->empty() )
   {
-    cout << "Warning: Scene has no objects" << endl;
+    GOM.error() << "Warning: Scene has no objects" << endl;
   }
   
   ptWorld->setObjectCode (1);
   
   if ( (tLightList.empty()) && (tAreaLightList.empty()) )
   {
-    cout << "Warning: Scene has no lights" << endl;
+    GOM.error() << "Warning: Scene has no lights" << endl;
   }
   else
   {
@@ -437,7 +437,7 @@ bool TScene::saveImage (void)
   
   if ( !sBuffers.ptImage )
   {
-    cout << "Noting to save" << endl;
+    GOM.error() << "Nothing to save" << endl;
     return false;
   }
 
@@ -447,7 +447,7 @@ bool TScene::saveImage (void)
   }
   else
   {
-    cerr << "Warning: ImageIO is NULL. No output will be done." << endl;
+    GOM.error() << "Warning: ImageIO is NULL. No output will be done." << endl;
     return false;
   }
 
@@ -467,7 +467,7 @@ void TScene::addImageFilter (magic_pointer<TImageFilter> ptFILTER)
 
 int TScene::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
-  cout << "TScene::setAttribute(" << rktNAME << ")" << endl;
+  GOM.debug() << "TScene::setAttribute(" << rktNAME << ")" << endl;
   
   if ( rktNAME == "background" )
   {
@@ -547,11 +547,11 @@ int TScene::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType 
       setWidth (nVALUE.iValue);
     }
 #else
-    cout << "Getting int" << endl;
+    GOM.debug() << "Getting int" << endl;
     magic_pointer<TAttribInt> i = get_int(nVALUE);
     if( !!i )
     {
-      cout << "Have int (" << i->tValue << ") calling setWidth" << endl;
+      GOM.debug() << "Have int (" << i->tValue << ") calling setWidth" << endl;
       setWidth (i->tValue);
     }
 #endif
@@ -605,7 +605,7 @@ int TScene::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType 
   else if (rktNAME == "defaultmaterial" )
   {
 #if !defined(NEW_ATTRIBUTES)
-    cerr << "ERROR! Materials can only be passed with NEW attributes" << endl;
+    GOM.error() << "ERROR! Materials can only be passed with NEW attributes" << endl;
     return FX_ATTRIB_USER_ERROR;
     
 #else
@@ -730,16 +730,16 @@ void TScene::setOutputFileName (const string& rktNAME)
 void TScene::printDebug (const string& indent) const
 {
 
-  cerr << indent << "[_Scene_]" << endl;
+  GOM.debug() << indent << "[_Scene_]" << endl;
 
   string new_indent = TDebug::Indent(indent);
   
-  cerr << new_indent << "Height               : " << zHeight << endl;
-  cerr << new_indent << "Width                : " << zWidth << endl;
-  cerr << new_indent << "Last background color: "; ptBackgroundColor->lastColor().printDebug(new_indent); cerr << endl;
+  GOM.debug() << new_indent << "Height               : " << zHeight << endl;
+  GOM.debug() << new_indent << "Width                : " << zWidth << endl;
+  GOM.debug() << new_indent << "Last background color: "; ptBackgroundColor->lastColor().printDebug(new_indent); GOM.debug() << endl;
 
   ptWorld->printDebug(new_indent);
-  cerr << indent << "." << endl;
+  GOM.debug() << indent << "." << endl;
 
 }  /* printDebug() */
 

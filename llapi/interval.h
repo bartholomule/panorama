@@ -183,11 +183,11 @@ inline void TBaseInterval<TItem>::printDebug (const string& indent) const
 
   if ( gEmpty )
   {
-    cerr << indent << "Interval [ empty ]" << endl;
+    GOM.debug() << indent << "Interval [ empty ]" << endl;
   }
   else
   {
-    cerr << indent << "Interval [" << tMin << ", " << tMax << "]" << endl;
+    GOM.debug() << indent << "Interval [" << tMin << ", " << tMax << "]" << endl;
   }
 
 }  /* printDebug() */

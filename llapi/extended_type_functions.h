@@ -178,7 +178,7 @@ attrib_to_type<magic_pointer<TBsdf> >(magic_pointer<TAttribute> atp,
   {
     barf = atp->toString();
   }
-  cerr << "Error: Cannot extract bsdf from " << barf << endl;
+  GOM.error() << "Error: Cannot extract bsdf from " << barf << endl;
   exit(1);
 }
 
@@ -222,7 +222,7 @@ attrib_to_type<const magic_pointer<TBsdf> >(magic_pointer<TAttribute> atp,
   {
     barf = atp->toString();
   }
-  cerr << "Error: Cannot extract bsdf from " << barf << endl;
+  GOM.error() << "Error: Cannot extract bsdf from " << barf << endl;
   exit(1);  
 }
 
@@ -263,7 +263,7 @@ attrib_to_type<magic_pointer<TCamera> >(magic_pointer<TAttribute> atp,
   {
     barf = atp->toString();
   }
-  cerr << "Error: Cannot extract camera from " << barf << endl;
+  GOM.error() << "Error: Cannot extract camera from " << barf << endl;
   exit(1);    
 }
 
@@ -304,7 +304,7 @@ attrib_to_type<const magic_pointer<TCamera> >(magic_pointer<TAttribute> atp,
   {
     barf = atp->toString();
   }
-  cerr << "Error: Cannot extract camera from " << barf << endl;
+  GOM.error() << "Error: Cannot extract camera from " << barf << endl;
   exit(1);    
 }
 
@@ -559,7 +559,7 @@ attrib_to_type<magic_pointer<TRenderer> >(magic_pointer<TAttribute> atp,
   {
     return rend->tValue;
   }
-  cerr << "attrib_to_type(renderer): Cannot extract renderer!" << endl;
+  GOM.error() << "attrib_to_type(renderer): Cannot extract renderer!" << endl;
   return magic_pointer<TRenderer>(NULL);
 }
 
@@ -596,7 +596,7 @@ attrib_to_type<const magic_pointer<TRenderer> >(magic_pointer<TAttribute> atp,
   {
     return rend->tValue;
   }
-  cerr << "attrib_to_type(renderer): Cannot extract renderer!" << endl;
+  GOM.error() << "attrib_to_type(renderer): Cannot extract renderer!" << endl;
   return magic_pointer<TRenderer>(NULL);
 }
 
@@ -641,7 +641,7 @@ attrib_to_type<magic_pointer<TObject> >(magic_pointer<TAttribute> atp,
     return rcp_static_cast<TObject>(agg->tValue);
   }  
 
-  cerr << "attrib_to_type(object): Cannot extract object!" << endl;
+  GOM.error() << "attrib_to_type(object): Cannot extract object!" << endl;
   return magic_pointer<TObject>(NULL);
 }
 
@@ -678,7 +678,7 @@ attrib_to_type<const magic_pointer<TObject> >(magic_pointer<TAttribute> atp,
   {
     return obj->tValue;
   }
-  cerr << "attrib_to_type(object): Cannot extract object!" << endl;
+  GOM.error() << "attrib_to_type(object): Cannot extract object!" << endl;
   return magic_pointer<TObject>(NULL);
 }
 
@@ -716,7 +716,7 @@ attrib_to_type<magic_pointer<TImageIO> >(magic_pointer<TAttribute> atp,
   {
     return io->tValue;
   }
-  cerr << "attrib_to_type(ImageIO): Cannot extract ImageIO!" << endl;
+  GOM.error() << "attrib_to_type(ImageIO): Cannot extract ImageIO!" << endl;
   return magic_pointer<TImageIO>(NULL);
 }
 
@@ -753,7 +753,7 @@ attrib_to_type<const magic_pointer<TImageIO> >(magic_pointer<TAttribute> atp,
   {
     return io->tValue;
   }
-  cerr << "attrib_to_type(ImageIO): Cannot extract ImageIO!" << endl;
+  GOM.error() << "attrib_to_type(ImageIO): Cannot extract ImageIO!" << endl;
   return magic_pointer<TImageIO>(NULL);
 }
 
@@ -790,7 +790,7 @@ attrib_to_type<magic_pointer<TScene> >(magic_pointer<TAttribute> atp,
   {
     return scene->tValue;
   }
-  cerr << "attrib_to_type(scene): Cannot extract scene!" << endl;
+  GOM.error() << "attrib_to_type(scene): Cannot extract scene!" << endl;
   return magic_pointer<TScene>(NULL);
 }
 
@@ -827,7 +827,7 @@ attrib_to_type<const magic_pointer<TScene> >(magic_pointer<TAttribute> atp,
   {
     return scene->tValue;
   }
-  cerr << "attrib_to_type(scene): Cannot extract scene!" << endl;
+  GOM.error() << "attrib_to_type(scene): Cannot extract scene!" << endl;
   return magic_pointer<TScene>(NULL);
 }
 
@@ -870,7 +870,7 @@ attrib_to_type<magic_pointer<TAggregate> >(magic_pointer<TAttribute> atp,
       }
     }
   }
-  cerr << "attrib_to_type(aggregate): Cannot extract aggregate!" << endl;
+  GOM.error() << "attrib_to_type(aggregate): Cannot extract aggregate!" << endl;
   return magic_pointer<TAggregate>(NULL);
 }
 
@@ -913,7 +913,7 @@ attrib_to_type<const magic_pointer<TAggregate> >(magic_pointer<TAttribute> atp,
       }
     }
   }
-  cerr << "attrib_to_type(aggregate): Cannot extract aggregate!" << endl;
+  GOM.error() << "attrib_to_type(aggregate): Cannot extract aggregate!" << endl;
   return magic_pointer<TAggregate>(NULL);
 }
 
@@ -948,7 +948,7 @@ inline magic_pointer<TAttribute> type_to_attrib2(void)
 
 inline magic_pointer<TAttribute> type_to_attrib(void)
 {
-  cerr << "type_to_attrib: Non-templated version called";
+  GOM.error() << "type_to_attrib: Non-templated version called";
   exit(1);
   return new TAttribute(FX_NONE);
 }

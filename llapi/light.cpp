@@ -24,7 +24,7 @@
 
 bool TLight::findAllIntersections(const class TRay &, class TSpanList &) const
 {
-  //      cerr << "Pure light with intersection test!!" << endl;
+  //      GOM.debug() << "Pure light with intersection test!!" << endl;
   return false;
 }
 

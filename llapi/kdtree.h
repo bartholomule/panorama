@@ -61,8 +61,8 @@ class TKDTree
     {
       if ( zPOS >= zNumPoints )
       {
-        cout << "zPOS = " << zPOS << endl;
-        cout << "zNumPoints = " << zNumPoints << endl;
+        GOM.debug() << "zPOS = " << zPOS << endl;
+        GDM.debug() << "zNumPoints = " << zNumPoints << endl;
       }
       assert ( zPOS < zNumPoints );
       return &(aptNodes [zPOS / BLOCK_SIZE][zPOS % BLOCK_SIZE]);
@@ -115,7 +115,7 @@ void TKDTree<TItem>::balanceTree (size_t zFIRST, size_t zLAST)
 
   if ( zLAST > zFIRST )
   {
-//    cout << "Balancing [" << zFIRST << ", " << zLAST << "] (" << zLAST - zFIRST + 1 << ")" << endl;
+//    GOM.debug() << "Balancing [" << zFIRST << ", " << zLAST << "] (" << zLAST - zFIRST + 1 << ")" << endl;
 
     bDimension = findMaxSpreadDimension (zFIRST, zLAST);
     classify (zFIRST, zLAST, bDimension);
@@ -184,7 +184,7 @@ void TKDTree<TItem>::classify (size_t zFIRST, size_t zLAST, Byte bDIM)
   TItem    tData;
   size_t   k = (zFIRST + zLAST) / 2;
 
-//  cout << "Classifying [" << zFIRST << ", " << zLAST << "] (" << zLAST - zFIRST + 1 << ")" << endl;
+//  GOM.debug() << "Classifying [" << zFIRST << ", " << zLAST << "] (" << zLAST - zFIRST + 1 << ")" << endl;
 
   while ( zFIRST < zLAST )
   {
@@ -226,14 +226,14 @@ void TKDTree<TItem>::searchNN (TPriorityQueue<TItem>* ptPQUEUE, size_t zROOT, si
   TVector        tVector;
   TScalar        tDistance2, tVal;
 
-//  cout << "Searching node : " << zROOT << endl;
+//  GOM.debug() << "Searching node : " << zROOT << endl;
 
   ptRoot = getNode (zROOT);
   if ( ( ptRoot->bFlags & HAS_LEFT_SON ) || ( ptRoot->bFlags & HAS_RIGHT_SON ) )
   {
     tVector    = ptRoot->tData.tLocation - rktPOINT;
     tDistance2 = dotProduct (tVector, tVector);
-//    cout << "Inserting : " << zROOT << ", " << sqrt (tDistance2) << endl;
+//    GOM.debug() << "Inserting : " << zROOT << ", " << sqrt (tDistance2) << endl;
     ptPQUEUE->insert (ptRoot->tData, tDistance2);
 
     tVal = rktPOINT [ptRoot->bAxis] - ptRoot->tData.tLocation [ptRoot->bAxis];
@@ -241,14 +241,14 @@ void TKDTree<TItem>::searchNN (TPriorityQueue<TItem>* ptPQUEUE, size_t zROOT, si
     {
       if ( ptRoot->bFlags & HAS_LEFT_SON )
       {
-//        cout << "Searching left son of " << zROOT << " : " << ptRoot->zLeftSon << endl;
+//        GOM.debug() << "Searching left son of " << zROOT << " : " << ptRoot->zLeftSon << endl;
         searchNN (ptPQUEUE, ptRoot->zLeftSon, N, rktPOINT);
       }
       if ( (tVal * tVal) < searchRadius (ptPQUEUE) )
       {
         if ( ptRoot->bFlags & HAS_RIGHT_SON )
         {
-//          cout << "Searching right son of " << zROOT << " : " << ptRoot->zRightSon << endl;
+//          GOM.debug() << "Searching right son of " << zROOT << " : " << ptRoot->zRightSon << endl;
           searchNN (ptPQUEUE, ptRoot->zRightSon, N, rktPOINT);
         }
       }
@@ -257,14 +257,14 @@ void TKDTree<TItem>::searchNN (TPriorityQueue<TItem>* ptPQUEUE, size_t zROOT, si
     {
       if ( ptRoot->bFlags & HAS_RIGHT_SON )
       {
-//        cout << "Searching right son : " << ptRoot->zRightSon << endl;
+//        GOM.debug() << "Searching right son : " << ptRoot->zRightSon << endl;
         searchNN (ptPQUEUE, ptRoot->zRightSon, N, rktPOINT);
       }
       if ( (tVal * tVal) < searchRadius (ptPQUEUE) )
       {
         if ( ptRoot->bFlags & HAS_LEFT_SON )
         {
-//          cout << "Searching left son : " << ptRoot->zLeftSon << endl;
+//          GOM.debug() << "Searching left son : " << ptRoot->zLeftSon << endl;
           searchNN (ptPQUEUE, ptRoot->zLeftSon, N, rktPOINT);
         }
       }
@@ -275,7 +275,7 @@ void TKDTree<TItem>::searchNN (TPriorityQueue<TItem>* ptPQUEUE, size_t zROOT, si
     tVector    = ptRoot->tData.tLocation - rktPOINT;
     tDistance2 = dotProduct (tVector, tVector);
 
-//    cout << "Inserting : " << zROOT << ", " << sqrt (tDistance2) << endl;
+//    GOM.debug() << "Inserting : " << zROOT << ", " << sqrt (tDistance2) << endl;
     ptPQUEUE->insert (ptRoot->tData, tDistance2);
   }
   
@@ -475,20 +475,20 @@ void TKDTree<TItem>::printDebug (void) const
 
   TKDTreeNode*   ptNode;
 
-  cerr << TDebug::_indent() << "[_KDTree_]" << endl;
+  GOM.debug() << TDebug::_indent() << "[_KDTree_]" << endl;
 
   TDebug::_push();
   
   for (size_t J = 0; ( J < zNumPoints ) ;J++)
   {
     ptNode = getNode (J);
-    cerr << "<" << ptNode->tData.tLocation[0] << ", ";
-    cerr << ptNode->tData.tLocation[1] << ", ";
-    cerr << ptNode->tData.tLocation[2] << ">  <Axis : ";
-    cerr << (int) ptNode->bAxis << "> <Flags : ";
-    cerr << (bool) (ptNode->bFlags & HAS_LEFT_SON) << ", ";
-    cerr << (bool) (ptNode->bFlags & HAS_RIGHT_SON) << ">";
-    cerr << endl;
+    GOM.debug() << "<" << ptNode->tData.tLocation[0] << ", ";
+    GOM.debug() << ptNode->tData.tLocation[1] << ", ";
+    GOM.debug() << ptNode->tData.tLocation[2] << ">  <Axis : ";
+    GOM.debug() << (int) ptNode->bAxis << "> <Flags : ";
+    GOM.debug() << (bool) (ptNode->bFlags & HAS_LEFT_SON) << ", ";
+    GOM.debug() << (bool) (ptNode->bFlags & HAS_RIGHT_SON) << ">";
+    GOM.debug() << endl;
   }
 
   TDebug::_pop();

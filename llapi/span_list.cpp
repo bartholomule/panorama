@@ -22,7 +22,7 @@
 void TSpanList::printDebug (const string& indent) const
 {
 
-  cerr << indent << "[_SpanList_]" << endl;
+  GOM.debug() << indent << "[_SpanList_]" << endl;
 
   string new_indent = TDebug::Indent(indent);
 

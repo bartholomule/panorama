@@ -228,7 +228,7 @@ TScalar TBoundingBox::cost (void) const
 void TBoundingBox::printDebug (const string& indent) const
 {
 
-  cerr << indent
+  GOM.debug() << indent
        << "[_TBoundingBox_] <"
        << tPoint1.x() << ", "
        << tPoint1.y() << ", "

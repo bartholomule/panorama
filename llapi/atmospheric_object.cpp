@@ -345,7 +345,7 @@ TColor TAtmosphericObject::filterRadiance (const TSurfaceData& rktDATA, const TC
     }
   }
 
-//  cout << "Samples : " << wSamplesTaken << endl;
+//  GOM.debug() << "Samples : " << wSamplesTaken << endl;
 
   return tTotalScattering + rktRAD * tTransparency;
 

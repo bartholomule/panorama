@@ -262,7 +262,7 @@ inline bool TColor::saturated (void) const
 inline void TColor::printDebug (const string& indent) const
 {
 
-  cerr << "TColor (" << fRed << ", " << fGreen << ", " << fBlue << ")";
+  GOM.debug() << "TColor (" << fRed << ", " << fGreen << ", " << fBlue << ")";
 
 }  /* printDebug() */
 

@@ -140,14 +140,14 @@ void TRay::applyRangeFactor(TScalar fact)
 void TRay::printDebug (const string& indent) const
 {
 
-  cerr << indent << "[_TRay_]" << endl;
+  GOM.debug() << indent << "[_TRay_]" << endl;
 
   string new_indent = TDebug::Indent(indent);
 
-  cerr << new_indent << "Location  : "; tLocation.printDebug(new_indent); cerr << endl;
-  cerr << new_indent << "Direction : "; tDirection.printDebug(new_indent); cerr << endl;
-  cerr << new_indent << "IOR       : " << tIor << endl;
-  cerr << new_indent << "Range     : " << tRange << endl;
+  GOM.debug() << new_indent << "Location  : "; tLocation.printDebug(new_indent); GOM.debug() << endl;
+  GOM.debug() << new_indent << "Direction : "; tDirection.printDebug(new_indent); GOM.debug() << endl;
+  GOM.debug() << new_indent << "IOR       : " << tIor << endl;
+  GOM.debug() << new_indent << "Range     : " << tRange << endl;
   
   TDebug::_pop();
 

@@ -25,7 +25,7 @@ string   TProcedural::_tUserErrorMessage = "";
 void TProcedural::sendEvent (const string& rktEVENT)
 {
 
-  cout << "Object <" << className() << "> send event <" << rktEVENT << ">" << endl;
+  GOM.debug() << "Object <" << className() << "> send event <" << rktEVENT << ">" << endl;
 
 }  /* sendEvent() */
 
@@ -33,7 +33,7 @@ void TProcedural::sendEvent (const string& rktEVENT)
 void TProcedural::sendEvent (const string& rktEVENT, NAttribute nAttrib)
 {
 
-  cout << "Object <" << className() << "> send event <" << rktEVENT << "> with argument" << endl;
+  GOM.debug() << "Object <" << className() << "> send event <" << rktEVENT << "> with argument" << endl;
 
 }  /* sendEvent() */
 

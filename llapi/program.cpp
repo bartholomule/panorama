@@ -19,6 +19,7 @@
 #include <string>
 #include "llapi/debug.h"
 #include "llapi/program.h"
+#include "llapi/outputmanager.h"
 
 #include <iostream>
 using std::cerr;
@@ -58,17 +59,17 @@ TEventCode* TProgram::getEventCode (const string& rktEVENT)
 void TProgram::printDebug (const string& indent) const
 {
 
-  cerr << indent << "[_Program_]" << endl;
+  GOM.debug() << indent << "[_Program_]" << endl;
 
   string new_indent = TDebug::Indent(indent);
   
-  cerr << new_indent << "Variables : " << endl;
+  GOM.debug() << new_indent << "Variables : " << endl;
 
   new_indent = TDebug::Indent(new_indent);
 
   for (TVariableMap::const_iterator iter = tVarList.begin(); ( iter != tVarList.end() ) ;iter++)
   {
-    cerr << new_indent << "Name : " << (*iter).first << ", type : " << (int) (*iter).second->tAttrib.eType << endl;
+    GOM.debug() << new_indent << "Name : " << (*iter).first << ", type : " << (int) (*iter).second->tAttrib.eType << endl;
   }
   
 }  /* printDebug() */

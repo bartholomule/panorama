@@ -266,7 +266,7 @@ magic_pointer<TAttribVector>  get_vector(magic_pointer<TAttribute> attr)
 	// Demotion
 	if( barf.size() > 3)
 	{
-	  cout << "Warning: array was too large to fit in vector" << endl;
+	  GOM.error() << "Warning: array was too large to fit in vector" << endl;
 	  TVector v(barf[0], barf[1], barf[2]);
 	  retval = (magic_pointer<TAttribVector>)new TAttribVector(v);
 	}
@@ -284,7 +284,7 @@ magic_pointer<TAttribVector>  get_vector(magic_pointer<TAttribute> attr)
 	}
 	else
 	{
-	  cout << "Incorrect array size in conversion from FX_ARRAY to FX_VECTOR" << endl;
+	  GOM.error() << "Incorrect array size in conversion from FX_ARRAY to FX_VECTOR" << endl;
 	}
       }
       break;      
@@ -318,7 +318,7 @@ magic_pointer<TAttribVector2> get_vector2(magic_pointer<TAttribute> attr)
 	// Demotion
 	if( barf.size() > 2)
 	{
-	  cout << "Warning: array was too large to fit in vector2" << endl;
+	  GOM.error() << "Warning: array was too large to fit in vector2" << endl;
 	  TVector2 v(barf[0], barf[1]);
 	  retval = (magic_pointer<TAttribVector2>)new TAttribVector2(v);
 	}
@@ -336,7 +336,7 @@ magic_pointer<TAttribVector2> get_vector2(magic_pointer<TAttribute> attr)
 	}
 	else
 	{
-	  cout << "Incorrect array size in conversion from FX_ARRAY to FX_VECTOR2" << endl;
+	  GOM.error() << "Incorrect array size in conversion from FX_ARRAY to FX_VECTOR2" << endl;
 	}
       }
       break;
@@ -388,29 +388,29 @@ magic_pointer<TAttribPattern> get_pattern(const magic_pointer<TAttribute> attr)
     case FX_INTEGER:
       {
 	TScalar s = rcp_static_cast<TAttribInt>(attr)->tValue;
-	cout << "attr: creating pattern from int " << s << endl;
+	GOM.debug() << "attr: creating pattern from int " << s << endl;
 	retval = (magic_pointer<TAttribPattern>)new TAttribPattern(s);
       }
       break;      
     case FX_REAL:
       {
 	TScalar s = rcp_static_cast<TAttribReal>(attr)->tValue;
-	cout << "attr: creating pattern from real " << s << endl;
+	GOM.debug() << "attr: creating pattern from real " << s << endl;
 	retval = (magic_pointer<TAttribPattern>)new TAttribPattern(s);
       }
       break;
     case FX_VECTOR:
       {
 	TVector v = rcp_static_cast<TAttribVector>(attr)->tValue;
-	cout << "attr: creating pattern from vector" << endl;
+	GOM.debug() << "attr: creating pattern from vector" << endl;
 	retval = (magic_pointer<TAttribPattern>)new TAttribPattern(v);
       }
       break;      
     case FX_COLOR:
       {
-	cout << "ick.....:" << attr->toString() << endl;
+	GOM.debug() << "ick.....:" << attr->toString() << endl;
 	TColor c = rcp_static_cast<TAttribColor>(attr)->tValue;
-	cout << "attr: creating pattern from color"
+	GOM.debug() << "attr: creating pattern from color"
 	     << " (" << c.red() << "," << c.green() << "," << c.blue() << ")"
 	     << endl;			    			    	
 	retval = (magic_pointer<TAttribPattern>)new TAttribPattern(c);
@@ -418,16 +418,16 @@ magic_pointer<TAttribPattern> get_pattern(const magic_pointer<TAttribute> attr)
       break;
     case FX_ARRAY:
       {
-	cout << "ick.....:" << attr->toString() << endl;
+	GOM.debug() << "ick.....:" << attr->toString() << endl;
 	TColor c = rcp_static_cast<TAttribColor>(attr)->tValue;
-	cout << "attr: creating pattern from array (indirectly as vector)" << endl;
+	GOM.debug() << "attr: creating pattern from array (indirectly as vector)" << endl;
 	retval = (magic_pointer<TAttribPattern>)new TAttribPattern(get_vector(attr)->tValue);
       }
       break;      
     case FX_PATTERN:
       {
 	retval = rcp_static_cast<TAttribPattern>(attr);
-	cout << "attr: creating pattern from pattern" << endl;
+	GOM.debug() << "attr: creating pattern from pattern" << endl;
       }
       break;      
     default:
@@ -683,12 +683,12 @@ magic_pointer<TAttribute> base_to_attr(const magic_pointer<TBaseClass> base)
     // bounding box?
     // atm object?
     // scene io?
-    cout << "base_to_attr: Cannot determine classtype of " << base->className() << endl;
+    GOM.error() << "base_to_attr: Cannot determine classtype of " << base->className() << endl;
     return (user_arg_type)new TAttribute();
   }
   else
   {
-    cout << "base_to_attr: given a null base" << endl;
+    GOM.error() << "base_to_attr: given a null base" << endl;
     return (user_arg_type)new TAttribute();
   }  
 }
