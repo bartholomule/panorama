@@ -7,9 +7,11 @@ INSTALL = @INSTALL@
 SRC_DIR = @srcdir@
 
 FILES = aggregate.rt \
+        aggregate_uniform_grid.rt \
 	box.rt \
 	circle.rt \
         cone.rt \
+        csg.rt \
         cylinder.rt \
         phong_triangle.rt \
         rectangle.rt \
