@@ -3,4 +3,8 @@ BUILD_TOP = ../..
 
 DIRS = raytracer
 
+ifeq (1,@EXPERIMENTAL@)
+DIRS += zbuffer
+endif
+
 include ${BUILD_TOP}/Makefile.targets
