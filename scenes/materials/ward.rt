@@ -1,0 +1,93 @@
+/*
+*  Ward test
+*/
+
+#include "materials.inc"
+
+define material MShinyPlastic
+{ 
+  bsdf : class BsdfWard
+  {
+    roughness_x       0.2
+    roughness_y       0.1
+  }
+  ambient	0.1
+  diffuse	0.4
+  specular	0.5
+}
+
+
+define camera c
+{
+  translate	<0, 0, -600>
+  look_at	<0, 0, 0>
+}
+
+define light l
+{
+  translate	<-100, 100, -500>
+  color		CWhite
+  intensity     0.8
+}
+
+plane
+{
+  translate     <0, -100, 0>
+  normal	<0, 1, 0>
+  material : extends MChecker
+  {
+    color       CWhite
+    base_color  CWood
+    size        50
+  }
+}
+
+torus
+{
+  translate     <0, 0, 200>
+  rotate        <45, 0, 0>
+  radius_a      75
+  radius_b      38
+  material : extends MShinyPlastic
+  {
+    color       CBlue
+  }
+}
+
+/*
+sphere
+{
+  translate     <0, 0, 200>
+  rotate        <45, 0, 0>
+  radius        75
+  material : extends MShinyPlastic
+  {
+    color       CBlue
+  }
+}
+*/
+
+scene
+{
+  camera	c
+  light		l
+  width		300
+  height	300
+  background	CBlack
+  output
+  {
+    type        "png"
+    name	"ward.png"
+  }
+  renderer : class Raytracer 
+  {
+//    sampling    "adaptive"
+  }
+/*  filter : class IF_Lens_Flare {
+    intensity   2.3
+    threshold   1.1
+  }*/
+}
+
+
+

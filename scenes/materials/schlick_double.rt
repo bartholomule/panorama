@@ -1,0 +1,93 @@
+/*
+*  Schlick test for double material
+*/
+
+#include "materials.inc"
+
+define material MShinyPlastic
+{ 
+  bsdf : class BsdfSchlickDouble
+  {
+    reflection_color  { red 0.4 green 0.6 blue 0.4 }
+    roughness         0.80
+    isotropy          0.50
+
+    l2_reflection_color  { red 0.9 green 1.0 blue 0.4 }
+    l2_roughness         0.10
+    l2_isotropy          0.80
+  }
+  ambient	0.1
+  diffuse	0.4
+  specular	0.5
+}
+
+define camera c
+{
+  translate	<0, 0, 600>
+  look_at	<0, 0, 0>
+}
+
+define light l
+{
+  translate	<-100, 100, 500>
+  color		CWhite
+  intensity     0.8
+}
+
+plane
+{
+  translate     <0, -100, 0>
+  normal	<0, 1, 0>
+  material : extends MChecker
+  {
+    color       CWhite
+    base_color  CWood
+    size        50
+  }
+}
+
+torus
+{
+  translate     <0, 0, 200>
+  rotate        <45, 0, 0>
+  radius_a      75
+  radius_b      38
+  material : extends MShinyPlastic
+  {
+    color       CBlue
+  }
+}
+
+/*
+sphere
+{
+  translate     <0, 0, 200>
+  rotate        <45, 0, 0>
+  radius        75
+  material : extends MShinyPlastic
+  {
+    color       CBlue
+  }
+}
+*/
+
+scene
+{
+  camera	c
+  light		l
+  width		320
+  height	240
+  background	CBlack
+  output
+  {
+    type        "png"
+    name	"schlick_double.png"
+  }
+  renderer : class Raytracer 
+  {
+//    sampling    "adaptive"
+  }
+}
+
+
+
