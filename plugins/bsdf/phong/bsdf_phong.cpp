@@ -23,14 +23,51 @@
 
 DEFINE_PLUGIN ("BsdfPhong", FX_BSDF_CLASS, TBsdfPhong);
 
+
+TBsdfPhong::TBsdfPhong (void)
+{
+
+  setPhongExp (new TPattern (0.0));
+  setSpecularColor (new TPattern (TColor::_white()));
+
+}  /* TBsdfPhong() */
+
+
 int TBsdfPhong::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
 
   if ( rktNAME == "exponent" )
   {
-    if ( eTYPE == FX_REAL )
+    if ( eTYPE == FX_PATTERN )
     {
-      setPhongExp (nVALUE.dValue);
+      setPhongExp ((TPattern*) nVALUE.pvValue);
+    }
+    else if ( eTYPE == FX_REAL )
+    {
+      setPhongExp (new TPattern (nVALUE.dValue));
+    }
+    else if ( eTYPE == FX_COLOR )
+    {
+      setPhongExp (new TPattern (*((TColor*) nVALUE.pvValue)));
+    }
+    else
+    {
+      return FX_ATTRIB_WRONG_TYPE;
+    }
+  }
+  else if ( rktNAME == "specular_color" )
+  {
+    if ( eTYPE == FX_PATTERN )
+    {
+      setSpecularColor ((TPattern*) nVALUE.pvValue);
+    }
+    else if ( eTYPE == FX_REAL )
+    {
+      setSpecularColor (new TPattern (nVALUE.dValue));
+    }
+    else if ( eTYPE == FX_COLOR )
+    {
+      setSpecularColor (new TPattern (*((TColor*) nVALUE.pvValue)));
     }
     else
     {
@@ -52,7 +89,11 @@ int TBsdfPhong::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 
   if ( rktNAME == "exponent" )
   {
-    rnVALUE.dValue = tPhongExp;
+    rnVALUE.pvValue = ptPhongExp;
+  }
+  else if ( rktNAME == "specular_color" )
+  {
+    rnVALUE.pvValue = ptSpecularColor;
   }
   else
   {
@@ -69,6 +110,7 @@ void TBsdfPhong::getAttributeList (TAttributeList& rtLIST) const
 
   TBsdf::getAttributeList (rtLIST);
 
-  rtLIST ["exponent"] = FX_REAL;
+  rtLIST ["exponent"]       = FX_PATTERN;
+  rtLIST ["specular_color"] = FX_PATTERN;
 
 }  /* getAttributeList() */

@@ -1,5 +1,5 @@
 /*
-*  Copyright (C) 1999 Jon Frydensbjerg
+*  Copyright (C) 1999-2000 Jon Frydensbjerg
 *
 *  This program is free software; you can redistribute it and/or modify
 *  it under the terms of the GNU General Public License as published by
@@ -30,8 +30,9 @@ class TBsdfWard : public TBsdf
 
   protected:
 
-    TScalar   tStandardDeviation_x;
-    TScalar   tStandardDeviation_y;
+    TPattern*   ptStandardDeviation_x;
+    TPattern*   ptStandardDeviation_y;
+    TPattern*   ptSpecularColor;
 
   protected:
 
@@ -56,6 +57,8 @@ class TBsdfWard : public TBsdf
     int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
     void getAttributeList (TAttributeList& rtLIST) const;
 
+    void setSpecularColor (TPattern* ptCOLOR) { ptSpecularColor = ptCOLOR; }
+
     string className (void) const { return "BsdfWard"; }
 
 };  /* class TBsdfWard */
@@ -78,6 +81,9 @@ inline TColor TBsdfWard::evaluateReflection (const TSurfaceData& rktDATA, const 
   TScalar      dx, dy;
   TScalar      tGlare;
   TScalar      tExp;
+  TScalar      tStandardDeviation_x = ptStandardDeviation_x->scalar (rktDATA);
+  TScalar      tStandardDeviation_y = ptStandardDeviation_y->scalar (rktDATA);
+  TColor       tSpecColor = ptSpecularColor->color (rktDATA);
 
   tHalfway.normalize();
 
@@ -122,7 +128,7 @@ inline TColor TBsdfWard::evaluateReflection (const TSurfaceData& rktDATA, const 
 
   tExp   = exp (-2.0 * (sqr (dx) + sqr (dy)) / (1.0 + tCosNH));
 
-  return (tColor * kd) + (TColor::_white() * ks * tGlare * tExp);
+  return (tColor * kd) + (tSpecColor * ks * tGlare * tExp);
 
 }  /* evaluateReflection() */
 

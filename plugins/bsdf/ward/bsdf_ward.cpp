@@ -1,5 +1,5 @@
 /*
-*  Copyright (C) 1999 Jon Frydensbjerg
+*  Copyright (C) 1999-2000 Jon Frydensbjerg
 *
 *  This program is free software; you can redistribute it and/or modify
 *  it under the terms of the GNU General Public License as published by
@@ -23,10 +23,14 @@
 
 DEFINE_PLUGIN ("BsdfWard", FX_BSDF_CLASS, TBsdfWard);
 
-TBsdfWard::TBsdfWard (void) :
-  tStandardDeviation_x (0.3f),
-  tStandardDeviation_y (0.3f) 
+
+TBsdfWard::TBsdfWard (void)
 {
+
+  ptStandardDeviation_x = new TPattern (0.3);
+  ptStandardDeviation_y = new TPattern (0.3);
+
+  setSpecularColor (new TPattern (TColor::_white()));
 
 }  /* TBsdfWard() */
 
@@ -36,9 +40,17 @@ int TBsdfWard::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribTy
 
   if ( rktNAME == "roughness_x" )
   {
-    if ( eTYPE == FX_REAL )
+    if ( eTYPE == FX_PATTERN )
     {
-      tStandardDeviation_x = nVALUE.dValue;
+      ptStandardDeviation_x = (TPattern*) nVALUE.pvValue;
+    }
+    else if ( eTYPE == FX_REAL )
+    {
+      ptStandardDeviation_x = new TPattern (nVALUE.dValue);
+    }
+    else if ( eTYPE == FX_COLOR )
+    {
+      ptStandardDeviation_x = new TPattern (*((TColor*) nVALUE.pvValue));
     }
     else
     {
@@ -47,9 +59,36 @@ int TBsdfWard::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribTy
   }
   else if ( rktNAME == "roughness_y" )
   {
-    if ( eTYPE == FX_REAL )
+    if ( eTYPE == FX_PATTERN )
     {
-      tStandardDeviation_y = nVALUE.dValue;
+      ptStandardDeviation_y = (TPattern*) nVALUE.pvValue;
+    }
+    else if ( eTYPE == FX_REAL )
+    {
+      ptStandardDeviation_y = new TPattern (nVALUE.dValue);
+    }
+    else if ( eTYPE == FX_COLOR )
+    {
+      ptStandardDeviation_y = new TPattern (*((TColor*) nVALUE.pvValue));
+    }
+    else
+    {
+      return FX_ATTRIB_WRONG_TYPE;
+    }
+  }
+  else if ( rktNAME == "specular_color" )
+  {
+    if ( eTYPE == FX_PATTERN )
+    {
+      setSpecularColor ((TPattern*) nVALUE.pvValue);
+    }
+    else if ( eTYPE == FX_REAL )
+    {
+      setSpecularColor (new TPattern (nVALUE.dValue));
+    }
+    else if ( eTYPE == FX_COLOR )
+    {
+      setSpecularColor (new TPattern (*((TColor*) nVALUE.pvValue)));
     }
     else
     {
@@ -71,11 +110,15 @@ int TBsdfWard::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 
   if ( rktNAME == "roughness_x" )
   {
-    rnVALUE.dValue = tStandardDeviation_x;
+    rnVALUE.pvValue = ptStandardDeviation_x;
   }
   else if ( rktNAME == "roughness_y" )
   {
-    rnVALUE.dValue = tStandardDeviation_y;
+    rnVALUE.pvValue = ptStandardDeviation_y;
+  }
+  else if ( rktNAME == "specular_color" )
+  {
+    rnVALUE.pvValue = ptSpecularColor;
   }
   else
   {
@@ -92,8 +135,9 @@ void TBsdfWard::getAttributeList (TAttributeList& rtLIST) const
 
   TBsdf::getAttributeList (rtLIST);
 
-  rtLIST ["roughness_x"] = FX_REAL;
-  rtLIST ["roughness_y"] = FX_REAL;
+  rtLIST ["roughness_x"]    = FX_PATTERN;
+  rtLIST ["roughness_y"]    = FX_PATTERN;
+  rtLIST ["specular_color"] = FX_PATTERN;
 
 }  /* getAttributeList() */
 
