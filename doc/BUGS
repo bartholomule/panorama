@@ -54,3 +54,24 @@
 
  - Only one scene may be loaded for each execution of 'panorama'.
  - Choices are not enumerated (fix on the way with new attributes).
+
+[_SYSTEM_]
+ - The new RT scene language requires bison-1.875 (modified) to compile.  The
+   problem is that in bison-1.875, lalr1.cc had a typo or improperly left-in
+   underscore on two of the lines.  The fix is (if you can write to your bison
+   config files) to change the two lines in lalr1.cc (usually in
+   /usr/share/bison) starting at line 142 where it says:
+   Current.last_line = Rhs[N].last_line; \   
+   Current.last_column = Rhs[N].last_column;
+
+   To read as follows:
+   Current.last.line = Rhs[N].last.line; \   
+   Current.last.column = Rhs[N].last.column;
+
+   All that is, is replacing the underscore ('_') with a dot ('.').
+
+   With this fix done, it will compile properly.  If you don't have access to
+   these files or don't know what is going on, don't mess with any parsers from
+   this project.  The parser will come with a pre-defined parser.cpp and its
+   supporting headers, if no modifications are made to the parser then these
+   will work fine.
