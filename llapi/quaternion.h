@@ -6,7 +6,7 @@
 
 //
 // A quaternion class.  This is to be used for rotations (and scales, if you
-// are VERY careful).  I suggest that scales be done seperately (like
+// are VERY careful).  I suggest that scales be done separately (like
 // translates). 
 //
 //
@@ -51,10 +51,10 @@
 // q * v * conjugate(q)
 // The result is found in the imaginary portion of the resulting quaternion.
 //
-// Quaternions may be chained together, like rotation matricies:
+// Quaternions may be chained together, like rotation matrices:
 // v' = q3*(q2*(q1 * v * conjugate(q1))*conjugate(q2))*conjugate(q3)
 //    = (q3*q2*q1) * v * conjugate(q3*q2*q1)
-// This may be done much faster than multiplying a sequence of matricies out,
+// This may be done much faster than multiplying a sequence of matrices out,
 // although it does not perform scaling and translation at the same time.
 //
 //-------------------------------------------------------------------------------
