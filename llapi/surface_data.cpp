@@ -66,7 +66,7 @@ TVector TSurfaceData::localPoint (void) const
 }  /* localPoint() */
 
 
-TVector TSurfaceData::normal(void) const
+TVector TSurfaceData::normal (void) const
 {
 
   if ( !gNormalAssigned )
@@ -80,6 +80,11 @@ TVector TSurfaceData::normal(void) const
     {
       tNormal = pktObject->normal (*this);
       tNormal = pktObject->material()->perturbNormal (*this);
+      if ( gFlipNormal )
+      {
+        tNormal     = -tNormal;
+        gFlipNormal = false;
+      }
     }
   }
 

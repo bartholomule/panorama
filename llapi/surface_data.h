@@ -37,6 +37,7 @@ class TSurfaceData
 
     mutable TVector   tNormal;     // Surface normal in that point
     mutable bool      gNormalAssigned;
+    mutable bool      gFlipNormal; // Normal must be flipped (for CSG difference)
 
   public:
 
@@ -50,6 +51,7 @@ class TSurfaceData
       tDistance (SCALAR_MAX),
       pvData (NULL),
       gNormalAssigned (false),
+      gFlipNormal (false),
       zReflection (0),
       zTransmission (0),
       tLightRadiance (TColor::_black()) {}
@@ -63,6 +65,7 @@ class TSurfaceData
       pvData (rktDATA.pvData),
       tNormal (rktDATA.tNormal),
       gNormalAssigned (rktDATA.gNormalAssigned),
+      gFlipNormal (false),
       zReflection (rktDATA.zReflection),
       zTransmission (rktDATA.zTransmission),
       tLightRadiance (rktDATA.tLightRadiance) {}
@@ -77,6 +80,7 @@ class TSurfaceData
       pvData          = rktDATA.pvData;
       tNormal         = rktDATA.tNormal;
       gNormalAssigned = rktDATA.gNormalAssigned;
+      gFlipNormal     = rktDATA.gFlipNormal;
       zReflection     = rktDATA.zReflection;
       zTransmission   = rktDATA.zTransmission;
       tLightRadiance  = rktDATA.tLightRadiance;
@@ -120,6 +124,19 @@ class TSurfaceData
       return ( pktObject == pktOBJECT );
     }
 
+    void flipNormal (void)
+    {
+      if ( gNormalAssigned )
+      {
+        tNormal     = -tNormal;
+        gFlipNormal = false;
+      }
+      else
+      {
+        gFlipNormal = true;
+      }
+    }
+    
     TVector localPoint (void) const;
     
     TVector normal(void) const;
