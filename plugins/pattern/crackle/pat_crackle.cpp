@@ -28,25 +28,28 @@ DEFINE_PLUGIN ("PatternCrackle", FX_PATTERN_CLASS, TPatternCrackle);
 
 TVoronoi::TVoronoi()
 {
-  lRandomSeed = 12345L;
+  lRandomSeed    = 12345L;
   lLastHashValue = 0x80000000;
 
   // build hash table for use by Hash3d
 
-  for (int i = 0; i <= HASHMASK; i++)
+  for (int I = 0; ( I <= HASHMASK ); I++)
   {
-    aiHashTable[i] = i;
+    aiHashTable[I] = I;
   }
 
   // shuffle the values
 
-  for (int i = 0; i <= HASHMASK; i++)
+  for (int J = 0; J <= HASHMASK; J++)
   {
-    int iTemp, iIndex = Random() & HASHMASK;
-    iTemp = aiHashTable[iIndex];
-    aiHashTable[iIndex] = aiHashTable[i];
-    aiHashTable[i] = iTemp;
+    int   iTemp;
+    int   iIndex = Random() & HASHMASK;
+
+    iTemp               = aiHashTable[iIndex];
+    aiHashTable[iIndex] = aiHashTable[J];
+    aiHashTable[J]      = iTemp;
   }
+
 }  /* TVoronoi */ 
 
 /*
