@@ -10,15 +10,21 @@
  Other contributors:
  ===================
 
-   Matt Kimball (mkimball@xmission.com)                Bezier bicubic patches and
-                                                       subdivision surfaces
+   Matt Kimball (mkimball@xmission.com)                Bezier bicubic patches
+                                                       Subdivision surfaces
 
    Peter Barnett (pbarnett@pjbcn.demon.co.uk)          Several materials and API functions
 
    Jose Antonio Robles Ordoñez (ganimedes@apdo.com)    JPEG file format
 
-   Ken Geis (kgeis@cchemnt.cchem.berkeley.edu)         PNG file format and text image filter
+   Ken Geis (kgeis@cchemnt.cchem.berkeley.edu)         PNG file format
+   						       Text image filter
 
-   Jon Frydensbjerg (jonf@kom.auc.dk)                  GIF file format and extension to TGA
-                                                       file format.
+   Jon Frydensbjerg (jonf@kom.auc.dk)                  GIF file format
+   						       Extension of TGA file format.
+                                                       Lens flare image filter
+                                                       Ward BSDF
+                                                       Schlick BSDF
+                                                       SchlickDouble BSDF
+                                                       Cook-Torrance BSDF
                                                        
