@@ -1,0 +1,146 @@
+/*
+*  ABVH test
+*/
+
+#include "materials.inc"
+
+define camera c
+{
+  translate	<0, 0, 500>
+  look_at	<0, 0, 0>
+}
+
+define light l
+{
+  translate	<500, 500, 500>
+  color		CWhite
+}
+
+define light l2
+{
+  translate	<0, 1000, 0>
+  color		CWhite
+}
+
+aggregate : class ABVH
+{
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  sphere { translate <-300 + rand() * 600, -200 + rand() * 400, -100 + rand() * 400> radius rand() * 50 }
+  material : extends MLambertian
+  {
+    color	CWhite
+  }
+}
+
+scene
+{
+  camera	c
+  light		l
+  light		l2
+  width		400
+  height	400
+  background	CSummerSky
+  output
+  {
+    name        "abvh.tga"
+  }
+  renderer : class Raytracer {}
+}

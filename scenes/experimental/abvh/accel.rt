@@ -1,0 +1,65 @@
+/*
+*  Acceleration test
+*/
+
+#include "materials.inc"
+
+define camera c
+{
+  translate	<0, 0, 500>
+  look_at	<0, 0, 0>
+}
+
+define light l
+{
+  translate	<500, 500, 500>
+  color		CWhite
+}
+
+define light l2
+{
+  translate	<0, 1000, 0>
+  color		CWhite
+}
+
+define sphere s
+{
+  radius      40
+}
+
+aggregate : class ABVH
+{
+  sphere : extends s { translate <-100, 100, 100> }
+  sphere : extends s { translate <-100, -100, 100> }
+  sphere : extends s { translate <-100, 100, -100> }
+  sphere : extends s { translate <-100, -100, -100> }
+  sphere : extends s { translate <100, 100, 100> }
+  sphere : extends s { translate <100, -100, 100> }
+  sphere : extends s { translate <100, 100, -100> }
+  sphere : extends s { translate <100, -100, -100> }
+  sphere : extends s { translate <0, 0, 0> }
+  sphere : extends s { translate <-50, 0, 0> }
+//  sphere : extends s { translate <0, 50, 0> }
+//  sphere : extends s { translate <0, -50, 0> }
+  sphere : extends s { translate <50, 0, 0> }
+
+  material : extends MPlastic
+  {
+    color	CWhite
+  }
+}
+
+scene
+{
+  camera	c
+  light		l
+  light		l2
+  width		400
+  height	400
+  background	CSummerSky
+  output
+  {
+    name        "accel.tga"
+  }
+  renderer : class Raytracer {}
+}
