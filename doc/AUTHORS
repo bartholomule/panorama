@@ -10,7 +10,8 @@
  Other contributors:
  ===================
 
-   Matt Kimball (mkimball@xmission.com)                Bezier bicubic path object
+   Matt Kimball (mkimball@xmission.com)                Bezier bicubic patches and
+                                                       subdivision surfaces
 
    Peter Barnett (pbarnett@pjbcn.demon.co.uk)          Several materials and API functions
 

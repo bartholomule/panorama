@@ -7,6 +7,7 @@ compilation):
  plugins/object/height_field   Height field
  plugins/object/lwo            LightWave object
  plugins/object/polyhedron     Polyhedron object
+ plugins/object/subdiv         Subdivision surface
  plugins/renderer/zbuffer      ZBuffer renderer
  plugins/scene_io/psl          Procedural scene language
 

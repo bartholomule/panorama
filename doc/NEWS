@@ -1,4 +1,6 @@
 
+ - Added subdivision surface "experimental" plugin (done by Matt Kimball).
+
  - Added PNG plugin (done by Ken Geis). All demo scenes use this format for
    output now.
  
