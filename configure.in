@@ -190,14 +190,19 @@ AC_OUTPUT(\
         plugins/atm_object/Makefile \
         plugins/atm_object/atm_const/Makefile:Makefile.plugin.in \
         plugins/bsdf/Makefile \
+        plugins/bsdf/cook_torrance/Makefile:Makefile.plugin.in \
         plugins/bsdf/lambertian/Makefile:Makefile.plugin.in \
         plugins/bsdf/phong/Makefile:Makefile.plugin.in \
+        plugins/bsdf/schlick/Makefile:Makefile.plugin.in \
+        plugins/bsdf/schlick_double/Makefile:Makefile.plugin.in \
+        plugins/bsdf/ward/Makefile:Makefile.plugin.in \
         plugins/camera/Makefile \
         plugins/camera/pinhole/Makefile:Makefile.plugin.in \
         plugins/image_filter/Makefile \
         plugins/image_filter/cartoon/Makefile:Makefile.plugin.in \
         plugins/image_filter/convert_to_grey/Makefile:Makefile.plugin.in \
         plugins/image_filter/fog/Makefile:Makefile.plugin.in \
+        plugins/image_filter/lens_flare/Makefile:Makefile.plugin.in \
         plugins/image_filter/text/Makefile:Makefile.plugin.in \
         plugins/image_io/Makefile \
         plugins/image_io/gif/Makefile:Makefile.plugin.in \

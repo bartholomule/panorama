@@ -56,12 +56,17 @@ TBaseClass* TClassManager::_newObject (const string& rktCLASS, const TBaseClass*
 
 #if ( STATIC_LINK == 1 )
   STATIC_CLASS (TAtmConst, "AtmConst");
+  STATIC_CLASS (TBsdfCookTorrance, "BsdfCookTorrance");
   STATIC_CLASS (TBsdfLambertian, "BsdfLambertian");
   STATIC_CLASS (TBsdfPhong, "BsdfPhong");
+  STATIC_CLASS (TBsdfSchlick, "BsdfSchlick");
+  STATIC_CLASS (TBsdfSchlickDouble, "BsdfSchlickDouble");
+  STATIC_CLASS (TBsdfWard, "BsdfWard");
   STATIC_CLASS (TPinholeCamera, "PinholeCamera");
   STATIC_CLASS (TIF_Cartoon, "IF_Cartoon");
   STATIC_CLASS (TIF_ConvertToGrey, "IF_ConvertToGrey");
   STATIC_CLASS (TIF_Fog, "IF_Fog");
+  STATIC_CLASS (TIF_Lens_Flare, "IF_Lens_Flare");
   STATIC_CLASS (TIF_Text, "IF_Text");
   STATIC_CLASS (TPointLight, "PointLight");
   STATIC_CLASS (TProjector, "Projector");
