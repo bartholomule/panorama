@@ -1,0 +1,117 @@
+/*
+*  Warping test
+*/
+
+#include "materials.inc"
+
+define camera c
+{
+  translate	<-250, 0, 400>
+  look_at	<0, 0, 400>
+}
+
+define light l
+{
+  translate	<-250, 0, 400>
+  color		CWhite
+}
+
+define material MAmplfier : extends MPlastic
+{
+  specular      0
+  diffuse       0.8
+}
+
+define pattern PBrick1 : class PatternBrick
+{
+  color       CRed
+  base_color  { red 0.50 green 0.50 blue 0.50 }
+  rst_scaling <0.5, 1, 0.5>
+  zoom        <1, 1, 1>
+  width       .04
+  height      .04 //0.8
+  mortar      .02
+}
+
+define pattern PBrick2 : extends PBrick1
+{
+  color         CBlue
+  rotation      <30, 40, 50>
+  rst_scaling   <1, 3, 3>
+
+  warp          "spherical"
+}
+
+define pattern PBrick3 : extends PBrick1 
+{
+  color         CGreen
+  rst_scaling   <1, 1, 1>
+
+  warp          "cylindrical"
+}
+
+box
+{
+  scale         <45, 140, 45>
+  translate	<0, 0, 330>
+
+  material : extends MAmplfier
+  {
+    color       PBrick1
+
+    perturb_func : class PerturbationBrick
+    {
+      brick_pattern    PBrick1
+      bump             1    
+    }
+  }
+}
+
+sphere
+{
+  scale         <35, 70, 35>
+  translate	<0, 0, 399>
+
+  material : extends MAmplfier
+  {
+    color       PBrick2
+
+    perturb_func : class PerturbationBrick
+    {
+      brick_pattern    PBrick2
+      bump             1    
+    }
+  }
+}
+
+cylinder
+{
+  scale         <30, 70, 30>
+  translate	<0, 0, 470>
+
+  material : extends MAmplfier
+  {
+    color       PBrick3
+
+    perturb_func : class PerturbationBrick
+    {
+      brick_pattern    PBrick3
+      bump             1    
+    }
+  }
+}
+
+scene
+{
+  camera	c
+  light		l
+  width		400
+  height	400
+  background    CBlack
+  output
+  {
+    type        "png"
+    name	"warping.png"
+  }
+  renderer : class Raytracer {}
+}
