@@ -41,8 +41,13 @@ class TEntity : public TProcedural
     virtual void rotate (const TVector& rktAXISPOINT1, const TVector& rktAXISPOINT2, TScalar tANGLE) {}
     virtual void rotate (const TVector& rktANGLESXYZ) {}
 
-    TVector location (void) const { return tLocation; }
+    inline TVector location (void) const { return tLocation; }
 
+    inline void setLocation (const TVector& rktLOCATION)
+    {
+      tLocation = rktLOCATION; update();
+    }
+  
 };  /* class TEntity */
 
 #endif  /* _ENTITY__ */
