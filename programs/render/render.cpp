@@ -25,13 +25,12 @@
 #include "hlapi/image_manager.h"
 #include "hlapi/scene_manager.h"
 
+multimap<string, string>   tConfigData;
+
 static string   _tInputFileName;
 static string   _tInputFileFormat;
 static string   _tProgramName;
 static string   _tTopDir;
-static string   _tPluginPath;
-static string   _tTexturePath;
-static string   _tGradientPath;
 static string   _tLogFileName;
 static string   _tLocalPath;
 static bool     _gKeepLog = false;
@@ -42,6 +41,91 @@ void DisplayHelp (void)
   cout << "Usage: " << _tProgramName << " input_file" << endl;
 
 }  /* DisplayHelp() */
+
+
+bool ProcessConfigFile (const string& rktCONFIG, multimap<string, string>& rtMAP)
+{
+
+  string     tOptionName, tOptionValue;
+  ifstream   tConfigFile;
+  char*      pcBuffer = new char[200];
+
+  tConfigFile.open (rktCONFIG.c_str());
+  if ( !tConfigFile )
+  {
+    return false;
+  }
+
+  // Reads configuration file line by line
+  while ( !tConfigFile.eof() )
+  {
+    Byte   J;
+    bool   gAppend;
+    
+    tOptionName  = "";
+    tOptionValue = "";
+    gAppend      = false;
+    
+    tConfigFile.getline (pcBuffer, 200);
+
+    // Checks for an empty line
+    if ( strlen (pcBuffer) == 0 )
+    {
+      continue;
+    }
+    
+    // Checks for a comment
+    if ( pcBuffer[0] == '#' )
+    {
+      continue;
+    }
+    
+    // Gets option name (until the first occurrence of character '=')
+    for (J = 0; ( ( J < strlen (pcBuffer) ) && ( pcBuffer[J] != '=' ) ) ;J++)
+    {
+      tOptionName += pcBuffer[J];
+    }
+
+    // Checks if the line contains no '=' character
+    if ( J == strlen (pcBuffer) )
+    {
+      continue;
+    }
+    
+    // Checks if we are adding a new value for that option, or substituting previous ones
+    if ( ( J > 0 ) && ( pcBuffer[J - 1] == '+' ) )
+    {
+      tOptionName = tOptionName.substr (0, J - 1);
+      gAppend     = true;
+    }
+         
+    // Gets option value (until the end of the line)
+    for (J++; ( J < strlen (pcBuffer) ) ;J++)
+    {
+      tOptionValue += pcBuffer[J];
+    }
+
+    if ( !gAppend )
+    {
+      // Removes every previous option with the same name
+      multimap<string, string>::iterator   iter;
+      
+      while ( (iter = rtMAP.find (tOptionName)) != rtMAP.end() )
+      {
+        rtMAP.erase (iter);
+      }
+    }
+
+    // Inserts a new option entry in the map
+    rtMAP.insert (pair<const string, string> (tOptionName, tOptionValue));
+  }
+
+  tConfigFile.close();
+  delete pcBuffer;
+  
+  return true;
+  
+}  /* ProcessConfigFile() */
 
 
 void ProcessCommandLine (int argc, char* argv[])
@@ -69,17 +153,12 @@ void SetPaths (void)
   
   char*   pcEnv;
 
-  _tTopDir       = TOPDIR;
-  _tPluginPath   = PLUGIN_DIR;
-  _tTexturePath  = TEXTURE_DIR;
-  _tGradientPath = GRADIENT_DIR;
+  _tTopDir = TOPDIR;
 
-  TScene::_tIncludePath = INCLUDE_DIR;
-  
   if ( (pcEnv = getenv ("HOME")) != NULL )
   {
     _tLocalPath = string (pcEnv) + "/.panorama/";
-    if ( !FileExists (_tLocalPath + "pluginrc") )
+    if ( !FileExists (_tLocalPath + "config") )
     {
       _tLocalPath = _tTopDir + "/etc/";
     }
@@ -117,19 +196,40 @@ int main (int argc, char *argv[])
 
   SetPaths();
 
-  if ( !FileExists (_tLocalPath + "pluginrc") )
+  if ( !FileExists (_tLocalPath + "config") )
   {
-    cerr << "ERROR: Plugin configuration file does not exist." << endl;
+    cerr << "WARNING: No configuration file." << endl;
+  }
+  else
+  {
+    if ( !ProcessConfigFile (_tLocalPath + "config", tConfigData) )
+    {
+      cerr << "ERROR: Couldn't read configuration file." << endl;
+      exit (1);
+    }
+  }
+
+//  for (multimap<string, string>::const_iterator iter = tConfigData.begin(); ( iter != tConfigData.end() ) ;iter++)
+//  {
+//    cout << (*iter).first << " = " << (*iter).second << endl;
+//  }
+  
+  multimap<string, string>::const_iterator   iter = tConfigData.find ("PluginConfigFile");
+  string   tPluginConfigFile = ( iter != tConfigData.end() ) ? (*iter).second : _tLocalPath + "pluginrc";
+
+  if ( !FileExists (tPluginConfigFile) )
+  {
+    cerr << "ERROR: Plugin configuration file '" << tPluginConfigFile << "' does not exist." << endl;
     exit (1);
   }
 
   cout << "Loading plugins..." << endl;
-  tPluginManager.initialize (_tLocalPath + "pluginrc", _tPluginPath, 0);
+  tPluginManager.initialize (tPluginConfigFile, 0);
 
-  TGradient::_initialize (_tGradientPath);
+  TGradient::_initialize();
   TImageManager::_initialize();
   TSceneManager::_initialize();
-  tImageManager.initialize (_tTexturePath);
+  tImageManager.initialize();
 
   if ( !TSceneManager::_knownFormat (_tInputFileFormat) )
   {
