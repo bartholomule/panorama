@@ -10,6 +10,7 @@ point_light.plg
 projector.plg
 warn_light.plg
 mat_checker.plg
+mat_leopard.plg
 mat_noise.plg
 mat_worley.plg
 bezier.plg
