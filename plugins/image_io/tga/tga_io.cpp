@@ -33,7 +33,7 @@ int TImageTga::save (const TImage* pktIMAGE)
   size_t     zHeight = pktIMAGE->height();
   Byte*      pbRow   = new Byte [zWidth * 3];
 
-  sFile.open (tFileName.c_str(), ios::bin | ios::out);
+  sFile.open (tFileName.c_str(), ios::binary | ios::out);
 
   sFile << (Byte) 0;                         // Length of identifier string
   sFile << (Byte) 0;                         // Color map type (0 = no color map)
@@ -95,7 +95,7 @@ TImage* TImageTga::load (void)
   Byte       bPixelSize;
   int        iStart, iStop, iAdd;
 
-  sFile.open (tFileName.c_str(), ios::in | ios::nocreate | ios::bin);
+  sFile.open (tFileName.c_str(), ios::in | ios::binary);
 
   if ( !sFile )
   {
