@@ -76,13 +76,15 @@ void TObject::translate (const TVector& rktNEW_POS)
   
   TMatrix   tMatrix;
 
-  tMatrix.setTranslation (rktNEW_POS);
+  tMatrix.setTranslation (rktNEW_POS); 
   (*ptMatrix) = tMatrix * (*ptMatrix);
   tMatrix.setTranslation (-rktNEW_POS);
   (*ptInverseMatrix) = (*ptInverseMatrix) * tMatrix;
 
   // FIXME!  If it proves that translations are not working correctly, fix this:
-  //  TVolume::translate (rktNEW_POS);
+  //TVolume::translate (rktNEW_POS);
+
+  //  cerr << "TObject: translate: new location="; location().printDebug(""); cerr << endl;
   
 }  /* translate() */
 
@@ -259,11 +261,12 @@ void TObject::getAttributeList (TAttributeList& rtLIST) const
 TUserFunctionMap TObject::getUserFunctions()
 {
   TUserFunctionMap ufm = TVolume::getUserFunctions();
-  
+
   ufm["translate"]   = create_user_function(this,&TObject::translate);
   ufm["setMaterial"] = create_user_function(this,&TObject::setMaterial);
   ufm["getMaterial"] = create_user_function(this,&TObject::material);
   ufm["randomPoint"] = create_user_function(this,&TObject::RandomPointOnSurface);
+  ufm["setLocation"] = create_user_function(this,&TObject::setLocation);
 
   // A temp variable, so that full compile-time checking can be done (not
   // possible with a direct cast). 
@@ -280,7 +283,7 @@ TVector TObject::world_point_to_local(const TVector& point) const
 {
   if(!!ptMatrix)
   {
-    const TMatrix& rktMat = *ptMatrix;
+    const TMatrix& rktMat = *ptInverseMatrix;
 
     TScalar h = (rktMat.getElement(3, 0) * point.x() +
 		 rktMat.getElement(3, 1) * point.y() +
@@ -308,7 +311,7 @@ TVector TObject::world_vector_to_local(const TVector& vec) const
 {
   if(!!ptMatrix)
   {
-    const TMatrix& rktMat = *ptMatrix;
+    const TMatrix& rktMat = *ptInverseMatrix;
     
     TVector retvec ((rktMat.getElement(0, 0) * vec.x() +
 		     rktMat.getElement(0, 1) * vec.y() +
@@ -328,7 +331,7 @@ TVector TObject::world_normal_to_local(const TVector& norm) const
 {
   if(!!ptMatrix)
   {
-    const TMatrix& rktMat = *ptMatrix;
+    const TMatrix& rktMat = *ptInverseMatrix;
     
     TVector retvec ((rktMat.getElement(0, 0) * norm.x() +
 		     rktMat.getElement(1, 0) * norm.y() +
@@ -348,7 +351,7 @@ TVector TObject::local_point_to_world(const TVector& point) const
 {
   if(!!ptInverseMatrix)
   {
-    const TMatrix& rktMat = *ptInverseMatrix;
+    const TMatrix& rktMat = *ptMatrix;
 
     TScalar h = (rktMat.getElement(3, 0) * point.x() +
 		 rktMat.getElement(3, 1) * point.y() +
@@ -376,7 +379,7 @@ TVector TObject::local_vector_to_world(const TVector& vec) const
 {
   if(!!ptInverseMatrix)
   {
-    const TMatrix& rktMat = *ptInverseMatrix;
+    const TMatrix& rktMat = *ptMatrix;
     
     TVector retvec ((rktMat.getElement(0, 0) * vec.x() +
 		     rktMat.getElement(0, 1) * vec.y() +
@@ -396,7 +399,7 @@ TVector TObject::local_normal_to_world(const TVector& norm) const
 {
   if(!!ptInverseMatrix)
   {
-    const TMatrix& rktMat = *ptInverseMatrix;
+    const TMatrix& rktMat = *ptMatrix;
     
     TVector retvec ((rktMat.getElement(0, 0) * norm.x() +
 		     rktMat.getElement(1, 0) * norm.y() +

@@ -40,6 +40,17 @@ class TObject : public TVolume
     magic_pointer<TMaterial>     ptMaterial;
     FilterListType tObjectFilterList;
     size_t                       zObjectCode;
+
+    // To avoid all further confusion, these two matrices are going to have
+    // their purpose defined here.  Any deviation should be corrected.
+    // ptMatrix is the matrix to convert the LOCAL to the WORLD.
+    // ptInverseMatrix is the matrix to convert the WORLD to the LOCAL.
+    // This means, that any external item should be applied to ptInverseMatrix
+    // to become local.  As such, local coords should be applied to ptMatrix
+    // to become global (world).
+    // It is preferable to use the series of SOURCE_TYPE_to_DEST functions
+    // defined below, where source and dest can be 'world' or 'local', and type
+    // can be 'point', 'vector', or 'normal'.
     magic_pointer<TMatrix>                     ptMatrix;
     magic_pointer<TMatrix>                     ptInverseMatrix;
 

@@ -157,7 +157,7 @@ bool TScene::recursiveLocateLights(TObject* obj, TObjectVector& light_manip_list
 	    initialized = true;
 	    ones.setIdentity();
 	  }
-	  TVector location = inv_manip_matrix * zero;
+	  TVector location = manip_matrix * zero;
 
 
 	  // [FIXME!] What about other factors of the light that may be
