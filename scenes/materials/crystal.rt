@@ -1,0 +1,77 @@
+/*
+*  IOR test
+*/
+
+#include "materials.inc"
+
+define camera c
+{
+  translate	< 0, 150, 300>
+  look_at	< 0, 0, 0>
+}
+
+define light l1
+{
+  color { red 1.0 green 1.0 blue 1.0 }
+  intensity 2
+  translate < 0, 100, 100 >
+}
+
+sphere
+{
+  scale         <40, 40, 40>
+  translate     <-80, 0, 0>
+  material : extends MCrystal
+  {
+    color       CWhite
+    ior         1
+  }
+}
+
+sphere
+{
+  scale         <40, 40, 40>
+  translate     <0, 0, 0>
+  material : extends MCrystal
+  {
+    color       CWhite
+  }
+}
+
+sphere
+{
+  scale         <40, 40, 40>
+  translate     <80, 0, 0>
+  material : extends MDiamond
+  {
+    color       CWhite
+  }
+}
+
+plane
+{
+  translate	<0, -50, 0>
+  normal	<0, 1, 0>
+  material : extends MChecker
+  {
+    color	CBlue
+    base_color  CYellow
+    size        50
+    specular     0
+  }
+}
+
+scene
+{
+  camera	c
+  light         l1
+  width		600
+  height	400
+  background    CSummerSky
+  output
+  {
+    type        "png"
+    name	"crystal.png"
+  }
+  renderer : class Raytracer {}
+}
