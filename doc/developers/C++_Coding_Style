@@ -2,8 +2,9 @@
                     C++ Coding Style Guide
                     ======================
 
-  Version 0.3
+  Version 0.4
   Copyright (C) 1998 Angel Jimenez Jimenez
+  Changes Copyright (C) 2003 Kevin Harris
 
 
  0 .- INTRODUCTION
@@ -14,9 +15,9 @@
   code written by several people. Anyway, they are considered a work in
   development.
 
-   If you have some addition, correction or suggestion for this document,
-  please contact ajimenez@vnet.es.
-  
+  Changes have been made by Kevin Harris, and are marked with [KH].
+
+  [KH - Deleted incorrect contact info]
 
  1 .- CODE FORMATTING
 
@@ -45,6 +46,46 @@
      with the word 'class' and the class name, as in the example (a closed
      comment will be used to preserve C visual style).
 
+     [KH - Added the below]
+     If the inheritance list is too long for a single line (80 cols), the
+     entire list is to be placed at a standard indentation (2 spaces) from the
+     declaration, as follows. 
+
+       class SomeClass :
+         public SomeOtherLongClassName,
+         public AnotherVeryLongClassName
+       {
+
+         . . .
+
+       };  /* class SomeClass */
+
+     The exception to this rule is that long, templated declarations can, and
+     likely should have their members divided among lines, with subsequent
+     lines indented at either the level of the initial declaration plus 4
+     spaces (2 indent levels), or at the level of the first parameter (either
+     is acceptable).  Nested (compound) template parameters must have their
+     arguments indented in the same fashion as the enclosing declaration.
+     For legibility, blank lines may be added between parent class
+     declarations.  As an example:
+
+       class SomeTemplateDerived :
+         public SomeShortTemplate<ParamType1, ParamType2>,
+         public SomeVeryLongTemplate<ParamType1, ParamType2, LongParamType,
+             LongParamType2>,
+
+         public SomeVeryLongTemplate2<ParamType1, ParamType2, LongParamType,
+                                      LongParamType2>,
+
+         public SomeVeryLongTemplate3<ParamType1, ParamType2, LongParamType,
+	     NestedParamType<NestedParam1, NestedParam2, NestedParam3,
+                 NestedParam4> >
+       {
+
+         . . .
+
+       };  /* class SomeTemplateDerived */
+
    - Function definition:
 
      Function definitions will be aligned in the following way:
@@ -61,7 +102,8 @@
      A comment must be added after the function definition, leaving 2 spaces
      after the closing bracket. This comments includes the name of the
      function, with no parameters (e.g. 'function()'). Methods are treated in
-     the same way, but the class name is removed. Example:
+     the same way, but the class name is [KH ->] optionally [<- KH]
+     removed. Example: 
 
        void TClass::method (void)
        {
@@ -69,6 +111,13 @@
          . . .
           
        }  /* method() */
+
+     [KH - Added the following]
+     For overloaded functions or methods, parameter names (possibly shortened
+     or simplified) may be included in the final comment, however since people
+     usually forget to update comments when changing code, this should be used
+     sparingly, and usually only in cases when the parameters differ wildly
+     from functions or methods of the same name. 
 
    - A blank line should be added after the opening bracket and before the
      closing bracket in a function definition, class definition, etc. The only
@@ -80,12 +129,15 @@
      Preprocessor directives will always begin in the first column. As an
      exception to this rule, directives that are local to another scope
      (e.g. inside a function body) will be indented at the same level as
-     this scope.
+     this scope [KH ->]minus one indentation level, so they are clearly
+     distinguishable from everything else in that scope.[<- KH]
 
    - Comments:
 
-     Comment text will be in English language whenever possible. Multiline
-     comments will be formatted as in the next example:
+     Comment text will be in English language whenever possible. 
+     [KH ->]Comments within code are to use the C++ comment syntax '//',
+     instead of the C-Style syntax '/* */' [<- KH]
+     Multiline comments will be formatted as in the next example:
 
        :
        :
@@ -111,7 +163,24 @@
        :
        :
 
-   - Variable declaration:
+       [KH - Added the following]
+       Notes (normally used for emphasizing some requirement, side-effect, or
+       other important information) will be entered in the same way as
+       warnings, with sequential lines of one note being indented at the same
+       level as the note itself:  
+
+       :
+       :
+       //
+       //  Note: This is just an example of some note.  Typically, the note
+       //        would contain much more valuable information.
+       //
+       //        Second paragraph of the original note.
+       //
+       :
+       :
+
+   - Variable declaration: [FIXME!]
 
      Variable declaration will be at the top of the scope (whenever
      possible). Type begins at normal indentation (2 spaces). Pointers and
@@ -161,7 +230,8 @@
 
        AnotherFunction();
 
-   - Every source file should end with a newline character.
+   - Every source file should end with a newline character [KH ->] and
+     preferably at least one blank line. [<- KH]
 
    - Always put parameter names in function prototipes. Example:
 
@@ -174,7 +244,7 @@
        #include "user_include_header.h"
 
 
- 2 .- NAMING CONVENTIONS
+ 2 .- NAMING CONVENTIONS [FIXME!]
 
    - Variables
 
@@ -224,16 +294,21 @@
        word cannot be in mixed format (e.g. acronyms), a '_' character will
        be used as separator.
 
-   - Class names
+   - Class names [FIXME!]
 
      A class name will always begin with a capital 'T', optionally followed
      by one or more capital letters as a code for a given project and a
      mixed format description string (e.g. TPinholeCamera).
 
    - Member function names
+     
+     Member functions shall contain a underscore separated description string.
+     It is preferable to use all lower-case caracters.
 
+     [KH - Ignore this -->]
      Member function names will be a mixed format description string. This
      string must begin with a lower case (e.g. getArrayLength).
+     [<-- KH]
 
    - Normal function names
 
@@ -244,8 +319,10 @@
 
      Class attribute names will have the same format as normal variables.
 
-   - Function parameters are always upper case. Example:
+   - Function parameters are always upper case. Example: [FIXME!]
 
+     [KH - I don't like this, as all-uppercase identifiers should be reserved
+     for globals.]
        void TestFunction (int iTEST_PARAM, float fANOTHER_PARAM);
 
    - Static function names should begin with '_' (like static variables).
@@ -255,11 +332,11 @@
      programmer's criterion to choose the most intuitive name).
 
    - A 'get' method should have the name of the attribute it returns. A 'set'
-     method should add 'set' as a prefix. Example:
+     method should add 'set' as a prefix. Example: [FIXME!]
 
-       boundingBox();
+       boundingBox();    [KH - get_boundingbox();]
 
-       setBoundingBox();
+       setBoundingBox(); [KH - set_boundingbox();]
 
 
  3 .- CODING
@@ -275,23 +352,50 @@
    - Whenever possible, don't put more than one sentence in a single line.
    
    - Whenever possible, use Byte, Word or DWord types, instead of int, long,
-     unsigned, etc. This way, type size is always known.
+     unsigned, etc. This way, type size is always known. 
+
+     [KH - This is only important when using size-dependent operations. ]
 
    - For variables used as indices in a 'for' loop, always use the smaller
      possible type (Byte < Word < DWord). Whenever possible, these variables
      should have local scope, instead of being declared in an outer scope.
 
+     [KH - There are performance issuses with following this requirement.  For
+      most purposes, the processor-optimal type should normally be used: int,
+      unsigned, or size_t (when using stl)]
+
    - Non trivial objects should always be passed by reference. If they are not
      going to be modified, const reference should be used.
 
-   - Header files should begin and end with:
+  [KH - Fixed this to be something more reasonable]
+   - Header files should be wraped in include guards to prevent multiple
+     inclusion.  These include guards shall be implemented as follows:
+     
+      #if       !defined(SYMBOL)
+      #define            SYMBOL
 
-       #ifndef _SYMBOL__
-       #define _SYMBOL__
+      . . .
 
-       . . .
+      #endif /* !defined(SYMBOL) */
 
-       #endif  /* _SYMBOL__ */
+      The package may optionally define a number of underscores to be prepended
+      and appended to the include-guard symbol.
+
+      Where SYMBOL is an all-uppercase version of the filename, periods ('.')
+      replaced by underscores ('_'), prepended by an all-uppercase version
+      (potentially shortened, as defined by the package) of the package name
+      and an underscore.  
+
+      That is:  SYMBOL ::= <PACKAGE_TEXT>_<FILENAME_BASE>_<FILENAME_EXTENSION>
+
+      For example:
+
+      #if       !defined(PKG_FILENAME_H)
+      #define            PKG_FILENAME_H
+
+      . . .
+
+      #endif /* !defined(PKG_FILENAME_H) */
 
    - Never use a signed type for a magnitude that is not going to have negative
      values.
@@ -327,35 +431,48 @@
 
    - Whenever possible, use C++ constants instead of #define's.
 
-   - Data members should be private or protected. If necessary, 'set'/'get'
-     methods will be provided.
+   [KH - Added distinction between classes and structs in this]
+   - Class data members should be private or protected. If necessary,
+     'set'/'get' methods will be provided.  
+
+   - Struct data members should be public, and structs that require private or
+     protected members should usually be written as classes instead of stucts.
 
    - Always declare methods that do not modify attributes as const.
 
-   - Class members should be declared in the order: friend, private, protected,
-     and public. Indentation is done in the following way:
+
+  [KH - Moved access qualifiers left to align with braces, reversed the order
+   of access qualifiers]
+   - Class members should be declared in the order: friend, public, protected,
+     and private. Indentation is done in the following way:
+
 
        class TClassName
        {
 
          friend TAnotherClassName;
 
-         private:
+       public:
 
-           int   iSomePrivateData;
+         TClassName()
+         {
+           . . .
+         }
 
-         protected:
+       protected:
 
-           int   iSomeProtectedData;
+         int   iSomeProtectedData;
 
-         public:
+       private:
 
-           TClassName()
-           {
-             . . .
-           }
+         int   iSomePrivateData;
 
        };  /* class TClassName */
+
+     [KH - Added the following]
+     Method ordering should be done as: 
+       non-copy constructors, copy constructor, assignment operator,
+       destructor, getters/setters, static methods, operators, general methods
 
    - For boolean variables, always use C++ bool type.
 
@@ -365,5 +482,11 @@
  5 .- SOURCE FILES
 
    - Source file names are always lower case, with '_' separating words.
-     Extensions are '.cpp' and '.h'.
+     Extensions are '.cpp' and '.h'.  
+
+     [KH Added the below]
+     For newer packages, the extension '.hpp' is acceptable for use in C++
+     header files.  This is, however, a package-wide decision, and should match
+     the package standard. 
+	
 
