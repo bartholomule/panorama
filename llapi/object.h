@@ -133,7 +133,6 @@ class TObject : public TVolume
     void scale (const TVector& rktSCALING_XYZ, const TVector& rktPOINT);
 
     virtual TVector normal (const TSurfaceData& rktDATA) const;
-    TVector normal (const TSurfaceData& rktDATA, const TVector& rktALTERNATE) const;
 
     TBoundingBox boundingBox (void) const { return tBoundingBox; }
     TMaterial* material (void) const { return ptMaterial; }
@@ -178,26 +177,6 @@ inline TVector TObject::normal (const TSurfaceData& rktDATA) const
   TVector   tNormal = localNormal (tPoint);
 
   tNormal.applyTransform (ptInverseMatrix);
-  tNormal.normalize();
-
-  return tNormal;
-
-}  /* normal() */
-
-
-inline TVector TObject::normal (const TSurfaceData& rktDATA, const TVector& rktALTERNATE) const
-{
-
-  TVector   tPoint  = (*ptInverseMatrix) * rktDATA.point();
-  TVector   tNormal = localNormal (tPoint);
-
-  tNormal.applyTransform (ptInverseMatrix);
-
-  if ( tNormal.norm() < FX_EPSILON )
-  {
-    tNormal = rktALTERNATE;
-  }
-
   tNormal.normalize();
 
   return tNormal;
