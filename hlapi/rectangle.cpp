@@ -40,7 +40,7 @@ void TRectangle::update (void)
   atCoord[1] = Convert3DTo2D (atVertex[1], bDom);
   atCoord[2] = Convert3DTo2D (atVertex[2], bDom);
   atCoord[3] = Convert3DTo2D (atVertex[3], bDom);
-
+  
   TPlane::update();
 
 }  /* update() */
@@ -66,7 +66,7 @@ bool TRectangle::initialize (void)
 
 void TRectangle::translate (const TVector& rktNEW_POS)
 {
-
+  
   TVector   tDiff = (rktNEW_POS - atVertex[0]);
 
   atVertex[0] = atVertex[0] + tDiff;
@@ -74,7 +74,10 @@ void TRectangle::translate (const TVector& rktNEW_POS)
   atVertex[2] = atVertex[2] + tDiff;
   atVertex[3] = atVertex[3] + tDiff;
 
-  update();
+  // [Ceckme!] Does anything else need to be done to this object?
+  // This used to call the regular update, and that, with some other changes,
+  // ended up as a mutual recursive loop.  Is anything missing?
+  TPlane::update();
 
 }  /* translate() */
 
