@@ -35,8 +35,9 @@ TVector TCylinder::localNormal (const TVector& rktPOINT) const
 }  /* localNormal() */
 
 
-void TCylinder::initialize (void)
+bool TCylinder::initialize (void)
 {
+  bool val = true;
   TVector tAxis;
   TVector tCentre;
   TScalar tDistance;
@@ -99,7 +100,7 @@ void TCylinder::initialize (void)
   tTP = (*ptMatrix) * tTP;
   tTP.printDebug();
 */    
-  TObject::initialize();
+  return val && TObject::initialize();
   
 }  /* initialize() */
 

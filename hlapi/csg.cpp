@@ -388,14 +388,14 @@ bool TCsg::findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) const
 }  /* findAllIntersections() */
 
 
-void TCsg::initialize (void)
+bool TCsg::initialize (void)
 {
-
+  
   TObjectList::iterator   tIter;
 
   assert ( tObjectList.size() >= 2 );
 
-  TAggregate::initialize();
+  bool val = TAggregate::initialize();
 
   switch ( eOperation )
   {
@@ -422,5 +422,7 @@ void TCsg::initialize (void)
     }
     break;
   }
+  
+  return val;
 
 }  /* initialize() */

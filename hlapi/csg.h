@@ -41,7 +41,7 @@ class TCsg : public TAggregate
       eOperation = eOP;
     }
 
-    void initialize (void);
+    bool initialize (void);
 
     bool findFirstIntersection (const TRay& rktRAY, TSurfaceData& rtDATA) const;
     bool findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) const;

@@ -119,7 +119,7 @@ class TCone : public TObject
 * This routine calculates the transform and inverse transform required to map between world
 * and object space.
 */      
-    void initialize (void);
+    bool initialize (void);
 
 /*
 * Generic intersection test.

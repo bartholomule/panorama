@@ -18,9 +18,10 @@
 
 #include "hlapi/aggregate.h"
 
-void TAggregate::initialize (void)
+bool TAggregate::initialize (void)
 {
-
+  bool val = TObject::initialize();
+  
   TObjectList::iterator   tIter;
   TObject*                ptObj;
   TMatrix*                ptMat;
@@ -41,11 +42,12 @@ void TAggregate::initialize (void)
       ptObj->setInverseTransformMatrix ((*ptMat) * (*ptInverseMatrix));
     }
 
-    ptObj->initialize();
+    val = val && ptObj->initialize();
   }
 
   tBoundingBox = Merge (tObjectList);
-  
+
+  return val;
 }  /* initialize() */
 
 

@@ -20,15 +20,16 @@
 #include "llapi/math_tools.h"
 #include "hlapi/sphere.h"
 
-void TSphere::initialize (void)
+bool TSphere::initialize (void)
 {
+  bool val = true;
 
   tBoundingBox.set (TVector (-tRadius, -tRadius, -tRadius),
                     TVector (tRadius, tRadius, tRadius));
 
   tBoundingBox.applyTransform (*ptMatrix);
   
-  TObject::initialize();
+  return val && TObject::initialize();
   
 }  /* initialize() */
 

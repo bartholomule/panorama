@@ -108,7 +108,7 @@ class TAggregate : public TObject
     void setObjectCode (size_t zCODE);
     void addFilter (const TObjectFilter* pktFILTER);
 
-    void initialize (void);
+    bool initialize (void);
     void finalize (void);
 
     bool findFirstIntersection (const TRay& rktRAY, TSurfaceData& rtDATA) const;
@@ -123,6 +123,8 @@ class TAggregate : public TObject
     {
       return &tObjectList;
     }
+
+    bool containsOjects() const { return !tObjectList.empty(); }
 
     bool containsObject (const TObject* pktObject);
   

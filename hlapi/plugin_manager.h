@@ -29,9 +29,7 @@
 #if ( STATIC_LINK == 0 )
 
 #define DEFINE_PLUGIN(NAME, CLASS, TYPE) \
-  extern "C" int _registerPlugin (DWord dwVERSION, TPluginData* ptDATA); \
-  \
-  static int _registerPlugin (DWord dwVERSION, TPluginData* ptDATA) \
+  extern "C" int _registerPlugin (DWord dwVERSION, TPluginData* ptDATA) \
   { \
     ptDATA->tPluginName      = NAME; \
     ptDATA->eClass           = CLASS; \
@@ -49,18 +47,14 @@
   }
 
 #define DEFINE_SCENE_IO_PLUGIN(NAME, TYPE) \
-  extern "C" int _registerPlugin (DWord dwVERSION, TPluginData* ptDATA); \
-  \
-  static int _registerPlugin (DWord dwVERSION, TPluginData* ptDATA) \
+  extern "C" int _registerPlugin (DWord dwVERSION, TPluginData* ptDATA) \
   { \
     TSceneManager::_addFormat (NAME, &TYPE::_load, &TYPE::_save); \
     return 0; \
   }
 
 #define DEFINE_IMAGE_IO_PLUGIN(NAME, TYPE) \
-  extern "C" int _registerPlugin (DWord dwVERSION, TPluginData* ptDATA); \
-  \
-  static int _registerPlugin (DWord dwVERSION, TPluginData* ptDATA) \
+  extern "C" int _registerPlugin (DWord dwVERSION, TPluginData* ptDATA) \
   { \
     TImageManager::_addFormat (NAME, &TYPE::_create); \
     return 0; \
@@ -76,9 +70,7 @@
   }
 
 #define DEFINE_IMAGE_IO_PLUGIN_WITH_ALIAS(NAME, ALIAS, TYPE) \
-  extern "C" int _registerPlugin (DWord dwVERSION, TPluginData* ptDATA); \
-  \
-  static int _registerPlugin (DWord dwVERSION, TPluginData* ptDATA) \
+  extern "C" int _registerPlugin (DWord dwVERSION, TPluginData* ptDATA) \
   { \
     TImageManager::_addFormat (NAME, &TYPE::_create, ALIAS); \
     return 0; \
@@ -151,7 +143,7 @@ class TPluginManager
 
   public:
 
-    void initialize (const string& rktCONFIG_FILE, DWord dwVERSION);
+    bool initialize (const string& rktCONFIG_FILE, DWord dwVERSION);
 
     int registerPlugin (TPluginData* ptDATA);
 

@@ -21,8 +21,9 @@
 #include "llapi/vector_tools.h"
 #include "hlapi/triangle.h"
 
-void TTriangle::initialize (void)
+bool TTriangle::initialize (void)
 {
+  bool val = true;
 
   TVector   tMin (min (atVertex[0].x(), min (atVertex[1].x(), atVertex[2].x())),
                   min (atVertex[0].y(), min (atVertex[1].y(), atVertex[2].y())),
@@ -33,7 +34,7 @@ void TTriangle::initialize (void)
 
   tBoundingBox.set (tMin, tMax);
 
-  TPlane::initialize();
+  return val && TPlane::initialize();
   
 }  /* initialize() */
 

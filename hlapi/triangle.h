@@ -42,7 +42,7 @@ class TTriangle : public TPlane
       sCapabilities.gInfinite = false;
     }
 
-    void initialize (void);
+    bool initialize (void);
 
     void translate (const TVector& rktNEW_POS);
 

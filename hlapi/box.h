@@ -51,7 +51,7 @@ class TBox : public TObject
     /**
     * Sets the bounding box and transformation matrix
     */
-    void initialize (void);
+    bool initialize (void);
     
     /**
     * Returns the first intersection of a given ray with the object.

@@ -36,7 +36,6 @@ TPluginManager   tPluginManager;
 
 int TPluginManager::loadPlugin (const string& rktNAME)
 {
-
 #if ( STATIC_LINK == 0 )
 
   int                  iError;
@@ -57,7 +56,7 @@ int TPluginManager::loadPlugin (const string& rktNAME)
     iter = tConfigData.find ("PluginPath");
     while ( ( iter != tConfigData.end() ) && ( (*iter).first == "PluginPath" ) )
     {
-      string   tAux ((*iter).second + "/" + rktNAME);
+      string   tAux (iter->second + '/' + rktNAME);
       
       if ( FileExists (tAux) )
       {
@@ -85,6 +84,14 @@ int TPluginManager::loadPlugin (const string& rktNAME)
     }
     else
     {
+      static string filler;
+      if(rktNAME.length() > filler.length())
+      {
+	filler.insert(filler.begin(),
+		      rktNAME.length() - filler.length(),
+		      ' ');
+      }
+	
       ptPluginData = new TPluginData();
     
       iError = (*pfRegister) (dwVersion, ptPluginData);
@@ -98,6 +105,11 @@ int TPluginManager::loadPlugin (const string& rktNAME)
       {
         if ( ptPluginData->tPluginName != "" )
         {
+	  cerr << "Loading plugin "
+	       << rktNAME
+	       << filler.substr(0,max(filler.length() - rktNAME.length(),(size_t)1))
+	       << "\r"
+	       << flush;
           registerPlugin (ptPluginData);
         }
       }
@@ -111,9 +123,10 @@ int TPluginManager::loadPlugin (const string& rktNAME)
 }  /* loadPlugin() */
 
 
-void TPluginManager::initialize (const string& rktCONFIG_FILE, DWord dwVERSION)
+bool TPluginManager::initialize (const string& rktCONFIG_FILE, DWord dwVERSION)
 {
-
+  cout << __PRETTY_FUNCTION__ << endl;
+  bool val = true;
 #if ( STATIC_LINK == 0 )
 
   ifstream   tFile;
@@ -136,12 +149,12 @@ void TPluginManager::initialize (const string& rktCONFIG_FILE, DWord dwVERSION)
     {
       continue;
     }
-    
+
     loadPlugin (acPluginName);
   }
   
 #endif
-  
+  return val;
 }  /* initialize() */
 
 

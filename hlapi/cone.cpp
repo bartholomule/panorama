@@ -272,9 +272,10 @@ bool TCone::intersectionsWithRootCone (const TRay& rktRAY, TSpanList& rtLIST) co
 }  /* intersectionsWithRootCone() */
 
 
-void TCone::initialize (void)
+bool TCone::initialize (void)
 {
-
+  bool val = true;
+  
   if ( tMinRadius != 0 )
   {
     TVector   tTmp;
@@ -337,7 +338,7 @@ void TCone::initialize (void)
     tBoundingBox.applyTransform (*ptMatrix);
   }
 
-  TObject::initialize();
+  return val && TObject::initialize();
 
 }  /* initialize() */
 

@@ -53,14 +53,17 @@
 #include "plugins/perturbation/marble/per_marble.h"
 #include "plugins/perturbation/noise/per_noise.h"
 #include "plugins/perturbation/worley/per_worley.h"
-#include "plugins/object/abvh/abvh.h"
 #include "plugins/object/aggregate_uniform_grid/aggregate_uniform_grid.h"
 #include "plugins/object/bezier/bezier.h"
-#include "plugins/object/subdiv/subdiv.h"
-#include "plugins/object/height_field/height_field.h"
-#include "plugins/object/lwo/lwo.h"
-#include "plugins/object/polyhedron/polyhedron.h"
 #include "plugins/object_filter/cartoon/of_cartoon.h"
 #include "plugins/object_filter/convert_to_grey/of_convert_to_grey.h"
 #include "plugins/renderer/raytracer/raytracer.h"
+
+#if       defined(USE_EXPERIMENTAL)
+#include "plugins/object/abvh/abvh.h"
+#include "plugins/object/height_field/height_field.h"
+#include "plugins/object/lwo/lwo.h"
+#include "plugins/object/polyhedron/polyhedron.h"
+#include "plugins/object/subdiv/subdiv.h"
 #include "plugins/renderer/zbuffer/zbuffer.h"
+#endif /* defined(USE_EXPERIMENTAL) */

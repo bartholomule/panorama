@@ -43,9 +43,10 @@ void TRectangle::update (void)
 }  /* update() */
 
 
-void TRectangle::initialize (void)
+bool TRectangle::initialize (void)
 {
-
+  bool val = true;
+  
   TVector   tMin (min (min (atVertex[0].x(), atVertex[1].x()), min (atVertex[2].x(), atVertex[3].x())),
                   min (min (atVertex[0].y(), atVertex[1].y()), min (atVertex[2].y(), atVertex[3].y())),
                   min (min (atVertex[0].z(), atVertex[1].z()), min (atVertex[2].z(), atVertex[3].z())));
@@ -55,7 +56,7 @@ void TRectangle::initialize (void)
 
   tBoundingBox.set (tMin, tMax);
 
-  TPlane::initialize();
+  return val && TPlane::initialize();
   
 }  /* initialize() */
 

@@ -48,7 +48,7 @@ class TCylinder : public TObject
       gOpen        = false;
     }
       
-    void initialize (void);
+    bool initialize (void);
     
     bool findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) const;
 

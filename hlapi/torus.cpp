@@ -37,8 +37,9 @@ TVector TTorus::localNormal (const TVector& rktPOINT) const
 }  /* localNormal() */
 
 
-void TTorus::initialize (void)
+bool TTorus::initialize (void)
 {
+  bool val = true;
 
   TScalar   a  = sqrt (tRadiusA2);
   TScalar   b  = sqrt (tRadiusB2);
@@ -47,7 +48,7 @@ void TTorus::initialize (void)
   tBoundingBox.set (TVector (-ab, -b, -ab), TVector (ab, b, ab));
   tBoundingBox.applyTransform (*ptMatrix);
 
-  TObject::initialize();
+  return val && TObject::initialize();
   
 }  /* initialize() */
 

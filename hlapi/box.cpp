@@ -60,12 +60,12 @@ TVector TBox::localNormal (const TVector& rktPOINT) const
 }  /* localNormal() */
 
 
-void TBox::initialize (void)
+bool TBox::initialize (void)
 {
   tBoundingBox.set (TVector (tXmin, tYmin, tZmin), TVector (tXmax, tYmax, tZmax));
   tBoundingBox.applyTransform (*ptMatrix);
 
-  TObject::initialize();
+  return TObject::initialize();
   
 }  /* initialize() */
 

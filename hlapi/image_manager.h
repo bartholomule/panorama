@@ -59,7 +59,7 @@ class TImageManager
       
     ~TImageManager (void);
     
-    void initialize (void) {}
+    bool initialize (void) { return true; }
 
     TImage* newImage (const string& rktNAME, const string& rktFORMAT);
 
