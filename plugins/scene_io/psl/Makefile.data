@@ -1,0 +1,2 @@
+PLUGIN_NAME = psl_io
+OBJ         = parser.o scanner.o psl_io.o
