@@ -7,3 +7,9 @@ Debugging:
      ... // Perform non-debug initialization
      debug(on); // Turns on debugging...
      ... // Test something for debugging purposes.
+
+RT:
+  For comparisons, use '>.' instead of '>'.  This is so that the '>' symbol can
+  be used for vectors (mostly for backwards compatibility).  If this becomes
+  too cumbersome (which I don't forsee it being), the syntax for vectors can be
+  replaced. 

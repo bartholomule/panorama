@@ -1,4 +1,30 @@
-* Finish working on the 'if' statements in the new rt language.  Currently,
-  they work for definitions only, and only if it is outside of any object
-  declarations or modifications.  When finished, I should be able to perform
-  recursion.
+* Add 3-parameter functions to <llapi/extended_user_functions.h>
+* Attributes need a true 'any' kind and a true 'none' kind (type matching).
+* Object Filters (in the new RT)
+* Image Filters (in the new RT)
+* RT needs some method of allowing multiple stack frames.
+  Possibly something like this:
+  enter(RETURN_NAME);   // enter a stack frame, storing the value
+                        // returned upon leaving in the given (local)
+                        // variable name.  
+
+  ... Do junk...
+
+  define  -- Affects *LOCAL* frame.
+  redefine -- Affects frame where it is currently defined (if not
+              defined, sets in local).
+
+  defined -- checks all frames.
+
+  ... End junk...
+
+  leave(RETURN_VALUE);  // Place the return value given into the
+                        // previous stack frame under the variable
+                        // name given in the corresponding enter()
+                        // call. 
+* Consider replacing 'define', 'redefine', and 'defined' with functions
+  instead of being internal (parser) constructs.  
+* Consider adding a 'local' function, for defining a local variable
+  capable of assignment using the ASSIGN operator.  If already visible
+  in the local scope, or part of an attribute of a currently active
+  object, a warning (or error) should be emitted.
