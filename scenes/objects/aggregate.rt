@@ -1,0 +1,74 @@
+/*
+*  Aggregate test
+*/
+
+#include "materials.inc"
+
+define camera c
+{
+  translate	<0, 200, 500>
+  look_at	<0, 0, 0>
+}
+
+define light l
+{
+  translate	<500, 500, 500>
+  color		CWhite
+}
+
+define aggregate a
+{
+box
+{
+  scale         <40, 40, 100>
+  rotate	<0, 0, 0>
+  material : extends MPlastic
+  {
+    color	CRed
+  }
+}
+box
+{
+  scale         <40, 40, 100>
+  rotate	<0, 90, 0>
+  material : extends MPlastic
+  {
+    color	CBlue
+  }
+}
+box
+{
+  scale         <40, 40, 100>
+  rotate	<90, 0, 0>
+  material : extends MPlastic
+  {
+    color	CGreen
+  }
+}
+}
+
+aggregate : extends a
+{
+  translate     <-100, 0, 0>
+}
+
+aggregate : extends a
+{
+  scale         <1.5, 1.5, 1.5>
+  translate     <100, 0, 0>
+  rotate        <0, 0, 45>
+}
+
+scene
+{
+  camera	c
+  light		l
+  width		400
+  height	400
+  background	CSummerSky
+  output
+  {
+    name	"aggregate.tga"
+  }
+  renderer : class Raytracer {}
+}
