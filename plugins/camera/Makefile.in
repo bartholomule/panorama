@@ -1,6 +1,7 @@
 
 BUILD_TOP = ../..
 
-DIRS = pinhole
+DIRS = parallel \
+       pinhole
 
 include ${BUILD_TOP}/Makefile.targets
