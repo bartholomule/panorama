@@ -84,19 +84,20 @@ void TObject::rotate (const TVector& rktANGLESXYZ)
 
   tOrigin = (*ptMatrix) * tOrigin;
 
-  tAxisX  = (*ptMatrix) * tAxisX;
+  tAxisX = (*ptMatrix) * tAxisX;
+  tAxisY = (*ptMatrix) * tAxisY;
+  tAxisZ = (*ptMatrix) * tAxisZ;
+
   tMatrix.setRotation (tOrigin, tAxisX, rktANGLESXYZ.x());
   (*ptMatrix) = tMatrix * (*ptMatrix);
   tMatrix.setRotation (tOrigin, tAxisX, -(rktANGLESXYZ.x()));
   (*ptInverseMatrix) = (*ptInverseMatrix) * tMatrix;
 
-  tAxisY = (*ptMatrix) * tAxisY;
   tMatrix.setRotation (tOrigin, tAxisY, rktANGLESXYZ.y());
   (*ptMatrix) = tMatrix * (*ptMatrix);
   tMatrix.setRotation (tOrigin, tAxisY, -(rktANGLESXYZ.y()));
   (*ptInverseMatrix) = (*ptInverseMatrix) * tMatrix;
 
-  tAxisZ = (*ptMatrix) * tAxisZ;
   tMatrix.setRotation (tOrigin, tAxisZ, rktANGLESXYZ.z());
   (*ptMatrix) = tMatrix * (*ptMatrix);
   tMatrix.setRotation (tOrigin, tAxisZ, -(rktANGLESXYZ.z()));
