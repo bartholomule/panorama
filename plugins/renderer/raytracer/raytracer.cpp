@@ -728,6 +728,7 @@ void TRaytracer::getAttributeList (TAttributeList& rtLIST) const
   rtLIST ["depth"]    = FX_REAL;
   rtLIST ["max_diff"] = FX_REAL;
   rtLIST ["aa_depth"] = FX_REAL;
+  rtLIST ["sampling"] = FX_STRING;  
 
 }  /* getAttributeList() */
 

@@ -115,6 +115,7 @@ void TZBufferRenderer::getAttributeList (TAttributeList& rtLIST) const
   TRaytracer::getAttributeList (rtLIST);
 
   rtLIST ["backface"] = FX_BOOL;
+  rtLIST ["shading"]  = FX_STRING;  
 
 }  /* getAttributeList() */
 
