@@ -19,8 +19,8 @@
 #ifndef _TOOLS__
 #define _TOOLS__
 
-#include <stdlib.h>
-#include <algobase.h>
+#include <cstdlib>
+#include <algorithm>
 #include "llapi/machine.h"
 
 inline int sign (double dNUMBER)

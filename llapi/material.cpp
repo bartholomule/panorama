@@ -16,7 +16,7 @@
 *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include <assert.h>
+#include <cassert>
 #include "llapi/math_tools.h"
 #include "llapi/material.h"
 #include "llapi/object.h"

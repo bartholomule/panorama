@@ -19,7 +19,7 @@
 #ifndef _PARSER_DEFS__
 #define _PARSER_DEFS__
 
-#include <stdio.h>
+#include <cstdio>
 #include <string>
 
 #define MAX_IDENTIFIER		31

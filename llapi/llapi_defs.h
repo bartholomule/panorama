@@ -19,7 +19,7 @@
 #ifndef _LLAPI_DEFS__
 #define _LLAPI_DEFS__
 
-#include <float.h>
+#include <cfloat>
 #include "llapi/vector2d.h"
 #include "llapi/vector3d.h"
 #include "llapi/frame.h"

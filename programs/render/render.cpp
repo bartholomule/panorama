@@ -16,8 +16,8 @@
 *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include <time.h>
-#include <iostream.h>
+#include <ctime>
+#include <iostream>
 #include "llapi/file.h"
 #include "llapi/scene.h"
 #include "hlapi/plugin_manager.h"

@@ -19,8 +19,8 @@
 #ifndef _PRIORITY_QUEUE__
 #define _PRIORITY_QUEUE__
 
-#include <assert.h>
-#include <iostream.h>
+#include <cassert>
+#include <iostream>
 #include "llapi/llapi_defs.h"
 
 #define PARENT(K) ((K) / 2)

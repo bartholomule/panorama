@@ -25,7 +25,7 @@
 *  Sep  3, 1998    Cleanup to use as C++ code [Angel Jimenez]
 */
 
-#include <math.h>
+#include <cmath>
 #include "llapi/machine.h"
 #include "llapi/root_solver.h"
 

@@ -16,8 +16,8 @@
 *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include <math.h>
-#include <iostream.h>
+#include <cmath>
+#include <iostream>
 #include "hlapi/box.h"
 
 TVector TBox::localNormal (const TVector& rktPOINT) const

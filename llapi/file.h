@@ -20,7 +20,7 @@
 #define _FILE__
 
 #include <string>
-#include <fstream.h>
+#include <fstream>
 #include "llapi/machine.h"
 
 #define FX_LITTLE_ENDIAN         (0)

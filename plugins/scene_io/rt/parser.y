@@ -21,12 +21,12 @@
 #include <map>
 #include <stack>
 #include <string>
-#include <iostream.h>
-#include "parser_defs.h"
-#include "rt_io.h"
+#include <iostream>
 #include "llapi/llapi_all.h"
 #include "hlapi/hlapi_all.h"
 #include "hlapi/class_manager.h"
+#include "parser_defs.h"
+#include "rt_io.h"
 
 static map<string, TBaseClass*, less<string> >        _tObjectMap;
 static map<string, TColor, less<string> >             _tColorMap;

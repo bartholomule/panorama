@@ -16,7 +16,7 @@
 *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include <math.h>
+#include <cmath>
 #include "llapi/scene.h"
 #include "if_cartoon.h"
 

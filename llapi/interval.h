@@ -19,8 +19,8 @@
 #ifndef _INTERVAL__
 #define _INTERVAL__
 
-#include <assert.h>
-#include <iostream.h>
+#include <cassert>
+#include <iostream>
 #include "llapi/machine.h"
 #include "llapi/math_tools.h"
 

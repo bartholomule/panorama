@@ -19,8 +19,8 @@
 #ifndef _VECTOR_2D__
 #define _VECTOR_2D__
 
-#include <assert.h>
-#include <iostream.h>
+#include <cassert>
+#include <iostream>
 #include "llapi/machine.h"
 
 template <class TItem>
@@ -265,6 +265,15 @@ inline TVector2D<TItem> operator * (const TVector2D<TItem>& rktVECTOR, TItem tIT
 {
 
   return TVector2D<TItem> (rktVECTOR.x() * tITEM, rktVECTOR.y() * tITEM);
+
+}  /* operator * () */
+
+
+template <class TItem>
+inline TVector2D<TItem> operator * (TItem tITEM, const TVector2D<TItem>& rktVECTOR)
+{
+
+  return rktVECTOR * tITEM;
 
 }  /* operator * () */
 

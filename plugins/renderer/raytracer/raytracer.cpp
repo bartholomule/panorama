@@ -16,9 +16,9 @@
 *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include <iostream.h>
-#include <assert.h>
-#include <stdlib.h>
+#include <cassert>
+#include <cstdlib>
+#include <iostream>
 #include "llapi/object.h"
 #include "llapi/material.h"
 #include "llapi/scene.h"
@@ -790,6 +790,7 @@ TColor TRaytracer::specularReflectedLight (const TSurfaceData& rktDATA, Word wDE
   if ( wDEPTH-- )
   {
     tRay = rktDATA.ray();
+    tRay.setLimit (SCALAR_MAX);
     tRay.setLocation (rktDATA.point());
 
     if ( ptMaterial->transparent (rktDATA) && dotProduct (rktDATA.ray().direction(), tNormal) > 0 )
@@ -825,6 +826,8 @@ TColor TRaytracer::specularTransmittedLight (const TSurfaceData& rktDATA, Word w
   TRay           tRay       = rktDATA.ray();
   TVector        tNormal    = rktDATA.normal();
   TMaterial*     ptMaterial = rktDATA.object()->material();
+
+  tRay.setLimit (SCALAR_MAX);
 
   if ( wDEPTH-- )
   {

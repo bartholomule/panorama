@@ -19,7 +19,7 @@
 %{
 
 #include <string>
-#include <iostream.h>
+#include <iostream>
 #include "llapi/llapi_all.h"
 #include "hlapi/mesh_object.h"
 #include "parser_defs.h"

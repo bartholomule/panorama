@@ -19,7 +19,7 @@
 #ifndef _MATRIX__
 #define _MATRIX__
 
-#include <iostream.h>
+#include <iostream>
 #include "llapi/vector3d.h"
 #include "llapi/math_tools.h"
 

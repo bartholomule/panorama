@@ -19,7 +19,7 @@
 #ifndef _COLOR__
 #define _COLOR__
 
-#include <math.h>
+#include <cmath>
 #include "llapi/machine.h"
 #include "llapi/math_tools.h"
 

@@ -16,14 +16,14 @@
 *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "rt_io.h"
 #include "hlapi/scene_manager.h"
+#include "rt_io.h"
+
+DEFINE_SCENE_IO_PLUGIN ("rt", TSceneRT);
 
 string    TSceneRT::_tInputFileName = "";
 DWord     TSceneRT::_dwLineNumber   = 1L;
 TScene*   TSceneRT::_ptParsedScene  = NULL;
-
-DEFINE_SCENE_IO_PLUGIN ("rt", TSceneRT);
 
 TScene* TSceneRT::_load (const string& rktNAME)
 {

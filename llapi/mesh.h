@@ -32,7 +32,7 @@ class TMesh
 
     struct TFace
     {
-      size_t           azVertex [3];   // This values are indices in the edge list
+      size_t           azVertex [3];   // This values are indices in the vertex list
       TVector          tNormal;
       TScalar          D;
       const TObject*   pktObject;

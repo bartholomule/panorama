@@ -16,7 +16,7 @@
 *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include <assert.h>
+#include <cassert>
 #include "llapi/transform_object.h"
 
 void TTransformObject::createMatrices (void)

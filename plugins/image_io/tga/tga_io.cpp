@@ -16,9 +16,9 @@
 *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include <fstream.h>
-#include "tga_io.h"
+#include <fstream>
 #include "hlapi/image_manager.h"
+#include "tga_io.h"
 
 DEFINE_IMAGE_IO_PLUGIN ("tga", TImageTga);
 

@@ -16,7 +16,7 @@
 *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include <math.h>
+#include <cmath>
 #include "llapi/math_tools.h"
 #include "llapi/vector.h"
 #include "hlapi/rectangle.h"

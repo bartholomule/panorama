@@ -16,7 +16,7 @@
 *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include <iostream.h>
+#include <iostream>
 #include "hlapi/image_manager.h"
 #include "hlapi/plugin_manager.h"
 #include "plugins/image_io/tga/tga_io.h"

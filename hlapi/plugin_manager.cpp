@@ -17,8 +17,8 @@
 */
 
 #include <dlfcn.h>
-#include <fstream.h>
-#include <iostream.h>
+#include <fstream>
+#include <iostream>
 #include "hlapi/plugin_manager.h"
 
 TPluginManager   tPluginManager;

@@ -19,9 +19,9 @@
 #ifndef _VECTOR_3D__
 #define _VECTOR_3D__
 
-#include <assert.h>
-#include <math.h>
-#include <iostream.h>
+#include <cassert>
+#include <cmath>
+#include <iostream>
 #include "llapi/machine.h"
 #include "llapi/math_tools.h"
 
@@ -333,6 +333,15 @@ inline TVector3D<TItem> operator * (const TVector3D<TItem>& rktVECTOR, TItem tIT
   return TVector3D<TItem> (rktVECTOR.x() * tITEM,
                            rktVECTOR.y() * tITEM,
                            rktVECTOR.z() * tITEM);
+
+}  /* operator * () */
+
+
+template <class TItem>
+inline TVector3D<TItem> operator * (TItem tITEM, const TVector3D<TItem>& rktVECTOR)
+{
+
+  return rktVECTOR * tITEM;
 
 }  /* operator * () */
 

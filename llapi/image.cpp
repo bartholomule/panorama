@@ -16,7 +16,7 @@
 *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include <iostream.h>
+#include <iostream>
 #include "llapi/image.h"
 
 void TImage::setPixel (size_t X, size_t Y, const TColor& rktCOLOR, bool gSUM)

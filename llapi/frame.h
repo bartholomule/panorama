@@ -19,8 +19,8 @@
 #ifndef _FRAME__
 #define _FRAME__
 
-#include <assert.h>
-#include <stdlib.h>
+#include <cassert>
+#include <cstdlib>
 #include "llapi/debug.h"
 #include "llapi/color.h"
 
