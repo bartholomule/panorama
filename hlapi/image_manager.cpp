@@ -20,6 +20,8 @@
 #include "hlapi/image_manager.h"
 #include "hlapi/plugin_manager.h"
 #include "plugins/image_io/tga/tga_io.h"
+#include "plugins/image_io/jpeg/jpeg_io.h"
+#include "plugins/image_io/png/png_io.h"
 
 TImageManager     tImageManager;
 TImageFormatMap   TImageManager::_tImageFormatMap;
@@ -115,6 +117,8 @@ void TImageManager::_initialize (void)
 
 #if ( STATIC_LINK == 1 )
   _addFormat ("tga", &TImageTga::_create);
+  _addFormat ("jpeg", &TImageJpeg::_create);
+  _addFormat ("png", &TImagePng::_create);
 #endif
   
 }  /* _initialize() */
