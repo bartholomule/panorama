@@ -95,7 +95,7 @@ int TImageGif::save (const TImage* pktIMAGE) {
   }
   else
   {
-    iBPP = (Byte) ceil (log (iMapSize) / log (2));
+    iBPP = (Byte) ceil (log (double(iMapSize)) / log (2.0));
   }
 
   ptOutputMapObject = MakeMapObject (1 << iBPP, atOutputColorMap);  

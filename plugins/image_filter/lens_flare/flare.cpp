@@ -102,7 +102,7 @@ void TFlare::setupCorrection (size_t zNOEDGES, float fROTATION)
 
   fROTATION -= (float) (zNOEDGES - 2) * (PI / 2.0f) / (float) zNOEDGES;
 
-  fRotation = fmod (fROTATION, 2.0f * PI);
+  fRotation = fmod (double(fROTATION), double(2.0f * PI));
 
   fArcLength = (2.0f * PI) / (float) zNOEDGES;
 

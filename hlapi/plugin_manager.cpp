@@ -121,7 +121,7 @@ void TPluginManager::initialize (const string& rktCONFIG_FILE, DWord dwVERSION)
 
   dwVersion = dwVERSION;
 
-  tFile.open (rktCONFIG_FILE.c_str(), ios::in | ios::nocreate);
+  tFile.open (rktCONFIG_FILE.c_str(), ios::in);
 
   while ( !tFile.eof() )
   {

@@ -22,7 +22,7 @@
 gint TMaterialGraph::handleMouseMove (GdkEventMotion* ptEVENT)
 {
 
-  move (*ptButton, ptEVENT->x, ptEVENT->y);
+  move (*ptButton, short(ptEVENT->x), short(ptEVENT->y));
   
   return 1;
   

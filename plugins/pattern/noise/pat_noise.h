@@ -31,7 +31,7 @@ class TPerturbationNoise;
 class TPatternNoise : public TPattern
 {
 
-  friend TPerturbationNoise;
+  friend class TPerturbationNoise;
 
   protected:
 

@@ -20,6 +20,7 @@
 #define _BASE_CLASS__
 
 #include <string>
+using std::string;
 
 enum EClass
 {

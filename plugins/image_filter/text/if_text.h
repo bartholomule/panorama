@@ -30,6 +30,7 @@ class TIF_Text : public TImageFilter
     string   tFontFile;
     string   tText;
     Word     wSize;
+    Word     wFaceNumber;
     TColor   tColor;
     TVector2 tTranslate;
     

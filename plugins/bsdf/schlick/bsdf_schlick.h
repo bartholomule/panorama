@@ -32,7 +32,7 @@ class TBsdfSchlickDouble;
 class TBsdfSchlick : public TBsdf
 {
 
-  friend TBsdfSchlickDouble;
+  friend class TBsdfSchlickDouble;
 
   protected:
 

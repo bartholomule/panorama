@@ -1,3 +1,9 @@
 PLUGIN_NAME = if_text
-OBJ         = if_text.o
-LIB         = -lttf
+OBJ         = if_text.o 
+LIB         =`eval "freetype-config --libs || echo -lttf"`
+CXXFLAGS   +=`eval "freetype-config --cflags"`
+
+if_text.o: ft1.cpp ft2.cpp
+
+
+

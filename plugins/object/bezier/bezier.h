@@ -28,7 +28,7 @@ class TBezierSubsurface;
 class TBezierSurface : public TObject
 {
 
-  friend TBezierSubsurface;
+  friend class TBezierSubsurface;
 
   protected:
 

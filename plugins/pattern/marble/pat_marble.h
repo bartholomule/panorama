@@ -30,7 +30,7 @@ class TPerturbationMarble;
 class TPatternMarble : public TPattern
 {
 
-  friend TPerturbationMarble;
+  friend class TPerturbationMarble;
 
   protected:
 

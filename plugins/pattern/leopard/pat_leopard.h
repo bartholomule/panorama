@@ -29,7 +29,7 @@ class TPerturbationLeopard;
 class TPatternLeopard : public TPattern
 {
  
-  friend TPerturbationLeopard;
+  friend class TPerturbationLeopard;
 
   protected:
 

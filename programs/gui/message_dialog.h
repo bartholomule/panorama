@@ -20,6 +20,7 @@
 #define _MESSAGE_DIALOG__
 
 #include <string>
+using std::string;
 #include <gtk--/dialog.h>
 
 void MessageDialog (const string& rktTITLE, const string& rktTEXT);

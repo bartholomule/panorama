@@ -25,6 +25,17 @@
 
 extern multimap<string, string>   tConfigData;
 
+#if defined(FREETYPE_MAJOR) && (FREETYPE_MAJOR >= 2)
+#warning "Using Freetype 2"
+#include "ft2.cpp"
+#elif defined(TT_FREETYPE_MAJOR) && (TT_FREETYPE_MAJOR <= 1)
+#warning "Using Freetype 1"
+#include "ft1.cpp"
+#else
+#error "Unknown freetype library!"
+#endif
+
+
 DEFINE_PLUGIN ("IF_Text", FX_IMAGE_FILTER_CLASS, TIF_Text);
 
 TIF_Text::TIF_Text (void) :
@@ -36,176 +47,6 @@ TIF_Text::TIF_Text (void) :
   wSize = (Word) (10.0 * 64.0);  // 10.0 in 26.6 fixed point format
 
 }  /* TIF_Text() */
-
-
-void TIF_Text::filter (SBuffers& rsBUFFERS)
-{
-
-  TColor               tPixelColor, tFontColor;
-  TImage*              ptImage = rsBUFFERS.ptImage;
-  TT_Engine            tEngine;
-  TT_Face              tFace;
-  TT_Face_Properties   tFaceProps;
-  TT_Instance          tInstance;
-  TT_CharMap           tCharMap;
-  TT_Glyph             tGlyph;
-  TT_Glyph_Metrics     tMetrics;
-  TT_Pos               tXPos, tYPos;
-  TT_Outline           tOutline;
-  TT_Raster_Map        tPixmap;
-  int                  iError;
-  Byte                 abPalette[]   = {0, 63, 127, 191, 255};
-  bool                 gAbsolutePath = ( tFontFile[0] == '/' );
-
-  iError = TT_Init_FreeType (&tEngine);
-  if ( iError )
-  {
-    cerr << "Could not create FreeType engine." << endl;
-    return;
-  }
-  
-  iError = 1;
-  if ( gAbsolutePath )
-  {
-    iError = TT_Open_Face (tEngine, tFontFile.c_str(), &tFace);
-  }
-  else
-  {
-    multimap<string, string>::const_iterator   iter;
-
-    iter = tConfigData.find ("FontPath");
-    while ( ( iter != tConfigData.end() ) && ( (*iter).first == "FontPath" ) )
-    {
-      string   tAux ((*iter).second + "/" + tFontFile);
-      
-      if ( FileExists (tAux) )
-      {
-        iError = TT_Open_Face (tEngine, tAux.c_str(), &tFace);
-        break;
-      }
-      iter++;
-    }
-  }
-
-  if ( iError )
-  {
-    cerr << "Could not open file '" << tFontFile << "'." << endl;
-    return;
-  }
-
-  iError = TT_Set_Raster_Gray_Palette (tEngine, abPalette);
-  if ( iError )
-  {
-    cerr << "Could not set raster palette." << endl;
-    return;
-  }
-    
-  iError = TT_Get_Face_Properties (tFace, &tFaceProps);
-  if ( iError )
-  {
-    cerr << "Could not get face properties." << endl;
-    return;
-  }
-
-  iError = TT_New_Instance (tFace, &tInstance);
-  if ( iError )
-  {
-    cerr << "Could not create instance." << endl;
-    return;
-  }
-
-  iError = TT_Set_Instance_Resolutions (tInstance, 72, 72);
-  if ( iError )
-  {
-    cerr << "Could not set resolution." << endl;
-    return;
-  }
-
-  iError = TT_Set_Instance_CharSize (tInstance, wSize);
-  if ( iError )
-  {
-    cerr << "Could not set character size." << endl;
-    return;
-  }
-
-  iError = TT_Get_CharMap (tFace, 0, &tCharMap);
-  if ( iError )
-  {
-    cerr << "Could not get charmap." << endl;
-    return;
-  }
-
-  iError = TT_New_Glyph (tFace, &tGlyph);
-  if ( iError )
-  {
-    cerr << "Could not create glyph." << endl;
-    return;
-  }
-
-  //  Set up the raster map
-  tPixmap.rows = ptImage->height();
-  tPixmap.width = ptImage->width();
-  tPixmap.cols = (tPixmap.width + 3) & -4;
-  tPixmap.flow = TT_Flow_Down;
-  tPixmap.size = tPixmap.rows * tPixmap.cols;
-  tPixmap.bitmap = calloc (1, tPixmap.size);
-  
-  tXPos = (unsigned int) tTranslate.x();
-  tYPos = ptImage->height() - ((unsigned int) tTranslate.y());
-  
-  for (size_t tI = 0; tI < tText.length(); tI++)
-  {
-    TT_UShort uIndex;
-
-    uIndex = TT_Char_Index (tCharMap, tText[tI]);
-    if ( ! uIndex )
-    {
-      cerr << "Could not find char index for '" << tText[tI] << "'." << endl;
-      continue;
-    }
-    
-    iError = TT_Load_Glyph (tInstance, tGlyph, uIndex, TTLOAD_DEFAULT);
-    if ( iError )
-    {
-      cerr << "Could not load glyph for '" << tText[tI] << "'." << endl;
-      cerr << "Error code: " << iError << endl;
-      continue;
-    }
-
-    TT_Get_Glyph_Metrics (tGlyph, &tMetrics);
-    TT_Get_Glyph_Outline (tGlyph, &tOutline);
-    TT_Translate_Outline (&tOutline, tXPos * 64, tYPos * 64);
-    
-    //  blit bitmap to surface
-    TT_Get_Outline_Pixmap (tEngine, &tOutline, &tPixmap);
-    
-    tXPos += (tMetrics.advance + 32) / 64;
-  }
-  
-  for (size_t J = 0; ( J < ptImage->height() ) ; J++)
-  {
-    for (size_t I = 0; ( I < ptImage->width() ) ; I++)
-    {
-      Byte bFontAlpha = ((char *) tPixmap.bitmap)[J * tPixmap.cols + I];
-      if ( bFontAlpha != 0 )
-      {
-        tPixelColor = ptImage->getPixel (I, J);
-        tPixelColor *= (255 - bFontAlpha) / 255.0;
-
-        tFontColor = tColor;
-        tFontColor *= bFontAlpha / 255.0;
-        
-        tPixelColor += tFontColor;
-        ptImage->setPixel (I, J, tPixelColor);
-      }
-    }
-  }
-
-  //  Clean up
-  free (tPixmap.bitmap);
-  
-}  /* filter() */
-
 
 int TIF_Text::setAttribute (const string& rktNAME, NAttribute nVALUE,
                             EAttribType eTYPE)

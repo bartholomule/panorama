@@ -30,7 +30,7 @@ class TSubdivFace;
 
 class TSubdiv : public TObject
 {
-  friend TSubdivFace;
+  friend class TSubdivFace;
 
   protected:
 

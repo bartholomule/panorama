@@ -49,7 +49,7 @@ extern "C" {
   {
 
     ifstream* ptInput = (ifstream *) png_get_io_ptr (ptPng);
-    ptInput->read (bpData, zLength);
+    ptInput->read ((char*)bpData, zLength);
 
   }  /* user_read_data() */
 
@@ -63,7 +63,7 @@ extern "C" {
   {
 
     ofstream* ptOutput = (ofstream *) png_get_io_ptr (ptPng);
-    ptOutput->write (bpData, zLength);
+    ptOutput->write ((char*)bpData, zLength);
 
   }  /* user_write_data() */
 
@@ -193,7 +193,7 @@ TImage* TImagePng::load (void)
     return NULL;
   }
   
-  tInput.read (abHeader, 8);
+  tInput.read ((char*)abHeader, 8);
   //  png_set_sig_bytes_read (8);
   iIsPng = png_check_sig (abHeader, 8);
 
@@ -355,7 +355,7 @@ int TImagePng::setAttribute (const string& rktNAME, NAttribute nVALUE,
       {
 	return FX_ATTRIB_WRONG_VALUE;
       }
-      setCompression (nVALUE.dValue);
+      setCompression (int(nVALUE.dValue));
     }
     else
     {

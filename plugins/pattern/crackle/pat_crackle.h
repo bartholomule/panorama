@@ -60,7 +60,7 @@ class TVoronoi
 class TPatternCrackle : public TPattern
 {
 
-  friend TPerturbationCrackle;
+  friend class TPerturbationCrackle;
 
   protected:
 

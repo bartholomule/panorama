@@ -33,7 +33,7 @@ TColor TOF_Cartoon::filterRadiance (TSurfaceData& rtDATA, const TColor& rktRAD) 
   }
   else
   {
-    bTones    = Byte (ceil (255 / bColorLevels));
+    bTones    = Byte (ceil (255.0 / bColorLevels));
     tRadiance = rktRAD.convertTo24Bits();
 
     tRadiance.setRed (bTones * ceil (tRadiance.red() / bTones));

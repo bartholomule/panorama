@@ -43,7 +43,7 @@ void TIF_Cartoon::filter (SBuffers& rsBUFFERS)
   TColor      tPixel;
   TVector     N, nu, nd, nl, nr;
   TScalar     Z, zu, zd, zl, zr;
-  Byte        bTones    = Byte (ceil (255 / bColorLevels));
+  Byte        bTones    = Byte (ceil (255.0 / bColorLevels));
   TImage*     ptImage   = rsBUFFERS.ptImage;
   TZBuffer*   ptZBuffer = rsBUFFERS.ptZBuffer;
   TNBuffer*   ptNBuffer = rsBUFFERS.ptNBuffer;

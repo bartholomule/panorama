@@ -342,17 +342,19 @@ void TRaytracer::superSampleUniform (TScalar I, TScalar J, SBuffers& rsBUFFERS)
 
   if ( wNeededBuffers & FX_ZBUFFER )
   {
-    rsBUFFERS.ptZBuffer->setPixel (I, J, tSurfaceData.distance());
+    rsBUFFERS.ptZBuffer->setPixel (unsigned(I), unsigned(J),
+				   tSurfaceData.distance());
   }
 
   if ( wNeededBuffers & FX_NBUFFER )
   {
-    rsBUFFERS.ptNBuffer->setPixel (I, J, tSurfaceData.normal());
+    rsBUFFERS.ptNBuffer->setPixel (unsigned(I), unsigned(J),
+				   tSurfaceData.normal());
   }
   
   tRadiance /= (bMaxAADepth * bMaxAADepth);
   
-  rsBUFFERS.ptImage->setPixel (I, J, tRadiance);
+  rsBUFFERS.ptImage->setPixel (unsigned(I), unsigned(J), tRadiance);
 
 }  /* superSampleUniform() */
 
@@ -367,15 +369,17 @@ void TRaytracer::singleSample (TScalar I, TScalar J, SBuffers& rsBUFFERS)
 
   if ( wNeededBuffers & FX_ZBUFFER )
   {
-    rsBUFFERS.ptZBuffer->setPixel (I, J, tSurfaceData.distance());
+    rsBUFFERS.ptZBuffer->setPixel (unsigned(I), unsigned(J),
+				   tSurfaceData.distance());
   }
 
   if ( wNeededBuffers & FX_NBUFFER )
   {
-    rsBUFFERS.ptNBuffer->setPixel (I, J, tSurfaceData.normal());
+    rsBUFFERS.ptNBuffer->setPixel (unsigned(I), unsigned(J),
+				   tSurfaceData.normal());
   }
 
-  rsBUFFERS.ptImage->setPixel (I, J, tRadiance);
+  rsBUFFERS.ptImage->setPixel (unsigned(I), unsigned(J), tRadiance);
 
 }  /* singleSample() */
 
@@ -395,15 +399,17 @@ void TRaytracer::superSampleStochastic (TScalar I, TScalar J, SBuffers& rsBUFFER
   
   if ( wNeededBuffers & FX_ZBUFFER )
   {
-    rsBUFFERS.ptZBuffer->setPixel (I, J, tSurfaceData.distance());
+    rsBUFFERS.ptZBuffer->setPixel (unsigned(I), unsigned(J),
+				   tSurfaceData.distance());
   }
 
   if ( wNeededBuffers & FX_NBUFFER )
   {
-    rsBUFFERS.ptNBuffer->setPixel (I, J, tSurfaceData.normal());
+    rsBUFFERS.ptNBuffer->setPixel (unsigned(I), unsigned(J),
+				   tSurfaceData.normal());
   }
   
-  rsBUFFERS.ptImage->setPixel (I, J, tRadiance);
+  rsBUFFERS.ptImage->setPixel (unsigned(I), unsigned(J), tRadiance);
 
 }  /* superSampleStochastic() */
 
@@ -520,15 +526,17 @@ void TRaytracer::superSampleAdaptive (TScalar I, TScalar J, SBuffers& rsBUFFERS)
                                        
   if ( wNeededBuffers & FX_ZBUFFER )
   {
-    rsBUFFERS.ptZBuffer->setPixel (I, J, tSurfaceData.distance());
+    rsBUFFERS.ptZBuffer->setPixel (unsigned(I), unsigned(J),
+				   tSurfaceData.distance());
   }
 
   if ( wNeededBuffers & FX_NBUFFER )
   {
-    rsBUFFERS.ptNBuffer->setPixel (I, J, tSurfaceData.normal());
+    rsBUFFERS.ptNBuffer->setPixel (unsigned(I), unsigned(J),
+				   tSurfaceData.normal());
   }
   
-  rsBUFFERS.ptImage->setPixel (I, J, tRadiance);
+  rsBUFFERS.ptImage->setPixel (unsigned(I), unsigned(J), tRadiance);
 
 }  /* superSampleAdaptive() */
 
@@ -544,12 +552,14 @@ void TRaytracer::sampleFalseColor (TScalar I, TScalar J, SBuffers& rsBUFFERS)
 
   if ( wNeededBuffers & FX_ZBUFFER )
   {
-    rsBUFFERS.ptZBuffer->setPixel (I, J, atSurfaceData[4].distance());
+    rsBUFFERS.ptZBuffer->setPixel (unsigned(I), unsigned(J),
+				   atSurfaceData[4].distance());
   }
 
   if ( wNeededBuffers & FX_NBUFFER )
   {
-    rsBUFFERS.ptNBuffer->setPixel (I, J, atSurfaceData[4].normal());
+    rsBUFFERS.ptNBuffer->setPixel (unsigned(I), unsigned(J),
+				   atSurfaceData[4].normal());
   }
   
   atRadiance[0] = shadePrimaryRay (I - 0.5, J - 0.5, atSurfaceData[0]);
@@ -591,7 +601,7 @@ void TRaytracer::sampleFalseColor (TScalar I, TScalar J, SBuffers& rsBUFFERS)
     tRadiance += TColor (0, 0, 1);
   }
 
-  rsBUFFERS.ptImage->setPixel (I, J, tRadiance);
+  rsBUFFERS.ptImage->setPixel (unsigned(I), unsigned(J), tRadiance);
 
 }  /* sampleFalseColor() */
 

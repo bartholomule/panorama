@@ -22,29 +22,43 @@ AC_HEADER_STDC
 
 dnl Check for special libraries
 
-echo -e "Checking for GTK--... \c"
+echo -e "checking for GTK--... \c"
 dnl AC_CHECK_PROG(gtkmm_val,"gtkmm-config --cflags","yes","no")
-if [ `gtkmm-config --cflags >/dev/null` ]
+if [ `gtkmm-config --cflags >&/dev/null` ]
 then
   GUI_PROGRAM="gui"
   echo "yes"
 else
-	GUI_PROGRAM=""
+  GUI_PROGRAM=""
   echo "no"
-	AC_MSG_WARN(GTK-- not available so gui (panorama) not compiled)
+  AC_MSG_WARN(GTK-- not available so gui (panorama) not compiled)
 fi
 AC_SUBST(GUI_PROGRAM)
 
 
 text_val=no
-AC_CHECK_HEADER(freetype/freetype.h, [AC_CHECK_LIB(ttf,main,text_val=yes)])
-if test $text_val = "yes"; then
-	TEXT_FILTER="text"
-	PLUGIN_TEXT="if_text.plg"
+echo -e "checking for modern freetype... \c"
+if [ `freetype-config --cflags >& /dev/null` ]
+then
+  TEXT_FILTER="text"
+  PLUGIN_TEXT="if_text.plg"
+  echo "yes"
 else
-	TEXT_FILTER=""
-	PLUGIN_TEXT=""
-	AC_MSG_WARN(Freetype library not available so text filter not compiled)
+  echo "no"
+
+  dnl This is the original test, which I am leaving in here for backwards 
+  dnl compatibility (if it still works).
+
+  AC_CHECK_HEADER(freetype/freetype.h, [AC_CHECK_LIB(ttf,main,text_val=yes)])
+  if test $text_val = "yes"
+  then
+    TEXT_FILTER="text"
+    PLUGIN_TEXT="if_text.plg"
+  else
+    TEXT_FILTER=""
+    PLUGIN_TEXT=""
+    AC_MSG_WARN(Freetype library not available so text filter not compiled)
+  fi
 fi
 AC_SUBST(TEXT_FILTER)
 AC_SUBST(PLUGIN_TEXT)
@@ -279,6 +293,9 @@ AC_OUTPUT(\
         plugins/object/height_field/Makefile:Makefile.plugin.in \
         plugins/object/lwo/Makefile:Makefile.plugin.in \
         plugins/object/polyhedron/Makefile:Makefile.plugin.in \
+        plugins/object/metaball/Makefile \
+        plugins/object/metaball/base/Makefile:Makefile.plugin.in \
+        plugins/object/metaball/pov_blob/Makefile:Makefile.plugin.in \
         plugins/object_filter/Makefile \
         plugins/object_filter/cartoon/Makefile:Makefile.plugin.in \
         plugins/object_filter/convert_to_grey/Makefile:Makefile.plugin.in \

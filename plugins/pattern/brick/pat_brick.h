@@ -29,7 +29,7 @@ class TPerturbationBrick;
 class TPatternBrick : public TPattern
 {
 
-  friend TPerturbationBrick;
+  friend class TPerturbationBrick;
 
   protected:
 

@@ -66,7 +66,7 @@ int TImageTga::save (const TImage* pktIMAGE)
       pbRow [I * 3 + 1] = (Byte) tColor.green();
       pbRow [I * 3 + 2] = (Byte) tColor.red();
     }
-    sFile.write (pbRow, zWidth * 3);
+    sFile.write ((char*)pbRow, zWidth * 3);
   }
 
   sFile.close();
@@ -155,11 +155,11 @@ TImage* TImageTga::load (void)
   bAux = sFile.get();                             // Attributes 
   bAttributes = bAux;
 
-  sFile.seekg(sFile.tellg() + bIndentifierLength);
+  sFile.seekg(sFile.tellg() + long(bIndentifierLength));
   
   if ( bColorMapType )                            // Ignore color map
   {
-    sFile.seekg (sFile.tellg() + (bSizeofMapEntry / 8) * zCountColors);
+    sFile.seekg (sFile.tellg() + long((bSizeofMapEntry / 8) * zCountColors));
   }
 
   if ( bAttributes & 0x20 )                       // Check origin (upper or lower left)
