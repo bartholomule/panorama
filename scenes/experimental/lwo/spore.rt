@@ -1,0 +1,48 @@
+/*
+*  LightWave Object test
+*/
+
+#include "materials.inc"
+
+define camera c
+{
+  translate	<0, 400, 400>
+  look_at	<0, -50, 0>
+}
+
+define light l
+{
+  translate     <500, 500, 500>
+  color         CWhite
+}
+
+object : class ObjectLW
+{
+  file          "spore.lwo"
+  translate     <0, 0, 100>
+  scale         <1, 0.2, 1>
+  rotate        <0, 0, 180>
+
+  material : extends MPlastic
+  {
+    color       CRed
+  }
+}
+
+scene
+{
+  camera	c
+  light         l
+  width		600
+  height        400
+  background    CSummerSky
+  output
+  {
+    name        "spore.tga"
+  }
+  renderer : class ZBufferRenderer
+  {
+    shading     "phong"
+    backface    on
+  }
+}

@@ -1,0 +1,45 @@
+/*
+*  LightWave Object test
+*/
+
+#include "materials.inc"
+
+define camera c
+{
+  translate	<0, 0, 200>
+  look_at	<0, 0, 0>
+}
+
+define light l
+{
+  translate     <0, 0, 500>
+  color         CWhite
+}
+
+object : class ObjectLW
+{
+  file          "cassette.lwo"
+  rotate        <90 / 4, 45, 0>
+
+  material : extends MPlastic
+  {
+    color       CRed
+  }
+}
+
+scene
+{
+  camera	c
+  light         l
+  width		400
+  height        400
+  background    CSummerSky
+  output
+  {
+    name        "cassette.tga"
+  }
+  renderer : class ZBufferRenderer
+  {
+    backface    off
+  }
+}
