@@ -6,16 +6,22 @@ include ${BUILD_TOP}/Makefile.vars
 INSTALL = @INSTALL@
 SRC_DIR = @srcdir@
 
-FILES = brick.rt \
+FILES = anisotropic.rt \
+        brick.rt \
 	checker.rt \
 	checker45.rt \
+        cook.rt \
         crackle.rt \
         crystal.rt \
+        cylgrad.rt \
         leopard.rt \
         marble.rt \
         marble2.rt \
         materials.rt \
         painted_crystal.rt \
+        schlick.rt \
+        schlick_double.rt \
+        ward.rt \
         water.rt \
         wood.rt \
         worley.rt
