@@ -429,7 +429,7 @@ TColor TRaytracer::recursiveSampleAdaptive (TScalar I, TScalar J, TScalar tSIZE,
   {
     atRadiance[0] = atRADIANCE[0];
     atRadiance[1] = shadePrimaryRay (I, J - tSIZE, tSurfaceData);
-    atRadiance[1] = shadePrimaryRay (I - tSIZE, J, tSurfaceData);
+    atRadiance[2] = shadePrimaryRay (I - tSIZE, J, tSurfaceData);
     atRadiance[3] = tRadiance;
 
     tTotalRadiance += recursiveSampleAdaptive (I - tHalfSize, J - tHalfSize, tHalfSize, atRadiance, bDEPTH + 1);

@@ -14,9 +14,6 @@
 *  You should have received a copy of the GNU General Public License
 *  along with this program; if not, write to the Free Software
 *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-*
-*  Algorithm based on public domain code by Jim McElhiney,
-*  CompuServe 71201,1326, aka mcelhiney@acm.org
 */
 
 #include <stdlib.h>
