@@ -50,6 +50,20 @@ fi
 AC_SUBST(DEBUG_INFO)
 AC_MSG_RESULT($DEBUG_VAL)
 
+dnl Checks for experimental code option.
+AC_MSG_CHECKING(whether to enable experimental code or not)
+AC_ARG_ENABLE(experimental,
+[  --enable-experimental   Include experimental code in built],
+EXPER_VAL=$enableval, EXPER_VAL="no")
+if test $EXPER_VAL = "yes"; then
+  EXPERIMENTAL=1
+else
+  EXPER_VAL="no";
+  EXPERIMENTAL=0
+fi
+AC_SUBST(EXPERIMENTAL)
+AC_MSG_RESULT($EXPER_VAL)
+
 AC_OUTPUT(\
 	Makefile \
 	Makefile.vars \
@@ -92,13 +106,19 @@ AC_OUTPUT(\
         plugins/material/wood/Makefile:Makefile.plugin.in \
         plugins/material/worley/Makefile:Makefile.plugin.in \
         plugins/object/Makefile \
+        plugins/object/abvh/Makefile:Makefile.plugin.in \
         plugins/object/bezier/Makefile:Makefile.plugin.in \
+        plugins/object/height_field/Makefile:Makefile.plugin.in \
+        plugins/object/lwo/Makefile:Makefile.plugin.in \
+        plugins/object/polyhedron/Makefile:Makefile.plugin.in \
         plugins/object_filter/Makefile \
         plugins/object_filter/cartoon/Makefile:Makefile.plugin.in \
         plugins/renderer/Makefile \
         plugins/renderer/raytracer/Makefile:Makefile.plugin.in \
+        plugins/renderer/zbuffer/Makefile:Makefile.plugin.in \
         plugins/scene_io/Makefile \
         plugins/scene_io/rt/Makefile:Makefile.plugin.in \
+        plugins/scene_io/psl/Makefile:Makefile.plugin.in \
         programs/Makefile \
         programs/render/Makefile \
         scenes/Makefile \
