@@ -131,12 +131,14 @@ template <class TItem>
 void TBaseMatrix<TItem>::setRotationZ (TItem tANGLE)
 {
 
-  atElement[0][0] = TItem (cos (tANGLE));
-  atElement[0][1] = TItem (-sin (tANGLE));
+  TItem   tAngle = degreeToRadian (tANGLE);
+  
+  atElement[0][0] = TItem (cos (tAngle));
+  atElement[0][1] = TItem (-sin (tAngle));
   atElement[0][2] = TItem (0);
   atElement[0][3] = TItem (0);
-  atElement[1][0] = TItem (sin (tANGLE));
-  atElement[1][1] = TItem (cos (tANGLE));
+  atElement[1][0] = TItem (sin (tAngle));
+  atElement[1][1] = TItem (cos (tAngle));
   atElement[1][2] = TItem (0);
   atElement[1][3] = TItem (0);
 
@@ -162,19 +164,21 @@ template <class TItem>
 void TBaseMatrix<TItem>::setRotationX (TItem tANGLE)
 {
 
+  TItem   tAngle = degreeToRadian (tANGLE);
+  
   atElement[0][0] = TItem (1);
   atElement[0][1] = TItem (0);
   atElement[0][2] = TItem (0);
   atElement[0][3] = TItem (0);
 
   atElement[1][0] = TItem (0);
-  atElement[1][1] = TItem (cos (tANGLE));
-  atElement[1][2] = TItem (-sin (tANGLE));
+  atElement[1][1] = TItem (cos (tAngle));
+  atElement[1][2] = TItem (-sin (tAngle));
   atElement[1][3] = TItem (0);
 
   atElement[2][0] = TItem (0);
-  atElement[2][1] = TItem (sin (tANGLE));
-  atElement[2][2] = TItem (cos (tANGLE));
+  atElement[2][1] = TItem (sin (tAngle));
+  atElement[2][2] = TItem (cos (tAngle));
   atElement[2][3] = TItem (0);
 
   atElement[3][0] = TItem (0);
@@ -216,9 +220,11 @@ template <class TItem>
 void TBaseMatrix<TItem>::setRotationY (TItem tANGLE)
 {
 
-  atElement[0][0] = TItem (cos (tANGLE));
+  TItem   tAngle = degreeToRadian (tANGLE);
+
+  atElement[0][0] = TItem (cos (tAngle));
   atElement[0][1] = TItem (0);
-  atElement[0][2] = TItem (sin (tANGLE));
+  atElement[0][2] = TItem (sin (tAngle));
   atElement[0][3] = TItem (0);
 
   atElement[1][0] = TItem (0);
@@ -226,9 +232,9 @@ void TBaseMatrix<TItem>::setRotationY (TItem tANGLE)
   atElement[1][2] = TItem (0);
   atElement[1][3] = TItem (0);
 
-  atElement[2][0] = TItem (-sin (tANGLE));
+  atElement[2][0] = TItem (-sin (tAngle));
   atElement[2][1] = TItem (0);
-  atElement[2][2] = TItem (cos (tANGLE));
+  atElement[2][2] = TItem (cos (tAngle));
   atElement[2][3] = TItem (0);
 
   atElement[3][0] = TItem (0);
