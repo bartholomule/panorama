@@ -20,7 +20,11 @@
 #include "llapi/warning_eliminator.h"
 #include "llapi/llapi_all.h"
 #include "hlapi/hlapi_all.h"
+
+#if ( STATIC_LINK == 1 )
 #include "hlapi/plugins_all.h"
+#endif /* ( STATIC_LINK == 1 ) */
+
 #include "hlapi/class_manager.h"
 #include "hlapi/plugin_manager.h"
 
@@ -63,8 +67,6 @@ TBaseClass* TClassManager::_newObject (const string& rktCLASS, const TBaseClass*
   STATIC_CLASS (accel_grid, "AccelGrid");
 #endif /* USE_EXPERIMENTAL */
 
-
-  
 #if ( STATIC_LINK == 1 )
   STATIC_CLASS (TAtmConst, "AtmConst");
   STATIC_CLASS (TBsdfCookTorrance, "BsdfCookTorrance");
@@ -120,7 +122,7 @@ TBaseClass* TClassManager::_newObject (const string& rktCLASS, const TBaseClass*
 #endif /* USE_EXPERIMENTALl */
 
 #endif /* STATIC_LINK  */
-
+ 
   return tPluginManager.newObject (rktCLASS, pktPARENT);
   
 }  /* _newObject() */
