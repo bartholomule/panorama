@@ -1,4 +1,6 @@
 
+ - Added finalize() method to objects.
+
  - Added check for required libraries. Building and loading of some plugins are
    now conditional on the existance of these libraries.
 
