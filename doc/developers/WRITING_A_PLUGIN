@@ -1,0 +1,50 @@
+
+Writing a new Panorama plugin
+=============================
+
+0.- INTRODUCTION
+
+ Panorama has a modular design. It comprises a couple of dynamic libraries,
+with the core of the system, and several (often independent) plug-in's. A
+plug-in usually encapsulates a C++ class into a dynamic loadable module.
+
+ This structure gives us the possibility of loading only the modules that are
+being used in a given scene. This will save us a lot of memory that can be used
+for the rendering process. They also can be distributed outside the main
+distribution, as independent packages. To add a plug-in you just need to put
+the plugin binary (file.plg) into the plug-in directory, and add a line with
+that plug-in name to your '~/.panorama/pluginrc' file.
+
+ For developers, there are several other advantages in this structure. You
+don't have to touch any source in the core system. This way, you can isolate
+completely from the rest of the system. You can keep upgrading main system,
+without changing a single line of code in your plug-in.
+
+ Moreover, Panorama has a hierarchical structure for parsing parameters, that
+means you can add any language parameters you want to your plug-in, without
+having to touch anything in the parser. This is simple, but very powerful.
+
+
+1.- WRITING A PLUGIN
+
+[...]
+
+
+2.- PLUGIN CLASSES
+
+[...]
+
+2.X OBJECT PLUGINS
+
+ First of all, to create a new object you have to choose where it will inherit
+from. You can inherit from TObject, TTransformObject and TAggregate (well, you
+can inherit from any other object too, in case you are extending its
+functionality).
+
+ TObject is a basic primitive. TTransformObject is a primitive which is defined
+in local space and then transformed (when checking for intersections, ray is
+first transformed into local space, intersection calculation is performed, and
+the result is transformed into global space).
+
+ There is also TAggregate, which is a collection of objects. Acceleration
+methods for raytracing will inherit from this one.
