@@ -48,12 +48,17 @@ class TObject : public TVolume
 
     void createMatrices (void);
 
+    virtual TVector localNormal (const TVector& rktPOINT) const { return TVector (0, 0 ,0); }
+
   public:
 
     TObject (void) :
       ptMaterial (NULL),
       ptMatrix (NULL),
-      ptInverseMatrix (NULL) {}
+      ptInverseMatrix (NULL)
+    {
+      createMatrices();
+    }
       
     virtual ~TObject (void)
     {

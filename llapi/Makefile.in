@@ -30,7 +30,6 @@ OBJ = atmosphere.o \
       scene.o \
       span_list.o \
       surface_data.o \
-      transform_object.o \
       worley_basis.o
 
 all:		${LLAPI_LIB} ${STATIC_LLAPI_LIB}
