@@ -354,9 +354,9 @@ void TBezierSubsurface::testFlatness (void)
     {
       TScalar   tControlPointDist;
 
-      tControlPointDist = dotProduct(tPlaneNormal, atControlPoints[N][M]) - tPlaneConst;
+      tControlPointDist = dotProduct (tPlaneNormal, atControlPoints[N][M]) - tPlaneConst;
 
-      if ( fabs(tControlPointDist) > MAX_DEVIATION )
+      if ( fabs (tControlPointDist) > MAX_DEVIATION )
       {
         gFlatEnough = false;
       }
