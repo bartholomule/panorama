@@ -1,4 +1,6 @@
 
+ - Fixed object filters in aggregates.
+
  - Added new OF_ConvertToGrey object filter plugin.
 
  - Fixed bug in gradients.
