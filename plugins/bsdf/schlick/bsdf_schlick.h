@@ -85,7 +85,7 @@ class TBsdfSchlick : public TBsdf
 };  /* class TBsdfSchlick */
 
 
-void TBsdfSchlick::setupBsdf (void)
+inline void TBsdfSchlick::setupBsdf (void)
 {
 
   tRoughnessInv  =  tRoughness - 1.0;
