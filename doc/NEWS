@@ -1,4 +1,6 @@
 
+ - Added check for unrecognized output image format.
+
  - Fixed minor problem in 'make -install'.
 
  - Added checks for undefined materials and BSDF.
