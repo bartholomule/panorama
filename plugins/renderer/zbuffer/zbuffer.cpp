@@ -20,17 +20,19 @@
 #include "llapi/camera.h"
 #include "llapi/material.h"
 #include "zbuffer.h"
+#include "llapi/attribute.h"
 
 DEFINE_PLUGIN ("ZBufferRenderer", FX_RENDERER_CLASS, TZBufferRenderer);
 
 bool TZBufferRenderer::initialize (TScene& rtSCENE)
 {
 
-  bool result = TRaytracer::initialize (rtSCENE);
-
+  bool val = true;
+  val = val && TRaytracer::initialize (rtSCENE);
+  
   // >>>>>>>>>>>>>> Front to back ordering
-
-  return result;
+  
+  return val;
   
 }  /* initialize() */
 
@@ -46,10 +48,18 @@ int TZBufferRenderer::setAttribute (const string& rktNAME, NAttribute nVALUE, EA
 
   if ( rktNAME == "backface" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_BOOL )
     {
       gBackfaceCulling = nVALUE.gValue;
     }
+#else
+    magic_pointer<TAttribBool> b = get_bool(nVALUE);
+    if( !!b )
+    {
+      gBackfaceCulling = b->tValue;
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -57,31 +67,40 @@ int TZBufferRenderer::setAttribute (const string& rktNAME, NAttribute nVALUE, EA
   }
   else if ( rktNAME == "shading" )
   {
-    if ( eTYPE == FX_STRING )
+#if !defined(NEW_ATTRIBUTES)
+    if ( eTYPE != FX_STRING )
     {
-      string   tName = (char*) nVALUE.pvValue;
-      if ( tName == "constant" )
-      {
-        eShading = FX_CONSTANT;
-      }
-      else if ( tName == "gouraud" )
-      {
-        eShading = FX_GOURAUD;
-      }
-      else if ( tName == "phong" )
-      {
-        eShading = FX_PHONG;
-      }
-      else
-      {
-        TProcedural::_tUserErrorMessage = "unknown shading method : " + tName;
-
-        return FX_ATTRIB_USER_ERROR;
-      }
+      return FX_ATTRIB_WRONG_TYPE;
+    }
+    
+    string   tName = (char*) nVALUE.pvValue;
+#else
+    magic_pointer<TAttribString> str = get_string(nVALUE);
+    if( !str )
+    {
+      return FX_ATTRIB_WRONG_VALUE;
+    }
+    
+    string tName = str->tValue;
+#endif
+    
+    if ( tName == "constant" )
+    {
+      eShading = FX_CONSTANT;
+    }
+    else if ( tName == "gouraud" )
+    {
+      eShading = FX_GOURAUD;
+    }
+    else if ( tName == "phong" )
+    {
+      eShading = FX_PHONG;
     }
     else
     {
-      return FX_ATTRIB_WRONG_TYPE;
+      TProcedural::_tUserErrorMessage = "unknown shading method : " + tName;
+      
+      return FX_ATTRIB_USER_ERROR;
     }
   }
   else
@@ -97,10 +116,34 @@ int TZBufferRenderer::setAttribute (const string& rktNAME, NAttribute nVALUE, EA
 int TZBufferRenderer::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 {
 
+#if !defined(NEW_ATTRIBUTES)
   if ( rktNAME == "backface" )
   {
     rnVALUE.gValue = gBackfaceCulling;
   }
+#else
+  if ( rktNAME == "backface" )
+  {
+    rnVALUE = new TAttribBool (gBackfaceCulling);
+  }
+  else if ( rktNAME == "shading" )
+  {
+    static map<EShading,string> shading_strings;
+    static vector<string> shading_choices;
+
+    if( shading_strings.empty() )
+    {
+      shading_strings[FX_CONSTANT] = "constant";
+      shading_strings[FX_GOURAUD]  = "gouraud";
+      shading_strings[FX_PHONG]    = "phong";      
+      shading_choices.erase(shading_choices.begin(), shading_choices.end());
+      shading_choices.push_back (shading_strings[FX_CONSTANT]);
+      shading_choices.push_back (shading_strings[FX_GOURAUD]);
+      shading_choices.push_back (shading_strings[FX_PHONG]);
+    }
+    rnVALUE = new TAttribStringList (shading_choices, shading_strings[eShading]);
+  }
+#endif
   else
   {
     return TRaytracer::getAttribute (rktNAME, rnVALUE);
@@ -117,7 +160,11 @@ void TZBufferRenderer::getAttributeList (TAttributeList& rtLIST) const
   TRaytracer::getAttributeList (rtLIST);
 
   rtLIST ["backface"] = FX_BOOL;
-  rtLIST ["shading"]  = FX_STRING;  
+#if !defined(NEW_ATTRIBUTES)
+  rtLIST ["shading"]  = FX_STRING;
+#else
+  rtLIST ["shading"]  = FX_STRING_LIST;
+#endif
 
 }  /* getAttributeList() */
 
@@ -261,7 +308,7 @@ void TZBufferRenderer::renderHalfTriangle (SBuffers& rsBUFFERS,
 
     for (TScalar I = X1; ( fabs (I - X1) <= fabs (X2 - X1) ) ;I += tSignX)
     {
-      if ( D1 < rsBUFFERS.ptZBuffer->getPixel (I, tScanline) )
+      if ( D1 < rsBUFFERS.ptZBuffer->getPixel (int(I), int(tScanline)) )
       {
         if ( eShading == FX_CONSTANT )
         {
@@ -284,12 +331,12 @@ void TZBufferRenderer::renderHalfTriangle (SBuffers& rsBUFFERS,
           tColor = getRadiance (tSurfaceData, 0);
         }
 
-        rsBUFFERS.ptImage->setPixel (I, tScanline, tColor);
-        rsBUFFERS.ptZBuffer->setPixel (I, tScanline, D1);
+        rsBUFFERS.ptImage->setPixel (int(I), int(tScanline), tColor);
+        rsBUFFERS.ptZBuffer->setPixel (int(I), int(tScanline), D1);
 
         if ( rsBUFFERS.ptNBuffer )
         {
-          rsBUFFERS.ptNBuffer->setPixel (I, tScanline, N1);
+          rsBUFFERS.ptNBuffer->setPixel (int(I), int(tScanline), N1);
         }
       }
 
@@ -358,7 +405,7 @@ TColor TZBufferRenderer::getRadiance (TSurfaceData& rtDATA, Word wDEPTH) const
   
   tRadiance = ambientLight (rtDATA, wDEPTH) + directLight (rtDATA);
 
-  for (list<const TObjectFilter*>::const_iterator tIter = rtDATA.object()->filterList().begin(); ( tIter != rtDATA.object()->filterList().end() ) ;tIter++)
+  for (list<magic_pointer<TObjectFilter> >::const_iterator tIter = rtDATA.object()->filterList().begin(); ( tIter != rtDATA.object()->filterList().end() ) ;tIter++)
   {
     tRadiance = (*tIter)->filterRadiance (rtDATA, tRadiance);
   }
@@ -419,12 +466,28 @@ void TZBufferRenderer::render (SBuffers& rsBUFFERS)
   {
     calculateIllumination (tMeshList);
   }
-  
+
+  unsigned long num_faces = 0;
+  unsigned long faces_drawn = 0;
+  bool should_continue = true;
+
+  // Calculate the number of faces in all of the meshes (for progress
+  // indication).  
   for (list<TMesh*>::iterator tIterMesh = tMeshList.begin(); ( tIterMesh != tMeshList.end() ) ;tIterMesh++)
   {
     ptMesh = (*tIterMesh);
 
-    for (vector<TMesh::TFace>::iterator tIter = ptMesh->faceList()->begin(); ( tIter != ptMesh->faceList()->end() ) ;tIter++)
+    num_faces += ptMesh->faceList()->size();
+  }
+
+  // Draw all of the faces for all of the meshes.
+  for (list<TMesh*>::iterator tIterMesh = tMeshList.begin(); ( tIterMesh != tMeshList.end() ) ;tIterMesh++)
+  {
+    ptMesh = (*tIterMesh);
+
+    for (vector<TMesh::TFace>::iterator tIter = ptMesh->faceList()->begin();
+	 ( tIter != ptMesh->faceList()->end() )  && should_continue ;
+	 tIter++)
     {
       ptFace = &(*tIter);
   
@@ -484,13 +547,34 @@ void TZBufferRenderer::render (SBuffers& rsBUFFERS)
       {
         renderHalfTriangle (rsBUFFERS, ptFace, atVertexData[1], atVertexData[2], atVertexData[0], atVertexData[2]);
       }
+
+      ++faces_drawn;
+      if ( pfUserFunction )
+      {
+	if ( !pfUserFunction( (rsBUFFERS.ptImage->height() * faces_drawn) /
+			      num_faces, pvUserData ) )
+	{
+	  should_continue = false;
+	  break;
+	}
+      }
     }
   }
 
+  if ( pfUserFunction )
+  {
+    pfUserFunction( rsBUFFERS.ptImage->height(), pvUserData );
+  }
+  
   for (list<TMesh*>::iterator tIter2 = tMeshList.begin(); ( tIter2 != tMeshList.end() ) ;tIter2++)
   {
     delete (*tIter2);
   }
+
+  if ( pfUserDoneFunction )
+  {
+    pfUserDoneFunction ( pvUserData );
+  }  
   
 }  /* render() */
 
@@ -584,15 +668,13 @@ TColor TZBufferRenderer::specularTransmittedLight (const TSurfaceData& rktDATA, 
 }  /* specularTransmittedLight() */
 
 
-void TZBufferRenderer::printDebug (void) const
+void TZBufferRenderer::printDebug (const string& indent) const
 {
 
-  cerr << TDebug::_indent() << "[_ZBufferRenderer_]" << endl;
+  cerr << indent << "[_ZBufferRenderer_]" << endl;
 
-  TDebug::_push();
-
-  cerr << TDebug::_indent() << "Ambient light : "; tAmbientLight.printDebug();
-
-  TDebug::_pop();
+  string new_indent = TDebug::Indent(indent);
   
+  cerr << new_indent << "Ambient light : "; tAmbientLight.printDebug(new_indent);
+
 }  /* printDebug() */

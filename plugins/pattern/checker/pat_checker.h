@@ -63,7 +63,8 @@ class TPatternChecker : public TPattern
     }
 
     string className (void) const { return "PatternChecker"; }
-
+    TPatternChecker* clone_new() const { return new TPatternChecker(*this); }
+  
 };  /* class TPatternChecker */
 
 #endif  /* _PATTERN_CHECKER__ */

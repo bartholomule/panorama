@@ -86,17 +86,17 @@ TScalar TRay::applyTransform (const TMatrix* pktMATRIX)
 }  /* applyTransform() */
 
 
-void TRay::printDebug (void) const
+void TRay::printDebug (const string& indent) const
 {
 
-  cerr << TDebug::_indent() << "[_TRay_]" << endl;
+  cerr << indent << "[_TRay_]" << endl;
 
-  TDebug::_push();
+  string new_indent = TDebug::Indent(indent);
 
-  cerr << TDebug::_indent() << "Location  : "; tLocation.printDebug(); cerr << endl;
-  cerr << TDebug::_indent() << "Direction : "; tDirection.printDebug(); cerr << endl;
-  cerr << TDebug::_indent() << "IOR       : " << tIor << endl;
-  cerr << TDebug::_indent() << "Limit     : " << tLimit << endl;
+  cerr << new_indent << "Location  : "; tLocation.printDebug(new_indent); cerr << endl;
+  cerr << new_indent << "Direction : "; tDirection.printDebug(new_indent); cerr << endl;
+  cerr << new_indent << "IOR       : " << tIor << endl;
+  cerr << new_indent << "Limit     : " << tLimit << endl;
   
   TDebug::_pop();
 

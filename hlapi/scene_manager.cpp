@@ -27,19 +27,28 @@ TSceneFormatMap   TSceneManager::_tSceneFormatMap;
 TScene* TSceneManager::_load (const string& rktNAME, const string& rktFORMAT)
 {
 
-  TSceneFormatData*     ptData;
-  TSceneLoadFunction*   pfLoad;
+  TScene*   ptScene   = NULL;
+  TSceneIO* ptSceneIO = NULL;
+  TCreateFunction* cf = NULL;
 
   if ( !_knownFormat (rktFORMAT) )
   {
     cerr << "ERROR: Scene format does not exist" << endl;
     return NULL;
   }
-
-  ptData = _tSceneFormatMap [rktFORMAT];
-  pfLoad = ptData->pfLoad;
-
-  return ((*pfLoad) (rktNAME));
+  
+  cf = _tSceneFormatMap [rktFORMAT];
+  if( cf )
+  {
+    ptSceneIO = (TSceneIO*)(cf(NULL));
+    if( ptSceneIO )
+    {
+      ptScene = ptSceneIO->load (rktNAME);
+    }
+    delete ptSceneIO;
+  }
+  
+  return ptScene;
   
 }  /* _load() */
 
@@ -47,18 +56,28 @@ TScene* TSceneManager::_load (const string& rktNAME, const string& rktFORMAT)
 int TSceneManager::_save (const string& rktNAME, const string& rktFORMAT, const TScene* pktSCENE)
 {
 
-  TSceneFormatData*     ptData;
-  TSceneSaveFunction*   pfSave;
+  int result = -1;
+  TCreateFunction* cf = NULL;
+  TSceneIO* ptSceneIO = NULL;
 
   if ( !_knownFormat (rktFORMAT) )
   {
+    cerr << "ERROR: Scene format does not exist" << endl;
     return -1;
   }
   
-  ptData = _tSceneFormatMap [rktFORMAT];
-  pfSave = ptData->pfSave;
-
-  return ((*pfSave) (rktNAME, pktSCENE));
+  cf = _tSceneFormatMap [rktFORMAT];
+  if( cf )
+  {
+    ptSceneIO = (TSceneIO*)(cf(NULL));
+    if( ptSceneIO )
+    {
+      result = ptSceneIO->save (rktNAME, pktSCENE);
+    }
+    delete ptSceneIO;
+  }
+  
+  return result;
   
 }  /* _save() */
 
@@ -71,16 +90,11 @@ bool TSceneManager::_knownFormat (const string& rktNAME)
 }  /* _knownFormat() */
 
 
-void TSceneManager::_addFormat (const string& rktNAME, TSceneLoadFunction* pfLOAD, TSceneSaveFunction* pfSAVE)
+void TSceneManager::_addFormat (const string& rktNAME, TCreateFunction* pfCREATE )
 {
 
-  TSceneFormatData*   ptData;
-
   // [_TODO_] Check if this format is already registered.
-  ptData                     = new TSceneFormatData;
-  ptData->pfLoad             = pfLOAD;
-  ptData->pfSave             = pfSAVE;
-  _tSceneFormatMap [rktNAME] = ptData;
+  _tSceneFormatMap [rktNAME] = pfCREATE;
 
 }  /* _addFormat() */
 
@@ -89,11 +103,10 @@ void TSceneManager::_initialize (void)
 {
 
 #if ( STATIC_LINK == 1 )
-
-  _addFormat ("rt", &TSceneRT::_load, &TSceneRT::_save);
+  _addFormat ("rt", &TSceneRT::_create);
 
 #if ( EXPERIMENTAL == 1 )
-  _addFormat ("psl", &TScenePsl::_load, &TScenePsl::_save);
+  _addFormat ("psl", &TScenePsl::_create);
 #endif
 
 #endif

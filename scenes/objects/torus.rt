@@ -4,56 +4,57 @@
 
 #include "materials.inc"
 
-define camera c
+define c class PinholeCamera
 {
-  translate	<0, 0, 600>
-  look_at	<0, 0, 0>
-}
+  translate(<0, 0, 600>);
+  look_at = <0, 0, 0>;
+};
 
-define light l
+define l class PointLight
 {
-  translate	<500, 500, 500>
-  color		CWhite
-}
+  translate(<500, 500, 500>);
+  color = CWhite;
+};
 
-plane
-{
-  translate     <0, -100, 0>
-  normal	<0, 1, 0>
-  material : extends MChecker
+addObject(class Plane
   {
-    color : class PatternChecker
+    translate(<0, -100, 0>);
+    normal = <0, 1, 0>;
+    material = MChecker
     {
-      color       CBlue
-      base_color  CNavy
-      size        50
-    }
+      color = class PatternChecker
+      {
+        color      = CBlue
+        base_color = CNavy;
+        size       = 50;
+      };
+    };
   }
-}
+);
 
-torus
-{
-  translate     <0, 0, 200>
-  rotate        <45, 0, 0>
-  radius_a      75
-  radius_b      35
-  material : extends MPlastic
+addObject(class Torus
   {
-    color       CWhite
+    translate(< 0, 0, 200>);
+    rotate   (<45, 0,   0>);
+    radius_a = 75;
+    radius_b = 35;
+    material = MPlastic
+    {
+      color = CWhite;
+    };
   }
-}
+);
 
-scene
+class Scene
 {
-  camera	c
-  light		l
-  width		400
-  height	400
-  background	CBlack
-  output
+  camera     = c;
+  light	     = l;
+  width	     = 400;
+  height     = 400;
+  background = CBlack;
+  output = class png
   {
-    type        "png"
-    name	"torus.png"
-  }
-  renderer : class Raytracer {}
-}
+    name = "torus.png";
+  };
+  renderer = class Raytracer {};
+};

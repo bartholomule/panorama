@@ -53,7 +53,7 @@ class TFrame
     virtual void setPixel (size_t zCX, size_t zCY, const TItem& rktITEM);
     virtual const TItem& getPixel (size_t zCX, size_t zCY) const;
 
-    void printDebug (void) const;
+    void printDebug (const string& indent) const;
 
 };  /* class TFrame */
 
@@ -117,17 +117,12 @@ inline const TItem& TFrame<TItem>::getPixel (size_t zCX, size_t zCY) const
 
 
 template <class TItem>
-void TFrame<TItem>::printDebug (void) const
+void TFrame<TItem>::printDebug (const string& indent) const
 {
 
-  cerr << TDebug::_indent() << "[_Frame_]" << endl;
-  
-  TDebug::_push();
-
-  cerr << TDebug::_indent() << "Height : " << zHeight << endl;
-  cerr << TDebug::_indent() << "Width  : " << zWidth << endl;
-
-  TDebug::_pop();
+  cerr << indent << "[_Frame_]" << endl;
+  cerr << indent << standardIndent() << "Height : " << zHeight << endl;
+  cerr << indent << standardIndent() << "Width  : " << zWidth << endl;
 
 }  /* printDebug() */
 

@@ -18,6 +18,7 @@
 
 #include "llapi/warning_eliminator.h"
 #include "atm_const.h"
+#include "llapi/attribute.h"
 
 DEFINE_PLUGIN ("AtmConst", FX_ATM_OBJECT_CLASS, TAtmConst);
 
@@ -36,10 +37,18 @@ int TAtmConst::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribTy
 
   if ( rktNAME == "extinction" )
   {
+#if !defined(NEW_ATTRIBUTES)    
     if ( eTYPE == FX_REAL )
     {
       tSampleData.tExtinction = nVALUE.dValue;
     }
+#else
+    magic_pointer<TAttribReal> r = get_real(nVALUE);
+    if( !!r )
+    {
+      tSampleData.tExtinction = r->tValue;
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -47,10 +56,18 @@ int TAtmConst::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribTy
   }
   else if ( rktNAME == "albedo" )
   {
+#if !defined(NEW_ATTRIBUTES)    
     if ( eTYPE == FX_REAL )
     {
       tSampleData.tAlbedo = nVALUE.dValue;
     }
+#else
+    magic_pointer<TAttribReal> r = get_real(nVALUE);
+    if( !!r )
+    {
+      tSampleData.tAlbedo = r->tValue;
+    }
+#endif    
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -58,10 +75,18 @@ int TAtmConst::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribTy
   }
   else if ( rktNAME == "from" )
   {
+#if !defined(NEW_ATTRIBUTES)    
     if ( eTYPE == FX_VECTOR )
     {
       tBBFrom = *((TVector*) nVALUE.pvValue);
     }
+#else
+    magic_pointer<TAttribVector> vec = get_vector(nVALUE);
+    if( !!vec )
+    {
+      tBBFrom = vec->tValue;
+    }
+#endif    
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -69,10 +94,18 @@ int TAtmConst::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribTy
   }
   else if ( rktNAME == "to" )
   {
+#if !defined(NEW_ATTRIBUTES)    
     if ( eTYPE == FX_VECTOR )
     {
       tBBTo = *((TVector*) nVALUE.pvValue);
     }
+#else
+    magic_pointer<TAttribVector> vec = get_vector(nVALUE);
+    if( !!vec )
+    {
+      tBBTo = vec->tValue;
+    }
+#endif    
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -91,6 +124,7 @@ int TAtmConst::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribTy
 int TAtmConst::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 {
 
+#if !defined(NEW_ATTRIBUTES)  
   if ( rktNAME == "extinction" )
   {
     rnVALUE.dValue = tSampleData.tExtinction;
@@ -107,6 +141,24 @@ int TAtmConst::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
   {
     rnVALUE.pvValue = &tBBTo;
   }
+#else
+  if ( rktNAME == "extinction" )
+  {
+    rnVALUE = new TAttribReal (tSampleData.tExtinction);
+  }
+  else if ( rktNAME == "albedo" )
+  {
+    rnVALUE = new TAttribReal (tSampleData.tAlbedo);
+  }
+  else if ( rktNAME == "from" )
+  {
+    rnVALUE = new TAttribVector (tBBFrom);
+  }
+  else if ( rktNAME == "to" )
+  {
+    rnVALUE = new TAttribVector (tBBTo);
+  }  
+#endif
   else
   {
     return TAtmosphericObject::getAttribute (rktNAME, rnVALUE);

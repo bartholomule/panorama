@@ -20,6 +20,7 @@
 #define _DEBUG__
 
 #include "llapi/machine.h"
+#include <string>
 
 class TDebug
 {
@@ -55,7 +56,16 @@ class TDebug
     {
       return _acIndent;
     }
+
+  static std::string StandardIndent();
+
+
+    static std::string Indent(const std::string& indent)
+    {
+      return indent + StandardIndent();
+    }
     
 };  /* class TDebug */
 
 #endif  /* _DEBUG__ */
+

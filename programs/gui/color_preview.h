@@ -23,6 +23,9 @@
 #include <gtk--/preview.h>
 #include <gtk--/button.h>
 #include <gtk--/colorselection.h>
+#include <sigc++/signal_system.h>
+
+using SigC::Signal0;
 
 class TColorPreview : public Gtk::Preview
 {
@@ -44,6 +47,7 @@ class TColorPreview : public Gtk::Preview
     
     TColor color (void) const { return tColor; }
 
+    Signal0<void> color_changed;
 };  /* class TColorPreview */
 
 #endif  /* _COLOR_PREVIEW__ */

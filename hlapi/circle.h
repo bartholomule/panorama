@@ -44,7 +44,7 @@ class TCircle : public TPlane
 
     bool inside (const TVector& rktPOINT) const
     {
-      TVector   tVector = (rktPOINT - tLocation);
+      TVector   tVector = (rktPOINT - location());
 
       return ( dotProduct (tVector, tVector) <= tRadius2 );
     }

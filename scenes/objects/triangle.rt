@@ -4,51 +4,45 @@
 
 #include "materials.inc"
 
-define camera c
+define c class PinholeCamera
 {
-  translate	<0, 100, 600>
-  look_at	<0, 100, 0>
-}
+  translate(<0, 100, 600>);
+  look_at = <0, 100, 0>;
+};
 
-define light l
+define l class PointLight
 {
-  translate	<500, 1000, 500>
-  color		CWhite
-}
+  translate(<500, 1000, 500>);
+  color	= CWhite;
+};
 
-plane
+class Plane
 {
-  translate	<0, -10, 0>
-  normal	<0, 1, 0>
-  material : extends MLambertian
+  translate(<0, -10, 0>);
+  normal = <0, 1, 0>;
+  material = MLambertian { color = CWhite; };
+};
+
+class Triangle
+{
+  addVertex(<  0,100,-50>);
+  addVertex(< 50, 50, 50>);
+  addVertex(<-50, 50, 50>);
+  one_sided = off;
+  setMaterial( MPlastic { color = CBlue; });
+};
+
+class Scene
+{
+  camera     = c;
+  light	     = l;
+  width	     = 400;
+  height     = 400;
+  background = CBlack;
+  output = class png
   {
-    color	CWhite
-  }
-}
+    name = "triangle.png";
+  };
 
-triangle
-{
-  vertex	<0, 100, -50>
-  vertex	<50, 50, 50>
-  vertex	<-50, 50, 50>
-  one_sided	off
-  material : extends MPlastic
-  {
-    color	CBlue
-  }
-}
-
-scene
-{
-  camera	c
-  light		l
-  width		400
-  height	400
-  background	CBlack
-  output
-  {
-    type        "png"
-    name	"triangle.png"
-  }
-  renderer : class Raytracer {}
-}
+  renderer = class Raytracer {};
+};

@@ -22,6 +22,7 @@
 #include "llapi/file.h"
 #include "llapi/scene.h"
 #include "if_text.h"
+#include "llapi/attribute.h"
 
 extern multimap<string, string>   tConfigData;
 
@@ -54,10 +55,18 @@ int TIF_Text::setAttribute (const string& rktNAME, NAttribute nVALUE,
 
   if ( rktNAME == "color" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_COLOR )
     {
       tColor = *((TColor*) nVALUE.pvValue);
     }
+#else
+    magic_pointer<TAttribColor> col = get_color(nVALUE);
+    if( !!col )
+    {
+      tColor = col->tValue;
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -65,10 +74,18 @@ int TIF_Text::setAttribute (const string& rktNAME, NAttribute nVALUE,
   }
   else if ( rktNAME == "fontfile" )
   {
+#if !defined(NEW_ATTRIBUTES)    
     if ( eTYPE == FX_STRING )
     {
       tFontFile = (char *) nVALUE.pvValue;
     }
+#else
+    magic_pointer<TAttribString> str = get_string(nVALUE);
+    if( !!str )
+    {
+      tFontFile = str->tValue;
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -76,6 +93,7 @@ int TIF_Text::setAttribute (const string& rktNAME, NAttribute nVALUE,
   }
   else if ( rktNAME == "size" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_REAL )
     {
       if( nVALUE.dValue <= 0 )
@@ -84,6 +102,17 @@ int TIF_Text::setAttribute (const string& rktNAME, NAttribute nVALUE,
       }
       wSize = (Word) (nVALUE.dValue * 64.0);
     }
+#else
+    magic_pointer<TAttribReal> r = get_real(nVALUE);
+    if( !!r )
+    {
+      if( r->tValue <= 0 )
+      {
+	return FX_ATTRIB_WRONG_VALUE;
+      }
+      wSize = (Word) (r->tValue * 64.0);
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -91,10 +120,18 @@ int TIF_Text::setAttribute (const string& rktNAME, NAttribute nVALUE,
   }
   else if ( rktNAME == "text" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_STRING )
     {
       tText = (char *) nVALUE.pvValue;
     }
+#else
+    magic_pointer<TAttribString> str = get_string(nVALUE);
+    if( !!str )
+    {
+      tText = str->tValue;
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -102,10 +139,18 @@ int TIF_Text::setAttribute (const string& rktNAME, NAttribute nVALUE,
   }
   else if ( rktNAME == "xlate" )
   {
+#if !defined(NEW_ATTRIBUTES)    
     if ( eTYPE == FX_VECTOR2 )
     {
       tTranslate = *((TVector2 *) nVALUE.pvValue);
     }
+#else
+    magic_pointer<TAttribVector2> vec = get_vector2(nVALUE);
+    if( !!vec )
+    {
+      tTranslate = vec->tValue;
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -124,6 +169,7 @@ int TIF_Text::setAttribute (const string& rktNAME, NAttribute nVALUE,
 int TIF_Text::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 {
 
+#if !defined(NEW_ATTRIBUTES)
   if ( rktNAME == "color" )
   {
     rnVALUE.pvValue = &tColor;
@@ -144,6 +190,28 @@ int TIF_Text::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
   {
     rnVALUE.pvValue = &tTranslate;
   }
+#else
+  if ( rktNAME == "color" )
+  {
+    rnVALUE = new TAttribColor (tColor);
+  }
+  else if ( rktNAME == "fontfile" )
+  {
+    rnVALUE = new TAttribString (tFontFile);
+  }
+  else if ( rktNAME == "size" )
+  {
+    rnVALUE = new TAttribReal (wSize / 64.0);
+  }
+  else if ( rktNAME == "text" )
+  {
+    rnVALUE = new TAttribString (tText);
+  }
+  else if ( rktNAME == "xlate" )
+  {
+    rnVALUE = new TAttribVector2 (tTranslate);
+  }  
+#endif
   else
   {
     return TImageFilter::getAttribute (rktNAME, rnVALUE);

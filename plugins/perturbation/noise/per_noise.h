@@ -33,7 +33,7 @@ class TPerturbationNoise : public TPerturbation
   protected:
 
     TScalar          tBumpFactor;
-    TPatternNoise*   ptNoisePattern;
+    magic_pointer<TPatternNoise>   ptNoisePattern;
 
   public:
 
@@ -50,10 +50,10 @@ class TPerturbationNoise : public TPerturbation
     int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
     void getAttributeList (TAttributeList& rtLIST) const;
 
-    void setNoisePattern (TPatternNoise* ptPATTERN) { ptNoisePattern = ptPATTERN; }
+    void setNoisePattern (magic_pointer<TPatternNoise> ptPATTERN) { ptNoisePattern = ptPATTERN; }
 
     string className (void) const { return "PerturbationNoise"; }
-
+    TPerturbationNoise* clone_new() const { return new TPerturbationNoise(*this); }
 };  /* class TPerturbationNoise */
 
 

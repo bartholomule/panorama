@@ -3,321 +3,301 @@
 */
 
 #include "materials.inc"
+#include "shapes.inc"
 
-define material MMarble
+define MMarble material
 {
-  bsdf : class BsdfPhong
+  bsdf = class BsdfPhong
   {
-    exponent 30
+    exponent = 30;
+  };
+  ambient  = 0.1;
+  diffuse  = 0.6; //0.6
+  specular = 0.2; //0.2
+};
 
-  }
-  ambient  0.1
-  diffuse  0.6 //0.6
-  specular 0.2 //0.2
-}
-
-define pattern pat_brick : class PatternBrick
+define pat_brick class PatternBrick
 {
-  height 0.75
-  width  0.75
-  mortar 0.5 // 1.0
-}
+  height = 0.75;
+  width  = 0.75;
+  mortar = 0.50; // 1.0
+};
 
-define material MBrick
+define MBrick material
 {
-  bsdf : class BsdfPhong
+  bsdf = class BsdfPhong
   {
-    exponent 30
-  }
-  color      pat_brick
-  ambient    0.1
-  diffuse    0.2
-  specular   0.6
-  perturb_func : class PerturbationBrick
+    exponent = 30;
+  };
+  color      = pat_brick;
+  ambient    = 0.1;
+  diffuse    = 0.2;
+  specular   = 0.6;
+  perturb_func = class PerturbationBrick
   {
-    brick_pattern   pat_brick
-    bump            1.0
-  }
-}
+    brick_pattern = pat_brick;
+    bump          = 1.0;
+  };
+};
 
-define camera c
+define c class PinholeCamera
 {
-  translate	<300, 0, 600> //<400, 0, 600> //<300, 40, 600>
-  look_at	<0, 0, 0>
-}
+  translate ( <300, 0, 600> ); //<400, 0, 600> //<300, 40, 600>
+  look_at   = <0, 0, 0>;
+};
 
-define light l1
+define l1 Light
 {
-  color { red 0.5 green 0.5 blue 1.0 }
-  intensity 0.1
-  translate < 500, 100, 0 >
-}
+  color = { red 0.5 green 0.5 blue 1.0 };
+  intensity = 0.1;
+  translate( < 500, 100, 0 > );
+};
 
-define light l
+define l Light
 {
-  color         { red 1 green 1 blue 0.8 }
-  intensity     0.07 // 0.1
-}
+  color      = { red 1 green 1 blue 0.8 };
+  intensity  = 0.07; // 0.1
+};
 
-define light star
+define star Light
 {
-  color         { red 0.8 green 0.8 blue 1 }
-  intensity     0.07 // 0.1
-  halo          0.4
-  shadow        off
-  distance_th   100
-}
+  color       = { red 0.8 green 0.8 blue 1 };
+  intensity   = 0.07; // 0.1
+  halo        = 0.4;
+  shadow      = off;
+  distance_th = 100;
+};
 
-define color CMySea { red 0 green 0.15 blue 0.30 }
+define CMySea { red 0 green 0.15 blue 0.30 };
 
-define pattern pat_brick1 : extends pat_brick
+define pat_brick1 pat_brick
 {
-  color      { red 0.5 green 0.5 blue 0.5 }
-  base_color { red 0.5 green 0.5 blue 0.5 }
-  zoom < 40, 40, 40 > // was 20
-}
+  color      = { red 0.5 green 0.5 blue 0.5 };
+  base_color = { red 0.5 green 0.5 blue 0.5 };
+  zoom       = < 40, 40, 40 >; // was 20
+};
 
-box // Wall
+define Wall box // Wall
 {
-  point1 <-300,-150,-1000>
-  point2 <-310, 100, 600>
+  point1 = <-300,-150,-1000>;
+  point2 = <-310, 100, 600>;
   //translate <0, -50, 0>
-  material : extends MBrick
+  material = MBrick
   {
-    color   pat_brick1
+    color = pat_brick1;
     
-    perturb_func : class PerturbationBrick 
+    perturb_func = class PerturbationBrick 
     {
-      brick_pattern   pat_brick1
-      bump            1.0
-    }
-  }
-}
+      brick_pattern = pat_brick1;
+      bump          = 1.0;
+    };
+  };
+};
 
-box // Walkway
+addObject(Wall);
+
+define Walkway box // Walkway
 {
-  point1 <-300,-150,-1100>
-  point2 < -50, -50, 600>
-  material : extends MMarble
+  point1 = <-300,-150,-1100>;
+  point2 = < -50, -50, 600>;
+  material = MMarble
   {
-    color : class PatternMarble
+    color = class PatternMarble
     {
-      color CWhite
-      base_color { red 0.5 green 0.5 blue 0.5 }
-      zoom < 10, 10, 10 >
-    }
-  }
-}
+      color = CWhite;
+      base_color = { red 0.5 green 0.5 blue 0.5 };
+      zoom = < 10, 10, 10 >;
+    };
+  };
+};
 
-box // Top of wall
+addObject(Walkway);
+
+define TopOfWall box // Top of wall
 {
-  point1 <-290, 100,-1100>
-  point2 <-320, 110, 600>
-  material : extends MMarble
+  point1 = <-290, 100,-1100>;
+  point2 = <-320, 110, 600>;
+  material = MMarble
   {
-    color : class PatternMarble
+    color = class PatternMarble
     {
-      color CWhite
-      base_color { red 0.5 green 0.5 blue 0.5 }
-      zoom < 10, 10, 10 >
-    }
-  }
-}
+      color = CWhite;
+      base_color = { red 0.5 green 0.5 blue 0.5 };
+      zoom = < 10, 10, 10 >;
+    };
+  };
+};
 
-define pattern pat_water : class PatternNoise
-{
-  color       CMySea
-  base_color  CMySea
-  zoom        <5, 5, 5>
-}
+addObject(TopOfWall);
 
-plane // the water
+define pat_water class PatternNoise
 {
-  translate     <0, -75, 0>
-  normal	<0, 1, 0>
-  material : extends MNoise
+  print("right below here");
+  color       = CMySea;
+  print("in the middle");
+  base_color  = CMySea;
+  print("right above here!");
+  zoom        = <5, 5, 5>;
+};
+
+define Water plane // the water
+{
+  translate ( <0, -75, 0> );
+  normal    = <0, 1, 0>;
+  material  = MNoise
   {
-    color       pat_water
+    color   = pat_water;
     
-    perturb_func : class PerturbationNoise
+    perturb_func = class PerturbationNoise
     {
-      noise_pattern   pat_water
-      bump            0.1
-    }
-    ambient     0.1
-    diffuse     0.4
-    specular    0.6
-  }
-}
+      noise_pattern = pat_water;
+      bump          = 0.1;
+    };
+    ambient  = 0.1;
+    diffuse  = 0.4;
+    specular = 0.6;
+  };
+};
 
-define cylinder cy
+addObject(Water);
+
+define cy cylinder
 {
-  scale         <3, 250, 3>
-  material : extends MMirror
+  scale ( <3, 250, 3> );
+  material = MMirror
   {
-    color       CBlack
-  }
-}
+    color = CBlack;
+  };
+};
 
-cylinder : extends cy
-{
-  translate     <-60, -150, 200>
-}
-
-cylinder : extends cy
-{
-  translate     <-60, -150, 0>
-}
-
-cylinder : extends cy
-{
-  translate     <-60, -150, -200>
-}
-
-cylinder : extends cy
-{
-  translate     <-60, -150, -400>
-}
-
-cylinder : extends cy
-{
-  translate     <-60, -150, -600>
-}
-
-cylinder : extends cy
-{
-  translate     <-60, -150, -800>
-}
-
-cylinder : extends cy
-{
-  translate     <-60, -150, -1000>
-}
-
-
-cylinder : extends cy
-{
-  translate     <-260, -150, -1000>
-}
+addObject(cy { translate( < -60, -150,  200> ); });
+addObject(cy { translate( < -60, -150,    0> ); });
+addObject(cy { translate( < -60, -150, -200> ); });
+addObject(cy { translate( < -60, -150, -400> ); });
+addObject(cy { translate( < -60, -150, -600> ); });
+addObject(cy { translate( < -60, -150, -800> ); });
+addObject(cy { translate( < -60, -150,-1000> ); });
+addObject(cy { translate( <-260, -150,-1000> ); });
 
 scene
 {
-  camera	c
-  light         l1
-  light : extends l
+  camera = c;
+  light = l1;
+  light = l
   {
-    translate   <-60, 100, 200>
-    halo        3.0
-  }
-  light : extends l
+    translate ( <-60, 100, 200> );
+    halo   =    3.0;
+  };
+  light = l
   {
-    translate   <-60, 100, 0>
-    halo        2.55
-  }
-  light : extends l
+    translate ( <-60, 100, 0> );
+    halo   =    2.55;
+  };
+  light = l
   {
-    translate   <-60, 100, -200>
-    halo        2.16
-  }
-  light : extends l
+    translate ( <-60, 100, -200> );
+    halo   =    2.16;
+  };
+  light = l
   {
-    translate   <-60, 100, -400>
-    halo        1.84
-  }
-  light : extends l
+    translate ( <-60, 100, -400> );
+    halo   =    1.84;
+  };
+  light = l
   {
-    translate   <-60, 100, -600>
-    halo        1.566
-  }
-  light : extends l
+    translate ( <-60, 100, -600> );
+    halo   =    1.566;
+  };
+  light = l
   {
-    translate   <-60, 100, -800>
-    halo        1.33
-  }
-  light : extends l
+    translate ( <-60, 100, -800> );
+    halo   =    1.33;
+  };
+  light = l
   {
-    translate   <-60, 100, -1000>
-    halo        1.25
-  }
-  light : extends l
+    translate ( <-60, 100, -1000> );
+    halo   =    1.25;
+  };
+  light = l
   {
-    translate   <-260, 100, -1000>
-    halo        1.25
-  }
-  light : extends star
+    translate ( <-260, 100, -1000> );
+    halo   =    1.25;
+  };
+  light = star
   {
-    translate     <-3000 + rand() * 4000, 500 + rand() * 1000, -3000>
-  }
-  light : extends star
+    translate ( <-3000 + rand() * 4000, 500 + rand() * 1000, -3000> );
+  };
+  light = star
   {
-    translate     <-3000 + rand() * 4000, 500 + rand() * 1000, -3000>
-  }
-  light : extends star
+    translate ( <-3000 + rand() * 4000, 500 + rand() * 1000, -3000> );
+  };
+  light = star
   {
-    translate     <-3000 + rand() * 4000, 500 + rand() * 1000, -3000>
-  }
-  light : extends star
+    translate ( <-3000 + rand() * 4000, 500 + rand() * 1000, -3000> );
+  };
+  light = star
   {
-    translate     <-3000 + rand() * 4000, 500 + rand() * 1000, -3000>
-  }
-  light : extends star
+    translate ( <-3000 + rand() * 4000, 500 + rand() * 1000, -3000> );
+  };
+  light = star
   {
-    translate     <-3000 + rand() * 4000, 500 + rand() * 1000, -3000>
-  }
-  light : extends star
+    translate ( <-3000 + rand() * 4000, 500 + rand() * 1000, -3000> );
+  };
+  light = star
   {
-    translate     <-3000 + rand() * 4000, 500 + rand() * 1000, -3000>
-  }
-  light : extends star
+    translate ( <-3000 + rand() * 4000, 500 + rand() * 1000, -3000> );
+  };
+  light = star
   {
-    translate     <-3000 + rand() * 4000, 500 + rand() * 1000, -3000>
-  }
-  light : extends star
+    translate ( <-3000 + rand() * 4000, 500 + rand() * 1000, -3000> );
+  };
+  light = star
   {
-    translate     <-3000 + rand() * 4000, 500 + rand() * 1000, -3000>
-  }
-  light : extends star
+    translate ( <-3000 + rand() * 4000, 500 + rand() * 1000, -3000> );
+  };
+  light = star
   {
-    translate     <-3000 + rand() * 4000, 500 + rand() * 1000, -3000>
-  }
-  light : extends star
+    translate ( <-3000 + rand() * 4000, 500 + rand() * 1000, -3000> );
+  };
+  light = star
   {
-    translate     <-3000 + rand() * 4000, 500 + rand() * 1000, -3000>
-  }
-  light : extends star
+    translate ( <-3000 + rand() * 4000, 500 + rand() * 1000, -3000> );
+  };
+  light = star
   {
-    translate     <-3000 + rand() * 4000, 500 + rand() * 1000, -3000>
-  }
-  light : extends star
+    translate ( <-3000 + rand() * 4000, 500 + rand() * 1000, -3000> );
+  };
+  light = star
   {
-    translate     <-3000 + rand() * 4000, 500 + rand() * 1000, -3000>
-  }
-  light : extends star
+    translate ( <-3000 + rand() * 4000, 500 + rand() * 1000, -3000> );
+  };
+  light = star
   {
-    translate     <-3000 + rand() * 4000, 500 + rand() * 1000, -3000>
-  }
-  light : extends star
+    translate ( <-3000 + rand() * 4000, 500 + rand() * 1000, -3000> );
+  };
+  light = star
   {
-    translate     <-3000 + rand() * 4000, 500 + rand() * 1000, -3000>
-  }
-  light : extends star
+    translate ( <-3000 + rand() * 4000, 500 + rand() * 1000, -3000> );
+  };
+  light = star
   {
-    translate     <-3000 + rand() * 4000, 500 + rand() * 1000, -3000>
-  }
-  light : extends star
+    translate ( <-3000 + rand() * 4000, 500 + rand() * 1000, -3000> );
+  };
+  light = star
   {
-    translate     <-3000 + rand() * 4000, 500 + rand() * 1000, -3000>
-  }
-  width		400
-  height	400
-  background    CBlack
-  output
+    translate ( <-3000 + rand() * 4000, 500 + rand() * 1000, -3000> );
+  };
+  width	      = 400;
+  height      = 400;
+  background  = CBlack;
+  output      = class png
   {
-    type        "png"
-    name	"night.png"
-  }
-  renderer : class Raytracer
+    name = "night.png";
+  };
+  renderer = class Raytracer
   {
 //    sampling    "adaptive"
-  }
-}
+  };
+};
+
+// halt();

@@ -44,6 +44,8 @@ class TIF_Fog : public TImageFilter
 
     string className (void) const { return "IF_Fog"; }
 
+    virtual TIF_Fog* clone_new() const { return new TIF_Fog(*this); }
+
 };  /* class TIF_Fog */
 
 #endif  /* _IF_FOG__ */

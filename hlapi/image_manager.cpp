@@ -25,6 +25,7 @@
 #include "plugins/image_io/jpeg/jpeg_io.h"
 #include "plugins/image_io/png/png_io.h"
 #include "plugins/image_io/gif/gif_io.h"
+#include "llapi/attribute.h"
 
 extern multimap<string, string>   tConfigData;
 
@@ -34,23 +35,80 @@ TImageFormatMap   TImageManager::_tImageFormatMap;
 TImage* TImageManager::_load (const string& rktNAME, const string& rktFORMAT)
 {
 
-  TImage*      ptImage;
-  TImageIO*    ptImageIO;
+  TImage*      ptImage = NULL;
+  TImageIO*    ptImageIO = NULL;
   NAttribute   nAttrib;
 
   ptImageIO = _getImageIO (rktFORMAT);
 
+#if !defined(NEW_ATTRIBUTES)
+  nAttrib.pvValue = (char*) rktNAME.c_str();
+#else
+  nAttrib = new TAttribString(rktNAME);
+#endif
+
+  // If a loader could not be found...
   if ( !ptImageIO )
   {
-    return 0;
+    // If the user wants to have the type auto-detected...
+    if( ( rktFORMAT == "auto" ) || ( rktFORMAT == "guess" ) )
+    {
+      cout << "TImageManager: Auto detecting image format..." << endl;
+      // Go through the list and try them in order until one succeeds.
+      for(TImageFormatMap::iterator il = TImageManager::_tImageFormatMap.begin();
+	  il != TImageManager::_tImageFormatMap.end();
+	  ++il)
+      {
+	ptImage = NULL;
+	ptImageIO = NULL;
+
+	TCreateFunction* cf = il->second;
+	// If the creation function exists, try it.
+	if( cf )
+	{
+	  // Create an image loader.
+	  ptImageIO = (TImageIO*)cf(NULL);
+	  ptImageIO->setSilent(true);
+	  // Try the loader...
+	  if( ptImageIO )
+	  {
+	    ptImageIO->setAttribute("name", nAttrib, FX_STRING);
+	    ptImage = ptImageIO->load();
+	    delete ptImageIO;
+	    ptImageIO = NULL;
+
+	    // If the loader worked... Return the image.
+	    if( ptImage )
+	    {
+	      cout << "TImageManager: Loaded " << rktNAME
+		   << " as " <<  il->first
+		   << endl;
+	      return ptImage;
+	    }
+	  } // The loader was created.
+	} // Creation function exists...
+      } // For all entries in the image data map...
+
+      cout << "TImageManager: Could not guess type of "
+	   << "\"" << rktNAME << "\"" << endl;
+      // If it has made it to this point, none of the loaders worked...
+      return NULL;
+      
+    } // Format is auto or guess
+    else // Unknown format type.
+    {
+      return NULL;
+    }
+  } // loader was not found.
+  else // The image loader exists.
+  {
+    ptImageIO->setAttribute ("name", nAttrib, FX_STRING);
+    
+    ptImage = ptImageIO->load();
+    
+    delete ptImageIO;
+
   }
-
-  nAttrib.pvValue = (char*) rktNAME.c_str();
-  ptImageIO->setAttribute ("name", nAttrib, FX_STRING);
-  
-  ptImage = ptImageIO->load();
-
-  delete ptImageIO;
   
   return ptImage;
   
@@ -71,7 +129,11 @@ int TImageManager::_save (const string& rktNAME, const string& rktFORMAT, const 
     return -1;
   }
 
+#if !defined(NEW_ATTRIBUTES)  
   nAttrib.pvValue = (char*) rktNAME.c_str();
+#else
+  nAttrib = new TAttribString(rktNAME);
+#endif
   ptImageIO->setAttribute ("name", nAttrib, FX_STRING);
   
   iResult = ptImageIO->save (ptIMAGE);
@@ -93,7 +155,7 @@ bool TImageManager::_knownFormat (const string& rktFORMAT)
 
 void TImageManager::_addFormat (const string& rktFORMAT, TCreateFunction* pfCREATE)
 {
-
+  
   // [_TODO_] Check if this format is already registered.
   _tImageFormatMap [rktFORMAT] = pfCREATE;
 
@@ -102,7 +164,7 @@ void TImageManager::_addFormat (const string& rktFORMAT, TCreateFunction* pfCREA
 
 void TImageManager::_addFormat (const string& rktFORMAT, TCreateFunction* pfCREATE, const string& rktALIAS)
 {
-
+  
   // [_TODO_] Check if this format is already registered.
   _tImageFormatMap [rktFORMAT] = pfCREATE;
   _tImageFormatMap [rktALIAS]  = pfCREATE;

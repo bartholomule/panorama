@@ -2120,7 +2120,7 @@ bool TUniformGrid::initialize (void)
 }  /* initialize() */
 
 
-void TUniformGrid::calculateVoxelSize (const vector<TObject*>& rktOBJECT_LIST)
+void TUniformGrid::calculateVoxelSize (const vector<magic_pointer<TObject> >& rktOBJECT_LIST)
 {
 
   TScalar   tTmp;
@@ -2128,7 +2128,7 @@ void TUniformGrid::calculateVoxelSize (const vector<TObject*>& rktOBJECT_LIST)
   size_t    zObjetListSize = rktOBJECT_LIST.size();
 
   tVoxelSizeTmp = 0;
-  for (vector<TObject*>::const_iterator tIter = rktOBJECT_LIST.begin(); ( tIter != rktOBJECT_LIST.end() ) ;tIter++)
+  for (vector<magic_pointer<TObject> >::const_iterator tIter = rktOBJECT_LIST.begin(); ( tIter != rktOBJECT_LIST.end() ) ;tIter++)
   {
     // We calculate bounding box side mean value
     tTmp  = 0;

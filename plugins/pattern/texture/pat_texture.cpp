@@ -23,6 +23,8 @@
 #include "llapi/file.h"
 #include "hlapi/image_manager.h"
 #include "pat_texture.h"
+#include "llapi/attribute.h"
+#include "llapi/extended_attribute.h"
 
 DEFINE_PLUGIN ("PatternTexture", FX_PATTERN_CLASS, TPatternTexture);
 
@@ -324,10 +326,18 @@ int TPatternTexture::setAttribute (const string& rktNAME, NAttribute nVALUE, EAt
 
   if ( rktNAME == "color" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_COLOR )
     {
       tColor = *((TColor*) nVALUE.pvValue);
     }
+#else
+    magic_pointer<TAttribColor> col = get_color(nVALUE);
+    if( !!col )
+    {
+      tColor = col->tValue;
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -335,35 +345,70 @@ int TPatternTexture::setAttribute (const string& rktNAME, NAttribute nVALUE, EAt
   }
   else if ( rktNAME == "texture" )
   {
-    if ( eTYPE == FX_STRING )
+#if !defined(NEW_ATTRIBUTES)
+    if ( eTYPE != FX_STRING )
     {
-      char*   pcName = (char*) nVALUE.pvValue;
-        
-      ptImage = tImageManager.newImage (pcName, FileExtension (pcName));
-
-      if ( !ptImage )
+      if ( eTYPE != FX_IMAGE )
       {
-        TProcedural::_tUserErrorMessage = string ("could not open texture file ") + (char*) nVALUE.pvValue;
-        return FX_ATTRIB_USER_ERROR;
+	return FX_ATTRIB_WRONG_TYPE;
       }
-
-      zTextureWidth  = (size_t) ptImage->width();
-      zTextureHeight = (size_t) ptImage->height();
-
-      dTextureWidth  = ptImage->width();
-      dTextureHeight = ptImage->height();
+      ptImage = new TImage(*(TImage*)nVALUE.pvValue);
+      return FX_ATTRIB_OK;
     }
-    else
+
+    char*   pcName = (char*) nVALUE.pvValue;
+
+    //    ptImage = tImageManager.newImage (pcName, FileExtension (pcName));
+    ptImage = tImageManager.newImage (pcName, "auto");    
+
+    if ( !ptImage )
     {
-      return FX_ATTRIB_WRONG_TYPE;
+      TProcedural::_tUserErrorMessage = string ("could not open texture file ") + (char*) nVALUE.pvValue;
+      return FX_ATTRIB_USER_ERROR;
+    }    
+#else
+    magic_pointer<TAttribString> str = get_string(nVALUE);
+    if( !str )
+    {
+      magic_pointer<TAttribImage> img = get_image(nVALUE);
+      if( !img )
+      {
+	return FX_ATTRIB_WRONG_TYPE;
+      }
+      ptImage = img->tValue;
+      return FX_ATTRIB_OK;
     }
+    
+    //    ptImage = tImageManager.newImage (str->tValue, FileExtension (str->tValue));
+    ptImage = tImageManager.newImage (str->tValue, "auto");    
+
+    if ( !ptImage )
+    {
+      TProcedural::_tUserErrorMessage = "could not open texture file " + str->tValue;
+      return FX_ATTRIB_USER_ERROR;
+    }    
+#endif
+    
+    zTextureWidth  = (size_t) ptImage->width();
+    zTextureHeight = (size_t) ptImage->height();
+    
+    dTextureWidth  = ptImage->width();
+    dTextureHeight = ptImage->height();
   }
   else if ( rktNAME == "tiling" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_VECTOR2 )
     {
       tTiling = *((TVector2*) nVALUE.pvValue);
     }
+#else
+    magic_pointer<TAttribVector2> vec = get_vector2(nVALUE);
+    if( !!vec )
+    {
+      tTiling = vec->tValue;
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -371,10 +416,18 @@ int TPatternTexture::setAttribute (const string& rktNAME, NAttribute nVALUE, EAt
   }
   else if ( rktNAME == "offset" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_VECTOR2 )
     {
       tOffset = *((TVector2*) nVALUE.pvValue);
     }
+#else
+    magic_pointer<TAttribVector2> vec = get_vector2(nVALUE);
+    if( !!vec )
+    {
+      tOffset = vec->tValue;
+    }    
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -382,10 +435,18 @@ int TPatternTexture::setAttribute (const string& rktNAME, NAttribute nVALUE, EAt
   }
   else if ( rktNAME == "mirror" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_BOOL )
     {
       gMirror = nVALUE.gValue;
     }
+#else
+    magic_pointer<TAttribBool> b = get_bool(nVALUE);
+    if( !!b )
+    {
+      gMirror = b->tValue;
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -393,10 +454,18 @@ int TPatternTexture::setAttribute (const string& rktNAME, NAttribute nVALUE, EAt
   }
   else if ( rktNAME == "tile" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_BOOL )
     {
       gTile = nVALUE.gValue;
     }
+#else
+    magic_pointer<TAttribBool> b = get_bool(nVALUE);
+    if( !!b )
+    {
+      gTile = b->tValue;
+    }
+#endif    
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -404,42 +473,56 @@ int TPatternTexture::setAttribute (const string& rktNAME, NAttribute nVALUE, EAt
   }
   else if ( rktNAME == "mapping" )
   {
-    if ( eTYPE == FX_STRING )
-    {
-      string tMapping ((char *) nVALUE.pvValue);
-
-      if ( tMapping == "spherical" )
-      {
-        eMapping = FX_SPHERICAL;
-      }
-      else if ( tMapping == "cylindrical" )
-      {
-        eMapping = FX_CYLINDRICAL;
-      }
-      else if ( tMapping == "torus" )
-      {
-        eMapping = FX_TORUS;
-      }
-      else if ( tMapping == "planar" )
-      {
-        eMapping = FX_PLANAR;
-      }
-      else
-      {
-        return FX_ATTRIB_WRONG_VALUE;
-      } 
-    }
-    else
+#if !defined(NEW_ATTRIBUTES)
+    if ( eTYPE != FX_STRING )
     {
       return FX_ATTRIB_WRONG_TYPE;
     }
+    string tMapping ((char *) nVALUE.pvValue);
+#else
+    magic_pointer<TAttribString> str = get_string(nVALUE);
+    if( !str )
+    {
+      return FX_ATTRIB_WRONG_TYPE;      
+    }
+    string tMapping = str->tValue;
+#endif
+
+    if ( tMapping == "spherical" )
+    {
+      eMapping = FX_SPHERICAL;
+    }
+    else if ( tMapping == "cylindrical" )
+    {
+      eMapping = FX_CYLINDRICAL;
+    }
+    else if ( tMapping == "torus" )
+    {
+      eMapping = FX_TORUS;
+    }
+    else if ( tMapping == "planar" )
+    {
+      eMapping = FX_PLANAR;
+    }
+    else
+    {
+      return FX_ATTRIB_WRONG_VALUE;
+    } 
   }
   else if ( rktNAME == "tube_center" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_REAL )
     {
       tTubeCenter = nVALUE.dValue;
     }
+#else
+    magic_pointer<TAttribReal> r = get_real(nVALUE);
+    if( !!r )
+    {
+      tTubeCenter = r->tValue;
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -458,13 +541,14 @@ int TPatternTexture::setAttribute (const string& rktNAME, NAttribute nVALUE, EAt
 int TPatternTexture::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 {
 
+#if !defined(NEW_ATTRIBUTES)  
   if ( rktNAME == "color" )
   {
     rnVALUE.pvValue = &tColor;
   }
   else if ( rktNAME == "texture" )
   {
-    rnVALUE.pvValue = ptImage;
+    rnVALUE.pvValue = ptImage.get_pointer();
   }
   else if ( rktNAME == "tiling" )
   {
@@ -506,6 +590,55 @@ int TPatternTexture::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
   {
     rnVALUE.dValue = tTubeCenter;
   }
+#else
+  if ( rktNAME == "color" )
+  {
+    rnVALUE = new TAttribColor (tColor);
+  }
+  else if ( rktNAME == "texture" )
+  {
+    rnVALUE = new TAttribImage(ptImage);
+  }
+  else if ( rktNAME == "tiling" )
+  {
+    rnVALUE = new TAttribVector2 (tTiling);
+  }
+  else if ( rktNAME == "offset" )
+  {
+    rnVALUE = new TAttribVector2 (tOffset);
+  }
+  else if ( rktNAME == "mirror" )
+  {
+    rnVALUE = new TAttribBool (gMirror);
+  }
+  else if ( rktNAME == "tile" )
+  {
+    rnVALUE = new TAttribBool (gTile);
+  }
+  else if ( rktNAME == "mapping" )
+  {
+    static map<EMappings,string> mapping_strings;
+    static vector<string> mapping_choices;
+
+    if( mapping_strings.empty() )
+    {
+      mapping_strings[FX_SPHERICAL] = "spherical";      
+      mapping_strings[FX_CYLINDRICAL] = "cylindrical";
+      mapping_strings[FX_TORUS] = "torus";
+      mapping_strings[FX_PLANAR] = "planar";
+      mapping_choices.erase(mapping_choices.begin(), mapping_choices.end());
+      mapping_choices.push_back (mapping_strings[FX_SPHERICAL]);
+      mapping_choices.push_back (mapping_strings[FX_CYLINDRICAL]);
+      mapping_choices.push_back (mapping_strings[FX_TORUS]);
+      mapping_choices.push_back (mapping_strings[FX_PLANAR]);      
+    }
+    rnVALUE = new TAttribStringList (mapping_choices, mapping_strings[eMapping]);
+  }
+  else if ( rktNAME == "tube_center" )
+  {
+    rnVALUE = new TAttribReal (tTubeCenter);
+  }
+#endif
   else
   {
     return TPattern::getAttribute (rktNAME, rnVALUE);
@@ -527,7 +660,11 @@ void TPatternTexture::getAttributeList (TAttributeList& rtLIST) const
   rtLIST ["offset"]      = FX_VECTOR2;
   rtLIST ["mirror"]      = FX_BOOL;
   rtLIST ["tile"]        = FX_BOOL;
+#if !defined(NEW_ATTRIBUTES)  
   rtLIST ["mapping"]     = FX_STRING;
+#else
+  rtLIST ["mapping"]     = FX_STRING_LIST;  
+#endif
   rtLIST ["tube_center"] = FX_REAL;
 
 }  /* getAttributeList() */

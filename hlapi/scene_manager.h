@@ -20,8 +20,11 @@
 #define _SCENE_MANAGER__
 
 #include <string>
+#include "hlapi/plugin_manager.h"
 #include "llapi/scene.h"
 
+
+#if 0
 typedef TScene* (TSceneLoadFunction) (const string&);
 typedef int (TSceneSaveFunction) (const string&, const TScene*);
 
@@ -32,8 +35,9 @@ struct TSceneFormatData
   TSceneSaveFunction*   pfSave;
 
 };  /* struct TSceneFormatData */
+#endif
 
-typedef map<string, TSceneFormatData*, less<string> > TSceneFormatMap;
+typedef map<string, TCreateFunction*, less<string> > TSceneFormatMap;
 
 class TSceneManager
 {
@@ -47,7 +51,7 @@ class TSceneManager
     static TScene* _load (const string& rktNAME, const string& rktFORMAT);
     static int _save (const string& rktNAME, const string& rktFORMAT, const TScene* pktSCENE);
     static bool _knownFormat (const string& rktFORMAT);
-    static void _addFormat (const string& rktNAME, TSceneLoadFunction* pfLOAD, TSceneSaveFunction* pfSAVE);
+    static void _addFormat (const string& rktNAME, TCreateFunction* pfLOAD);
     static void _initialize (void);
     
 };  /* class TSceneManager */

@@ -30,7 +30,7 @@ class TPerturbationBump : public TPerturbation
 
   protected:
 
-    TPattern*   ptPattern;
+    magic_pointer<TPattern> ptPattern;
     TVector2    tGradientDisplacement;
     TScalar     tBumpFactor;
     TVector2    tSamples;
@@ -47,10 +47,10 @@ class TPerturbationBump : public TPerturbation
     int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
     void getAttributeList (TAttributeList& rtLIST) const;
 
-    void setPattern (TPattern* ptPATTERN) { ptPattern = ptPATTERN; }
+    void setPattern (magic_pointer<TPattern> ptPATTERN) { ptPattern = ptPATTERN; }
 
     string className (void) const { return "PerturbationBump"; }
-
+    TPerturbationBump* clone_new() const { return new TPerturbationBump(*this); }
 };  /* class TPerturbationBump */
 
 #endif  /* _PERTURBATION_BUMP__ */

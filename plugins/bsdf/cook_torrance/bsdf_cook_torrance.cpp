@@ -21,6 +21,8 @@
 #include "llapi/object.h"
 #include "llapi/material.h"
 #include "bsdf_cook_torrance.h"
+#include "llapi/attribute.h"
+#include "llapi/extended_attribute.h"
 
 DEFINE_PLUGIN ("BsdfCookTorrance", FX_BSDF_CLASS, TBsdfCookTorrance);
 
@@ -39,6 +41,7 @@ int TBsdfCookTorrance::setAttribute (const string& rktNAME, NAttribute nVALUE, E
 
   if ( rktNAME == "roughness" )
   {
+#if !defined(NEW_ATTRIBUTES)    
     if ( eTYPE == FX_PATTERN )
     {
       setStandardDeviation ((TPattern*) nVALUE.pvValue);
@@ -51,6 +54,13 @@ int TBsdfCookTorrance::setAttribute (const string& rktNAME, NAttribute nVALUE, E
     {
       setStandardDeviation (new TPattern (*((TColor*) nVALUE.pvValue)));
     }
+#else
+    magic_pointer<TAttribPattern> pat = get_pattern (nVALUE);
+    if( !!pat )
+    {
+      setStandardDeviation (pat->tValue);
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -58,6 +68,7 @@ int TBsdfCookTorrance::setAttribute (const string& rktNAME, NAttribute nVALUE, E
   }
   else if ( rktNAME == "reflection_color" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_PATTERN )
     {
       setSpecularReflectionCoefficients ((TPattern*) nVALUE.pvValue);
@@ -70,6 +81,13 @@ int TBsdfCookTorrance::setAttribute (const string& rktNAME, NAttribute nVALUE, E
     {
       setSpecularReflectionCoefficients (new TPattern (*((TColor*) nVALUE.pvValue)));
     }
+#else
+    magic_pointer<TAttribPattern> pat = get_pattern (nVALUE);
+    if( !!pat )
+    {
+      setSpecularReflectionCoefficients (pat->tValue);
+    }
+#endif    
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -88,14 +106,25 @@ int TBsdfCookTorrance::setAttribute (const string& rktNAME, NAttribute nVALUE, E
 int TBsdfCookTorrance::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 {
 
+#if !defined(NEW_ATTRIBUTES)
   if ( rktNAME == "roughness" )
   {
-    rnVALUE.pvValue = ptStandardDeviation;
+    rnVALUE.pvValue = ptStandardDeviation.get_pointer();
   }
   else if ( rktNAME == "reflection_color" )
   {
-    rnVALUE.pvValue = ptSpecularReflectionCoefficients;
+    rnVALUE.pvValue = ptSpecularReflectionCoefficients.get_pointer();
   }
+#else
+  if ( rktNAME == "roughness" )
+  {
+    rnVALUE = new TAttribPattern (ptStandardDeviation);
+  }
+  else if ( rktNAME == "reflection_color" )
+  {
+    rnVALUE = new TAttribPattern (ptSpecularReflectionCoefficients);
+  }  
+#endif
   else
   {
     return TBsdf::getAttribute (rktNAME, rnVALUE);

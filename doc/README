@@ -73,7 +73,7 @@ Panorama README
   You can find more information about Panorama, or download latest distribution
  at:
 
-   http://www.gnu.org/software/panorama/panorama.html
+   http://panorama.sourceforge.net
 
   For bug reports you have a mailing list, bug-panorama@gnu.org. To subscribe,
  send an email to bug-panorama-request@gnu.org with the word 'subscribe' in the
@@ -82,9 +82,9 @@ Panorama README
   There are two other mailing lists, help-panorama@gnu.org for questions about
  the use of this package, and devel-panorama@gnu.org, for developers.
   
-  For other questions you can email ajimenez@vnet.es
+  For other questions you can email kpharris@users.sourceforge.net
 
 ===
 
- Angel Jimenez Jimenez  (ajimenez@vnet.es)
+ Angel Jimenez Jimenez  (ajimenez@gnu.org)
  Carlos Jimenez Moreno  (carlosj@leader.es) (carlosj@vnet.es)

@@ -23,6 +23,8 @@ gint TColorPreview::buttonPressCB (GdkEventButton* ptEVENT)
 
   gdouble   adColor [3];
 
+  cerr << "Color Preview::Button press callback!!!" << endl;
+  
   if ( ( ptEVENT->type == GDK_2BUTTON_PRESS ) && ( ptEVENT->button == 1 ) )
   {
     if ( !ptColorDlg )
@@ -51,16 +53,29 @@ void TColorPreview::closeDialogCB (void)
 
   ptColorDlg->hide();
   delete ptColorDlg;
+
+  ptColorDlg = NULL;
+  
   
 }  /* closeDialogCB() */
 
 
 void TColorPreview::setColorCB (void)
 {
+  gdouble adColor [3];
+  ptColorDlg->get_colorsel()->get_color (adColor);
 
+  tColor = TColor(adColor[0], adColor[1], adColor[2]);
+
+  // Get rid of the dialog...
   ptColorDlg->hide();
   delete ptColorDlg;
+  ptColorDlg = NULL;
   
+  drawColorCB (NULL);
+
+  cout << "Emitting color change..." << endl;
+  color_changed();  
 }  /* setColorCB() */
 
 
@@ -70,8 +85,8 @@ TColorPreview::TColorPreview (const TColor& rktCOLOR) :
   ptColorDlg = NULL;
   tColor     = rktCOLOR;
 
-  //  set_events (get_events() | GDK_BUTTON_PRESS_MASK);
-  
+  add_events (GDK_BUTTON_PRESS_MASK);
+
   size_allocate.connect(slot(this, &TColorPreview::drawColorCB));
   button_press_event.connect(slot(this, &TColorPreview::buttonPressCB));
   
@@ -80,19 +95,12 @@ TColorPreview::TColorPreview (const TColor& rktCOLOR) :
 
 void TColorPreview::drawColorCB (GtkAllocation* ptALLOC)
 {
-#if DEBUG_IT
-  cout << "drawColor called" << endl;
-#endif
-
   TColor   tColor24;
   size_t   zWidth   = width();
   size_t   zHeight  = height();
   Byte*    pbBuffer = new Byte [zWidth * 3];
 
-  tColor.printDebug();
-  
   tColor24 = tColor.convertTo24Bits();
-  tColor24.printDebug();  
   
   for (size_t J = 0; ( J < zWidth ) ;J++)
   {
@@ -111,3 +119,6 @@ void TColorPreview::drawColorCB (GtkAllocation* ptALLOC)
   delete pbBuffer;
   
 }  /* drawColorCB() */
+
+
+

@@ -18,6 +18,7 @@
 
 #include "llapi/warning_eliminator.h"
 #include "parallel.h"
+#include "llapi/attribute.h"
 
 DEFINE_PLUGIN ("ParallelCamera", FX_CAMERA_CLASS, TParallelCamera);
 
@@ -26,10 +27,18 @@ int TParallelCamera::setAttribute (const string& rktNAME, NAttribute nVALUE, EAt
 
   if ( rktNAME == "width" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_REAL )
     {
       setWidth (nVALUE.dValue);
     }
+#else
+    magic_pointer<TAttribReal> r = get_real(nVALUE);
+    if( !!r )
+    {
+      setWidth (r->tValue);
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -37,10 +46,18 @@ int TParallelCamera::setAttribute (const string& rktNAME, NAttribute nVALUE, EAt
   }
   else if ( rktNAME == "height" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_REAL )
     {
       setHeight (nVALUE.dValue);
     }
+#else
+    magic_pointer<TAttribReal> r = get_real(nVALUE);
+    if( !!r )
+    {
+      setHeight (r->tValue);
+    }
+#endif    
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -59,6 +76,7 @@ int TParallelCamera::setAttribute (const string& rktNAME, NAttribute nVALUE, EAt
 int TParallelCamera::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 {
 
+#if !defined(NEW_ATTRIBUTES)  
   if ( rktNAME == "width" )
   {
     rnVALUE.dValue = tWidth;
@@ -67,6 +85,16 @@ int TParallelCamera::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
   {
     rnVALUE.dValue = tHeight;
   }
+#else
+  if ( rktNAME == "width" )
+  {
+    rnVALUE = new TAttribReal (tWidth);
+  }
+  else if ( rktNAME == "height" )
+  {
+    rnVALUE = new TAttribReal (tHeight);
+  }  
+#endif
   else
   {
     return TCamera::getAttribute (rktNAME, rnVALUE);
@@ -92,7 +120,7 @@ bool TParallelCamera::initialize (void)
 {
   bool val = true;
 
-  tDirection = (tLookAt - tLocation);
+  tDirection = (tLookAt - location());
   tDirection.normalize();
 
   if ( fabs (dotProduct (tDirection, tUp)) == 1 )
@@ -123,7 +151,7 @@ bool TParallelCamera::getPlaneProjection (const TVector& rktPOINT, TVector2& rtP
 
   TScalar   u, v;
   TScalar   pt, pu, pv;
-  TVector   tPoint = (rktPOINT - tLocation);
+  TVector   tPoint = (rktPOINT - location());
   
   pt = dotProduct (tDirection, tPoint);
   pu = dotProduct (I, tPoint) / tPixelSizeX;
@@ -147,18 +175,16 @@ bool TParallelCamera::getPlaneProjection (const TVector& rktPOINT, TVector2& rtP
 }  /* getPlaneProjection() */
 
 
-void TParallelCamera::printDebug (void) const
+void TParallelCamera::printDebug (const string& indent) const
 {
 
-  cerr << TDebug::_indent() << "[_" << className() << "_]" << endl;
+  cerr << indent << "[_" << className() << "_]" << endl;
 
-  TDebug::_push();
+  string new_indent = TDebug::Indent(indent);
 
-  cerr << TDebug::_indent() << "Width     : " << getWidth() << endl;
-  cerr << TDebug::_indent() << "Height    : " << getHeight() << endl;
-  cerr << TDebug::_indent() << "Up vector : "; tUp.printDebug();
-  cerr << TDebug::_indent() << "Look at   : "; tLookAt.printDebug();
+  cerr << new_indent << "Width     : " << getWidth() << endl;
+  cerr << new_indent << "Height    : " << getHeight() << endl;
+  cerr << new_indent << "Up vector : "; tUp.printDebug(new_indent);
+  cerr << new_indent << "Look at   : "; tLookAt.printDebug(new_indent);
 
-  TDebug::_pop();
-  
 }  /* printDebug() */

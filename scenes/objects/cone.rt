@@ -3,70 +3,97 @@
 */
 
 #include "materials.inc"
+#include "cameras.inc"
+#include "shapes.inc"
 
-define camera c
-{
-  translate	<0, 200, 600>
-  look_at	<0, 100, 0>
-}
+define cone class Cone { };
 
-define light l
+define c Camera
 {
-  translate	<-500, 300, 500>
-  color		CWhite
-}
+  translate (<0, 200, 600>);
+  look_at  = <0, 100, 0>;
+};
+
+define l class WarnLight //PointLight //
+{
+  translate(<-500, 300, 500>);
+  color = CWhite;
+
+  point_at = <0,100,0>;
+  exponent = 20;
+  axis = <0,0,0>;
+  angle_th = 20;
+  intensity = 1;
+};
+
+define l2 class WarnLight //PointLight //
+{
+  translate(<500, -300, -500>);
+  color = CWhite;
+
+  point_at = <0,100,0>;
+  exponent = 20;
+  axis = <0,0,0>;
+  angle_th = 20;
+  intensity = 1;
+};
+
 
 circle
-{
-  translate	<0, 0, 0>
-  normal	<0, 1, 0>
-  radius	200
-  one_sided	off
-  material : extends MPlastic
   {
-    color	CGreen
-  }
-}
+    translate ( <0, 0, 0> );
+    normal    = <0, 1, 0>;
+    radius    = 200;
+    one_sided = off;
+    material  = MPlastic
+    {
+      color = CGreen;
+    };
+  };
+
 
 cone
-{
-  scale         <50, 100, 50>
-  translate     <0, 100, 0>
-  rotate        <180, 0, 0>
-  material : extends MPlastic
   {
-    color	CWhite
-  }
-}
+//    scale ( <50, 100, 50> );
+    translate ( <0, 100, 0> );
+//    rotate    ( <180, 0, 0> );
+    material = MPlastic
+    {
+      color = CWhite;
+    };
+    functionlist();
+//    attributelist();
+  };
 
 cone
-{
+  {
 //  scale              <2, 1, 1.5>   // Try it
 //  translate          <0, 110, 0>   // Try it
 //  rotate             <180, 0, 0>   // Try it
 
-  max_circle_point   <40, 150, -40>
-  min_circle_point   <0, 100, 0>
-  max_radius         100
-  min_radius         50
+    max_circle_point = <40, 150, -40>;
+    min_circle_point = <0, 100, 0>;
+    max_radius       = 100;
+    min_radius       = 50;
 
-  material : extends MPlastic
-  {
-    color	CWhite
-  }
-}
+    material = MPlastic
+    {
+      color = CWhite;
+    };
+  };
+
 
 scene
 {
-  camera	c
-  light		l
-  width		600
-  height	400
-  background	CSummerSky
-  output
+  camera	= c;
+  light		= l;
+  light		= l2;
+  width		= 600;
+  height	= 400;
+  background	= CSummerSky;
+  output = class png
   {
-    type        "png"
-    name	"cone.png"
-  }
-  renderer : class Raytracer {}
-}
+    name = "cone2.png";
+  };
+  renderer = class Raytracer {};
+};

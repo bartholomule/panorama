@@ -20,7 +20,9 @@
 #include <stdlib.h>
 #include <iostream>
 #include "per_wave.h"
-#include <llapi/math_tools.h>
+#include "llapi/math_tools.h"
+#include "llapi/attribute.h"
+#include "llapi/extended_attribute.h"
 
 DEFINE_PLUGIN ("PerturbationWave", FX_PERTURBATION_CLASS, TPerturbationWave);
 
@@ -64,6 +66,7 @@ int TPerturbationWave::setAttribute (const string& rktNAME, NAttribute nVALUE, E
 
   if ( rktNAME == "sources" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_REAL )
     {
       int new_num_sources = int(nVALUE.dValue);
@@ -74,6 +77,19 @@ int TPerturbationWave::setAttribute (const string& rktNAME, NAttribute nVALUE, E
       }
       all_wave_sources.resize(new_num_sources);
     }
+#else
+    magic_pointer<TAttribInt> i = get_int(nVALUE);
+    if( !!i )
+    {
+      int new_num_sources = i->tValue;
+      if ( new_num_sources < 0 )
+      {
+	all_wave_sources.resize(0);
+	return FX_ATTRIB_WRONG_VALUE;
+      }
+      all_wave_sources.resize(new_num_sources);      
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -81,10 +97,18 @@ int TPerturbationWave::setAttribute (const string& rktNAME, NAttribute nVALUE, E
   }
   else if ( rktNAME == "min_freq" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_REAL )
     {
       tMin_freq = nVALUE.dValue;
     }
+#else
+    magic_pointer<TAttribReal> r = get_real(nVALUE);
+    if( !!r )
+    {
+      tMin_freq = r->tValue;
+    }
+#endif    
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -92,10 +116,18 @@ int TPerturbationWave::setAttribute (const string& rktNAME, NAttribute nVALUE, E
   }
   else if ( rktNAME == "max_freq" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_REAL )
     {
       tMax_freq = nVALUE.dValue;
     }
+#else
+    magic_pointer<TAttribReal> r = get_real(nVALUE);
+    if( !!r )
+    {
+      tMax_freq = r->tValue;
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -103,10 +135,18 @@ int TPerturbationWave::setAttribute (const string& rktNAME, NAttribute nVALUE, E
   }
   else if ( rktNAME == "min_coord" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_VECTOR )
     {
       tMin_coord = (*((TVector*) nVALUE.pvValue));
     }
+#else
+    magic_pointer<TAttribVector> vec = get_vector(nVALUE);
+    if( !!vec )
+    {
+      tMin_coord = vec->tValue;
+    }
+#endif    
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -114,10 +154,18 @@ int TPerturbationWave::setAttribute (const string& rktNAME, NAttribute nVALUE, E
   }
   else if ( rktNAME == "max_coord" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_VECTOR )
     {
       tMax_coord = (*((TVector*) nVALUE.pvValue));
     }
+#else
+    magic_pointer<TAttribVector> vec = get_vector(nVALUE);
+    if( !!vec )
+    {
+      tMax_coord = vec->tValue;
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -135,11 +183,15 @@ int TPerturbationWave::setAttribute (const string& rktNAME, NAttribute nVALUE, E
 
 int TPerturbationWave::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 {
+#if defined(DEBUG)
 #if defined(__FUNCTION__)
   cout << __FUNCTION__ << "(" << rktNAME << ") called." << endl;
 #elif defined(__FUNCTION)
   cout << __FUNCTION << "(" << rktNAME << ") called." << endl;
 #endif
+#endif
+
+#if !defined(NEW_ATTRIBUTES)
   if ( rktNAME == "sources" )
   {
     rnVALUE.dValue = int(all_wave_sources.size());
@@ -160,6 +212,28 @@ int TPerturbationWave::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
   {
     rnVALUE.pvValue = (void*)&tMax_coord;
   }
+#else
+  if ( rktNAME == "sources" )
+  {
+    rnVALUE = new TAttribInt ((int)all_wave_sources.size());
+  }
+  else if ( rktNAME == "min_freq" )
+  {
+    rnVALUE = new TAttribReal (tMin_freq);
+  }
+  else if ( rktNAME == "max_freq" )
+  {
+    rnVALUE = new TAttribReal (tMax_freq);
+  }
+  else if ( rktNAME == "min_coord" )
+  {
+    rnVALUE = new TAttribVector (tMin_coord);
+  }
+  else if ( rktNAME == "max_coord" )
+  {
+    rnVALUE = new TAttribVector (tMax_coord);
+  }  
+#endif
   else
   {
     return TPerturbation::getAttribute (rktNAME, rnVALUE);
@@ -180,7 +254,11 @@ void TPerturbationWave::getAttributeList (TAttributeList& rtLIST) const
   
   TPerturbation::getAttributeList (rtLIST);
 
+#if !defined(NEW_ATTRIBUTES)
   rtLIST ["sources"]   = FX_REAL;
+#else
+  rtLIST ["sources"]   = FX_INTEGER;  
+#endif
   rtLIST ["min_freq"]  = FX_REAL;
   rtLIST ["max_freq"]  = FX_REAL;
   rtLIST ["min_coord"]  = FX_VECTOR;

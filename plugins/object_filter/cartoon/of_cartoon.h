@@ -47,6 +47,8 @@ class TOF_Cartoon : public TObjectFilter
 
     string className (void) const { return "OF_Cartoon"; }
 
+    virtual TOF_Cartoon* clone_new() const { return new TOF_Cartoon(*this); }
+  
 };  /* class TOF_Cartoon */
 
 #endif  /* _OF_CARTOON__ */

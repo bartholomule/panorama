@@ -22,6 +22,7 @@
 #include <vector>
 #include "llapi/bounding_box.h"
 #include "llapi/atmospheric_object.h"
+#include "generic/magic_pointer.h"
 
 class TScene;
 
@@ -31,14 +32,14 @@ class TAtmosphere
   protected:
 
     TScene*                       ptScene;
-    vector<TAtmosphericObject*>   tAtmObjectList;
+    vector<magic_pointer<TAtmosphericObject> >   tAtmObjectList;
     
   public:
 
     TColor filterRadiance (const TSurfaceData& rktDATA, const TColor& rktRAD) const;
     TScalar transparency (const TVector& rktPOINT1, const TVector& rktPOINT2) const;
 
-    void addObject (TAtmosphericObject* ptATM_OBJ)
+    void addObject (magic_pointer<TAtmosphericObject> ptATM_OBJ)
     {
       tAtmObjectList.push_back (ptATM_OBJ);
     }

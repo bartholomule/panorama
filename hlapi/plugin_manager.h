@@ -49,14 +49,28 @@
 #define DEFINE_SCENE_IO_PLUGIN(NAME, TYPE) \
   extern "C" int _registerPlugin (DWord dwVERSION, TPluginData* ptDATA) \
   { \
-    TSceneManager::_addFormat (NAME, &TYPE::_load, &TYPE::_save); \
+    TSceneManager::_addFormat (NAME, &TYPE::_create); \
+    ptDATA->tPluginName      = NAME; \
+    ptDATA->eClass           = FX_SCENE_IO_CLASS; \
+    ptDATA->pfCreateFunction = &TYPE::_create; \
     return 0; \
+  } \
+  TBaseClass* TYPE::_create (const TBaseClass* pktPARENT) \
+  { \
+    if ( pktPARENT ) \
+    { \
+      return new TYPE (*((TYPE*) pktPARENT)); \
+    } \
+    return new TYPE(); \
   }
 
 #define DEFINE_IMAGE_IO_PLUGIN(NAME, TYPE) \
   extern "C" int _registerPlugin (DWord dwVERSION, TPluginData* ptDATA) \
   { \
     TImageManager::_addFormat (NAME, &TYPE::_create); \
+    ptDATA->tPluginName      = NAME; \
+    ptDATA->eClass           = FX_IMAGE_IO_CLASS; \
+    ptDATA->pfCreateFunction = &TYPE::_create; \
     return 0; \
   } \
   \
@@ -73,6 +87,9 @@
   extern "C" int _registerPlugin (DWord dwVERSION, TPluginData* ptDATA) \
   { \
     TImageManager::_addFormat (NAME, &TYPE::_create, ALIAS); \
+    ptDATA->tPluginName      = NAME; \
+    ptDATA->eClass           = FX_IMAGE_IO_CLASS; \
+    ptDATA->pfCreateFunction = &TYPE::_create; \
     return 0; \
   } \
   \

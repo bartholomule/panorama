@@ -1,6 +1,6 @@
 /*
-*  Copyright (C) 1998-2000 Angel Jimenez Jimenez, Carlos Jimenez Moreno and
-*                          Jon Frydensbjerg
+*  Copyright (C) 1998-2001 Angel Jimenez Jimenez, Carlos Jimenez Moreno,
+*                          Jon Frydensbjerg and Kevin Harris
 *
 *  This program is free software; you can redistribute it and/or modify
 *  it under the terms of the GNU General Public License as published by
@@ -25,77 +25,83 @@
 #include "llapi/procedural.h"
 #include "llapi/pattern.h"
 #include "llapi/perturbation.h"
+#include "generic/magic_pointer.h"
 
 class TMaterial : public TProcedural
 {
 
-  protected:
+public:
+  typedef magic_pointer<TPattern> pattern_pointer;
+  
+protected:
+  
+  pattern_pointer       ptColor;
+  pattern_pointer       ptEmission;  
+  pattern_pointer       ptOpacity;
+  pattern_pointer       ptAmbientReflection;
+  pattern_pointer       ptDiffuseReflection;
+  pattern_pointer       ptSpecularReflection;
+  pattern_pointer       ptIor;
+  pattern_pointer       ptCaustics;
+  magic_pointer<TPerturbation>  ptPerturbation;
+  magic_pointer<TBsdf>          ptBsdf;
+  
+public:
 
-    TPattern*       ptColor;
-    TPattern*       ptEmission;  
-    TPattern*       ptOpacity;
-    TPattern*       ptAmbientReflection;
-    TPattern*       ptDiffuseReflection;
-    TPattern*       ptSpecularReflection;
-    TPattern*       ptIor;
-    TPattern*       ptCaustics;
-    TPerturbation*  ptPerturbation;
-    TBsdf*          ptBsdf;
+  TMaterial (void);
+  TMaterial (TMaterial* ptMATERIAL);
 
-  public:
+  TMaterial& operator = (TMaterial* ptMATERIAL);
 
-    TMaterial (void);
-    TMaterial (TMaterial* ptMATERIAL);
+  bool transparent (const TSurfaceData& rktDATA) const { return ( opacity (rktDATA) < 1 ); }
+  TScalar transparency (const TSpanList& rktLIST) const;
+  TColor color (const TSurfaceData& rktDATA) const;
+  TColor emission (const TSurfaceData& rktDATA) const;
+  TScalar opacity (const TSurfaceData& rktDATA) const { return ptOpacity->scalar (rktDATA); }
+  TScalar ambientReflection (const TSurfaceData& rktDATA) const { return ptAmbientReflection->scalar (rktDATA); }
+  TScalar diffuseReflection (const TSurfaceData& rktDATA) const { return ptDiffuseReflection->scalar (rktDATA); }
+  TScalar specularReflection (const TSurfaceData& rktDATA) const { return ptSpecularReflection->scalar (rktDATA); }
+  TScalar ior (const TSurfaceData& rktDATA) const { return ptIor->scalar (rktDATA); }
+  TScalar causticExponent (const TSurfaceData& rktDATA) const { return ptCaustics->scalar (rktDATA); }
 
-    TMaterial& operator = (TMaterial* ptMATERIAL);
-
-    bool transparent (const TSurfaceData& rktDATA) const { return ( opacity (rktDATA) < 1 ); }
-    TScalar transparency (const TSpanList& rktLIST) const;
-    TColor color (const TSurfaceData& rktDATA) const;
-    TColor emission (const TSurfaceData& rktDATA) const;
-    TScalar opacity (const TSurfaceData& rktDATA) const { return ptOpacity->scalar (rktDATA); }
-    TScalar ambientReflection (const TSurfaceData& rktDATA) const { return ptAmbientReflection->scalar (rktDATA); }
-    TScalar diffuseReflection (const TSurfaceData& rktDATA) const { return ptDiffuseReflection->scalar (rktDATA); }
-    TScalar specularReflection (const TSurfaceData& rktDATA) const { return ptSpecularReflection->scalar (rktDATA); }
-    TScalar ior (const TSurfaceData& rktDATA) const { return ptIor->scalar (rktDATA); }
-    TScalar causticExponent (const TSurfaceData& rktDATA) const { return ptCaustics->scalar (rktDATA); }
-
-    TBsdf* bsdf (void) const { return ptBsdf; }
+  const magic_pointer<TBsdf> bsdf (void) const { return ptBsdf; }
 
   virtual bool initialize (void);
     
-    int setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
-    int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
-    void getAttributeList (TAttributeList& rtLIST) const;
+  int setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
+  int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
+  void getAttributeList (TAttributeList& rtLIST) const;
 
-    TPattern* color (void) const { return ptColor; }
-    TPattern* emission (void) const { return ptEmission; }  
-    TPattern* opacity (void) const { return ptOpacity; }
-    TPattern* ambientReflection (void) const { return ptAmbientReflection; }
-    TPattern* diffuseReflection (void) const { return ptDiffuseReflection; }
-    TPattern* specularReflection (void) const { return ptSpecularReflection; }
-    TPattern* ior (void) const { return ptIor; }
-    TPattern* caustics (void) const { return ptCaustics; }
-    TPerturbation* perturbation (void) const { return ptPerturbation; }
+  pattern_pointer color (void) const { return ptColor; }
+  pattern_pointer emission (void) const { return ptEmission; }  
+  pattern_pointer opacity (void) const { return ptOpacity; }
+  pattern_pointer ambientReflection (void) const { return ptAmbientReflection; }
+  pattern_pointer diffuseReflection (void) const { return ptDiffuseReflection; }
+  pattern_pointer specularReflection (void) const { return ptSpecularReflection; }
+  pattern_pointer ior (void) const { return ptIor; }
+  pattern_pointer caustics (void) const { return ptCaustics; }
+  const magic_pointer<TPerturbation> perturbation (void) const { return ptPerturbation; }
 
-    void setColor (TPattern* ptPATTERN) { ptColor = ptPATTERN; }
-    void setEmission (TPattern* ptPATTERN) { ptEmission = ptPATTERN; }  
-    void setOpacity (TPattern* ptPATTERN) { ptOpacity = ptPATTERN; }
-    void setAmbientReflection (TPattern* ptPATTERN) { ptAmbientReflection = ptPATTERN; }
-    void setDiffuseReflection (TPattern* ptPATTERN) { ptDiffuseReflection = ptPATTERN; }
-    void setSpecularReflection (TPattern* ptPATTERN) { ptSpecularReflection = ptPATTERN; }
-    void setIor (TPattern* ptPATTERN) { ptIor = ptPATTERN; }
-    void setCaustics (TPattern* ptPATTERN) { ptCaustics = ptPATTERN; }
-    void setPerturbation (TPerturbation* ptPERTURBATION) { ptPerturbation = ptPERTURBATION; }
-    void setBsdf (TBsdf* ptBSDF) { ptBsdf = ptBSDF; }
+  void setColor (pattern_pointer ptPATTERN) { ptColor = ptPATTERN; }
+  void setEmission (pattern_pointer ptPATTERN) { ptEmission = ptPATTERN; }  
+  void setOpacity (pattern_pointer ptPATTERN) { ptOpacity = ptPATTERN; }
+  void setAmbientReflection (pattern_pointer ptPATTERN) { ptAmbientReflection = ptPATTERN; }
+  void setDiffuseReflection (pattern_pointer ptPATTERN) { ptDiffuseReflection = ptPATTERN; }
+  void setSpecularReflection (pattern_pointer ptPATTERN) { ptSpecularReflection = ptPATTERN; }
+  void setIor (pattern_pointer ptPATTERN) { ptIor = ptPATTERN; }
+  void setCaustics (pattern_pointer ptPATTERN) { ptCaustics = ptPATTERN; }
+  void setPerturbation (magic_pointer<TPerturbation> ptPERTURBATION) { ptPerturbation = ptPERTURBATION; }
+  void setBsdf (magic_pointer<TBsdf> ptBSDF) { ptBsdf = ptBSDF; }
 
-    TVector perturbNormal (const TSurfaceData& rktDATA) const { return ptPerturbation->perturbNormal (rktDATA); }
+  TVector perturbNormal (const TSurfaceData& rktDATA) const { return ptPerturbation->perturbNormal (rktDATA); }
                                 
-    void printDebug (void) const;
+  void printDebug (const string& indent) const;
 
-    EClass classType (void) const { return FX_MATERIAL_CLASS; }
-    string className (void) const { return "Material"; }
+  EClass classType (void) const { return FX_MATERIAL_CLASS; }
+  string className (void) const { return "Material"; }
 
+  virtual TUserFunctionMap getUserFunctions();
+  
 };  /* class TMaterial */
 
 #endif  /* _MATERIAL__ */

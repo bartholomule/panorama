@@ -3,64 +3,64 @@
 */
 
 #include "materials.inc"
+#include "shapes.inc"
+#include "cameras.inc"
 
-define camera c
+define c Camera
 {
-  translate	<0, 200, 500>
-  look_at	<0, 100, 0>
-}
+  translate(<0, 200, 500>);
+  look_at = <0, 100, 0>;
+};
 
-define light l
+Light
 {
-  translate	<-500, 300, 500>
-  color		CWhite
-}
+  translate(<-500, 300, 500>);
+  color = CWhite;
+};
 
-define light l2
+Light
 {
-  translate	<0, 1000, 0>
-  color		CWhite
-}
+  translate(<0, 1000, 0>);
+  color = CWhite;
+};
 
-plane
+plane 
 {
-  translate	<0, 0, 0>
-  normal	<0, 1, 0>
-  material : extends MChecker
+  translate(<0, 0, 0>);
+  normal = <0, 1, 0>;
+  material = MChecker
   {
-    color : class PatternChecker
+    color = class PatternChecker
     {
-      color	CBlue
-      base_color  CYellow
-      size        50
-    }
-    specular    0
-  }
-}
+      color      = CBlue;
+      base_color = CYellow;
+      size       = 50;
+    };
+    specular = 0;
+  };
+};
+
 
 box
 {
-  scale         <100, 100, 100>
-  translate	<0, 50, 0>
-  rotate        <0, 20, 0>
-  material : extends MPlastic
+  scale(<100, 100, 100>);
+  translate(<0, 50, 0>);
+  rotate(<0, 20, 0>);
+  material = MPlastic
   {
-    color	CRed
-  }
-}
+    color = CRed;
+  };
+};
 
 scene
 {
-  camera	c
-  light		l
-  light		l2
-  width		400
-  height	400
-  background	CSummerSky
-  output
+  camera = c;
+  width	= 400;
+  height = 400;
+  background = CSummerSky;
+  output = class png
   {
-    type        "png"
-    name	"box.png"
-  }
-  renderer : class Raytracer {}
-}
+    name = "box.png";
+  };
+  renderer = class Raytracer {};
+};

@@ -17,10 +17,8 @@
 */
 
 #include "llapi/warning_eliminator.h"
-#ifdef STATIC_LINK
-#if ( STATIC_LINK == 0 )
+#if defined(STATIC_LINK) && ( STATIC_LINK == 0 )
 #include <dlfcn.h>
-#endif
 #endif
 
 #include <fstream>
@@ -106,15 +104,12 @@ int TPluginManager::loadPlugin (const string& rktNAME)
       }
       else
       {
-        if ( ptPluginData->tPluginName != "" )
-        {
-	  cerr << "Loading plugin "
-	       << rktNAME
-	       << filler.substr(0,max(filler.length() - rktNAME.length(),(size_t)1))
-	       << "\r"
-	       << flush;
-          registerPlugin (ptPluginData);
-        }
+	cerr << "Loading plugin "
+	     << rktNAME
+	     << filler.substr(0,max(filler.length() - rktNAME.length(),(size_t)1))
+	     << "\r"
+	     << flush;
+	registerPlugin (ptPluginData);
       }
     }
   }
@@ -128,12 +123,15 @@ int TPluginManager::loadPlugin (const string& rktNAME)
 
 bool TPluginManager::initialize (const string& rktCONFIG_FILE, DWord dwVERSION)
 {
+
+#if defined(DEBUG)
 #if defined(__PRETTY_FUNCTION__)
   cout << __PRETTY_FUNCTION__ << endl;
 #elif defined(__FUNCTION__)
   cout << __FUNCTION__ << endl;
 #elif defined(__FUNCTION)
-#endif
+#endif /* defined(__PRETTY_FUNCTION__) */
+#endif /* defined(DEBUG) */
   bool val = true;
 #if ( STATIC_LINK == 0 )
 
@@ -173,7 +171,7 @@ int TPluginManager::registerPlugin (TPluginData* ptDATA)
   
   if ( tPluginDataMap.find (ptDATA->tPluginName) != tPluginDataMap.end() )
   {
-    cerr << "ERROR: Plugin already loaded : " << ptDATA->tPluginName << endl;
+    cerr << "ERROR: Plugin already loaded : \"" << ptDATA->tPluginName << "\""<< endl;
     return -1;
   }
 

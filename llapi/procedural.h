@@ -21,6 +21,7 @@
 
 #include "llapi/base_class.h"
 #include "llapi/program.h"
+#include "llapi/user_functions.h"
 
 #define FX_ATTRIB_OK             0
 #define FX_ATTRIB_WRONG_PARAM   -1
@@ -38,8 +39,9 @@
 #define FX_RESERVED_FLAG_6       6
 #define FX_RESERVED_FLAG_7       7
 
-typedef map<string, EAttribType, less<string> >   TAttributeList;
-typedef map<string, void*, less<string> >         TUserDataMap;
+typedef map<string, EAttribType, less<string> >    TAttributeList;
+typedef map<string, void*, less<string> >          TUserDataMap;
+typedef map<string, magic_pointer<user_function> > TUserFunctionMap;
 
 class TProcedural : public TBaseClass
 {
@@ -141,21 +143,29 @@ class TProcedural : public TBaseClass
     
     // Attribute management
   virtual int setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
-  
-  virtual int setAttribute (const string& rktNAME, const list<NAttribute>& rktLIST, EAttribType eTYPE)
-  {
-    return setAttribute (rktNAME, rktLIST.front(), eTYPE);
-  }
+
+#if defined(NEW_ATTRIBUES)
+  // This version will call the above function with the proper type (if it can
+  // be determined).  Otherwise, it will set the error message and return an
+  // error flag.  It will only work with the new atributes.
+  virtual int setAttribute (const string& rktNAME, NAttribute nVALUE);
+  virtual int setAttribute (const string& rktNAME, const list<NAttribute>& rktLIST);  
+#endif
+
+  virtual int setAttribute (const string& rktNAME, const list<NAttribute>& rktLIST, EAttribType eTYPE);
   
   virtual int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
   virtual void getAttributeList (TAttributeList& rtLIST) const;
 
+
+  virtual TUserFunctionMap getUserFunctions();
+  
     // Event management
     void sendEvent (const string& rktEVENT);
     void sendEvent (const string& rktEVENT, NAttribute nAttrib);
 
     TProgram* program (void) { return &tProgram; }
-    
+  
 };  /* class TProcedural */
 
 #endif  /* _PROCEDURAL__ */

@@ -58,7 +58,7 @@ class TSphere : public TObject
 
     TVector RandomPointOnSurface() const;
   
-    void printDebug (void) const;
+    void printDebug (const string& indent) const;
     string className (void) const { return "Sphere"; }
 
 };  /* class TSphere */

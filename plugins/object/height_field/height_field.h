@@ -28,7 +28,7 @@ class THeightField : public TObject
 
   protected:
 
-    TImage*   ptImage;
+    magic_pointer<TImage> ptImage;
     TScalar   tHalfWidth, tHalfHeight;
     TScalar   tMinY, tMaxY;
 
@@ -41,14 +41,14 @@ class THeightField : public TObject
     static TBaseClass* _create (const TBaseClass* pktPARENT);
 
     THeightField (void) :
-      TObject()
+      TObject(),
+      ptImage(NULL)
     {
       sCapabilities.gInfinite = false;
     }
       
     ~THeightField (void)
     {
-      delete ptImage;
     }
     
     bool initialize (void);

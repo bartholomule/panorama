@@ -46,6 +46,8 @@ class TIF_Cartoon : public TImageFilter
 
     string className (void) const { return "IF_Cartoon"; }
 
+    virtual TIF_Cartoon* clone_new() const { return new TIF_Cartoon(*this); }
+
 };  /* class TIF_Cartoon */
 
 #endif  /* _IF_CARTOON__ */

@@ -22,6 +22,7 @@
 #include <tiffio.h>
 #include <tiffconf.h>
 #include <time.h>
+#include "llapi/attribute.h"
 
 DEFINE_IMAGE_IO_PLUGIN ("tiff", TImageTiff);
 
@@ -66,10 +67,10 @@ int TImageTiff::save (const TImage* pktIMAGE) {
   if(compression)
   {
 #if defined(LZW_SUPPORT)
-#warning "Using LZW compresion when compression is requested"
+#warning "Using LZW compresion (a UniSys patent) when compression is requested"
     cerr << "TiffIO:Warning:LZW comressed TIFF images may not be useable with"
 	 << endl
-	 << "  some installations of panorama." << endl;
+	 << "  some installations of panorama (due to UniSys patent)." << endl;
     
     TIFFSetField(tif, TIFFTAG_COMPRESSION, COMPRESSION_LZW);
     
@@ -104,9 +105,12 @@ int TImageTiff::save (const TImage* pktIMAGE) {
   unsigned strip_size = TIFFStripSize(tif);
   if(strip_size != (3 * rowsperstrip * zWidth))
   {
-    cerr << "Tiff reports strip as " << strip_size
-	 << " bytes instead of expected " << 3 * zWidth * rowsperstrip
-	 << " bytes." << endl;
+    if( !bSilent )
+    {
+      cerr << "Tiff reports strip as " << strip_size
+	   << " bytes instead of expected " << 3 * zWidth * rowsperstrip
+	   << " bytes." << endl;
+    }
     TIFFClose(tif);        
     return(-1);
   }
@@ -142,7 +146,10 @@ int TImageTiff::save (const TImage* pktIMAGE) {
     // compression. 
     if(TIFFWriteEncodedStrip(tif, strip, (void*)strip_data, strip_size) < 0)    
     {
-      cerr << "TiffIO:Error writing strip " << strip << endl;
+      if( !bSilent )
+      {
+	cerr << "TiffIO:Error writing strip " << strip << endl;
+      }
       delete[] strip_data;
       TIFFClose(tif);          
       return (-1);
@@ -172,7 +179,10 @@ int TImageTiff::save (const TImage* pktIMAGE) {
     if(TIFFWriteEncodedStrip(tif, strip, (void*)strip_data,
 			     extra_rows * zWidth * 3) < 0)
     {
-      cerr << "TiffIO:Error writing partial strip " << strip << endl;
+      if( !bSilent )
+      {
+	cerr << "TiffIO:Error writing partial strip " << strip << endl;
+      }
       delete[] strip_data;
       TIFFClose(tif);          
       return (-1);      
@@ -180,8 +190,11 @@ int TImageTiff::save (const TImage* pktIMAGE) {
   }
   if(y != zHeight)
   {
-    cerr << "TiffIO:Math error... y (" << y
-	 << ") != zHeight (" << zHeight << ")" << endl;
+    if( !bSilent )
+    {
+      cerr << "TiffIO:Math error... y (" << y
+	   << ") != zHeight (" << zHeight << ")" << endl;
+    }
     delete[] strip_data;
     TIFFClose(tif);    
     return (-1);    
@@ -212,7 +225,10 @@ TImage* TImageTiff::load (void)
   
   if ( !tif )
   {
-    cerr << "TImageTiff::load : Error loading " << tFileName << endl;
+    if( !bSilent )
+    {
+      cerr << "TImageTiff::load : Error loading " << tFileName << endl;
+    }
     return NULL;
   }
 
@@ -246,25 +262,34 @@ TImage* TImageTiff::load (void)
       }
       else
       {
-	cerr << "TImageTiff::load : Error loading " << tFileName
-	     << " (RGBAImageGet failed)"
-	     << endl;  
+	if( !bSilent )
+	{
+	  cerr << "TImageTiff::load : Error loading " << tFileName
+	       << " (RGBAImageGet failed)"
+	       << endl;
+	}
       }      
       _TIFFfree(raster);
     }
     else
     {
-      cerr << "TImageTiff::load : Error loading " << tFileName
-	   << " (out of memory?)"
-	   << endl;    
+      if( !bSilent )
+      {      
+	cerr << "TImageTiff::load : Error loading " << tFileName
+	     << " (out of memory?)"
+	     << endl;
+      }
     }    
     TIFFRGBAImageEnd(&img);
   }
   else
   {
-    cerr << "TImageTiff::load : Error loading " << tFileName
-	 << " (" << emsg << ")"
-	 << endl;
+    if( !bSilent )
+    {    
+      cerr << "TImageTiff::load : Error loading " << tFileName
+	   << " (" << emsg << ")"
+	   << endl;
+    }
   }
   TIFFClose(tif);
   
@@ -279,10 +304,18 @@ int TImageTiff::setAttribute (const string& rktNAME, NAttribute nVALUE,
   
   if ( rktNAME == "compression" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_BOOL )
     {
       setCompression (nVALUE.gValue);
     }
+#else
+    magic_pointer<TAttribBool> b = get_bool(nVALUE);
+    if( !!b )
+    {
+      setCompression (b->tValue);
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -303,7 +336,11 @@ int TImageTiff::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 
   if ( rktNAME == "compression" )
   {
+#if !defined(NEW_ATTRIBUTES)
     rnVALUE.gValue = compression;
+#else
+    rnVALUE = new TAttribBool (compression);
+#endif
   }
   else
   {

@@ -137,30 +137,28 @@ TVector TSurfaceData::normal (void) const
 }  /* normal() */
 
 
-void TSurfaceData::printDebug (void) const
+void TSurfaceData::printDebug (const string& indent) const
 {
 
-  cerr << TDebug::_indent() << "[_IntData_]" << endl;
+  cerr << indent << "[_IntData_]" << endl;
 
-  TDebug::_push();
+  string new_indent = TDebug::Indent(indent);
   
   if ( !pktObject )
   {
-    cerr << TDebug::_indent() << "NULL" << endl;
+    cerr << new_indent << "NULL" << endl;
   }
   else
   {
-    cerr << TDebug::_indent() << "tRay.location         : "; tRay.location().printDebug(); cerr << endl;
-    cerr << TDebug::_indent() << "tRay.direction        : "; tRay.direction().printDebug(); cerr << endl;
-    cerr << TDebug::_indent() << "Distance              : " << tDistance << endl;
-    cerr << TDebug::_indent() << "Point                 : "; tPoint.printDebug(); cerr << endl;
+    cerr << new_indent << "tRay.location         : "; tRay.location().printDebug(new_indent); cerr << endl;
+    cerr << new_indent << "tRay.direction        : "; tRay.direction().printDebug(new_indent); cerr << endl;
+    cerr << new_indent << "Distance              : " << tDistance << endl;
+    cerr << new_indent << "Point                 : "; tPoint.printDebug(new_indent); cerr << endl;
     if ( gNormalAssigned )
     {
-      cerr << TDebug::_indent() << "tUnperturbedNormal    : "; tUnperturbedNormal.printDebug(); cerr << endl;
-      cerr << TDebug::_indent() << "tNormal               : "; tNormal.printDebug(); cerr << endl;
+      cerr << new_indent << "tUnperturbedNormal    : "; tUnperturbedNormal.printDebug(new_indent); cerr << endl;
+      cerr << new_indent << "tNormal               : "; tNormal.printDebug(new_indent); cerr << endl;
     }
   }
-
-  TDebug::_pop();
   
 }  /* printDebug() */

@@ -1,0 +1,51 @@
+#include "materials.inc"
+#include "cameras.inc"
+#include "shapes.inc"
+
+define c pas_35mm
+{
+  translate( <0,0,-8> );
+  look_at = <0,0,0>;
+};
+
+define s sphere 
+{
+  translate( <0,0,0> );
+  radius = 1;
+ 
+  material = MPlastic
+  {
+    color = CGreen;
+  };
+};
+
+s { translate(<0,2,0>); };
+s { translate(<-2,0,0>); material = MPlastic { color = CRed; }; };
+s { translate(< 2,0,0>); material = MPlastic { color = CBlue; }; };
+
+class Cone 
+{ 
+  min_circle_point = <0,1,0>;
+  max_circle_point = <0,-1,0>;
+  min_radius = 0; // 0.00001; //
+  max_radius = 1.25;
+
+  material = MPlastic { color = CMagenta; };
+};
+
+
+circle { translate( <0,-3,0> );  radius=3; };
+
+class PointLight
+{
+  translate( <10,10,-10> );
+};
+
+scene
+{
+  camera = c;
+  width = 200;
+  height = 200;
+  output = class png { name = "sphere.png"; };
+  renderer = class Raytracer { };
+};

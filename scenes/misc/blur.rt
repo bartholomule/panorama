@@ -8,97 +8,95 @@
 
 #include "materials.inc"
 #include "cameras.inc"
+#include "shapes.inc"
 
-define camera c : 
-extends pas_35mm 
+define c pas_35mm 
 {
-  translate < 0, 4, -24>
-  look_at   <-3, 0, -8>
-  aperture 0.0002 // Impossible aperture, but it allows a very narrow depth of
-                  // field at a distance without the distortion caused by
-                  // wide-angle lenses.  
-  focal_distance 10 // Focus at something 10 units (meters) away.
+  translate( < 0, 4, -24> );
+  look_at =  <-3, 0, -8>;
+  aperture=0.0002; // Impossible aperture, but it allows a very narrow depth of
+                   // field at a distance without the distortion caused by
+                   // wide-angle lenses.  
+  focal_distance=10;// Focus at something 10 units (meters) away.
 
-  name "Point-and-shoot"
+  name = "Impossible-Camera";
 
-  attribute_list()
-}
+  attribute_list();
+};
 
-define light l
+define l class PointLight
 {
-  translate	<1,20,-6>
-  color		CWhite
-}
+  translate( <1,20,-6> );
+  color = CWhite;
+};
 
 plane
 {
-  translate	<0, -1.5, 0>
-  normal	<0, 1, 0>
-  material : extends MChecker
+  translate( <0, -1.5, 0> );
+  normal = <0, 1, 0>;
+  material = MChecker
   {
-    color : class PatternChecker
+    color = class PatternChecker
     {
-      color	CBlue
-      base_color  CYellow
-      size        2.5
-    }
-    specular    0
-    ambient CGrey
-  }
-}
+      color      = CBlue;
+      base_color = CYellow;
+      size       = 2.5;
+    };
+    specular = 0;
+    ambient  = CGrey;
+  };
+};
 
-define sphere b
+define b sphere
 {
-  radius 1
-  material : extends MPlastic
+  radius = 1;
+  material = MPlastic
   {
-    color	CRed
-  }
-}
+    color = CRed;
+  };
+};
 
-object : extends b { translate <-4.000000,0.000000,-20.000000> }
-object : extends b { translate <-3.450000,0.294118,-18.000000> }
-object : extends b { translate <-2.900000,0.588235,-16.000000> }
-object : extends b { translate <-2.350000,0.882353,-14.000000> }
-object : extends b { translate <-1.800000,1.176471,-12.000000> }
-object : extends b { translate <-1.250000,1.470588,-10.000000> }
-object : extends b { translate <-0.700000,1.764706,-8.000000> }
-object : extends b { translate <-0.150000,2.058824,-6.000000> }
-object : extends b { translate <0.400000,2.352941,-4.000000> }
-object : extends b { translate <0.950000,2.647059,-2.000000> }
-object : extends b { translate <1.500000,2.941176,0.000000> }
-object : extends b { translate <2.050000,3.235294,2.000000> }
-object : extends b { translate <2.600000,3.529412,4.000000> }
-object : extends b { translate <3.150000,3.823529,6.000000> }
-object : extends b { translate <3.700000,4.117647,8.000000> }
-object : extends b { translate <4.250000,4.411765,10.000000> }
-object : extends b { translate <4.800000,4.705882,12.000000> }
-object : extends b { translate <5.350000,5.000000,14.000000> }
-object : extends b { translate <5.900000,5.294118,16.000000> }
-object : extends b { translate <6.450000,5.588235,18.000000> }
+b { translate( <-4.000000,0.000000,-20.000000> ); };
+b { translate( <-3.450000,0.294118,-18.000000> ); };
+b { translate( <-2.900000,0.588235,-16.000000> ); };
+b { translate( <-2.350000,0.882353,-14.000000> ); };
+b { translate( <-1.800000,1.176471,-12.000000> ); };
+b { translate( <-1.250000,1.470588,-10.000000> ); };
+b { translate( <-0.700000,1.764706,-8.000000> ); };
+b { translate( <-0.150000,2.058824,-6.000000> ); };
+b { translate( <0.400000,2.352941,-4.000000> ); };
+b { translate( <0.950000,2.647059,-2.000000> ); };
+b { translate( <1.500000,2.941176,0.000000> ); };
+b { translate( <2.050000,3.235294,2.000000> ); };
+b { translate( <2.600000,3.529412,4.000000> ); };
+b { translate( <3.150000,3.823529,6.000000> ); };
+b { translate( <3.700000,4.117647,8.000000> ); };
+b { translate( <4.250000,4.411765,10.000000> ); };
+b { translate( <4.800000,4.705882,12.000000> ); };
+b { translate( <5.350000,5.000000,14.000000> ); };
+b { translate( <5.900000,5.294118,16.000000> ); };
+b { translate( <6.450000,5.588235,18.000000> ); };
 
 // Place the light source.
-object : extends l { }
+l { };
 
 scene
 {
-  camera	c
-  width		400
-  height	400
-  background	CSummerSky
-  output
+  camera     = c;
+  width      = 400;
+  height     = 400;
+  background = CSummerSky;
+  output = class png
   {
-    type        "png"
-    name	"blur.png"
-  }
-  renderer : class Raytracer 
+    name = "blur.png";
+  };
+  renderer =  class Raytracer 
   {
-    depth 3
+    depth = 3;
     //    aa_depth 128 // Lower this if you want to see results quickly.
-    aa_depth 4
-    sampling "stochastic"
-  }
-}
-
+    //aa_depth = 4;
+    sampling = "stochastic";
+  };
+};
 
 

@@ -97,8 +97,10 @@ public:
   }
   
   string className (void) const { return "ThinlensCamera"; }
+
+  virtual TThinlensCamera* clone_new() const { return new TThinlensCamera(*this); }
   
-  void printDebug (void) const;
+  void printDebug (const string& indent) const;
   
 };  /* class TThinlensCamera */
 

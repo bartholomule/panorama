@@ -19,6 +19,7 @@
 #include "llapi/warning_eliminator.h"
 #include "llapi/scene.h"
 #include "if_fog.h"
+#include "llapi/attribute.h"
 
 #define FX_MAX_Z                 (SCALAR_MAX / 2)
 
@@ -43,7 +44,12 @@ void TIF_Fog::filter (SBuffers& rsBUFFERS)
   TColor       tPixel;
   TImage*      ptImage   = rsBUFFERS.ptImage;
   TZBuffer*    ptZBuffer = rsBUFFERS.ptZBuffer;
-
+  
+  if( pfUserUpdate )
+  {
+    pfUserUpdate(1.0, pvUserData);
+  }
+  
   for (size_t J = 0; ( J < ptImage->height() ) ;J++)
   {
     for (size_t I = 0; ( I < ptImage->width() ) ;I++)
@@ -61,7 +67,18 @@ void TIF_Fog::filter (SBuffers& rsBUFFERS)
       tPixel  = ptImage->getPixel (I, J);
       ptImage->setPixel (I, J, lerp (tPixel, tFogColor, fFactor));
     }
+    if( pfUserUpdate )
+    {
+      if(!pfUserUpdate(J / double(ptImage->height()), pvUserData))
+      {
+	break;
+      }
+    }    
   }
+  if( pfUserUpdate )
+  {
+    pfUserUpdate(1.0, pvUserData);
+  }  
 
 }  /* filter() */
 
@@ -71,10 +88,18 @@ int TIF_Fog::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType
 
   if ( rktNAME == "color" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_COLOR )
     {
       tFogColor = *((TColor*) nVALUE.pvValue);
     }
+#else
+    magic_pointer<TAttribColor> col = get_color(nVALUE);
+    if( !!col )
+    {
+      tFogColor = col->tValue;
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -82,10 +107,18 @@ int TIF_Fog::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType
   }
   else if ( rktNAME == "distance" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_REAL )
     {
       tFogDistance = nVALUE.dValue;
     }
+#else
+    magic_pointer<TAttribReal> r = get_real(nVALUE);
+    if( !!r )
+    {
+      tFogDistance = r->tValue;
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -104,6 +137,7 @@ int TIF_Fog::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType
 int TIF_Fog::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 {
 
+#if !defined(NEW_ATTRIBUTES)  
   if ( rktNAME == "color" )
   {
     rnVALUE.pvValue = &tFogColor;
@@ -112,6 +146,16 @@ int TIF_Fog::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
   {
     rnVALUE.dValue = tFogDistance;
   }
+#else
+  if ( rktNAME == "color" )
+  {
+    rnVALUE = new TAttribColor (tFogColor);
+  }
+  else if ( rktNAME == "distance" )
+  {
+    rnVALUE = new TAttribReal (tFogDistance);
+  }
+#endif
   else
   {
     return TImageFilter::getAttribute (rktNAME, rnVALUE);

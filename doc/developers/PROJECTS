@@ -1,8 +1,9 @@
-
- This is a list of things to be done for Panorama.
+This is a list of things to be done for Panorama.
 
  If you have an idea for a new project, or you want to try one of the "not
 started" project, please send mail to bug-panorama@gnu.org.
+
+ Please report any errors from this page to bug-panorama@gnu.org.
 
 -- BSDF -------------------------------------------------------------
 
@@ -10,10 +11,14 @@ started" project, please send mail to bug-panorama@gnu.org.
 -- CAMERA -----------------------------------------------------------
 
 Project   : Simulation of a real camera model
-Status    : Not started
+Status    : Partially complete (thin-lens model of a camera).  In CVS repository.
+            Still needs a major addition to panorama, the addition of time.
+            Currently only shows focal blur (no object motion is possible).
+Author(s) : Kevin Harris (kpharris@users.sourceforge.net)
 
 Project   : Parallel projection camera
-Status    : Not started
+Status    : Working? In CVS repository (no examples exist).
+Author(s) : Fausto Espinal
 
 
 -- IMAGE FILTER -----------------------------------------------------
@@ -28,11 +33,11 @@ Author(s) : Ken Geis (kgeis@cchemnt.cchem.berkeley.edu)
 
 Project   : Height field
 Status    : Experimental (included in distribution).
-Author(s) : Angel Jimenez (ajimenez@vnet.es)
+Author(s) : Angel Jimenez (ajimenez@gnu.org)
 
 Project   : Polyhedron
 Status    : Experimental (included in distribution).
-Author(s) : Angel Jimenez (ajimenez@vnet.es)
+Author(s) : Angel Jimenez (ajimenez@gnu.org)
 
 Project   : NURBS surfaces
 Status    : Not started
@@ -43,19 +48,23 @@ Author(s) : Carlos Jimenez (carlos@leader.es)
 
 Project   : 3DS object import
 Status    : In development
-Author(s) : Angel Jimenez (ajimenez@vnet.es)
+Author(s) : Angel Jimenez (ajimenez@gnu.org)
 
 Project   : LightWave object import
 Status    : Experimental (included in distribution).
-Author(s) : Angel Jimenez (ajimenez@vnet.es)
+Author(s) : Angel Jimenez (ajimenez@gnu.org)
 
 Project   : Caligari Truespace object import
 Status    : In development
-Author(s) : Angel Jimenez (ajimenez@vnet.es)
+Author(s) : Angel Jimenez (ajimenez@gnu.org)
+
+Project   : Uniform grid spatial subdivision
+Status    : In development
+Author(s) : Carlos Jimenez (carlos@leader.es)
 
 Project   : Automatic Bounding Volume Hierarchy (Salmon & Goldsmith)
 Status    : Experimental (included in distribution).
-Author(s) : Angel Jimenez (ajimenez@vnet.es)
+Author(s) : Angel Jimenez (ajimenez@gnu.org)
 
 Project   : Surfaces of revolution
 Status    : Not started
@@ -65,7 +74,7 @@ Status    : Not started
 
 Project   : ZBuffer renderer
 Status    : Experimental (included in distribution).
-Author(s) : Angel Jimenez (ajimenez@vnet.es)
+Author(s) : Angel Jimenez (ajimenez@gnu.org)
             Carlos Jimenez (carlos@leader.es)
 
 

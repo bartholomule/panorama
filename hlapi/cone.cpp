@@ -18,6 +18,7 @@
 
 #include "llapi/warning_eliminator.h"
 #include "hlapi/cone.h"
+#include "llapi/attribute.h"
 
 TVector TCone::localNormal (const TVector& rktPOINT) const
 {
@@ -61,6 +62,8 @@ TVector TCone::localNormal (const TVector& rktPOINT) const
 bool TCone::intersectionsWithCanonicalCone (const TRay& rktRAY, TSpanList& rtLIST) const
 {
 
+  // [FIXME!] For some reason, this does NOT work.
+  
   TSurfaceData   tSurfaceData;
   TScalar        a, b, c, d;
   TScalar        s1, s2;
@@ -352,11 +355,15 @@ bool TCone::findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) const
     return false;
   }
 
+  // [FIXME!] The canonical cone intersection does NOT work for some reason.
+  // Fix it, then uncomment the below...
+  /*
   if ( tMinRadius == 0 )
   {
     return intersectionsWithCanonicalCone (rktRAY, rtLIST);
   }
   else
+  */
   {
     return intersectionsWithRootCone (rktRAY, rtLIST);
   }
@@ -371,10 +378,18 @@ int TCone::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType e
 
   if ( rktNAME == "max_circle_point" )
   {
+#if !defined(NEW_ATTRIBUTES)    
     if ( eTYPE == FX_VECTOR )
     {
      tMaxCirclePoint = *((TVector*) nVALUE.pvValue);
     }
+#else
+    magic_pointer<TAttribVector> vec = get_vector(nVALUE);
+    if( !!vec )
+    {
+      tMaxCirclePoint = vec->tValue;
+    }
+#endif    
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -382,10 +397,18 @@ int TCone::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType e
   }
   else if ( rktNAME == "min_circle_point" )
   {
+#if !defined(NEW_ATTRIBUTES)        
     if ( eTYPE == FX_VECTOR )
     {
       tMinCirclePoint = *((TVector*) nVALUE.pvValue);
     }
+#else
+    magic_pointer<TAttribVector> vec = get_vector(nVALUE);
+    if( !!vec )
+    {
+      tMinCirclePoint = vec->tValue;
+    }
+#endif    
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -393,11 +416,20 @@ int TCone::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType e
   }
   else if ( rktNAME == "max_radius" )
   {
+#if !defined(NEW_ATTRIBUTES)    
     if ( eTYPE == FX_REAL )
     {
       tMaxRadius  = nVALUE.dValue;
       tMaxRadius2 = tMaxRadius * tMaxRadius;
     }
+#else
+    magic_pointer<TAttribReal> r = get_real(nVALUE);
+    if( !!r )
+    {
+      tMaxRadius = r->tValue;
+      tMaxRadius2 = tMaxRadius * tMaxRadius;      
+    }
+#endif    
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -405,15 +437,32 @@ int TCone::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType e
   }
   else if ( rktNAME == "min_radius" )
   {
+#if !defined(NEW_ATTRIBUTES)    
     if ( eTYPE == FX_REAL )
     {
       tMinRadius  = nVALUE.dValue;
       tMinRadius2 = tMinRadius * tMinRadius;
     }
+#else
+    magic_pointer<TAttribReal> r = get_real(nVALUE);
+    if( !!r )
+    {
+      tMinRadius = r->tValue;
+      tMinRadius2 = tMinRadius * tMinRadius;      
+    }
+#endif    
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
     }
+    // [FIXME!]  This is a hack so that the cone will work.  When the canonical
+    // cone is fixed, remove this section.
+    if( tMinRadius == 0 )
+    {
+      tMinRadius = FX_EPSILON * 2;
+      
+      cerr << "[FIXME!] Hacking cone to prevent zero-radius." << endl;
+    } // end [fixme]    
   }
   else
   {
@@ -430,19 +479,35 @@ int TCone::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 
   if ( rktNAME == "max_circle_point" )
   {
+#if !defined(NEW_ATTRIBUTES)        
     rnVALUE.pvValue = &tMaxCirclePoint;
+#else
+    rnVALUE = new TAttribVector(tMaxCirclePoint);
+#endif
   }
   else if ( rktNAME == "min_circle_point" )
   {
+#if !defined(NEW_ATTRIBUTES)            
     rnVALUE.pvValue = &tMinCirclePoint;
+#else
+    rnVALUE = new TAttribVector(tMinCirclePoint);
+#endif    
   }
   else if ( rktNAME == "max_radius" )
   {
+#if !defined(NEW_ATTRIBUTES)            
     rnVALUE.dValue = tMaxRadius;
+#else
+    rnVALUE = new TAttribReal(tMaxRadius);
+#endif
   }
   else if ( rktNAME == "min_radius" )
   {
+#if !defined(NEW_ATTRIBUTES)            
     rnVALUE.dValue = tMinRadius;
+#else
+    rnVALUE = new TAttribReal(tMinRadius);
+#endif
   }
   else
   {

@@ -3,71 +3,75 @@
 */
 
 #include "materials.inc"
+#include "shapes.inc"
+#include "cameras.inc"
 
-define camera c
+define c Camera
 {
-  translate	<0, 200, 500>
-  look_at	<0, 100, 0>
-}
+  translate(<0, 200, 500>);
+  look_at = <0, 100, 0>;
+};
 
-define light l
+Light
 {
-  translate	<-500, 300, 500>
-  color		CWhite
-}
+  translate(<-500, 300, 500>);
+  color	= CWhite;
+};
 
-define light l2
+Light
 {
-  translate	<0, 1000, 0>
-  color		CWhite
-}
+  translate(<0, 1000, 0>);
+  color	= CWhite;
+};
 
 plane
 {
-  translate	<0, 0, 0>
-  normal	<0, 1, 0>
-  material : extends MPlastic
+  translate(<0, 0, 0>);
+  normal = <0, 1, 0>;
+  material = class Material
   {
-    color CBlue
-    specular    0
-    perturb_func : class PerturbationWave
+    bsdf = class BsdfPhong { exponent = 50; };
+    color = CBlue;
+    specular = 0.6;
+    ambient = 0.2;
+    diffuse = 0.4;
+    perturb_func = class PerturbationWave
     {
-      sources 100
-      min_freq 0.1
-      max_freq 1
-      min_coord <-500,-500,-500>
-      max_coord < 500, 500, 500>
-    }
-  }
-}
+      sources = 100;
+      min_freq = 0.1;
+      max_freq = 1;
+      min_coord = <-500,-500,-500>;
+      max_coord = < 500, 500, 500>;
+      functionlist();
+    };
+  };
+};
 
 box
 {
-  scale         <100, 100, 100>
-  translate	<0, 50, 0>
-  rotate        <0, 20, 0>
-  material : extends MPlastic
+  scale    ( <100, 100, 100> );
+  translate( <0, 50, 0> );
+  rotate   ( <0, 20, 0> );
+  material = MPlastic
   {
-    color	CRed
-  }
-}
+    color = CRed;
+  };
+};
 
 scene
 {
-  camera	c
-  light		l
-  light		l2
-  width		400
-  height	400
-  background	CSummerSky
-  output
+  camera = c;
+  width = 400;
+  height = 400;
+  background = CSummerSky;
+  output = class png
   {
-    type        "png"
-    name	"box2.png"
-    compression on
-  }
-  renderer : class Raytracer 
+    name = "box2.png";
+    compression = on;
+  };
+  renderer = class Raytracer 
   {
-//    sampling "adaptive"    
-  }
-}
+/    sampling = "stochastic";
+//    aa_depth = 4;
+  };
+};

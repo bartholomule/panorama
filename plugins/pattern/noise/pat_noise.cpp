@@ -20,6 +20,8 @@
 #include "llapi/warning_eliminator.h"
 #include <cmath>
 #include "pat_noise.h"
+#include "llapi/attribute.h"
+#include "llapi/extended_attribute.h"
 
 DEFINE_PLUGIN ("PatternNoise", FX_PATTERN_CLASS, TPatternNoise);
 
@@ -28,10 +30,19 @@ int TPatternNoise::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttr
 
   if ( rktNAME == "color" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_COLOR )
     {
       setColor (*((TColor*) nVALUE.pvValue));
     }
+#else
+    magic_pointer<TAttribColor> col = get_color(nVALUE);
+    
+    if( !!col )
+    {
+      setColor (col->tValue);
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -39,6 +50,7 @@ int TPatternNoise::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttr
   }
   else if ( rktNAME == "base_color" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_COLOR )
     {
       setBaseColor (*((TColor*) nVALUE.pvValue));
@@ -47,6 +59,18 @@ int TPatternNoise::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttr
     {
       bGradientLoaded = tGradient.loadGradient((char *) nVALUE.pvValue);
     }
+#else
+    magic_pointer<TAttribColor>  col = get_color(nVALUE);
+    magic_pointer<TAttribString> str = get_string(nVALUE);
+    if( !!col )
+    {
+      setBaseColor (col->tValue);
+    }
+    else if( !!str )
+    {
+      bGradientLoaded = tGradient.loadGradient (str->tValue);
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -55,11 +79,19 @@ int TPatternNoise::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttr
 
   else if ( rktNAME == "zoom" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_VECTOR )
     {
       tZoom = *((TVector*) nVALUE.pvValue);
       tZoom.set (1.0 / tZoom.x(), 1.0 / tZoom.y(), 1.0 / tZoom.z());
     }
+#else
+    magic_pointer<TAttribVector> vec = get_vector(nVALUE);
+    if( !!vec )
+    {
+      tZoom.set(1.0 / vec->tValue.x(), 1.0 / vec->tValue.y(), 1.0 / vec->tValue.z());
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -78,6 +110,7 @@ int TPatternNoise::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttr
 int TPatternNoise::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 {
 
+#if !defined(NEW_ATTRIBUTES)
   if ( rktNAME == "color" )
   {
     rnVALUE.pvValue = &tColor;
@@ -91,6 +124,21 @@ int TPatternNoise::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
     // [_ERROR_] It should return the inverse of this vector.
     rnVALUE.pvValue = &tZoom;
   }
+#else
+  if ( rktNAME == "color" )
+  {
+    rnVALUE = new TAttribColor (tColor);
+  }
+  else if ( rktNAME == "base_color" )
+  {
+    rnVALUE = new TAttribColor (tBaseColor);
+  }
+  else if ( rktNAME == "zoom" )
+  {
+    TVector inv(1.0 / tZoom.x(), 1.0 / tZoom.y(), 1.0 / tZoom.z());
+    rnVALUE = new TAttribVector (inv);
+  }  
+#endif
   else
   {
     return TPattern::getAttribute (rktNAME, rnVALUE);

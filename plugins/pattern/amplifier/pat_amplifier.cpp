@@ -21,6 +21,8 @@
 #include <iostream>
 #include <time.h>
 #include "pat_amplifier.h"
+#include "llapi/attribute.h"
+#include "llapi/extended_attribute.h"
 
 DEFINE_PLUGIN ("PatternAmplifier", FX_PATTERN_CLASS, TPatternAmplifier);
 
@@ -30,10 +32,18 @@ int TPatternAmplifier::setAttribute (const string& rktNAME, NAttribute nVALUE, E
 
   if ( rktNAME == "source" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_PATTERN )
     {
-      setPattern ((TPattern*) nVALUE.pvValue);
+      setPattern (((TPattern*) nVALUE.pvValue)->clone_new());
     }
+#else
+    magic_pointer<TAttribPattern> pat = get_pattern(nVALUE);
+    if( !!pat )
+    {
+      setPattern (pat->tValue);
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -41,10 +51,18 @@ int TPatternAmplifier::setAttribute (const string& rktNAME, NAttribute nVALUE, E
   }
   else if ( rktNAME == "offset" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_REAL )
     {
       tOffset = nVALUE.dValue;
     }
+#else
+    magic_pointer<TAttribReal> r = get_real(nVALUE);
+    if( !!r )
+    {
+      tOffset = r->tValue;
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -52,10 +70,18 @@ int TPatternAmplifier::setAttribute (const string& rktNAME, NAttribute nVALUE, E
   }  
   else if ( rktNAME == "amplification" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_REAL )
     {
       tAmplification = nVALUE.dValue;
     }
+#else
+    magic_pointer<TAttribReal> r = get_real(nVALUE);
+    if( !!r )
+    {
+      tAmplification = r->tValue;
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -74,9 +100,10 @@ int TPatternAmplifier::setAttribute (const string& rktNAME, NAttribute nVALUE, E
 int TPatternAmplifier::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 {
 
+#if !defined(NEW_ATTRIBUTES)  
   if ( rktNAME == "source" )
   {
-    rnVALUE.pvValue = ptPattern;
+    rnVALUE.pvValue = ptPattern.get_pointer();
   }
   else if ( rktNAME == "offset" )
   {
@@ -86,6 +113,20 @@ int TPatternAmplifier::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
   {
     rnVALUE.dValue = tAmplification;
   }
+#else
+  if ( rktNAME == "source" )
+  {
+    rnVALUE = new TAttribPattern (ptPattern);
+  }
+  else if ( rktNAME == "offset" )
+  {
+    rnVALUE = new TAttribReal (tOffset);
+  }
+  else if ( rktNAME == "amplification" )
+  {
+    rnVALUE = new TAttribReal (tAmplification);
+  }
+#endif
   else
   {
     return TPattern::getAttribute (rktNAME, rnVALUE);

@@ -18,16 +18,25 @@
 
 #include "llapi/warning_eliminator.h"
 #include "llapi/camera.h"
+#include "llapi/attribute.h"
 
 int TCamera::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
 
   if ( rktNAME == "up" )
   {
+#if !defined(NEW_ATTRIBUTES)    
     if ( eTYPE == FX_VECTOR )
     {
       setUp (*((TVector*) nVALUE.pvValue));
     }
+#else
+    magic_pointer<TAttribVector> vec = get_vector(nVALUE);
+    if( !!vec )
+    {
+      setUp (vec->tValue);
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -35,10 +44,18 @@ int TCamera::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType
   }
   else if ( rktNAME == "look_at" )
   {
+#if !defined(NEW_ATTRIBUTES)    
     if ( eTYPE == FX_VECTOR )
     {
       setLookAt (*((TVector*) nVALUE.pvValue));
     }
+#else
+    magic_pointer<TAttribVector> vec = get_vector(nVALUE);
+    if( !!vec )
+    {
+      setLookAt (vec->tValue);
+    }
+#endif    
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -57,6 +74,7 @@ int TCamera::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType
 int TCamera::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 {
 
+#if !defined(NEW_ATTRIBUTES)  
   if ( rktNAME == "up" )
   {
     rnVALUE.pvValue = &tUp;
@@ -65,6 +83,16 @@ int TCamera::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
   {
     rnVALUE.pvValue = &tLookAt;
   }
+#else
+  if ( rktNAME == "up" )
+  {
+    rnVALUE = new TAttribVector (tUp);
+  }
+  else if ( rktNAME == "look_at" )
+  {
+    rnVALUE = new TAttribVector (tLookAt);
+  }  
+#endif
   else
   {
     return TEntity::getAttribute (rktNAME, rnVALUE);
@@ -84,3 +112,18 @@ void TCamera::getAttributeList (TAttributeList& rtLIST) const
   rtLIST ["look_at"] = FX_VECTOR;
 
 }  /* getAttributeList() */
+
+
+TUserFunctionMap TCamera::getUserFunctions()
+{
+  TUserFunctionMap ufm = TEntity::getUserFunctions();
+
+  ufm["getLookAt"] = create_user_function(this,&TCamera::getLookAt);
+  ufm["setLookAt"] = create_user_function(this,&TCamera::setLookAt);
+  ufm["getUp"] = create_user_function(this,&TCamera::getUp);
+  ufm["setUp"] = create_user_function(this,&TCamera::setUp);    
+  
+  return ufm;
+}
+
+

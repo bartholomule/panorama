@@ -68,7 +68,7 @@ class TParallelCamera : public TCamera
 
     void getRay (TScalar X, TScalar Y, TRay& rtRAY) const
     {
-      rtRAY.setLocation (tLocation + (I * (X - tHalfResX)) + (J * (tHalfResY - Y)));
+      rtRAY.setLocation (location() + (I * (X - tHalfResX)) + (J * (tHalfResY - Y)));
       rtRAY.setDirection (tDirection);
       rtRAY.normalize();
     }
@@ -80,8 +80,9 @@ class TParallelCamera : public TCamera
     }
     
     string className (void) const { return "ParallelCamera"; }
-
-    void printDebug (void) const;
+    virtual TParallelCamera* clone_new() const { return new TParallelCamera(*this); }
+  
+    void printDebug (const string& indent) const;
     
 };  /* class TParallelCamera */
 

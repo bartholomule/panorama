@@ -51,8 +51,10 @@ class TWarnLight : public TPointLight
     
     string className (void) const { return "WarnLight"; }
 
-    void printDebug (void) const;
+    void printDebug (const string& indent) const;
 
+    virtual TWarnLight* clone_new() const { return new TWarnLight(*this); }
+  
 };  /* class TWarnLight */
 
 #endif  /* _WARN_LIGHT__ */

@@ -21,6 +21,7 @@
 #include "llapi/atmosphere.h"
 #include "llapi/renderer.h"
 #include "llapi/scene.h"
+#include "llapi/attribute.h"
 
 TColor TAtmosphericObject::evaluateScattering (const TSurfaceData& rktDATA) const
 {
@@ -112,10 +113,18 @@ int TAtmosphericObject::setAttribute (const string& rktNAME, NAttribute nVALUE, 
 
   if ( rktNAME == "samples" )
   {
+#if !defined(NEW_ATTRIBUTES)    
     if ( eTYPE == FX_REAL )
     {
       wSamples = Word (nVALUE.dValue);
     }
+#else
+    magic_pointer<TAttribInt> i = get_int (nVALUE);
+    if( !!i )
+    {
+      wSamples = i->tValue;
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -123,10 +132,18 @@ int TAtmosphericObject::setAttribute (const string& rktNAME, NAttribute nVALUE, 
   }
   else if ( rktNAME == "jitter" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_REAL )
     {
       tJitter = nVALUE.dValue;
     }
+#else
+    magic_pointer<TAttribReal> r = get_real (nVALUE);
+    if( !!r )
+    {
+      tJitter = r->tValue;
+    }    
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -134,10 +151,18 @@ int TAtmosphericObject::setAttribute (const string& rktNAME, NAttribute nVALUE, 
   }
   else if ( rktNAME == "min_step_size" )
   {
+#if !defined(NEW_ATTRIBUTES)    
     if ( eTYPE == FX_REAL )
     {
       tMinStepSize = nVALUE.dValue;
     }
+#else
+    magic_pointer<TAttribReal> r = get_real (nVALUE);
+    if( !!r )
+    {
+      tMinStepSize = r->tValue;
+    }    
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -145,10 +170,18 @@ int TAtmosphericObject::setAttribute (const string& rktNAME, NAttribute nVALUE, 
   }
   else if ( rktNAME == "transp_th" )
   {
+#if !defined(NEW_ATTRIBUTES)    
     if ( eTYPE == FX_REAL )
     {
       tTransparencyThreshold = nVALUE.dValue;
     }
+#else
+    magic_pointer<TAttribReal> r = get_real (nVALUE);
+    if( !!r )
+    {
+      tTransparencyThreshold = r->tValue;
+    }    
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -156,10 +189,18 @@ int TAtmosphericObject::setAttribute (const string& rktNAME, NAttribute nVALUE, 
   }
   else if ( rktNAME == "slope_th" )
   {
+#if !defined(NEW_ATTRIBUTES)    
     if ( eTYPE == FX_REAL )
     {
       tSlopeThreshold = nVALUE.dValue;
     }
+#else
+    magic_pointer<TAttribReal> r = get_real (nVALUE);
+    if( !!r )
+    {
+      tSlopeThreshold = r->tValue;
+    }    
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -178,6 +219,7 @@ int TAtmosphericObject::setAttribute (const string& rktNAME, NAttribute nVALUE, 
 int TAtmosphericObject::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 {
 
+#if !defined(NEW_ATTRIBUTES)  
   if ( rktNAME == "samples" )
   {
     rnVALUE.dValue = wSamples;
@@ -198,6 +240,28 @@ int TAtmosphericObject::getAttribute (const string& rktNAME, NAttribute& rnVALUE
   {
     rnVALUE.dValue = tSlopeThreshold;
   }
+#else
+  if ( rktNAME == "samples" )
+  {
+    rnVALUE = new TAttribInt (wSamples);
+  }
+  else if ( rktNAME == "jitter" )
+  {
+    rnVALUE = new TAttribReal (tJitter);
+  }
+  else if ( rktNAME == "min_step_size" )
+  {
+    rnVALUE = new TAttribReal (tMinStepSize);
+  }
+  else if ( rktNAME == "transp_th" )
+  {
+    rnVALUE = new TAttribReal (tTransparencyThreshold);
+  }
+  else if ( rktNAME == "slope_th" )
+  {
+    rnVALUE = new TAttribReal (tSlopeThreshold);
+  }  
+#endif
   else
   {
     return TProcedural::getAttribute (rktNAME, rnVALUE);
@@ -213,7 +277,7 @@ void TAtmosphericObject::getAttributeList (TAttributeList& rtLIST) const
 
   TProcedural::getAttributeList (rtLIST);
 
-  rtLIST ["samples"]       = FX_REAL;
+  rtLIST ["samples"]       = FX_INTEGER;
   rtLIST ["jitter"]        = FX_REAL;
   rtLIST ["min_step_size"] = FX_REAL;
   rtLIST ["transp_th"]     = FX_REAL;

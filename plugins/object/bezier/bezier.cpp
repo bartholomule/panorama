@@ -20,6 +20,7 @@
 #include "llapi/llapi_defs.h"
 #include "bezier.h"
 #include "beziersub.h"
+#include "llapi/attribute.h"
 
 DEFINE_PLUGIN ("BezierSurface", FX_OBJECT_CLASS, TBezierSurface);
 
@@ -72,12 +73,22 @@ int TBezierSurface::setAttribute (const string& rktNAME, NAttribute nVALUE,
 
   if ( rktNAME == "control" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE != FX_VECTOR )
     {
       return FX_ATTRIB_WRONG_TYPE;
     }
 
-    TVector* v = (TVector*) nVALUE.pvValue;
+    TVector v = *(TVector*) nVALUE.pvValue;
+#else
+    magic_pointer<TAttribVector> vec = get_vector(nVALUE);
+    if( !vec )
+    {
+      return FX_ATTRIB_WRONG_TYPE;      
+    }
+    
+    TVector v = vec->tValue;
+#endif
 
     if ( ptCurrentSurface == NULL )
     {
@@ -87,7 +98,7 @@ int TBezierSurface::setAttribute (const string& rktNAME, NAttribute nVALUE,
       iBuildV = 0;
     }
 
-    ptCurrentSurface->setPoint (iBuildU, iBuildV, *v);
+    ptCurrentSurface->setPoint (iBuildU, iBuildV, v);
     iBuildU++;
 
     if ( iBuildU >= 4 )

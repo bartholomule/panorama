@@ -1,7 +1,8 @@
 
 BUILD_TOP = ..
 
-DIRS = render \
-       @GUI_PROGRAM@
+DIRS = render 
+#\
+#       @GUI_PROGRAM@
 
 include ${BUILD_TOP}/Makefile.targets

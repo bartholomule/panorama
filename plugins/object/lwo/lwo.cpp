@@ -21,6 +21,7 @@
 #include "chunks.h"
 #include "llapi/file.h"
 #include "llapi/material.h"
+#include "llapi/attribute.h"
 
 DEFINE_PLUGIN ("ObjectLW", FX_OBJECT_CLASS, TLightWaveObject);
 
@@ -115,6 +116,7 @@ int TLightWaveObject::setAttribute (const string& rktNAME, NAttribute nVALUE, EA
 
   if ( rktNAME == "file" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_STRING )
     {
       tFileName = (char*) nVALUE.pvValue;
@@ -125,6 +127,19 @@ int TLightWaveObject::setAttribute (const string& rktNAME, NAttribute nVALUE, EA
         return FX_ATTRIB_USER_ERROR;
       }
     }
+#else
+    magic_pointer<TAttribString> str = get_string(nVALUE);
+    if( !!str )
+    {
+      tFileName = str->tValue;
+
+      if ( parseObject() )
+      {
+        TProcedural::_tUserErrorMessage = string ("could not open object file ") + tFileName;
+        return FX_ATTRIB_USER_ERROR;
+      }      
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -145,7 +160,11 @@ int TLightWaveObject::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 
   if ( rktNAME == "file" )
   {
+#if !defined(NEW_ATTRIBUTES)
     rnVALUE.pvValue = (char*) tFileName.c_str();
+#else
+    rnVALUE = new TAttribString (tFileName);
+#endif
   }
   else
   {

@@ -4,54 +4,52 @@
 
 #include "materials.inc"
 
-define camera c
+define c class PinholeCamera
 {
-  translate	<0, 100, 600>
-  look_at	<0, 100, 0>
-}
+  translate( <0, 100, 600> );
+  look_at   = <0, 100, 0>;
+};
 
-define light l
+define l class PointLight
 {
-  translate	<0, 200, 600>
-  color		CWhite
-}
+  translate ( <0, 200, 600> );
+  color	= CWhite;
+};
 
-plane
-{
-  translate	<0, 0, 0>
-  normal	<0, 1, 0>
-  material : extends MLambertian
+addObject(class Plane
   {
-    color	CWhite
+    translate( <0, 0, 0> );
+    normal   = <0, 1, 0>;
+    material = MLambertian
+    {
+      color = CWhite;
+    };
   }
-}
+);
 
-phong_triangle
-{
-  vertex	<0, 150, -50>
-  vertex	<-50, 50, 50>
-  vertex	<50, 50, 50>
-  normal	<0, 1, 1>
-  normal	<-1, -1, 1>
-  normal	<1, -1, 1>
-  one_sided	off
-  material : extends MPlastic
+addObject(class PhongTriangle
   {
-    color	CBlue
+    addVertex(<  0, 150, -50>, < 0,  1, 1>);
+    addVertex(<-50,  50,  50>, <-1, -1, 1>);
+    addVertex(< 50,  50,  50>, < 1, -1, 1>);
+    one_sided = off;
+    material = MPlastic
+    {
+      color = CBlue;
+    };
   }
-}
+);
 
-scene
+class Scene
 {
-  camera	c
-  light		l
-  width		400
-  height	400
-  background	CBlack
-  output
+  camera      = c;
+  light	      = l;
+  width	      = 400;
+  height      = 400;
+  background  = CBlack;
+  output = class png
   {
-    type        "png"
-    name	"phong_triangle.png"
-  }
-  renderer : class Raytracer {}
-}
+    name = "phong_triangle.png";
+  };
+  renderer = class Raytracer {};
+};

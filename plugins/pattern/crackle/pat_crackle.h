@@ -113,7 +113,8 @@ class TPatternCrackle : public TPattern
     }
 
     string className (void) const { return "PatternCrackle"; }
-
+    TPatternCrackle* clone_new() const { return new TPatternCrackle(*this); }
+  
 };  /* class TPatternCrackle */
 
 #endif  /* _PATTERN_CRACKLE__ */

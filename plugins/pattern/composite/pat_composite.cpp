@@ -21,6 +21,8 @@
 #include <iostream>
 #include <time.h>
 #include "pat_composite.h"
+#include "llapi/attribute.h"
+#include "llapi/extended_attribute.h"
 
 DEFINE_PLUGIN ("PatternComposite", FX_PATTERN_CLASS, TPatternComposite);
 
@@ -30,10 +32,18 @@ int TPatternComposite::setAttribute (const string& rktNAME, NAttribute nVALUE, E
 
   if ( rktNAME == "pattern1" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_PATTERN )
     {
-      setPattern1 ((TPattern*) nVALUE.pvValue);
+      setPattern1 (((TPattern*) nVALUE.pvValue)->clone_new());
     }
+#else
+    magic_pointer<TAttribPattern> pat = get_pattern(nVALUE);
+    if( !!pat )
+    {
+      setPattern1 (pat->tValue);
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -41,10 +51,18 @@ int TPatternComposite::setAttribute (const string& rktNAME, NAttribute nVALUE, E
   }
   else if ( rktNAME == "pattern2" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_PATTERN )
     {
-      setPattern2 ((TPattern*) nVALUE.pvValue);
+      setPattern2 (((TPattern*) nVALUE.pvValue)->clone_new());
     }
+#else
+    magic_pointer<TAttribPattern> pat = get_pattern(nVALUE);
+    if( !!pat )
+    {
+      setPattern2 (pat->tValue);
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -52,10 +70,18 @@ int TPatternComposite::setAttribute (const string& rktNAME, NAttribute nVALUE, E
   }
   else if ( rktNAME == "amount1" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_REAL )
     {
       tPattern1Amount = nVALUE.dValue;
     }
+#else
+    magic_pointer<TAttribReal> r = get_real(nVALUE);
+    if( !!r )
+    {
+      tPattern1Amount = r->tValue;
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -63,10 +89,18 @@ int TPatternComposite::setAttribute (const string& rktNAME, NAttribute nVALUE, E
   }  
   else if ( rktNAME == "amount2" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_REAL )
     {
       tPattern2Amount = nVALUE.dValue;
     }
+#else
+    magic_pointer<TAttribReal> r = get_real(nVALUE);
+    if( !!r )
+    {
+      tPattern2Amount = r->tValue;
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -85,13 +119,14 @@ int TPatternComposite::setAttribute (const string& rktNAME, NAttribute nVALUE, E
 int TPatternComposite::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 {
 
+#if !defined(NEW_ATTRIBUTES)
   if ( rktNAME == "pattern1" )
   {
-    rnVALUE.pvValue = ptPattern1;
+    rnVALUE.pvValue = ptPattern1.get_pointer();
   }
   else if ( rktNAME == "pattern2" )
   {
-    rnVALUE.pvValue = ptPattern2;
+    rnVALUE.pvValue = ptPattern2.get_pointer();
   }
   else if ( rktNAME == "amount1" )
   {
@@ -101,6 +136,24 @@ int TPatternComposite::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
   {
     rnVALUE.dValue = tPattern2Amount;
   }
+#else
+  if ( rktNAME == "pattern1" )
+  {
+    rnVALUE = new TAttribPattern (ptPattern1);
+  }
+  else if ( rktNAME == "pattern2" )
+  {
+    rnVALUE = new TAttribPattern (ptPattern2);
+  }
+  else if ( rktNAME == "amount1" )
+  {
+    rnVALUE = new TAttribReal (tPattern1Amount);
+  }
+  else if ( rktNAME == "amount2" )
+  {
+    rnVALUE = new TAttribReal (tPattern2Amount);
+  }  
+#endif  
   else
   {
     return TPattern::getAttribute (rktNAME, rnVALUE);

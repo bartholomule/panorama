@@ -18,17 +18,33 @@
 
 #include "llapi/warning_eliminator.h"
 #include "llapi/math_tools.h"
+#include "llapi/pattern.h"
 #include "llapi/light.h"
+#include "llapi/attribute.h"
+
+bool TLight::findAllIntersections(const class TRay &, class TSpanList &) const
+{
+  //      cerr << "Pure light with intersection test!!" << endl;
+  return false;
+}
 
 int TLight::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
 
   if ( rktNAME == "color" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_COLOR )
     {
       setColor (*((TColor*) nVALUE.pvValue));
     }
+#else
+    magic_pointer<TAttribColor> c = get_color(nVALUE);
+    if( !!c )
+    {
+      setColor (c->tValue);
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -36,10 +52,18 @@ int TLight::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType 
   }
   else if ( rktNAME == "intensity" )
   {
+#if !defined(NEW_ATTRIBUTES)    
     if ( eTYPE == FX_REAL )
     {
       setIntensity (nVALUE.dValue);
     }
+#else
+    magic_pointer<TAttribReal> r = get_real(nVALUE);
+    if( !!r )
+    {
+      setIntensity (r->tValue);
+    }    
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -47,10 +71,18 @@ int TLight::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType 
   }
   else if ( rktNAME == "shadow" )
   {
+#if !defined(NEW_ATTRIBUTES)    
     if ( eTYPE == FX_BOOL )
     {
       tProperties.gShadow = nVALUE.gValue;
     }
+#else
+    magic_pointer<TAttribBool> b = get_bool(nVALUE);
+    if( !!b )
+    {
+      tProperties.gShadow = b->tValue;
+    }    
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -58,10 +90,18 @@ int TLight::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType 
   }
   else if ( rktNAME == "volumetric" )
   {
+#if !defined(NEW_ATTRIBUTES)    
     if ( eTYPE == FX_BOOL )
     {
       tProperties.gVolumetric = nVALUE.gValue;
     }
+#else
+    magic_pointer<TAttribBool> b = get_bool(nVALUE);
+    if( !!b )
+    {
+      tProperties.gVolumetric = b->tValue;
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -69,10 +109,18 @@ int TLight::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType 
   }
   else if ( rktNAME == "raytraced" )
   {
+#if !defined(NEW_ATTRIBUTES)    
     if ( eTYPE == FX_BOOL )
     {
       tProperties.gRaytraced = nVALUE.gValue;
     }
+#else
+    magic_pointer<TAttribBool> b = get_bool(nVALUE);
+    if( !!b )
+    {
+      tProperties.gRaytraced = b->tValue;
+    }    
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -95,7 +143,8 @@ int TLight::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType 
 
 int TLight::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 {
-
+  
+#if !defined(NEW_ATTRIBUTES)
   if ( rktNAME == "color" )
   {
     rnVALUE.pvValue = &tColor;
@@ -119,7 +168,33 @@ int TLight::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
   else if ( rktNAME == "lightonly" )
   {
     rnVALUE.gValue = true;
+  }
+#else
+  if ( rktNAME == "color" )
+  {
+    rnVALUE = new TAttribColor (tColor);
+  }
+  else if ( rktNAME == "intensity" )
+  {
+    rnVALUE = new TAttribReal (tIntensity);
+  }
+  else if ( rktNAME == "shadow" )
+  {
+    rnVALUE = new TAttribBool (tProperties.gShadow);
+  }
+  else if ( rktNAME == "volumetric" )
+  {
+    rnVALUE = new TAttribBool (tProperties.gVolumetric);
+  }
+  else if ( rktNAME == "raytraced" )
+  {
+    rnVALUE = new TAttribBool (tProperties.gRaytraced);
+  }
+  else if ( rktNAME == "lightonly" )
+  {
+    rnVALUE = new TAttribBool (true);
   }  
+#endif
   else
   {
     return TEntity::getAttribute (rktNAME, rnVALUE);

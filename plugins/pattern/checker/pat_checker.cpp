@@ -18,6 +18,8 @@
 
 #include "llapi/warning_eliminator.h"
 #include "pat_checker.h"
+#include "llapi/attribute.h"
+#include "llapi/extended_attribute.h"
 
 DEFINE_PLUGIN ("PatternChecker", FX_PATTERN_CLASS, TPatternChecker);
 
@@ -26,10 +28,18 @@ int TPatternChecker::setAttribute (const string& rktNAME, NAttribute nVALUE, EAt
 
   if ( rktNAME == "color" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_COLOR )
     {
       setColor (*((TColor*) nVALUE.pvValue));
     }
+#else
+    magic_pointer<TAttribColor> col = get_color(nVALUE);
+    if( !!col )
+    {
+      setColor (col->tValue);
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -37,10 +47,18 @@ int TPatternChecker::setAttribute (const string& rktNAME, NAttribute nVALUE, EAt
   }
   else if ( rktNAME == "base_color" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_COLOR )
     {
       setBaseColor (*((TColor*) nVALUE.pvValue));
     }
+#else
+    magic_pointer<TAttribColor> col = get_color(nVALUE);
+    if( !!col )
+    {
+      setBaseColor (col->tValue);
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -48,10 +66,18 @@ int TPatternChecker::setAttribute (const string& rktNAME, NAttribute nVALUE, EAt
   }
   else if ( rktNAME == "size" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_REAL )
     {
       setSize (nVALUE.dValue);
     }
+#else
+    magic_pointer<TAttribReal> r = get_real(nVALUE);
+    if( !!r )
+    {
+      setSize (r->tValue);
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -59,10 +85,18 @@ int TPatternChecker::setAttribute (const string& rktNAME, NAttribute nVALUE, EAt
   }
   else if ( rktNAME == "border" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_REAL )
     {
       setBorder (nVALUE.dValue);
     }
+#else
+    magic_pointer<TAttribReal> r = get_real(nVALUE);
+    if( !!r )
+    {
+      setBorder (r->tValue);
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -81,6 +115,7 @@ int TPatternChecker::setAttribute (const string& rktNAME, NAttribute nVALUE, EAt
 int TPatternChecker::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 {
 
+#if !defined(NEW_ATTRIBUTES)
   if ( rktNAME == "color" )
   {
     rnVALUE.pvValue = &tColor;
@@ -97,6 +132,24 @@ int TPatternChecker::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
   {
     rnVALUE.dValue = tCheckerBoard.border();
   }
+#else
+  if ( rktNAME == "color" )
+  {
+    rnVALUE = new TAttribColor (tColor);
+  }
+  else if ( rktNAME == "base_color" )
+  {
+    rnVALUE = new TAttribColor (tBaseColor);
+  }
+  else if ( rktNAME == "size" )
+  {
+    rnVALUE = new TAttribReal (tCheckerBoard.size());
+  }
+  else if ( rktNAME == "border" )
+  {
+    rnVALUE = new TAttribReal (tCheckerBoard.border());
+  }  
+#endif
   else
   {
     return TPattern::getAttribute (rktNAME, rnVALUE);

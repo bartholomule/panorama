@@ -58,7 +58,7 @@ class TPinholeCamera : public TCamera
 
     void getRay (TScalar X, TScalar Y, TRay& rtRAY) const
     {
-      rtRAY.setLocation (tLocation);
+      rtRAY.setLocation (location());
       rtRAY.setDirection (tDirection + (I * (X - tHalfResX)) + (J * (tHalfResY - Y)));
       rtRAY.normalize();
     }
@@ -70,8 +70,9 @@ class TPinholeCamera : public TCamera
     }
     
     string className (void) const { return "PinholeCamera"; }
-
-    void printDebug (void) const;
+    virtual TPinholeCamera* clone_new() const { return new TPinholeCamera(*this); }
+  
+    void printDebug (const string& indent) const;
     
 };  /* class TPinholeCamera */
 

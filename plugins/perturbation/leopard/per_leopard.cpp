@@ -20,6 +20,8 @@
 #include "llapi/warning_eliminator.h"
 #include <cmath>
 #include "per_leopard.h"
+#include "llapi/attribute.h"
+#include "llapi/extended_attribute.h"
 
 DEFINE_PLUGIN ("PerturbationLeopard", FX_PERTURBATION_CLASS, TPerturbationLeopard);
 
@@ -28,10 +30,18 @@ int TPerturbationLeopard::setAttribute (const string& rktNAME, NAttribute nVALUE
 
   if ( rktNAME == "bump" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_REAL )
     {
       tBumpFactor = nVALUE.dValue;
     }
+#else
+    magic_pointer<TAttribReal> r = get_real(nVALUE);
+    if( !!r )
+    {
+      tBumpFactor = r->tValue;
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -39,15 +49,27 @@ int TPerturbationLeopard::setAttribute (const string& rktNAME, NAttribute nVALUE
   }
   else if ( rktNAME == "leopard_pattern" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_PATTERN )
     {
-      setLeopardPattern ((TPatternLeopard*) nVALUE.pvValue);
+      setLeopardPattern (((TPatternLeopard*) nVALUE.pvValue)->clone_new());
 
       if ( ptLeopardPattern->className() != "PatternLeopard" )
       {
 	return FX_ATTRIB_WRONG_TYPE;
       }
     }
+#else
+    magic_pointer<TAttribPattern> pat = get_pattern(nVALUE);
+    if( !!pat )
+    {
+      if( pat->tValue->className() != "PatternLeopard" )
+      {
+	return FX_ATTRIB_WRONG_TYPE;
+      }
+      setLeopardPattern (rcp_static_cast<TPatternLeopard>(pat->tValue));
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -66,14 +88,25 @@ int TPerturbationLeopard::setAttribute (const string& rktNAME, NAttribute nVALUE
 int TPerturbationLeopard::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 {
 
+#if !defined(NEW_ATTRIBUTES)
   if ( rktNAME == "bump" )
   {
     rnVALUE.dValue = tBumpFactor;
   }
   else if ( rktNAME == "leopard_pattern" )
   {
-    rnVALUE.pvValue = ptLeopardPattern;
+    rnVALUE.pvValue = ptLeopardPattern.get_pointer();
   }
+#else
+  if ( rktNAME == "bump" )
+  {
+    rnVALUE = new TAttribReal (tBumpFactor);
+  }
+  else if ( rktNAME == "leopard_pattern" )
+  {
+    rnVALUE = new TAttribPattern (rcp_static_cast<TPattern>(ptLeopardPattern));
+  }  
+#endif
   else
   {
     return TPerturbation::getAttribute (rktNAME, rnVALUE);

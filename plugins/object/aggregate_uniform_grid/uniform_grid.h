@@ -137,7 +137,7 @@ class TUniformGrid
       tVoxelSize2   = tVOXEL_SIZE * tVOXEL_SIZE;
       tInvVoxelSize = 1.0 / tVoxelSize;
     }
-    void calculateVoxelSize (const vector<TObject*>& rktOBJECT_LIST);
+    void calculateVoxelSize (const vector<magic_pointer<TObject> >& rktOBJECT_LIST);
 
     void addObject (const TObject* pktOBJECT);
 

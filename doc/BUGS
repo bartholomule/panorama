@@ -7,11 +7,42 @@
 
  - Cone fails for min_radius == 0 and for min_radius == max_radius.
 
- - Cylinders do not translate correctly.
+ - Cylinders are located improperly after translating (such as in a CSG 
+   object), or when initialize is called multiple times.  There must be an
+   improper scaling factor, because as a CSG or Aggregate containing a cylinder
+   is moved, the cylinder is moved at a more rapid rate (it seperates itself
+   from the CSG or Aggregate).
+
+ - Planes and its subclasses (circle, rectangle, triangle) seem to fail now
+   that the coordinate references have been globally changed.  This shouldn't
+   be that hard to fix. 
 
 [_SCENES_]
 
  - Some material scenes do not render correctly.
+
+[_SCENE_LOADERS_]
+
+ - The RT scene loader [parser] has some form of bug which causes segmentation
+   faults on when loading scenes containing some forms of materials: bump,
+   brick, crackle, leopard, marble.  Other materials appear to work fine.
+
+[_PROGRAMS_]
+
+ - The gui (panorama) has many known problems:
+    * Attempting to change properties of the renderer will fail after changing
+      properties of the scene (incorrect copying of attributes). 
+    * Error output is sent to stdout, instead of being displayed in a box.
+    * Failure to load a plugin will result in termination of the program, even
+      if that plugin is not used (bug in the TPluginManager class).
+    * Preview mode on rendering does not give enough options about the quality
+      of the preview.  It is either lousy (1/16th to 1/2 the time on average of
+      the full render), or just a full render--It is missing options.
+    * Attempting to change any of the properties of any class which contains an
+      attribute of type FX_IMAGE, FX_CAMERA, FX_BSDF, etc., will usually result
+      in the program crashing (similar bug to that of changing the renderer
+      after changing the scene.
+    * There does not exist a material editor.
  
 [_GUI_]
 

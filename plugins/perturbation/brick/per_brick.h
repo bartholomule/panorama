@@ -28,10 +28,13 @@
 class TPerturbationBrick : public TPerturbation
 {
 
+  public:
+    typedef magic_pointer<TPatternBrick> PTBrickPat;
+  
   protected:
 
-    TScalar          tBumpFactor;
-    TPatternBrick*   ptBrickPattern;
+    TScalar     tBumpFactor;
+    PTBrickPat  ptBrickPattern;
 
   public:
 
@@ -48,10 +51,10 @@ class TPerturbationBrick : public TPerturbation
     int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
     void getAttributeList (TAttributeList& rtLIST) const;
 
-    void setBrickPattern (TPatternBrick* ptPATTERN) { ptBrickPattern = ptPATTERN; }
+    void setBrickPattern (PTBrickPat ptPATTERN) { ptBrickPattern = ptPATTERN; }
 
     string className (void) const { return "PerturbationBrick"; }
-
+    TPerturbationBrick* clone_new() const { return new TPerturbationBrick(*this); }
 };  /* class TPerturbationBrick */
 
 

@@ -32,7 +32,7 @@ class TPerturbationCrackle : public TPerturbation
   protected:
 
     TScalar            tBumpFactor;
-    TPatternCrackle*   ptCracklePattern;
+    magic_pointer<TPatternCrackle> ptCracklePattern;
 
   public:
 
@@ -49,10 +49,10 @@ class TPerturbationCrackle : public TPerturbation
     int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
     void getAttributeList (TAttributeList& rtLIST) const;
 
-    void setCracklePattern (TPatternCrackle* ptPATTERN) { ptCracklePattern = ptPATTERN; }
+    void setCracklePattern (magic_pointer<TPatternCrackle> ptPATTERN) { ptCracklePattern = ptPATTERN; }
 
     string className (void) const { return "PerturbationCrackle"; }
-
+    TPerturbationCrackle* clone_new() const { return new TPerturbationCrackle(*this); }
 };  /* class TPerturbationCrackle */
 
 

@@ -24,6 +24,7 @@ define camera c
 /*
 define light l_ambient
 {
+  name "Ambient"
   translate	< 0, 1500, 700>
 //  translate	<0, 600, 1200>
 //  translate	< 400, 500, 1000>
@@ -34,6 +35,7 @@ define light l_ambient
 */
 define light l_ambient
 {
+  name "Ambient"
   translate	< -500, 500, 700>
 //  translate	<0, 600, 1200>
 //  translate	< 400, 500, 1000>
@@ -44,6 +46,7 @@ define light l_ambient
 
 define light l : class WarnLight
 {
+  name "Main"
   translate	< 700, 1500, 700>
   point_at	<0, 0, 0>
   exponent      40
@@ -54,6 +57,7 @@ define light l : class WarnLight
 
 plane
 {
+  name "Floor"
   translate     <0, 0, 0>
   normal	<0, 1, 0>
   material : extends MWood
@@ -83,6 +87,7 @@ plane
 
 define aggregate cabin
 {
+  name "Cabin"
   difference // Hollow box with circular cutouts
   {
     difference // Hollow box
@@ -128,6 +133,7 @@ define aggregate cabin
 
 define aggregate cabin_roof
 {
+  name "Cabin Roof"
   intersection
   {
     box
@@ -150,6 +156,7 @@ define aggregate cabin_roof
 
 define aggregate body
 {
+  name "Body"
   cylinder
   {
     scale     <  90, 200,  90>
@@ -169,6 +176,7 @@ define aggregate body
 
 define aggregate base : class AggregateUniformGrid
 {
+  name "Base"
   sphere
   {
     scale     <  10,  10,  10>
@@ -231,6 +239,7 @@ define aggregate base : class AggregateUniformGrid
 
 define aggregate wheelA : class AggregateUniformGrid
 {
+  name "WheelA"
   torus
   {
     radius_a  50
@@ -304,6 +313,7 @@ define aggregate wheelA : class AggregateUniformGrid
 
 define aggregate wheelB
 {
+  name "WheelB"
   sphere
   {
     radius 10
@@ -326,12 +336,14 @@ define aggregate wheelB
 
 define aggregate wheels
 {
+  name "Wheels"
   aggregate wheelA
   aggregate wheelB
 }
 
 define aggregate funnel
 {
+  name "Funnel"
   difference
   {
     union
@@ -365,6 +377,7 @@ define aggregate funnel
 
 define aggregate hump // dunno what these actually are :)
 {
+  name "Hump"
   cylinder
   {
     scale < 30, 30, 30 >
@@ -383,6 +396,7 @@ define aggregate hump // dunno what these actually are :)
 
 aggregate : class AggregateUniformGrid
 {
+  name "Train"
   aggregate : extends wheels
   {
     translate <   20, -180, 0 >

@@ -23,59 +23,64 @@
 #include "llapi/attribs.h"
 #include "llapi/llapi_defs.h"
 
-#if defined(BROKEN_RETURN_SUBTYPES_ON_VIRTUAL)
-// The compiler is BROKEN!  It does not recognize that returning a pointer to a subtype 
-// can be converted (virtually) to the base pointer (on singly derived, public subclasses).
-//
-#define TATTRIB_CLONE_NEW_DEF(name) virtual TAttribute* clone_new() const { return new name(*this); }
-#else
-// Do it the right way!
-#define TATTRIB_CLONE_NEW_DEF(name) virtual name* clone_new() const { return new name(*this); }
-#endif /* defined(BROKEN_RETURN_SUBTYPES_ON_VIRTUAL) */
+/* The base struct is now in attribs.h */
 
-/*
-  A base class (struct) for attribute values.
- */
-struct TAttribute
+struct TAttribInt : public TAttribute
 {
 
-  EAttribType   eType;
+  int   tValue;
 
-  virtual ~TAttribute() { }
-  virtual string AttributeName() const { return "NONE"; }
-  TATTRIB_CLONE_NEW_DEF(TAttribute);
+  TAttribInt (void)  { eType = FX_INTEGER; }
+  TAttribInt (int i) { eType = FX_INTEGER; tValue = i; }  
+
+  virtual string AttributeName() const { return "integer"; }
+  TATTRIB_CLONE_NEW_DEF(TAttribInt);
   
-};  /* struct TAttribute */
-
+  virtual string toString() const
+  {
+    char buffer[100];
+    sprintf(buffer,"int(%d)",tValue);
+    return buffer;
+  }
+  
+};  /* struct TAttribInt */
 
 struct TAttribReal : public TAttribute
 {
 
   TScalar   tValue;
 
-  TAttribReal (void)
-  {
-    eType = FX_REAL;
-  }
+  TAttribReal (void) { eType = FX_REAL; }
+  TAttribReal (TScalar s) { eType = FX_REAL; tValue = s; }  
 
   virtual string AttributeName() const { return "real"; }
   TATTRIB_CLONE_NEW_DEF(TAttribReal);
   
+  virtual string toString() const
+  {
+    char buffer[100];
+    sprintf(buffer,"real(%f)",float(tValue));
+    return buffer;
+  }  
 };  /* struct TAttribReal */
 
 
 struct TAttribBool : public TAttribute
 {
 
-  bool   gValue;
+  bool   tValue;
   
-  TAttribBool (void)
-  {
-    eType = FX_BOOL;
-  }
+  TAttribBool (void)   { eType = FX_BOOL; }
+  TAttribBool (bool b) { eType = FX_BOOL; tValue = b; }
+  
   virtual string AttributeName() const { return "bool"; }
   TATTRIB_CLONE_NEW_DEF(TAttribBool);
-    
+  
+  virtual string toString() const
+  {
+    return string("bool(") + (tValue?("true"):("false")) + ")";
+  }  
+  
 };  /* struct TAttribBool */
 
 
@@ -84,15 +89,63 @@ struct TAttribString : public TAttribute
 
   string   tValue;
   
-  TAttribString (void)
-  {
-    eType = FX_STRING;
-  }
+  TAttribString (void) { eType = FX_STRING; }
+  TAttribString (const string& s):tValue(s) { eType = FX_STRING; }  
 
   virtual string AttributeName() const { return "string"; }
   TATTRIB_CLONE_NEW_DEF(TAttribString);
   
+  virtual string toString() const
+  {
+    return "string(" + tValue + ")";
+  }
+  
 };  /* struct TAttribString */
+
+
+#include <vector>
+using std::vector;
+
+struct TAttribStringList : public TAttribString
+{
+
+  vector<string> choices;
+  
+  TAttribStringList (void) { eType = FX_STRING_LIST; }
+  TAttribStringList (const vector<string>& sv,
+		     const string& s = "") :
+    TAttribString(s),
+    choices(sv)
+  {
+    eType = FX_STRING_LIST;
+    if( tValue.empty() && !choices.empty() )
+    {
+	tValue = *choices.begin();
+    }
+  }  
+
+  virtual string AttributeName() const { return "stringlist"; }
+  TATTRIB_CLONE_NEW_DEF(TAttribStringList);
+  
+  virtual string toString() const
+  {
+    string s = "stringlist(" + tValue + ":";
+
+    vector<string>::const_iterator i = choices.begin();
+
+    if( i != choices.end() )
+    {
+      s += *i;
+
+      for(++i; i != choices.end(); ++i)
+      {
+	s += ", " + *i;
+      }
+    }
+    return s + ")";
+  }
+  
+};  /* struct TAttribStringList */
 
 
 struct TAttribColor : public TAttribute
@@ -100,13 +153,21 @@ struct TAttribColor : public TAttribute
 
   TColor   tValue;
   
-  TAttribColor (void)
-  {
-    eType = FX_COLOR;
-  }
+  TAttribColor (void) { eType = FX_COLOR; }
+  TAttribColor (const TColor& c) : tValue(c)     { eType = FX_COLOR; }
+  TAttribColor (TScalar s)       : tValue(s,s,s) { eType = FX_COLOR; }    
+  TAttribColor (const TVector& v): tValue(v[0],v[1],v[2]) { eType = FX_COLOR; }
+  
   virtual string AttributeName() const { return "color"; }
   TATTRIB_CLONE_NEW_DEF(TAttribColor);
-    
+  
+  virtual string toString() const
+  {
+    char buffer[1024];
+    sprintf( buffer, "color(%f,%f,%f)", tValue.red(), tValue.green(), tValue.blue() );
+    return string(buffer);
+  }
+  
 };  /* struct TAttribColor */
 
 
@@ -115,13 +176,19 @@ struct TAttribVector : public TAttribute
 
   TVector   tValue;
   
-  TAttribVector (void)
-  {
-    eType = FX_VECTOR;
-  }
+  TAttribVector (void) { eType = FX_VECTOR; }
+  TAttribVector (const TVector& v) : tValue(v)     { eType = FX_VECTOR; }
+  TAttribVector (TScalar s )       : tValue(s,s,s) { eType = FX_VECTOR; }    
   virtual string AttributeName() const { return "vector"; }
   TATTRIB_CLONE_NEW_DEF(TAttribVector);
-    
+  
+  virtual string toString() const
+  {
+    char buffer[1024];
+    sprintf( buffer, "vector(%f,%f,%f)", tValue.x(), tValue.y(), tValue.z() );
+    return string(buffer);
+  }
+  
 };  /* struct TAttribVector */
 
 
@@ -130,115 +197,33 @@ struct TAttribVector2 : public TAttribute
 
   TVector2   tValue;
   
-  TAttribVector2 (void)
-  {
-    eType = FX_VECTOR2;
-  }
+  TAttribVector2 (void)                           { eType = FX_VECTOR2; }
+  TAttribVector2 (const TVector2& v): tValue(v)   { eType = FX_VECTOR2; }
+  TAttribVector2 (TScalar s)        : tValue(s,s) { eType = FX_VECTOR2; }  
   
   virtual string AttributeName() const { return "vector2"; }
   TATTRIB_CLONE_NEW_DEF(TAttribVector2);
-    
+  
+  virtual string toString() const
+  {
+    char buffer[1024];
+    sprintf( buffer, "vector2(%f,%f)", tValue.x(), tValue.y() );
+    return string(buffer);    
+  }
+  
 };  /* struct TAttribVector2 */
 
-/* A generic attribute type which can be used where any of the TAttribute
-   derived classes can be used.
 
-   This requires that a clone and destroy function be set on all instances
-   where the data is non-null.
-*/
-struct TAttribOther : public TAttribute
-{
-  void* tValue;
-  void  (*Destroy)(void*);           // A destructor/deallocator (delete)
-  void* (*Clone)(const void*);       // Allocate and copy        (new)
+magic_pointer<TAttribInt>     get_int(const magic_pointer<TAttribute> attr);
+magic_pointer<TAttribReal>    get_real(const magic_pointer<TAttribute> attr);
+magic_pointer<TAttribBool>    get_bool(const magic_pointer<TAttribute> attr);
+magic_pointer<TAttribString>  get_string(const magic_pointer<TAttribute> attr);
+magic_pointer<TAttribStringList> get_stringlist(const magic_pointer<TAttribute> attr);
+magic_pointer<TAttribColor>   get_color(const magic_pointer<TAttribute> attr);
+magic_pointer<TAttribVector>  get_vector(const magic_pointer<TAttribute> attr);
+magic_pointer<TAttribVector2> get_vector2(const magic_pointer<TAttribute> attr);
 
-  TAttribOther ( EAttribType eTYPE )
-  {
-    eType = eTYPE;
-    tValue = NULL;
-    Clone = NULL;
-    Destroy = NULL;
-  }
-  
-  TAttribOther ( const TAttribOther& tao )
-  {
-    Destroy = tao.Destroy;
-    Clone = tao.Clone;        
-    eType = tao.eType;    
-    
-    if ( ( tao.tValue != NULL ) && ( Clone != NULL ) )
-    {
-      tValue = Clone ( tao.tValue );
-    }
-  }
-  
-  ~TAttribOther (void)
-  {
-    if ( ( tValue != NULL ) && ( Destroy != NULL ) )
-    {
-      Destroy ( tValue );
-    }
-  }
-  
-  TAttribOther& operator=(const TAttribOther& tao)
-  {
-    if ( &tao != this )
-    {
-      eType = tao.eType;
-      
-      if ( ( tValue != NULL ) && ( Destroy != NULL ) )	
-      {
-	Destroy ( tValue );
-      }
-      
-      Clone = tao.Clone;
-      Destroy = tao.Destroy;
-
-      if ( ( tao.tValue != NULL ) && ( Clone != NULL ) )
-      {
-	tValue = Clone ( tao.tValue );
-      }
-    }
-    
-    return *this;
-  }
-
-  virtual string AttributeName() const { return "other"; }
-  TATTRIB_CLONE_NEW_DEF(TAttribOther);
-
-};
-
-template <class T>
-T* FX_New(const T& t)
-{
-  return ::new T(t);
-}
-
-template <class T>
-void FX_Delete(T* t)
-{
-  ::delete t;
-}
-
-
-template <class T>
-TAttribOther create_other_attribute(const T& t, EAttribType eTYPE)
-{
-  typedef void* (*Cloner)(const void*);
-  typedef void (*Destroyer)(void*);
-  
-  TAttribOther tao(eTYPE);
-  
-  T* (*cl)(const T&) = &FX_New<T>;
-  void (*de)(T*) = &FX_Delete<T>;
-
-  tao.Destroy = Destroyer(de);
-  tao.Clone = Cloner(cl);
-
-  tao.tValue = tao.Clone(&t);
-
-  return tao;
-}
-
+magic_pointer<TAttribute> base_to_attr(const magic_pointer<TBaseClass> base);
+magic_pointer<TBaseClass> attr_to_base(const magic_pointer<TAttribute> attr);
 
 #endif  /* _ATTRIBUTE__ */

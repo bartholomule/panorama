@@ -86,7 +86,7 @@ class TColor : public TBaseClass
 
     bool saturated (void) const;
 
-    void printDebug (void) const;
+    void printDebug (const string& indent) const;
 
     EClass classType (void) const { return FX_COLOR_CLASS; }
     string className (void) const { return "Color"; }
@@ -259,10 +259,10 @@ inline bool TColor::saturated (void) const
 }  /* saturated() */
 
 
-inline void TColor::printDebug (void) const
+inline void TColor::printDebug (const string& indent) const
 {
 
-  cerr << "TColor (" << fRed << ", " << fGreen << ", " << fBlue << ")" << endl;
+  cerr << "TColor (" << fRed << ", " << fGreen << ", " << fBlue << ")";
 
 }  /* printDebug() */
 

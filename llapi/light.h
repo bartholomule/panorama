@@ -20,7 +20,6 @@
 #define _LIGHT__
 
 #include "llapi/color.h"
-#include "llapi/entity.h"
 #include "llapi/object.h"
 
 struct TLightProperties
@@ -88,11 +87,9 @@ class TLight : public TObject
 
     EClass classType (void) const { return FX_LIGHT_CLASS; }
   
-    virtual bool findAllIntersections(const class TRay &, class TSpanList &) const
-    {
-      cerr << "Pure light with intersection test!!" << endl;
-      return false;
-    }
+    virtual bool findAllIntersections(const class TRay &, class TSpanList &) const;
+
+    virtual TLight* clone_new() const = 0;//  { return new TLight(*this); }
 
 };  /* class TLight */
 

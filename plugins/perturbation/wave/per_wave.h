@@ -60,6 +60,7 @@ public:
   virtual void setPattern (TPattern* ptPATTERN) { }
 
   virtual string className (void) const { return "PerturbationWave"; }
+  virtual TPerturbationWave* clone_new() const { return new TPerturbationWave(*this); }  
 
   static TVector wave_contribution(const TVector& location, const TWaveSource& ws);
   static TVector wave_contribution(const TVector& location, const TWaveSource& ws, TScalar time);

@@ -30,7 +30,9 @@
 #include <gtk--/window.h>
 
 
-void FinishedRenderLine (size_t zROW, void* pvDATA);
+bool FinishedRenderLine (size_t zROW, void* pvDATA);
+bool FilterUserUpdate (double percentage, void* pvDATA);
+void FinishedRendering (void* pvDATA);
 
 class TImageWindow;
   
@@ -51,27 +53,30 @@ protected:
   Gtk::VBox*          ptVBox;
   Gtk::MenuBar*       ptMenuBar;
   Gtk::Preview*       ptPreview;
-  TImage*             ptImage;
+  SBuffers            sBuffers;
 
 public:
 
   Gtk::FileSelection*      ptFileSelection;
   Gtk::ProgressBar*        ptProgress;
   TScene*                  ptScene;
+  unsigned                 numPixelCopies;                      
   bool                     gRenderingDone;
 
   TImageWindow (TScene* ptSCENE);
+  ~TImageWindow ();
 
-  void saveImage (void);
+  void saveImage (const string& name = "");
     
   void drawRow (size_t zROW);
   void drawImage (void);
 
   void filterImage(TImageFilter* ptFilter);
 
-  size_t image_width() const { return ptImage->width(); }
-  size_t image_height() const { return ptImage->height(); }  
+  size_t image_width() const { return sBuffers.ptImage->width(); }
+  size_t image_height() const { return sBuffers.ptImage->height(); }  
   void set_progress(size_t line_number);
+  void render(bool preview = false);
 
 };  /* class TImageWindow */
 

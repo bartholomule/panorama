@@ -48,6 +48,7 @@ class TBsdfLambertian : public TBsdf
 
     string className (void) const { return "BsdfLambertian"; }
 
+    TBsdfLambertian* clone_new() const { return new TBsdfLambertian(*this); }
 };  /* class TBsdfLambertian */
 
 #endif  /* _BSDF_LAMBERTIAN__ */

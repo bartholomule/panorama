@@ -17,6 +17,19 @@
 */
 
 #include "llapi/base_class.h"
+#include <iostream>
+using std::cerr;
+using std::endl;
+
+void TBaseClass::printDebug (const string& indent) const
+{
+  streamDebug (cerr, indent);
+}
+
+void TBaseClass::streamDebug (ostream& o, const string& indent) const
+{
+  o << indent << "[_" << className() << "_]" << endl;
+}
 
 string TBaseClass::classTypeString (EClass eCLASS)
 {
@@ -140,6 +153,13 @@ string TBaseClass::classTypeString (EClass eCLASS)
       return "Image I/O";
     }
     break;
+
+    case FX_SCENE_IO_CLASS:
+    {
+      return "Scene I/O";
+    }
+    break;
+    
   }
 
   return "";

@@ -84,20 +84,33 @@ TVector TPhongTriangle::normal (const TSurfaceData& rktDATA) const
 }  /* normal() */
 
 
-void TPhongTriangle::printDebug (void) const
+void TPhongTriangle::printDebug (const string& indent) const
 {
 
-  cerr << TDebug::_indent() << "[_PhongTriangle_]" << endl;
+  cerr << indent << "[_PhongTriangle_]" << endl;
 
-  TDebug::_push();
+  string new_indent = TDebug::Indent(indent);
   
-  cerr << TDebug::_indent() << "Vertex 1 : "; atVertex[0].printDebug(); cerr << endl;
-  cerr << TDebug::_indent() << "Vertex 2 : "; atVertex[1].printDebug(); cerr << endl;
-  cerr << TDebug::_indent() << "Vertex 3 : "; atVertex[2].printDebug(); cerr << endl;
-  cerr << TDebug::_indent() << "Normal 1 : "; atNormal[0].printDebug(); cerr << endl;
-  cerr << TDebug::_indent() << "Normal 2 : "; atNormal[1].printDebug(); cerr << endl;
-  cerr << TDebug::_indent() << "Normal 3 : "; atNormal[2].printDebug(); cerr << endl;
-
-  TDebug::_pop();
+  cerr << new_indent << "Vertex 1 : "; atVertex[0].printDebug(new_indent); cerr << endl;
+  cerr << new_indent << "Vertex 2 : "; atVertex[1].printDebug(new_indent); cerr << endl;
+  cerr << new_indent << "Vertex 3 : "; atVertex[2].printDebug(new_indent); cerr << endl;
+  cerr << new_indent << "Normal 1 : "; atNormal[0].printDebug(new_indent); cerr << endl;
+  cerr << new_indent << "Normal 2 : "; atNormal[1].printDebug(new_indent); cerr << endl;
+  cerr << new_indent << "Normal 3 : "; atNormal[2].printDebug(new_indent); cerr << endl;
 
 }  /* printDebug() */
+
+void TPhongTriangle::addVertex (const TVector& rktVERTEX, const TVector& rktNORMAL )
+{
+  setVertex(rktVERTEX);
+  setNormal(rktNORMAL);
+}
+
+TUserFunctionMap TPhongTriangle::getUserFunctions()
+{
+  TUserFunctionMap ufm = TTriangle::getUserFunctions();
+
+  ufm["addVertex"] = create_user_function(this,&TPhongTriangle::addVertex);
+
+  return ufm;
+}

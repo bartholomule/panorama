@@ -3,73 +3,68 @@
 */
 
 #include "materials.inc"
+#include "shapes.inc"
 
-define camera c
+define c class PinholeCamera
 {
-  translate	<0, 200, 500>
-  look_at	<0, 0, 0>
-}
+  translate( <0, 200, 500> );
+  look_at  = <0,   0,   0>;
+};
 
-define light l
+define l Light
 {
-  translate	<500, 500, 500>
-  color		CWhite
-}
+  translate( <500, 500, 500> );
+  color = CWhite;
+};
 
-define aggregate a
+define a aggregate
 {
-box
-{
-  scale         <40, 40, 100>
-  rotate	<0, 0, 0>
-  material : extends MPlastic
-  {
-    color	CRed
-  }
-}
-box
-{
-  scale         <40, 40, 100>
-  rotate	<0, 90, 0>
-  material : extends MPlastic
-  {
-    color	CBlue
-  }
-}
-box
-{
-  scale         <40, 40, 100>
-  rotate	<90, 0, 0>
-  material : extends MPlastic
-  {
-    color	CGreen
-  }
-}
-}
+  box {
+      scale ( <40, 40, 100> );
+      rotate( < 0,  0,   0> );
+      material = MPlastic { color = CRed; };
+  };
 
-aggregate : extends a
-{
-  translate     <-100, 0, 0>
-}
+  box {
+      scale ( <40, 40, 100> );
+      rotate( < 0, 90,   0> );
+      material = MPlastic { color = CBlue; };
+  };
 
-aggregate : extends a
-{
-  scale         <1.5, 1.5, 1.5>
-  translate     <100, 0, 0>
-  rotate        <0, 0, 45>
-}
+  box {
+      scale ( <40, 40, 100> );
+      rotate( <90,  0,   0> );
+      material = MPlastic { color = CGreen; };
+  };
+};
+
+a { 
+  translate( <-100, 0, 0> ); 
+};
+
+a { 
+  scale     ( <1.5, 1.5, 1.5> );
+  translate ( <100,   0,   0> );
+  rotate    ( <  0,   0,  45> );
+};
+
+/*
+setCamera(c);
+addObject(l);
+setWidth(400);
+setHeight(400);
+setBackground(CSummerSky);
+setImageIO( class png { name = "aggregate.png"; } );
+setRenderer( class Raytracer {} );
+*/
 
 scene
 {
-  camera	c
-  light		l
-  width		400
-  height	400
-  background	CSummerSky
-  output
-  {
-    type        "png"
-    name	"aggregate.png"
-  }
-  renderer : class Raytracer {}
-}
+  camera = c;
+  light  = l;
+  width  = 400;
+  height = 400;
+  background = CSummerSky;
+  output = class png { name = "aggregate.png"; };
+  setRenderer( class Raytracer { sampling="uniform"; aa_depth=1;} );
+};

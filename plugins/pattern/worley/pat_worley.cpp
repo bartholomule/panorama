@@ -19,6 +19,8 @@
 #include "llapi/warning_eliminator.h"
 #include <cmath>
 #include "pat_worley.h"
+#include "llapi/attribute.h"
+#include "llapi/extended_attribute.h"
 
 DEFINE_PLUGIN ("PatternWorley", FX_PATTERN_CLASS, TPatternWorley);
 
@@ -28,10 +30,18 @@ int TPatternWorley::setAttribute (const string& rktNAME, NAttribute nVALUE, EAtt
 
   if ( rktNAME == "color" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_COLOR )
     {
       setColor (*((TColor*) nVALUE.pvValue));
     }
+#else
+    magic_pointer<TAttribColor> col = get_color(nVALUE);
+    if( !!col )
+    {
+      setColor (col->tValue);
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -39,10 +49,18 @@ int TPatternWorley::setAttribute (const string& rktNAME, NAttribute nVALUE, EAtt
   }
   else if ( rktNAME == "base_color" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_COLOR )
     {
       setBaseColor (*((TColor*) nVALUE.pvValue));
     }
+#else
+    magic_pointer<TAttribColor> col = get_color(nVALUE);
+    if( !!col )
+    {
+      setBaseColor (col->tValue);
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -50,11 +68,20 @@ int TPatternWorley::setAttribute (const string& rktNAME, NAttribute nVALUE, EAtt
   }
   else if ( rktNAME == "zoom" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_VECTOR )
     {
       tZoom = *((TVector*) nVALUE.pvValue);
       tZoom.set (1.0 / tZoom.x(), 1.0 / tZoom.y(), 1.0 / tZoom.z());
     }
+#else
+    magic_pointer<TAttribVector> vec = get_vector(nVALUE);
+    if( !!vec )
+    {
+      tZoom = vec->tValue;
+      tZoom.set (1.0 / tZoom.x(), 1.0 / tZoom.y(), 1.0 / tZoom.z());
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -73,6 +100,7 @@ int TPatternWorley::setAttribute (const string& rktNAME, NAttribute nVALUE, EAtt
 int TPatternWorley::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 {
 
+#if !defined(NEW_ATTRIBUTES)
   if ( rktNAME == "color" )
   {
     rnVALUE.pvValue = &tColor;
@@ -86,6 +114,22 @@ int TPatternWorley::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
     // [_ERROR_]
     rnVALUE.pvValue = &tZoom;
   }
+#else
+  if ( rktNAME == "color" )
+  {
+    rnVALUE = new TAttribColor (tColor);
+  }
+  else if ( rktNAME == "base_color" )
+  {
+    rnVALUE = new TAttribColor (tBaseColor);
+  }
+  else if ( rktNAME == "zoom" )
+  {
+    TVector inv(1.0 / tZoom.x(), 1.0 / tZoom.y(), 1.0 / tZoom.z());
+    rnVALUE = new TAttribVector (inv);
+  }  
+#endif
+  
   else
   {
     return TPattern::getAttribute (rktNAME, rnVALUE);

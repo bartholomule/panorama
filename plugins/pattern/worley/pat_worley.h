@@ -63,6 +63,7 @@ class TPatternWorley : public TPattern
     }
 
     string className (void) const { return "PatternWorley"; }
+    TPatternWorley* clone_new() const { return new TPatternWorley(*this); }
 
 };  /* class TPatternWorley */
 

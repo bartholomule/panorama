@@ -20,102 +20,104 @@
 
 #include "colors.inc"
 
-define material MLambertian
+define MLambertian class Material
 {
-  bsdf : class BsdfLambertian
+  bsdf = class BsdfLambertian
   {
-  }
-  ambient	0.2
-  diffuse	0.6
-}
+  };
+  ambient = 0.2;
+  diffuse = 0.6;
+};
 
-define material MPlastic
+define MPlastic class Material
 {
-  bsdf : class BsdfPhong
+  bsdf = class BsdfPhong
   {
-    exponent    50
-  }
-  ambient	0.2
-  diffuse	0.6
-  specular	0.2
-}
+    exponent =  50;
+  };
+  ambient    = 0.2;
+  diffuse    = 0.6;
+  specular   = 0.2;
+};
 
-define material MCrystal
+define MCrystal class Material
 {
-  bsdf : class BsdfPhong
+  bsdf = class BsdfPhong
   {
-    exponent	500
-  }
-  ambient	0
-  diffuse	0
-  specular	0.2
-  opacity	0.01
-  ior		1.52
-  caustics	20
-}
+    exponent = 500;
+  };
+  ambient  = 0;
+  diffuse  = 0;
+  specular = 0.2;
+  opacity  = 0.01;
+  ior      = 1.52;
+  caustics = 20;
+};
 
-define material MDiamond : extends MCrystal
+define MDiamond MCrystal
 {
-  ior		2.47
-  caustics	30
-}
+  ior       = 2.47;
+  caustics  = 30;
+};
 
-define material MMirror
+define MMirror class Material
 {
-  bsdf : class BsdfPhong
+  bsdf = class BsdfPhong
   {
-    exponent	500
-  }
-  color		CWhite
-  ambient	0
-  diffuse	0
-  specular      1
-}
+    exponent = 500;
+  };
+  color	     = CWhite;
+  ambient    = 0;
+  diffuse    = 0;
+  specular   = 1;
+};
 
-define material MChecker
+define MChecker class Material
 {
-  bsdf : class BsdfPhong
+  bsdf = class BsdfPhong
   {
-    exponent    50
-  }
-  ambient	0.2
-  diffuse	0.6
-  specular	0.2
-  color : class PatternChecker {}
-}
+    exponent = 50;
+  };
+  ambient    = 0.2;
+  diffuse    = 0.6;
+  specular   = 0.2;
+  color = class PatternChecker {};
+};
 
-define material MNoise
+define MNoise class Material
 {
-  bsdf : class BsdfPhong
+  bsdf = class BsdfPhong
   {
-    exponent    50
-  }
-  ambient	0.2
-  diffuse	0.6
-  specular	0.2
-  color : class PatternNoise {}
-}
+    exponent = 50;
+  };
+  ambient  = 0.2;
+  diffuse  = 0.6;
+  specular = 0.2;
+  color    = class PatternNoise {};
+};
 
-define material MWorley
+define MWorley class Material
 {
-  bsdf : class BsdfPhong
+  bsdf = class BsdfPhong
   {
-    exponent    50
-  }
-  ambient	0.2
-  diffuse	0.6
-  specular	0.2
-  color : class PatternWorley {}
-}
+    exponent = 50;
+  };
+  ambient    = 0.2;
+  diffuse    = 0.6;
+  specular   = 0.2;
+  color      = class PatternWorley {};
+};
 
-define material MLeopard
+define MLeopard class Material
 {
-  bsdf : class BsdfPhong
+  bsdf = class BsdfPhong
   {
-    exponent    50
-  }
-  ambient	0.2
-  diffuse	0.6
-  specular	0.2
-  color : class PatternLeopard {}
-}
+    exponent = 50;
+  };
+  ambient    = 0.2;
+  diffuse    = 0.6;
+  specular   = 0.2;
+  color      = class PatternLeopard {};
+};
+
+define material class Material { };

@@ -68,7 +68,8 @@ class TPatternCylGrad : public TPattern
     }
 
     string className (void) const { return "PatternCylGrad"; }
-
+    TPatternCylGrad* clone_new() const { return new TPatternCylGrad(*this); }
+  
 };  /* class TPatternCylGrad */
 
 #endif  /* _PATTERN_CYLGRAD__ */

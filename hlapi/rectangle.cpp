@@ -27,7 +27,10 @@ void TRectangle::update (void)
   TVector   tVector1 = (atVertex[1] - atVertex[0]);
   TVector   tVector2 = (atVertex[2] - atVertex[0]);
 
-  tLocation = atVertex[0];
+  // FIXME!  Does this work at all now?  Re-adjust things so that tLocation is
+  // assumed to be at the origin, as setLocation does. 
+  setLocation(atVertex[0]);
+  //tLocation = atVertex[0];
   tNormal   = crossProduct (tVector1, tVector2);
 
   bDom = Dominant (tNormal);
@@ -132,19 +135,26 @@ void TRectangle::getMesh (list<TMesh*>& rtMESH_LIST) const
 }  /* getMesh() */
 
 
-void TRectangle::printDebug (void) const
+void TRectangle::printDebug (const string& indent) const
 {
 
-  cerr << TDebug::_indent() << "[_Rectangle_]" << endl;
+  cerr << indent << "[_Rectangle_]" << endl;
 
-  TDebug::_push();
+  string new_indent = TDebug::Indent(indent);
   
-  cerr << TDebug::_indent() << "Vertex 1 : "; atVertex[0].printDebug(); cerr << endl;
-  cerr << TDebug::_indent() << "Vertex 2 : "; atVertex[1].printDebug(); cerr << endl;
-  cerr << TDebug::_indent() << "Vertex 3 : "; atVertex[2].printDebug(); cerr << endl;
-  cerr << TDebug::_indent() << "Vertex 4 : "; atVertex[3].printDebug(); cerr << endl;
-  cerr << TDebug::_indent() << "Normal   : "; tNormal.printDebug(); cerr << endl;
-
-  TDebug::_pop();
+  cerr << new_indent << "Vertex 1 : " << endl; atVertex[0].printDebug(new_indent); cerr << endl;
+  cerr << new_indent << "Vertex 2 : " << endl; atVertex[1].printDebug(new_indent); cerr << endl;
+  cerr << new_indent << "Vertex 3 : " << endl; atVertex[2].printDebug(new_indent); cerr << endl;
+  cerr << new_indent << "Vertex 4 : " << endl; atVertex[3].printDebug(new_indent); cerr << endl;
+  cerr << new_indent << "Normal   : " << endl; tNormal.printDebug(new_indent); cerr << endl;
   
 }  /* printDebug() */
+
+TUserFunctionMap TRectangle::getUserFunctions()
+{
+  TUserFunctionMap ufm = TPlane::getUserFunctions();
+
+  ufm["addVertex"] = create_user_function(this,&TRectangle::setVertex);
+  
+  return ufm;
+}

@@ -36,6 +36,8 @@ class TIF_ConvertToGrey : public TImageFilter
 
     string className (void) const { return "IF_ConvertToGrey"; }
 
+    virtual TIF_ConvertToGrey* clone_new() const { return new TIF_ConvertToGrey(*this); }
+
 };  /* class TIF_ConvertToGrey */
 
 #endif  /* _IF_CONVERT_TO_GREY__ */

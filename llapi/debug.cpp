@@ -22,3 +22,8 @@ char   TDebug::_acIndent[]   = "  \0                                            
 Byte   TDebug::_bMaxIndent   = 80;
 Byte   TDebug::_bIndentLevel = 0;
 Byte   TDebug::_bIndentStep  = 2;
+
+std::string TDebug::StandardIndent()
+{
+  return "| ";
+}

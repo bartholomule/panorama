@@ -64,7 +64,7 @@ class TProgram
 
     TEventCode* getEventCode (const string& rktNAME);
 
-    void printDebug (void) const;
+    void printDebug (const string& indent) const;
     
 };  /* class TProgram */
 

@@ -8,7 +8,9 @@ SRC_DIR = @srcdir@
 
 FILES = colors.inc \
         materials.inc \
-        cameras.inc
+        cameras.inc \
+        math.inc \
+        shapes.inc
 
 all:
 

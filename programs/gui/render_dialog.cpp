@@ -56,6 +56,7 @@ void TRenderDialog::toggleNBuffer (Gtk::CheckButton* ptBUTTON)
 TRenderDialog::TRenderDialog (TScene* ptSCENE)
 {
 
+  gPreview = false;
   Gtk::Frame*         ptFrame;
   Gtk::VBox*          ptVBox;
   Gtk::Table*         ptTable;
@@ -85,17 +86,18 @@ TRenderDialog::TRenderDialog (TScene* ptSCENE)
 
   ptTable->attach (*ptVBox, 0, 1, 0, 1, 0, 0, 5, 5);
     
-  ptRButton = new Gtk::RadioButton ("Preview");
+  ptRButton = new Gtk::RadioButton ("Render");
   ptRButton->show();
-
-  ptVBox->pack_start (*ptRButton, 1, 1, 0);
-  
-  Group   = ptRButton->group();
-  ptRButton = new Gtk::RadioButton (Group, "Render");
-  ptRButton->show();
+  ptRButton->toggled.connect(bind(slot(this,&TRenderDialog::setPreview),false));    
 
   ptVBox->pack_start(*ptRButton);
 
+  Group   = ptRButton->group();
+  ptRButton = new Gtk::RadioButton (Group, "Preview");
+  ptRButton->show();
+  ptRButton->toggled.connect(bind(slot(this,&TRenderDialog::setPreview),true));  
+  ptVBox->pack_start (*ptRButton, 1, 1, 0);
+  
   ptVBox = new Gtk::VBox;
   ptVBox->show();
 
@@ -162,11 +164,7 @@ void TRenderDialog::render (void)
 
     ptImageWnd->show();
 
-    ptImageWnd->gRenderingDone = false;
-
-    ptScene->render (&FinishedRenderLine, ptImageWnd);
-      
-    ptImageWnd->gRenderingDone = true;
+    ptImageWnd->render (gPreview);
   }
 
   delete this;

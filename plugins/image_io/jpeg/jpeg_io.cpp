@@ -1,6 +1,7 @@
 /*
 *  Copyright (C) 1998 Angel Jimenez Jimenez and Carlos Jimenez Moreno
-*  Copyright (C) 1999 Jose Antonio Robles Ordoñez 
+*  Copyright (C) 1999 Jose Antonio Robles Ordoñez
+*  Copyright (C) 2001 Kevin Harris
 *
 *  This program is free software; you can redistribute it and/or modify
 *  it under the terms of the GNU General Public License as published by
@@ -17,8 +18,12 @@
 *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include <stdio.h> // for FILE access
+
+
+#include <cstdio> // for FILE access
 #include "hlapi/image_manager.h"
+#include "llapi/attribute.h"
+#include <setjmp.h>
 
 extern "C" {
 #include <jpeglib.h> //jpeg library
@@ -27,12 +32,72 @@ extern "C" {
 
 DEFINE_IMAGE_IO_PLUGIN_WITH_ALIAS ("jpeg", "jpg", TImageJpeg);
 
+/*
+  NOTES:
+  This file has bee modified (07Aug2001 -- KH) to have the load/store functions
+  actually return to their callers on the event of failure.  The method used
+  was taken from The Gimp's jpeg plugin (I borrowed a few lines of code,
+  including one complete function [my_error_exit]).
+
+  I have never used setjmp, as I always feared horrible interactions with C++
+  destructors.  This is very possible, but SHOULD NOT happen in this file, as
+  the control returns back into the same function, with NO variables declared
+  after the call to setjmp (If you modify it, place all variable declarations
+  BEFORE the call to setjmp, failure to do so could cause memory leaks and/or
+  worse problems).  Depending on the C++ implementation, they could potentially
+  cause problems with exception handling (a theory, but maybe someone can
+  [dis]prove it).  Threads may also cause problems.
+
+  Personally, I consider a call to setjmp/longjmp to be almost as evil as a
+  goto (slightly better), but there is no other method that I am aware of for
+  returning control to a function when a function it calls will not return to
+  it (only to an error routine).
+
+  I guess that I have put enough verbage about the evils of setjmp in here, so
+  I'll just put one more statement: BE CAREFUL!
+ */
+
+/*
+  This struct was taken from Gimp's jpeg plugin.
+ */
+struct my_error_mgr
+{
+  struct jpeg_error_mgr pub;            /* "public" fields */
+
+  jmp_buf               setjmp_buffer;  /* for return to caller */
+};
+
+
+/*
+  This function was taken from Gimp's jpeg plugin.
+ */
+static void my_error_exit (j_common_ptr cinfo)
+{
+  /* cinfo->err really points to a my_error_mgr struct, so coerce pointer */
+  my_error_mgr* myerr = (my_error_mgr*) cinfo->err;
+
+  /* Always display the message. */
+  /* We could postpone this until after returning, if we chose. */
+  (*cinfo->err->output_message) (cinfo);
+
+  /* Return control to the setjmp point */
+  longjmp (myerr->setjmp_buffer, 1);
+}
+
+// This function is here to avoid any output from the jpeg library (warnings
+// and/or errors).  It is being used (below) instead of the standard.
+static void silent_output (j_common_ptr cinfo)
+{
+  /* NOTHING: BE QUIET! */
+}
+
+
 int TImageJpeg::save (const TImage* pktIMAGE)
 {
 
   FILE*                          tOutFile;
-  static struct jpeg_error_mgr   _sWriteJerr;
   struct jpeg_compress_struct    sComp;
+  my_error_mgr                   jerr;    
   Byte*                          pbScanline;
   TColor                         tPixel;
   TColor                         tColor;
@@ -48,12 +113,43 @@ int TImageJpeg::save (const TImage* pktIMAGE)
 
   if ( !pbScanline )
   {
+    fclose (tOutFile);
+    
     return -1;
   }
 
   /* Set the standard error routine and some other parameters */
   
-  sComp.err = jpeg_std_error (&_sWriteJerr);
+  sComp.err = jpeg_std_error (&jerr.pub);
+  jerr.pub.error_exit = &my_error_exit;
+  
+  if( bSilent )
+  {
+    jerr.pub.output_message = &silent_output;
+  }
+
+
+  /* Establish the setjmp return context for my_error_exit to use. */
+  if (setjmp (jerr.setjmp_buffer))
+  {
+    /*
+      If we get here, the JPEG code has signaled an error.  We need to clean up
+      anything that was allocated or opened before returning an error.
+      Note that the data which has not been allocated yet (ie. the compress
+      buffer) still needs to be freed.
+     */
+    jpeg_destroy_compress (&sComp);
+    fclose (tOutFile);
+    delete[] pbScanline;
+
+    if( !bSilent )
+    {
+      cerr << "TImageJpeg::save : error saving file " << tFileName << endl;
+    }
+    return -1;
+  }  
+
+  
   jpeg_create_compress (&sComp);
 
   /* Set output file */
@@ -104,17 +200,19 @@ int TImageJpeg::save (const TImage* pktIMAGE)
 }  /* save() */
 
 
+
+
 TImage* TImageJpeg::load (void)
 {
 
   FILE*                          tInputFile;
-  static struct jpeg_error_mgr   _sReadJerr;
   struct jpeg_decompress_struct  sDecomp;
+  my_error_mgr                   jerr;  
   size_t                         zWidth, zHeight;
   TColor                         tColor;
-  TImage*                        ptImage;
-  Byte*                          pbScanline;
-
+  TImage*                        ptImage = NULL;
+  Byte*                          pbScanline = NULL;
+   
   tInputFile = fopen (tFileName.c_str(),"r");
 
   if ( !tInputFile )
@@ -122,8 +220,42 @@ TImage* TImageJpeg::load (void)
     return NULL;
   }
 
-  sDecomp.err = jpeg_std_error (&_sReadJerr);
+  sDecomp.err = jpeg_std_error (&jerr.pub);  
+  jerr.pub.error_exit = &my_error_exit;
+  if( bSilent )
+  {
+    jerr.pub.output_message = &silent_output;
+  }
 
+  /* Establish the setjmp return context for my_error_exit to use. */
+  if (setjmp (jerr.setjmp_buffer))
+  {
+    /* If we get here, the JPEG code has signaled an error.
+     * We need to clean up the JPEG object, close the input file, and return.
+     * As well as delete any memory which was dynamically allocated before the
+     * error was flagged (thus transfering control here).
+     */
+    jpeg_destroy_decompress (&sDecomp);
+    
+    fclose (tInputFile);
+    
+    if ( ptImage )
+    {
+      delete ptImage;
+    }
+    if ( pbScanline )
+    {
+      delete[] pbScanline;
+    }    
+
+    if( !bSilent )
+    {
+      cerr << "TImageJpeg::load : " << tFileName << " is not a jpeg file." << endl;
+    }
+    
+    return NULL;
+  }
+  
   jpeg_create_decompress (&sDecomp);
   jpeg_stdio_src (&sDecomp, tInputFile);
   jpeg_read_header (&sDecomp, TRUE);
@@ -179,10 +311,18 @@ int TImageJpeg::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribT
 
   if ( rktNAME == "quality" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_REAL )
     {
       fQuality = nVALUE.dValue;
     }
+#else
+    magic_pointer<TAttribReal> r = get_real(nVALUE);
+    if( !!r )
+    {
+      fQuality = r->tValue;
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -190,10 +330,18 @@ int TImageJpeg::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribT
   }
   else if ( rktNAME == "smoothing" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_REAL )
     {
       fSmoothing = nVALUE.dValue;
     }
+#else
+    magic_pointer<TAttribReal> r = get_real(nVALUE);
+    if( !!r )
+    {
+      fSmoothing = r->tValue;
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -212,6 +360,7 @@ int TImageJpeg::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribT
 int TImageJpeg::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 {
 
+#if !defined(NEW_ATTRIBUTES)
   if ( rktNAME == "quality" )
   {
     rnVALUE.dValue = fQuality;
@@ -220,6 +369,16 @@ int TImageJpeg::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
   {
     rnVALUE.dValue = fSmoothing;
   }
+#else
+  if ( rktNAME == "quality" )
+  {
+    rnVALUE = new TAttribReal (fQuality);
+  }
+  else if ( rktNAME == "smoothing" )
+  {
+    rnVALUE = new TAttribReal (fSmoothing);
+  }  
+#endif
   else
   {
     return TImageIO::getAttribute (rktNAME, rnVALUE);

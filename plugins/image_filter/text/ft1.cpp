@@ -137,6 +137,11 @@ void TIF_Text::filter (SBuffers& rsBUFFERS)
   
   tXPos = (unsigned int) tTranslate.x();
   tYPos = ptImage->height() - ((unsigned int) tTranslate.y());
+
+  if( pfUserUpdate )
+  {
+    pfUserUpdate(0.0, pvUserData);
+  }
   
   for (size_t tI = 0; tI < tText.length(); tI++)
   {
@@ -184,9 +189,21 @@ void TIF_Text::filter (SBuffers& rsBUFFERS)
         ptImage->setPixel (I, J, tPixelColor);
       }
     }
+    if( pfUserUpdate )
+    {
+      if(!pfUserUpdate(J / double(ptImage->height()), pvUserData))
+      {
+	break;
+      }
+    }
   }
-
+  if( pfUserUpdate )
+  {
+    pfUserUpdate(1.0, pvUserData);
+  }
+  
   //  Clean up
   free (tPixmap.bitmap);
   
 }  /* filter() */
+

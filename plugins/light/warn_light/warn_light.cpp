@@ -18,6 +18,7 @@
 
 #include "llapi/warning_eliminator.h"
 #include "warn_light.h"
+#include "llapi/attribute.h"
 
 DEFINE_PLUGIN ("WarnLight", FX_LIGHT_CLASS, TWarnLight);
 
@@ -26,7 +27,7 @@ TScalar TWarnLight::attenuation (const TVector& rktPOINT) const
 
   TScalar   tCos;
   TScalar   tAtten = 0;
-  TVector   tPoint = (rktPOINT - tLocation);
+  TVector   tPoint = (rktPOINT - location());
 
   tPoint.normalize();
   tCos = dotProduct (tLightAxis, tPoint);
@@ -45,10 +46,18 @@ int TWarnLight::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribT
 
   if ( rktNAME == "point_at" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_VECTOR )
     {
       pointAt (*((TVector*) nVALUE.pvValue));
     }
+#else
+    magic_pointer<TAttribVector> vec = get_vector(nVALUE);
+    if( !!vec )
+    {
+      pointAt (vec->tValue);
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -56,10 +65,18 @@ int TWarnLight::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribT
   }
   else if ( rktNAME == "exponent" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_REAL )
     {
       setExponent (nVALUE.dValue);
     }
+#else
+    magic_pointer<TAttribReal> r = get_real(nVALUE);
+    if( !!r )
+    {
+      setExponent (r->tValue);
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -78,6 +95,7 @@ int TWarnLight::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribT
 int TWarnLight::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 {
 
+#if !defined(NEW_ATTRIBUTES)
   if ( rktNAME == "point_at" )
   {
     rnVALUE.pvValue = &tLightPoint;
@@ -86,6 +104,16 @@ int TWarnLight::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
   {
     rnVALUE.dValue = tExponent;
   }
+#else
+  if ( rktNAME == "point_at" )
+  {
+    rnVALUE = new TAttribVector (tLightPoint);
+  }
+  else if ( rktNAME == "exponent" )
+  {
+    rnVALUE = new TAttribReal (tExponent);
+  }  
+#endif
   else
   {
     return TPointLight::getAttribute (rktNAME, rnVALUE);
@@ -116,23 +144,22 @@ bool TWarnLight::initialize (void)
   // [_ERROR_] This will not work if called more than once.
   // (KH) I think this is no longer a problem.
   //
-  tLightAxis = (tLightPoint - tLocation);
+  tLightAxis = (tLightPoint - location());
   tLightAxis.normalize();
 
   return val;
 }  /* initialize() */
 
 
-void TWarnLight::printDebug (void) const
+void TWarnLight::printDebug (const string& indent) const
 {
 
-  TPointLight::printDebug();
+  TPointLight::printDebug(indent);
   
-  TDebug::_push();
+  string new_indent = TDebug::Indent(indent);
 
-  cerr << TDebug::_indent() << "Light axis : "; tLightAxis.printDebug();
-  cerr << TDebug::_indent() << "Exponent   : " << tExponent << endl;
-  
-  TDebug::_pop();
+  cerr << new_indent << "Light axis : "; tLightAxis.printDebug(new_indent);
+  cerr << new_indent << "Exponent   : " << tExponent << endl;
+  cerr << indent << "." << endl;
   
 }  /* printDebug() */

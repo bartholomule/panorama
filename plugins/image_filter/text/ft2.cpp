@@ -139,6 +139,11 @@ void TIF_Text::filter (SBuffers& rsBUFFERS)
   //  Set up the raster map
   tXPos = (unsigned int) tTranslate.x();
   tYPos = ptImage->height() - ((unsigned int) tTranslate.y());
+
+  if( pfUserUpdate )
+  {
+    pfUserUpdate(0.0, pvUserData);
+  }
   
   for (size_t tI = 0; tI < tText.length(); tI++)
   {
@@ -169,8 +174,19 @@ void TIF_Text::filter (SBuffers& rsBUFFERS)
 		   tColor, tFace->glyph->bitmap);
     
     tXPos += tFace->glyph->metrics.horiAdvance / 64;
+
+    if( pfUserUpdate )
+    {
+      if(!pfUserUpdate(tI / double(tText.length()), pvUserData))
+      {
+	break;
+      }
+    }    
   }
-  
+  if( pfUserUpdate )
+  {
+    pfUserUpdate(1.0, pvUserData);
+  }  
   // Clean up...
   FT_Done_FreeType(tEngine);
 }  /* filter() */

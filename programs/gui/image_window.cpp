@@ -22,9 +22,20 @@
 #include "image_window.h"
 #include "common.h"
 #include <gtk--/main.h>
+#include "llapi/attribute.h"
 
 using SigC::slot;
 using SigC::bind;
+
+TImageWindow::~TImageWindow ()
+{
+  delete sBuffers.ptImage;
+  delete sBuffers.ptZBuffer;
+  delete sBuffers.ptNBuffer;
+  delete ptPreview;
+  delete ptVBox;
+  delete ptProgress;
+}
 
 TImageWindow::TImageWindow (TScene* ptSCENE):
   ptProgress(NULL)
@@ -32,9 +43,17 @@ TImageWindow::TImageWindow (TScene* ptSCENE):
   string             tTitle;
   NAttribute         nAttrib;
   
-  gRenderingDone = false;
-  ptScene        = ptSCENE;
-  ptImage        = ptScene->buffers()->ptImage;
+  gRenderingDone     = false;
+  ptScene            = ptSCENE;
+  sBuffers.ptImage   = new TImage(*ptScene->buffers()->ptImage);
+  if(ptScene->buffers()->ptZBuffer)
+  {
+    sBuffers.ptZBuffer = new TZBuffer(*ptScene->buffers()->ptZBuffer);
+  }
+  if(ptScene->buffers()->ptNBuffer)
+  {
+    sBuffers.ptNBuffer = new TNBuffer(*ptScene->buffers()->ptNBuffer);
+  }
 
   ptVBox = new Gtk::VBox;
   ptVBox->show();
@@ -70,34 +89,67 @@ TImageWindow::TImageWindow (TScene* ptSCENE):
   ptVBox->pack_start (*ptMenuBar, 0, 1, 0);
 
   ptPreview = new Gtk::Preview (GTK_PREVIEW_COLOR);
-  ptPreview->size (ptImage->width(), ptImage->height());
+  ptPreview->size (sBuffers.ptImage->width(), sBuffers.ptImage->height());
   ptPreview->show();
 
   ptVBox->add (*ptPreview);
 
   ptScene->imageIO()->getAttribute ("name", nAttrib);
-  
+
+#if !defined(NEW_ATTRIBUTES)
   tTitle = string ("Image - ") + (char*) nAttrib.pvValue;
+#else
+  magic_pointer<TAttribString> str = get_string(nAttrib);
+  if( !!str )
+  {
+    tTitle = string ("Image - ") + str->tValue;
+  }
+  else
+  {
+    tTitle = string ("Image - NO NAME");
+  }
+#endif
   set_title (tTitle.c_str());
   
 }  /* TImageWindow() */
 
 
-void TImageWindow::saveImage (void)
+void TImageWindow::saveImage (const string& name)
 {
 
-  string   tName;
-  
-  if ( ptFileSelection )
-  {
-    tName = ptFileSelection->get_filename();
+  string   tName = name;
 
+  if( name.empty() )
+  {
+    if ( ptFileSelection )
+    {
+      tName = ptFileSelection->get_filename();
+      
+      ptScene->setOutputFileName (tName);
+      
+      SBuffers* scene_buffers = ptScene->buffers();
+      SBuffers old_buffers = *scene_buffers;
+      *scene_buffers = sBuffers;
+      
+      ptScene->saveImage();
+      
+      *scene_buffers = old_buffers;
+      
+      ptFileSelection->hide();
+      delete ptFileSelection;
+      ptFileSelection = NULL;
+    }
+  }
+  else
+  {
     ptScene->setOutputFileName (tName);
+    SBuffers* scene_buffers = ptScene->buffers();
+    SBuffers old_buffers = *scene_buffers;
+    *scene_buffers = sBuffers;
+    
     ptScene->saveImage();
 
-    ptFileSelection->hide();
-    delete ptFileSelection;
-    ptFileSelection = NULL;
+    *scene_buffers = old_buffers;
   }
   
 }  /* saveImage() */
@@ -110,28 +162,34 @@ void TImageWindow::drawRow (size_t zROW)
   TColor         tPixel;
   GdkRectangle   tRectangle;
 
-  ptRow = new guchar [3 * ptImage->width()];
+  ptRow = new guchar [3 * sBuffers.ptImage->width() * numPixelCopies];
 
-  for (size_t J = 0; ( J < ptImage->width() ) ;J++)
+  for (size_t I = 0; I < numPixelCopies; ++I)
   {
-    tPixel = ptImage->getPixel (J, zROW);
+    for (size_t J = 0; ( J < sBuffers.ptImage->width() ) ;J++)
+    {
+      tPixel = sBuffers.ptImage->getPixel (J, zROW);
+      
+      tPixel.clamp();
+      tPixel = tPixel.convertTo24Bits();
 
-    tPixel.clamp();
-    tPixel = tPixel.convertTo24Bits();
-
-    ptRow [J * 3 + 0] = (Byte) tPixel.red();
-    ptRow [J * 3 + 1] = (Byte) tPixel.green();
-    ptRow [J * 3 + 2] = (Byte) tPixel.blue();
+      for( size_t K = 0; K < numPixelCopies; ++K )
+      {
+	ptRow [(J * numPixelCopies + K) * 3 + 0] = (Byte) tPixel.red();
+	ptRow [(J * numPixelCopies + K) * 3 + 1] = (Byte) tPixel.green();
+	ptRow [(J * numPixelCopies + K) * 3 + 2] = (Byte) tPixel.blue();
+      }
+    }
+    ptPreview->draw_row (ptRow, 0,
+			 zROW * numPixelCopies + I,
+			 sBuffers.ptImage->width() * numPixelCopies);
   }
-
-  ptPreview->draw_row (ptRow, 0, zROW, ptImage->width());
-
   delete ptRow;
 
   tRectangle.x      = 0;
-  tRectangle.y      = zROW;
-  tRectangle.width  = ptImage->width();
-  tRectangle.height = 1;
+  tRectangle.y      = zROW * numPixelCopies;
+  tRectangle.width  = sBuffers.ptImage->width() * numPixelCopies;
+  tRectangle.height = numPixelCopies;
   
   gtk_widget_draw (GTK_WIDGET (ptPreview->gtkobj()), &tRectangle);
   
@@ -141,7 +199,7 @@ void TImageWindow::drawRow (size_t zROW)
 void TImageWindow::drawImage (void)
 {
 
-  for (size_t J = 0; ( J < ptImage->height() ) ;J++)
+  for (size_t J = 0; ( J < sBuffers.ptImage->height()) ;J++)
   {
     drawRow (J);
   }
@@ -150,8 +208,8 @@ void TImageWindow::drawImage (void)
 
 void TImageWindow::set_progress (size_t line_number)
 {
-  // Height=ptImage->height();
-  gfloat percentage = line_number / gfloat(ptImage->height() - 1);
+  // Height=sBuffers.ptImage->height();
+  gfloat percentage = line_number / gfloat(sBuffers.ptImage->height() - 1);
 
   if(percentage < 1)
   {
@@ -174,7 +232,7 @@ void TImageWindow::set_progress (size_t line_number)
   }  
 }
 
-void FinishedRenderLine (size_t zROW, void* pvDATA)
+bool FinishedRenderLine (size_t zROW, void* pvDATA)
 {
 
   TImageWindow*   ptWnd = (TImageWindow*) pvDATA;
@@ -188,19 +246,57 @@ void FinishedRenderLine (size_t zROW, void* pvDATA)
 
   // Update progress bar.
   ptWnd->set_progress(zROW);
-  
+
+  return ptWnd->is_visible();
 }  /* FinishedRenderLine() */
+
+void FinishedRendering (void* pvDATA)
+{
+  TImageWindow*   ptWnd = (TImageWindow*) pvDATA;
+
+  while ( Gtk::Main::events_pending() )
+  {
+    Gtk::Main::iteration();
+  }
+  for( size_t row = 0; row < ptWnd->image_height(); ++row)
+  {
+    ptWnd->drawRow (row);  
+  }
+  while ( Gtk::Main::events_pending() )
+  {
+    Gtk::Main::iteration();
+  }  
+}
+
+bool FilterUserUpdate (double percentage, void* pvDATA)
+{
+
+  TImageWindow*   ptWnd = (TImageWindow*) pvDATA;
+
+  while ( Gtk::Main::events_pending() )
+  {
+    Gtk::Main::iteration();
+  }
+
+  //  ptWnd->drawRow (zROW);
+
+  // Update progress bar.
+  ptWnd->set_progress(int(percentage * ptWnd->image_height()));
+
+  return true;
+  
+}  /* FilterUserUpdate() */
+
 
 
 void TImageWindow::filterImage(TImageFilter* ptFilter)
 {
-  SBuffers* rendered_buffers = ptScene->buffers();
   Word existing_buffers = 0;
-  if(rendered_buffers->ptZBuffer != NULL)
+  if(sBuffers.ptZBuffer != NULL)
   {
     existing_buffers |= FX_ZBUFFER;
   }
-  if(rendered_buffers->ptNBuffer != NULL)
+  if(sBuffers.ptNBuffer != NULL)
   {
     existing_buffers |= FX_NBUFFER;    
   }
@@ -238,11 +334,112 @@ void TImageWindow::filterImage(TImageFilter* ptFilter)
     return;
   }
 
+  ptFilter->setUserFunction (&FilterUserUpdate, (void*)this);
   ptFilter->setScene(ptScene);
-  ptFilter->filter(*rendered_buffers);
+  ptFilter->filter(sBuffers);
 #if DEBUG_IT
   cout << "Done with filter..." << endl;
 #endif
   // Refresh the screen here...
   drawImage();
-}
+} /* filterImage() */
+
+void TImageWindow::render(bool preview)
+{
+  SBuffers orig_buffers;
+  if( !preview )
+  {
+    numPixelCopies = 1;
+  }
+  else
+  {
+    orig_buffers = sBuffers;
+
+    // Find something that will allow an even number of pixel divisions (no
+    // remainder).
+    numPixelCopies = 4;
+    while( (sBuffers.ptImage->width()  % numPixelCopies != 0) ||
+	   (sBuffers.ptImage->height() % numPixelCopies != 0) )
+    {
+      --numPixelCopies;
+    }
+
+    ptScene->setWidth  (orig_buffers.ptImage->width()  / numPixelCopies);
+    ptScene->setHeight (orig_buffers.ptImage->height() / numPixelCopies);
+    ptScene->camera()->setImageResolution((orig_buffers.ptImage->width()  /
+					   numPixelCopies),
+					  (orig_buffers.ptImage->height()  /
+					   numPixelCopies));
+    ptScene->camera()->initialize();
+				     
+    
+    sBuffers.ptImage = new TImage(orig_buffers.ptImage->width()  / numPixelCopies,
+				  orig_buffers.ptImage->height() / numPixelCopies);
+    if(orig_buffers.ptZBuffer)
+    {
+      sBuffers.ptZBuffer = new TZBuffer(orig_buffers.ptImage->width(),
+					orig_buffers.ptImage->height());
+    }
+    if(orig_buffers.ptNBuffer)
+    {
+      sBuffers.ptNBuffer = new TNBuffer(orig_buffers.ptImage->width(),
+					orig_buffers.ptImage->height());
+    }    
+  }
+  
+  gRenderingDone = false;
+  TRenderer* rend = ptScene->renderer()->clone_new();
+  
+  rend->setUserFunction(&FinishedRenderLine,
+			&FinishedRendering,
+			(void*)this);
+  rend->render (sBuffers);
+
+  gRenderingDone = true;
+
+  if( preview )
+  {
+    SBuffers temp = sBuffers;
+    sBuffers = orig_buffers;
+
+    ptScene->setWidth  (sBuffers.ptImage->width());
+    ptScene->setHeight (sBuffers.ptImage->height());
+    ptScene->camera()->setImageResolution(sBuffers.ptImage->width(),
+					  sBuffers.ptImage->height());
+    ptScene->camera()->initialize();
+    
+    for( size_t y = 0; y < sBuffers.ptImage->height(); ++y )
+    {
+      size_t y1 = y / numPixelCopies;	
+      for( size_t x = 0; x < sBuffers.ptImage->width(); ++x )
+      {
+	// BARF
+	size_t x1 = x / numPixelCopies;
+	sBuffers.ptImage->setPixel(x, y, temp.ptImage->getPixel(x1,y1));
+	
+	if( sBuffers.ptZBuffer )
+	{
+	  sBuffers.ptZBuffer->setPixel(x, y,
+				       temp.ptZBuffer->getPixel(x1,y1));
+				       
+	}
+	if( sBuffers.ptNBuffer )
+	{
+	  sBuffers.ptNBuffer->setPixel(x, y,
+				       temp.ptNBuffer->getPixel(x1,y1));
+				       
+	}	
+      } // x
+    } // y
+
+    delete temp.ptImage;
+    delete temp.ptZBuffer;
+    delete temp.ptNBuffer;
+
+    // Redraw what I have just copied into the buffer...
+    numPixelCopies = 1;
+    drawImage();    
+  } // image copied (preview)
+  
+  delete rend;
+} /* render() */

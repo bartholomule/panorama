@@ -21,6 +21,8 @@
 #include <iostream>
 #include <time.h>
 #include "per_brick.h"
+#include "llapi/attribute.h"
+#include "llapi/extended_attribute.h"
 
 DEFINE_PLUGIN ("PerturbationBrick", FX_PERTURBATION_CLASS, TPerturbationBrick);
 
@@ -30,10 +32,18 @@ int TPerturbationBrick::setAttribute (const string& rktNAME, NAttribute nVALUE, 
 
   if ( rktNAME == "bump" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_REAL )
     {
       tBumpFactor = nVALUE.dValue;
     }
+#else
+    magic_pointer<TAttribReal> r = get_real(nVALUE);
+    if( !!r )
+    {
+      tBumpFactor = r->tValue;
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -41,15 +51,28 @@ int TPerturbationBrick::setAttribute (const string& rktNAME, NAttribute nVALUE, 
   }
   else if ( rktNAME == "brick_pattern" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_PATTERN )
     {
-      setBrickPattern ((TPatternBrick*) nVALUE.pvValue);
+      setBrickPattern (((TPatternBrick*) nVALUE.pvValue)->clone_new());
 
       if ( ptBrickPattern->className() != "PatternBrick" )
       {
 	return FX_ATTRIB_WRONG_TYPE;
       }
     }
+#else
+    magic_pointer<TAttribPattern> pat = get_pattern(nVALUE);
+    if( !!pat )
+    {
+      if( !pat->tValue || (!!pat->tValue &&
+			   pat->tValue->className() != "PatternBrick" ) )
+      {
+	return FX_ATTRIB_WRONG_TYPE;	
+      }
+      setBrickPattern(rcp_static_cast<TPatternBrick>(pat->tValue));
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -68,14 +91,25 @@ int TPerturbationBrick::setAttribute (const string& rktNAME, NAttribute nVALUE, 
 int TPerturbationBrick::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 {
 
+#if !defined(NEW_ATTRIBUTES)
   if ( rktNAME == "bump" )
   {
     rnVALUE.dValue = tBumpFactor;
   }
   else if ( rktNAME == "brick_pattern" )
   {
-    rnVALUE.pvValue = ptBrickPattern;
+    rnVALUE.pvValue = ptBrickPattern.get_pointer();
   }
+#else
+  if ( rktNAME == "bump" )
+  {
+    rnVALUE = new TAttribReal (tBumpFactor);
+  }
+  else if ( rktNAME == "brick_pattern" )
+  {
+    rnVALUE = new TAttribPattern (rcp_static_cast<TPattern>(ptBrickPattern));
+  }  
+#endif
   else
   {
     return TPerturbation::getAttribute (rktNAME, rnVALUE);

@@ -67,6 +67,7 @@ class TPatternParquet : public TPattern
     }
 
     string className (void) const { return "PatternParquet"; }
+    TPatternParquet* clone_new() const { return new TPatternParquet(*this); }
 
 };  /* class TPatternParquet */
 

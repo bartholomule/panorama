@@ -23,6 +23,7 @@
 #include "llapi/object.h"
 #include "llapi/scene.h"
 #include "llapi/material.h"
+#include "llapi/object_required.h"
 
 TScene::TScene (void) :
   ptWorld (NULL),
@@ -38,6 +39,21 @@ TScene::TScene (void) :
 }
 
 
+void TScene::addObject(magic_pointer<TObject> ptOBJECT)
+{
+  if( !!ptWorld )
+  {
+    if( ptWorld->classType() == FX_AGGREGATE_CLASS )
+    {
+      magic_pointer<TAggregate> world = rcp_static_cast<TAggregate>(ptWorld);
+
+      if( !world->containsObject(ptOBJECT) )
+      {
+	world->add(ptOBJECT);
+      }
+    }
+  }
+}
 
 void TScene::addLight(TLight* ptLIGHT)
 {
@@ -84,33 +100,120 @@ void TScene::addAreaLight(TObject* ptALIGHT)
   tAreaLightList.push_back(ptALIGHT);
 }
 
-bool TScene::recursiveLocateLights(TObject* obj, TObjectList& light_manip_list)
+bool TScene::recursiveLocateLights(TObject* obj, TObjectVector& light_manip_list, bool addlights)
 {
+  // FIXME!  This does not work correctly.  Pure lights (halo, etc), do not get
+  // translated correctly (esp. when in an aggregate).
   if( obj != NULL )
   {
     NAttribute trash;
     
     if( obj->getAttribute("lightonly",trash) == FX_ATTRIB_OK )
     {
-      if( trash.gValue )
+#if !defined(NEW_ATTRIBUTES)
+      bool val = trash.gValue;
+#else
+      magic_pointer<TAttribBool> b = get_bool(trash);
+      bool val = false;
+      if( !!b )
       {
-	addLight ((TLight*)obj);
+	val = b->tValue;
+      }
+#endif      
+      if( val && addlights )
+      {
+
+	TLight* instance = (TLight*)TClassManager::_newObject(obj->className(), obj);
+
+	if( instance )
+	{
+	  TMatrix manip_matrix, inv_manip_matrix;
+	  
+	  manip_matrix.setIdentity();
+
+	  // [FIXME!] Matrix generation/inversion.
+	  // I am generating the full matrix here, and inverting it below,
+	  // because I am not certain yet if all objects are filling out their
+	  // inverse matrix.  A lot of time could be saved by using the
+	  // inverted matrices to generate location.
+	  for(TObjectVector::iterator i = light_manip_list.begin();
+	      i != light_manip_list.end();
+	      ++i)
+	  {
+	    manip_matrix = manip_matrix * *((*i)->transformMatrix());
+	  }
+	  
+	  manip_matrix = manip_matrix * *(obj->transformMatrix());
+					 
+	  inv_manip_matrix = invert(manip_matrix);
+	  
+
+	  static TMatrix ones;
+	  static const TVector zero(0,0,0);
+	  static bool initialized = false;
+
+	  if(!initialized)
+	  {
+	    initialized = true;
+	    ones.setIdentity();
+	  }
+	  TVector location = inv_manip_matrix * zero;
+
+
+	  // [FIXME!] What about other factors of the light that may be
+	  // affected by the scale, skew, or other nasty matrix artifacts?
+	  // Should the matrices be stripped of their translations, since the
+	  // location is changing, and then have the remaining matrix reapplied
+	  // to the new light?
+	  
+	  instance->setTransformMatrix(ones);
+	  instance->setInverseTransformMatrix(ones);
+	  
+	  instance->translate(location);
+	  
+	  addLight (instance);
+	}
+	else
+	{
+	  string err = "Cannot instantiate pure light " + obj->className();
+	  cerr << err << endl;
+	  exit(1);	  
+	}
 	return true;
       } // if it was a light (lightonly attribute was true)
     } // if it had the lightonly attribute
-    TMaterial* mat = obj->material ();
-    if( mat )
-    {
-      // If the object has some emission, it's an area light...
-      if( mat->emission () )
-      {
-	addAreaLight (obj);
-      }
-    }
+    
+    bool container = false;
+    
     if( obj->getAttribute("containsobjects",trash) == FX_ATTRIB_OK )
     {
-      if( trash.gValue )
+#if !defined(NEW_ATTRIBUTES)      
+      bool val = trash.gValue;
+#else
+      magic_pointer<TAttribBool> b = get_bool(trash);
+      bool val = false;
+      if( !!b )
       {
+	val = b->tValue;
+      }
+#endif
+      if( val )
+      {
+	magic_pointer<TMaterial> mat = obj->material ();
+	if( !!mat )
+	{
+	  // If the object has some emission, it's an area light...
+	  // In this case, there should be no reason to add sub-objects as
+	  // lights, as the entire thing is a light. 
+	  if( !!mat->emission () )
+	  {
+	    addAreaLight (obj);
+	    addlights = false;
+	  }	  
+	}
+	  
+	
+	container = true;
 	TAggregate* tag = (TAggregate*)obj;
 	TObjectList* tol = tag->objectList ();
 
@@ -118,15 +221,21 @@ bool TScene::recursiveLocateLights(TObject* obj, TObjectList& light_manip_list)
 
 	for( int i = 0; i < int(tol->size()); ++i)
 	{
-	  if(recursiveLocateLights ((*tol)[i], light_manip_list) )
+	  if(recursiveLocateLights ((*tol)[i], light_manip_list, addlights) )
 	  {
-	    tol->erase(tol->begin() + i);
-	    --i;
+	    cout << "FIXME: erase light from object list (for speed)" << endl;
+	    // Note here... If the light is deleted, and it happens to be in an
+	    // aggregate which was duplicated some number of times, all of the
+	    // duplicate lights will be deleted.  A more intelligent check is
+	    // required before deleting any lights. 
+	    
+	    //	    tol->erase(tol->begin() + i);
+	    //	    --i;
 	  }
 	}
 
 	light_manip_list.erase(light_manip_list.begin() +
-				   light_manip_list.size() - 1 );
+			       light_manip_list.size() - 1 );
 	// If there is nothing left in the container, remove it.  This is
 	// useful for a collection of light sources defined as an aggregate,
 	// where after all of the lights have been instantiated, the container
@@ -135,20 +244,77 @@ bool TScene::recursiveLocateLights(TObject* obj, TObjectList& light_manip_list)
 	{
 	  return true;
 	}
-      } 
+      }
+      else
+      {
+	container = false;
+      }
     } /* if obj is a container */
+
+    // If not a container, check its material, add one if needed, and add it as
+    // a light source if need be.
+    if( !container )
+    {
+      magic_pointer<TMaterial> mat = obj->material ();
+      if( !mat )
+      {
+	obj->setMaterial(ptDefaultMaterial);
+	mat = obj->material ();
+	if( !mat )
+	{
+	  cerr << "Object \"" << obj->className() << "\" has no material, and 'defaultmaterial' is not set in the scene." << endl;
+	  exit(1);
+	}
+      }
+      
+      if( !!mat )
+      {
+	// If the object has some emission, it's an area light...
+	if( !!mat->emission () )
+	{
+	  addAreaLight (obj);
+	}
+      }      
+    } /* not a container */
   } /* if( obj != NULL ) */
   return false;
 } /* recursiveLocateLights() */
+
+bool TScene::create_buffers(void)
+{
+  delete sBuffers.ptImage;
+  delete sBuffers.ptZBuffer;
+  delete sBuffers.ptNBuffer;
+
+  sBuffers.ptZBuffer = NULL;
+  sBuffers.ptImage = NULL;
+  sBuffers.ptNBuffer = NULL;
+  
+
+  sBuffers.ptImage = new TImage (zWidth, zHeight);
+
+  if ( wNeededBuffers & FX_ZBUFFER )
+  {
+    sBuffers.ptZBuffer = new TZBuffer (zWidth, zHeight);
+  }
+  if ( wNeededBuffers & FX_NBUFFER )
+  {
+    sBuffers.ptNBuffer = new TNBuffer (zWidth, zHeight);
+  }
+
+  return true;
+}
 
 bool TScene::initialize (void)
 {
   ptWorld->initialize();
 
-  TObjectList tol;
+  TObjectVector tol;
   recursiveLocateLights(ptWorld,tol);
 
-  if ( ((TAggregate*) ptWorld)->objectList()->empty() )
+  magic_pointer<TAggregate> tag = rcp_static_cast<TAggregate>(ptWorld);
+  
+  if ( tag->objectList()->empty() )
   {
     cout << "Warning: Scene has no objects" << endl;
   }
@@ -170,12 +336,12 @@ bool TScene::initialize (void)
     }
   }
   
-  assert ( ptRenderer );
+  assert ( !!ptRenderer );
   ptRenderer->initialize (*this);
 
   wNeededBuffers |= ptRenderer->neededBuffers();
 
-  assert ( ptCamera );
+  assert ( !!ptCamera );
   ptCamera->setImageResolution (zWidth, zHeight);
   ptCamera->initialize();
 
@@ -184,21 +350,12 @@ bool TScene::initialize (void)
     tAtmosphere.initialize (this);
   }
 
-  if ( ptImageIO )
+  if ( !!ptImageIO )
   {
     ptImageIO->initialize();
   }
   
-  sBuffers.ptImage = new TImage (zWidth, zHeight);
-
-  if ( wNeededBuffers & FX_ZBUFFER )
-  {
-    sBuffers.ptZBuffer = new TZBuffer (zWidth, zHeight);
-  }
-  if ( wNeededBuffers & FX_NBUFFER )
-  {
-    sBuffers.ptNBuffer = new TNBuffer (zWidth, zHeight);
-  }
+  create_buffers();
 
   return true;
 
@@ -259,15 +416,23 @@ bool TScene::postprocess (void)
 
 bool TScene::saveImage (void)
 {
-
   int   iResult;
   
   if ( !sBuffers.ptImage )
   {
+    cout << "Noting to save" << endl;
     return false;
   }
 
-  iResult = ptImageIO->save (sBuffers.ptImage);
+  if( !!ptImageIO )
+  {
+    iResult = ptImageIO->save (sBuffers.ptImage);
+  }
+  else
+  {
+    cerr << "Warning: ImageIO is NULL. No output will be done." << endl;
+    return false;
+  }
 
   return ( iResult == 0 );
 
@@ -285,9 +450,11 @@ void TScene::addImageFilter (TImageFilter* ptFILTER)
 
 int TScene::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
-
+  cout << "TScene::setAttribute(" << rktNAME << ")" << endl;
+  
   if ( rktNAME == "background" )
   {
+#if !defined(NEW_ATTRIBUTES)    
     if ( eTYPE == FX_PATTERN )
     {
       setBackgroundColor ((TPattern*) nVALUE.pvValue);
@@ -300,6 +467,13 @@ int TScene::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType 
     {
       setBackgroundColor (new TPattern (*((TColor*) nVALUE.pvValue)));
     }
+#else
+    magic_pointer<TAttribPattern> pat = get_pattern(nVALUE);
+    if( !!pat )
+    {
+      setBackgroundColor (pat->tValue);
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -307,10 +481,18 @@ int TScene::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType 
   }
   else if ( rktNAME == "camera" )
   {
+#if !defined(NEW_ATTRIBUTES)    
     if ( eTYPE == FX_CAMERA )
     {
-      setCamera ((TCamera*) nVALUE.pvValue);
+      setCamera (((TCamera*) nVALUE.pvValue)->clone_new());
     }
+#else
+    magic_pointer<TAttribCamera> cam = get_camera(nVALUE);
+    if( !!cam )
+    {
+      setCamera ( cam->tValue );
+    }
+#endif    
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -318,10 +500,19 @@ int TScene::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType 
   }
   else if ( rktNAME == "renderer" )
   {
+#if !defined(NEW_ATTRIBUTES)    
     if ( eTYPE == FX_RENDERER )
     {
-      setRenderer ((TRenderer*) nVALUE.pvValue);
+      setRenderer (((TRenderer*) nVALUE.pvValue)->clone_new());
     }
+      
+#else
+    magic_pointer<TAttribRenderer> ren = get_renderer(nVALUE);
+    if( !!ren )
+    {
+      setRenderer ( ren->tValue );
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -329,10 +520,24 @@ int TScene::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType 
   }
   else if ( rktNAME == "width" )
   {
+#if !defined(NEW_ATTRIBUTES)    
     if ( eTYPE == FX_REAL )
     {
       setWidth (size_t (nVALUE.dValue));
     }
+    else if( eTYPE == FX_INTEGER )
+    {
+      setWidth (nVALUE.iValue);
+    }
+#else
+    cout << "Getting int" << endl;
+    magic_pointer<TAttribInt> i = get_int(nVALUE);
+    if( !!i )
+    {
+      cout << "Have int (" << i->tValue << ") calling setWidth" << endl;
+      setWidth (i->tValue);
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -340,10 +545,22 @@ int TScene::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType 
   }
   else if ( rktNAME == "height" )
   {
+#if !defined(NEW_ATTRIBUTES)    
     if ( eTYPE == FX_REAL )
     {
       setHeight (size_t (nVALUE.dValue));
     }
+    else if( eTYPE == FX_INTEGER )
+    {
+      setHeight (nVALUE.iValue);
+    }
+#else
+    magic_pointer<TAttribInt> i = get_int(nVALUE);
+    if( !!i )
+    {
+      setHeight (i->tValue);
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -351,14 +568,36 @@ int TScene::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType 
   }
   else if ( rktNAME == "participating" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_BOOL )
     {
       setParticipatingMedia (nVALUE.gValue);
     }
+#else
+    magic_pointer<TAttribBool> b = get_bool(nVALUE);
+    if( !!b )
+    {
+      setParticipatingMedia (b->tValue);
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
     }
+  }
+  else if (rktNAME == "defaultmaterial" )
+  {
+#if !defined(NEW_ATTRIBUTES)
+    cerr << "ERROR! Materials can only be passed with NEW attributes" << endl;
+    return FX_ATTRIB_USER_ERROR;
+    
+#else
+    magic_pointer<TAttribMaterial> m = get_material(nVALUE);
+    if( !!m )
+    {
+      ptDefaultMaterial = m->tValue;
+    }
+#endif    
   }
   else
   {
@@ -369,21 +608,21 @@ int TScene::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType 
 
 }  /* setAttribute() */
 
-
 int TScene::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 {
 
+#if !defined(NEW_ATTRIBUTES)  
   if ( rktNAME == "background" )
   {
-    rnVALUE.pvValue = ptBackgroundColor;
+    rnVALUE.pvValue = ptBackgroundColor.get_pointer();
   }
   else if ( rktNAME == "camera" )
   {
-    rnVALUE.pvValue = ptCamera;
+    rnVALUE.pvValue = ptCamera.get_pointer();
   }
   else if ( rktNAME == "renderer" )
   {
-    rnVALUE.pvValue = ptRenderer;
+    rnVALUE.pvValue = ptRenderer.get_pointer();
   }
   else if ( rktNAME == "width" )
   {
@@ -397,6 +636,36 @@ int TScene::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
   {
     rnVALUE.gValue = gParticipatingMedia;
   }
+#else
+  if ( rktNAME == "background" )
+  {
+    rnVALUE = new TAttribPattern (ptBackgroundColor);
+  }
+  else if ( rktNAME == "camera" )
+  {
+    rnVALUE = new TAttribCamera(ptCamera);
+  }
+  else if ( rktNAME == "renderer" )
+  {
+    rnVALUE = new TAttribRenderer(ptRenderer);
+  }
+  else if ( rktNAME == "width" )
+  {
+    rnVALUE = new TAttribInt (zWidth);
+  }
+  else if ( rktNAME == "height" )
+  {
+    rnVALUE = new TAttribInt (zHeight);    
+  }
+  else if ( rktNAME == "participating" )
+  {
+    rnVALUE = new TAttribBool (gParticipatingMedia);
+  }
+  else if (rktNAME == "defaultmaterial" )
+  {
+    rnVALUE = new TAttribMaterial (ptDefaultMaterial);
+  }
+#endif
   else
   {
     return TProcedural::getAttribute (rktNAME, rnVALUE);
@@ -418,6 +687,7 @@ void TScene::getAttributeList (TAttributeList& rtLIST) const
   rtLIST ["width"]         = FX_REAL;
   rtLIST ["height"]        = FX_REAL;
   rtLIST ["participating"] = FX_BOOL;
+  rtLIST ["defaultmaterial"] = FX_MATERIAL;
 
 }  /* getAttributeList() */
 
@@ -427,31 +697,53 @@ void TScene::setOutputFileName (const string& rktNAME)
 
   NAttribute   nAttrib;
 
-  if ( ptImageIO )
+  if ( !!ptImageIO )
   {
+#if !defined(NEW_ATTRIBUTES)    
     nAttrib.pvValue = (char*) rktNAME.c_str();
+#else
+    nAttrib = new TAttribString (rktNAME);
+#endif
     ptImageIO->setAttribute ("name", nAttrib, FX_STRING);
   }
   
 }  /* setOutputFileName() */
 
 
-void TScene::printDebug (void) const
+void TScene::printDebug (const string& indent) const
 {
 
-  cerr << TDebug::_indent() << "[_Scene_]" << endl;
+  cerr << indent << "[_Scene_]" << endl;
 
-  TDebug::_push();
+  string new_indent = TDebug::Indent(indent);
   
-  cerr << TDebug::_indent() << "Height               : " << zHeight << endl;
-  cerr << TDebug::_indent() << "Width                : " << zWidth << endl;
-  cerr << TDebug::_indent() << "Last background color: "; ptBackgroundColor->lastColor().printDebug(); cerr << endl;
+  cerr << new_indent << "Height               : " << zHeight << endl;
+  cerr << new_indent << "Width                : " << zWidth << endl;
+  cerr << new_indent << "Last background color: "; ptBackgroundColor->lastColor().printDebug(new_indent); cerr << endl;
 
-  ptWorld->printDebug();
+  ptWorld->printDebug(new_indent);
+  cerr << indent << "." << endl;
 
-  TDebug::_pop();
-  
 }  /* printDebug() */
 
 
+TUserFunctionMap TScene::getUserFunctions()
+{
+  TUserFunctionMap ufm = TProcedural::getUserFunctions();
+
+  ufm["getCamera"]       = create_user_function(this,&TScene::camera);
+  ufm["setCamera"]       = create_user_function(this,&TScene::setCamera);  
+  ufm["getWorld"]        = create_user_function(this,&TScene::world);
+  ufm["getRenderer"]     = create_user_function(this,&TScene::renderer);
+  ufm["setRenderer"]     = create_user_function(this,&TScene::setRenderer);
+  ufm["getImageIO"]      = create_user_function(this,&TScene::imageIO);
+  ufm["setImageIO"]      = create_user_function(this,&TScene::setImageOutput);
+  ufm["addObject"]       = create_user_function(this,&TScene::addObject);
+  ufm["setWidth"]        = create_user_function(this,&TScene::setWidth);
+  ufm["setHeight"]       = create_user_function(this,&TScene::setHeight);    
+
+  ufm["getClassName"]    = create_user_function(this,&TScene::className);  
+  
+  return ufm;
+}
 

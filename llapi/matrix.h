@@ -50,7 +50,7 @@ class TBaseMatrix
 
     TItem getElement (Byte bROW, Byte bCOL) const;
     
-    void printDebug (void) const;
+    void printDebug (const string& indent) const;
             
 };  /* class TBaseMatrix */
 
@@ -387,29 +387,21 @@ inline TItem TBaseMatrix<TItem>::getElement (Byte bROW, Byte bCOL) const
 #include <cstdio>
 
 template <class TItem>
-void TBaseMatrix<TItem>::printDebug (void) const
+void TBaseMatrix<TItem>::printDebug (const string& indent) const
 {
-  /*
+  char buffer[1024];
+  int index = 0;
+
+  cerr << endl;
   for (Byte I = 0; ( I < 4 ) ;I++)
   {
+    index = sprintf(buffer, "%s", indent.c_str());
     for (Byte J = 0; ( J < 4 ) ;J++)
     {
-      cerr << atElement[I][J]; cerr << " | ";
+      index += sprintf(buffer + index,"%-10.03f ", (double)atElement[I][J]);
     }
-    cerr << endl;
+    cerr << buffer << endl;
   }
-  */
-  fprintf(stderr,"\n");    
-  for (Byte I = 0; ( I < 4 ) ;I++)
-  {
-    for (Byte J = 0; ( J < 4 ) ;J++)
-    {
-      fprintf(stderr,"%-10.03f ", (double)atElement[I][J]);
-    }
-    fprintf(stderr,"\n");
-  }
-  fprintf(stderr,"\n");  
-  fflush(stderr);
 }  /* printDebug() */
 
 

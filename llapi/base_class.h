@@ -22,6 +22,9 @@
 #include <string>
 using std::string;
 
+#include <iosfwd>
+using std::ostream;
+
 enum EClass
 {
 
@@ -44,7 +47,8 @@ enum EClass
   FX_OBJECT_FILTER_CLASS,
   FX_BOUNDING_BOX_CLASS,
   FX_ATM_OBJECT_CLASS,
-  FX_IMAGE_IO_CLASS
+  FX_IMAGE_IO_CLASS,
+  FX_SCENE_IO_CLASS  
 
 };  /* enum EClass */
 
@@ -56,9 +60,12 @@ class TBaseClass
     static string classTypeString (EClass eCLASS);
       
     virtual ~TBaseClass (void) {}
-    
-    virtual void printDebug (void) const {};
 
+    virtual void printDebug (const string& indent) const;
+    void printDebug () const { this->printDebug(""); };  
+
+    virtual void streamDebug (ostream& o, const string& indent) const;
+  
     virtual EClass classType (void) const = 0;
     virtual string className (void) const = 0;
 

@@ -20,6 +20,7 @@
 #include <cmath>
 #include "llapi/math_tools.h"
 #include "hlapi/sphere.h"
+#include "llapi/attribute.h"
 
 bool TSphere::initialize (void)
 {
@@ -40,10 +41,18 @@ int TSphere::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType
 
   if ( rktNAME == "radius" )
   {
+#if !defined(NEW_ATTRIBUTES)    
     if ( eTYPE == FX_REAL )
     {
       setRadius (nVALUE.dValue);
     }
+#else
+    magic_pointer<TAttribReal> r = get_real(nVALUE);
+    if( !!r )
+    {
+      setRadius (r->tValue);
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -64,7 +73,11 @@ int TSphere::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 
   if ( rktNAME == "radius" )
   {
+#if !defined(NEW_ATTRIBUTES)    
     rnVALUE.dValue = tRadius;
+#else
+    rnVALUE = new TAttribReal (tRadius);
+#endif
   }
   else
   {
@@ -287,15 +300,11 @@ TVector TSphere::RandomPointOnSurface() const
   return (vec * tRadius);
 }
 
-void TSphere::printDebug (void) const
+void TSphere::printDebug (const string& indent) const
 {
 
-  TObject::printDebug();
+  TObject::printDebug(indent);
 
-  TDebug::_push();
-  
-  cerr << TDebug::_indent() << "Radius : " << tRadius << endl;
-
-  TDebug::_pop();
+  cerr << TDebug::Indent(indent) << "Radius : " << tRadius << endl;
 
 }  /* printDebug() */

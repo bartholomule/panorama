@@ -20,6 +20,7 @@
 #include <cmath>
 #include "llapi/scene.h"
 #include "if_cartoon.h"
+#include "llapi/attribute.h"
 
 DEFINE_PLUGIN ("IF_Cartoon", FX_IMAGE_FILTER_CLASS, TIF_Cartoon);
 
@@ -51,6 +52,11 @@ void TIF_Cartoon::filter (SBuffers& rsBUFFERS)
   TInterval   tIntX (0, ptImage->width() - 1);
   TInterval   tIntY (0, ptImage->height() - 1);
 
+  if( pfUserUpdate )
+  {
+    pfUserUpdate(0.0, pvUserData);
+  }
+  
   for (size_t J = 0; ( J < ptImage->height() ) ;J++)
   {
     for (size_t I = 0; ( I < ptImage->width() ) ;I++)
@@ -123,7 +129,19 @@ void TIF_Cartoon::filter (SBuffers& rsBUFFERS)
       tPixel = tPixel.convertFrom24Bits();
       ptImage->setPixel (I, J, tPixel);
     }
+    if( pfUserUpdate )
+    {
+      if(!pfUserUpdate(J / double(ptImage->height()), pvUserData))
+      {
+	break;
+      }
+    }    
   }
+  
+  if( pfUserUpdate )
+  {
+    pfUserUpdate(1.0, pvUserData);
+  }  
   
 }  /* filter() */
 
@@ -133,10 +151,18 @@ int TIF_Cartoon::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttrib
 
   if ( rktNAME == "outline" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_COLOR )
     {
       tOutlineColor = *((TColor*) nVALUE.pvValue);
     }
+#else
+    magic_pointer<TAttribColor> col = get_color(nVALUE);
+    if( !!col )
+    {
+      tOutlineColor = col->tValue;
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -144,10 +170,18 @@ int TIF_Cartoon::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttrib
   }
   else if ( rktNAME == "levels" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_REAL )
     {
       bColorLevels = Byte (nVALUE.dValue);
     }
+#else
+    magic_pointer<TAttribInt> i = get_int(nVALUE);
+    if( !!i )
+    {
+      bColorLevels = i->tValue;
+    }
+#endif    
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -155,10 +189,18 @@ int TIF_Cartoon::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttrib
   }
   else if ( rktNAME == "distance_th" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_REAL )
     {
       fZThreshold = nVALUE.dValue;
     }
+#else
+    magic_pointer<TAttribReal> r = get_real(nVALUE);
+    if( !!r )
+    {
+      fZThreshold = r->tValue;
+    }
+#endif    
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -166,10 +208,18 @@ int TIF_Cartoon::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttrib
   }
   else if ( rktNAME == "normal_th" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_REAL )
     {
       fNThreshold = nVALUE.dValue;
     }
+#else
+    magic_pointer<TAttribReal> r = get_real(nVALUE);
+    if( !!r )
+    {
+      fNThreshold = r->tValue;
+    }
+#endif    
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -188,6 +238,7 @@ int TIF_Cartoon::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttrib
 int TIF_Cartoon::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 {
 
+#if !defined(NEW_ATTRIBUTES)  
   if ( rktNAME == "outline" )
   {
     rnVALUE.pvValue = &tOutlineColor;
@@ -204,6 +255,24 @@ int TIF_Cartoon::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
   {
     rnVALUE.dValue = fNThreshold;
   }
+#else
+  if ( rktNAME == "outline" )
+  {
+    rnVALUE = new TAttribColor (tOutlineColor);
+  }
+  else if ( rktNAME == "levels" )
+  {
+    rnVALUE = new TAttribReal (bColorLevels);
+  }
+  else if ( rktNAME == "distance_th" )
+  {
+    rnVALUE = new TAttribReal (fZThreshold);
+  }
+  else if ( rktNAME == "normal_th" )
+  {
+    rnVALUE = new TAttribReal (fNThreshold);
+  }  
+#endif
   else
   {
     return TImageFilter::getAttribute (rktNAME, rnVALUE);
@@ -220,7 +289,11 @@ void TIF_Cartoon::getAttributeList (TAttributeList& rtLIST) const
   TImageFilter::getAttributeList (rtLIST);
 
   rtLIST ["outline"]     = FX_COLOR;
+#if !defined(NEW_ATTRIBUTES)  
   rtLIST ["levels"]      = FX_REAL;
+#else
+  rtLIST ["levels"]      = FX_INTEGER;  
+#endif
   rtLIST ["distance_th"] = FX_REAL;
   rtLIST ["normal_th"]   = FX_REAL;
 

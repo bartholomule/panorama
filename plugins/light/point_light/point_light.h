@@ -90,7 +90,9 @@ class TPointLight : public TLight
 
     string className (void) const { return "PointLight"; }
  
-    void printDebug (void) const;
+    void printDebug (const string& indent) const;
+
+    virtual TPointLight* clone_new() const { return new TPointLight(*this); }
 
 };  /* class TPointLight */
 

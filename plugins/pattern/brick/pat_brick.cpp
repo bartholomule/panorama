@@ -21,6 +21,8 @@
 #include <iostream>
 #include <time.h>
 #include "pat_brick.h"
+#include "llapi/attribute.h"
+#include "llapi/extended_attribute.h"
 
 DEFINE_PLUGIN ("PatternBrick", FX_PATTERN_CLASS, TPatternBrick);
 
@@ -78,10 +80,18 @@ int TPatternBrick::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttr
 
   if ( rktNAME == "color" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_COLOR )
     {
       setColor (*((TColor*) nVALUE.pvValue));
     }
+#else
+    magic_pointer<TAttribColor> c = get_color(nVALUE);
+    if( !!c )
+    {
+      setColor (c->tValue);
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -89,10 +99,18 @@ int TPatternBrick::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttr
   }
   else if ( rktNAME == "base_color" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_COLOR )
     {
       setBaseColor (*((TColor*) nVALUE.pvValue));
     }
+#else
+    magic_pointer<TAttribColor> c = get_color(nVALUE);
+    if( !!c )
+    {
+      setBaseColor (c->tValue);
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -100,12 +118,20 @@ int TPatternBrick::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttr
   }
   else if ( rktNAME == "zoom" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_VECTOR )
     {
       tZoomOriginal = *((TVector*) nVALUE.pvValue);
 
       tZoom.set (1.0 / tZoomOriginal.x(), 1.0 / tZoomOriginal.y(), 1.0 / tZoomOriginal.z());
     }
+#else
+    magic_pointer<TAttribVector> vec = get_vector(nVALUE);
+    if( !!vec )
+    {
+      tZoom.set (1.0 / vec->tValue.x(), 1.0 / vec->tValue.y(), 1.0 / vec->tValue.z());
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -113,10 +139,18 @@ int TPatternBrick::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttr
   }
   else if ( rktNAME == "width" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_REAL )
     {
       tBrickWidth = nVALUE.dValue;
     }
+#else
+    magic_pointer<TAttribReal> r = get_real(nVALUE);
+    if( !!r )
+    {
+      tBrickWidth = r->tValue;
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -124,10 +158,18 @@ int TPatternBrick::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttr
   }
   else if ( rktNAME == "height" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_REAL )
     {
       tBrickHeight = nVALUE.dValue;
     }
+#else
+    magic_pointer<TAttribReal> r = get_real(nVALUE);
+    if( !!r )
+    {
+      tBrickHeight = r->tValue;
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -135,10 +177,18 @@ int TPatternBrick::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttr
   }
   else if ( rktNAME == "mortar" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_REAL )
     {
       tMortarThickness = nVALUE.dValue;
     }
+#else
+    magic_pointer<TAttribReal> r = get_real(nVALUE);
+    if( !!r )
+    {
+      tMortarThickness = r->tValue;
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -157,6 +207,7 @@ int TPatternBrick::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttr
 int TPatternBrick::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 {
 
+#if !defined(NEW_ATTRIBUTES)
   if ( rktNAME == "color" )
   {
     rnVALUE.pvValue = &tColor;
@@ -167,6 +218,7 @@ int TPatternBrick::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
   }
   else if ( rktNAME == "zoom" )
   {
+    // [_ERROR_] This should be inverted.  
     rnVALUE.pvValue = &tZoomOriginal;
   }
   else if ( rktNAME == "width" )
@@ -181,6 +233,33 @@ int TPatternBrick::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
   {
     rnVALUE.dValue = tMortarThickness;
   }
+#else
+  if ( rktNAME == "color" )
+  {
+    rnVALUE = new TAttribColor (tColor);
+  }
+  else if ( rktNAME == "base_color" )
+  {
+    rnVALUE = new TAttribColor (tBaseColor);
+  }
+  else if ( rktNAME == "zoom" )
+  {
+    TVector vec(1 / tZoomOriginal.x(), 1 / tZoomOriginal.y(), 1 / tZoomOriginal.z());
+    rnVALUE = new TAttribColor (vec);
+  }
+  else if ( rktNAME == "width" )
+  {
+    rnVALUE = new TAttribReal (tBrickWidth);
+  }
+  else if ( rktNAME == "height" )
+  {
+    rnVALUE = new TAttribReal (tBrickHeight);
+  }
+  else if ( rktNAME == "mortar" )
+  {
+    rnVALUE = new TAttribReal (tMortarThickness);
+  }
+#endif
   else
   {
     return TPattern::getAttribute (rktNAME, rnVALUE);

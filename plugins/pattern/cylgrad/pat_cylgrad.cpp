@@ -18,6 +18,8 @@
 
 #include "llapi/warning_eliminator.h"
 #include "pat_cylgrad.h"
+#include "llapi/attribute.h"
+#include "llapi/extended_attribute.h"
 
 DEFINE_PLUGIN ("PatternCylGrad", FX_PATTERN_CLASS, TPatternCylGrad);
 
@@ -90,10 +92,18 @@ int TPatternCylGrad::setAttribute (const string& rktNAME, NAttribute nVALUE, EAt
 
   if ( rktNAME == "color" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_COLOR )
     {
       setColor (*((TColor*) nVALUE.pvValue));
     }
+#else
+    magic_pointer<TAttribColor> col = get_color(nVALUE);
+    if( !!col )
+    {
+      setColor (col->tValue);
+    }
+#endif
     else 
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -101,6 +111,7 @@ int TPatternCylGrad::setAttribute (const string& rktNAME, NAttribute nVALUE, EAt
   }
   else if ( rktNAME == "base_color" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_COLOR )
     {
       setBaseColor (*((TColor*) nVALUE.pvValue));
@@ -109,6 +120,18 @@ int TPatternCylGrad::setAttribute (const string& rktNAME, NAttribute nVALUE, EAt
     {
       bGradientLoaded = tGradient.loadGradient((char *) nVALUE.pvValue);
     }
+#else
+    magic_pointer<TAttribColor> col = get_color(nVALUE);
+    magic_pointer<TAttribString> str = get_string(nVALUE);    
+    if( !!col )
+    {
+      setBaseColor (col->tValue);
+    }
+    else if( !!str )
+    {
+      bGradientLoaded = tGradient.loadGradient (str->tValue);
+    }
+#endif
     else 
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -116,10 +139,18 @@ int TPatternCylGrad::setAttribute (const string& rktNAME, NAttribute nVALUE, EAt
   }
   else if ( rktNAME == "cycles" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_REAL )
     {
       tCycles = nVALUE.dValue;
     }
+#else
+    magic_pointer<TAttribReal> r = get_real(nVALUE);
+    if( !!r )
+    {
+      tCycles = r->tValue;
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -127,10 +158,18 @@ int TPatternCylGrad::setAttribute (const string& rktNAME, NAttribute nVALUE, EAt
   }
   else if ( rktNAME == "swirl" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_REAL )
     {
       tSwirl = nVALUE.dValue;
     }
+#else
+    magic_pointer<TAttribReal> r = get_real(nVALUE);
+    if( !!r )
+    {
+      tSwirl = r->tValue;
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -149,6 +188,7 @@ int TPatternCylGrad::setAttribute (const string& rktNAME, NAttribute nVALUE, EAt
 int TPatternCylGrad::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 {
 
+#if !defined(NEW_ATTRIBUTES)
   if ( rktNAME == "color" )
   {
     rnVALUE.pvValue = &tColor;
@@ -165,6 +205,24 @@ int TPatternCylGrad::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
   {
     rnVALUE.dValue = tSwirl;
   }
+#else
+  if ( rktNAME == "color" )
+  {
+    rnVALUE = new TAttribColor (tColor);
+  }
+  else if ( rktNAME == "base_color" )
+  {
+    rnVALUE = new TAttribColor (tBaseColor);
+  }
+  else if ( rktNAME == "cycles" )
+  {
+    rnVALUE = new TAttribReal (tCycles);
+  }
+  else if ( rktNAME == "swirl" )
+  {
+    rnVALUE = new TAttribReal (tSwirl);
+  }  
+#endif
   else
   {
     return TPattern::getAttribute (rktNAME, rnVALUE);

@@ -24,6 +24,8 @@
 #include <iostream>
 #include <time.h>
 #include "per_crackle.h"
+#include "llapi/attribute.h"
+#include "llapi/extended_attribute.h"
 
 DEFINE_PLUGIN ("PerturbationCrackle", FX_PERTURBATION_CLASS, TPerturbationCrackle);
 
@@ -33,10 +35,18 @@ int TPerturbationCrackle::setAttribute (const string& rktNAME, NAttribute nVALUE
 
   if ( rktNAME == "bump" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_REAL )
     {
       tBumpFactor = nVALUE.dValue;
     }
+#else
+    magic_pointer<TAttribReal> r = get_real(nVALUE);
+    if( !!r )
+    {
+      tBumpFactor = r->tValue;
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -44,15 +54,27 @@ int TPerturbationCrackle::setAttribute (const string& rktNAME, NAttribute nVALUE
   }
   else if ( rktNAME == "crackle_pattern" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_PATTERN )
     {
-      setCracklePattern ((TPatternCrackle*) nVALUE.pvValue);
+      setCracklePattern (((TPatternCrackle*) nVALUE.pvValue)->clone_new());
 
       if ( ptCracklePattern->className() != "PatternCrackle" )
       {
 	return FX_ATTRIB_WRONG_TYPE;
       }
     }
+#else
+    magic_pointer<TAttribPattern> pat = get_pattern(nVALUE);
+    if( !!pat )
+    {
+      if( pat->tValue->className() != "PatternCrackle" )
+      {
+	return FX_ATTRIB_WRONG_TYPE;	
+      }
+      setCracklePattern (rcp_static_cast<TPatternCrackle>(pat->tValue));
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -71,14 +93,25 @@ int TPerturbationCrackle::setAttribute (const string& rktNAME, NAttribute nVALUE
 int TPerturbationCrackle::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 {
 
+#if !defined(NEW_ATTRIBUTES)
   if ( rktNAME == "bump" )
   {
     rnVALUE.dValue = tBumpFactor;
   }
   else if ( rktNAME == "crackle_pattern" )
   {
-    rnVALUE.pvValue = ptCracklePattern;
+    rnVALUE.pvValue = ptCracklePattern.get_pointer();
   }
+#else
+  if ( rktNAME == "bump" )
+  {
+    rnVALUE = new TAttribReal (tBumpFactor);
+  }
+  else if ( rktNAME == "crackle_pattern" )
+  {
+    rnVALUE = new TAttribPattern (rcp_static_cast<TPattern>(ptCracklePattern));
+  }
+#endif
   else
   {
     return TPerturbation::getAttribute (rktNAME, rnVALUE);

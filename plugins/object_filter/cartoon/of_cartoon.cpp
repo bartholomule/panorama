@@ -18,6 +18,7 @@
 
 #include "llapi/warning_eliminator.h"
 #include "of_cartoon.h"
+#include "llapi/attribute.h"
 
 DEFINE_PLUGIN ("OF_Cartoon", FX_OBJECT_FILTER_CLASS, TOF_Cartoon);
 
@@ -54,10 +55,18 @@ int TOF_Cartoon::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttrib
 
   if ( rktNAME == "outline" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_COLOR )
     {
       tOutlineColor = *((TColor*) nVALUE.pvValue);
     }
+#else
+    magic_pointer<TAttribColor> col = get_color(nVALUE);
+    if( !!col )
+    {
+      tOutlineColor = col->tValue;
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -65,10 +74,18 @@ int TOF_Cartoon::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttrib
   }
   else if ( rktNAME == "levels" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_REAL )
     {
       bColorLevels = Byte (nVALUE.dValue);
     }
+#else
+    magic_pointer<TAttribInt> i = get_int(nVALUE);
+    if( !!i )
+    {
+      bColorLevels = (Byte)i->tValue;
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -87,6 +104,7 @@ int TOF_Cartoon::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttrib
 int TOF_Cartoon::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 {
 
+#if !defined(NEW_ATTRIBUTES)
   if ( rktNAME == "outline" )
   {
     rnVALUE.pvValue = &tOutlineColor;
@@ -95,6 +113,16 @@ int TOF_Cartoon::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
   {
     rnVALUE.dValue = bColorLevels;
   }
+#else
+  if ( rktNAME == "outline" )
+  {
+    rnVALUE = new TAttribColor (tOutlineColor);
+  }
+  else if ( rktNAME == "levels" )
+  {
+    rnVALUE = new TAttribInt (bColorLevels);
+  }  
+#endif
   else
   {
     return TObjectFilter::getAttribute (rktNAME, rnVALUE);
@@ -111,6 +139,10 @@ void TOF_Cartoon::getAttributeList (TAttributeList& rtLIST) const
   TObjectFilter::getAttributeList (rtLIST);
 
   rtLIST ["outline"] = FX_COLOR;
+#if !defined(NEW_ATTRIBUTES)
   rtLIST ["levels"]  = FX_REAL;
+#else
+  rtLIST ["levels"]  = FX_INTEGER;
+#endif
   
 }  /* getAttributeList() */

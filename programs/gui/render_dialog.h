@@ -30,10 +30,12 @@ class TRenderDialog : public Gtk::Dialog
   protected:
 
     Word      wNeededBuffers;
+    bool      gPreview;
     TScene*   ptScene;
 
     void toggleZBuffer (Gtk::CheckButton* ptBUTTON);
     void toggleNBuffer (Gtk::CheckButton* ptBUTTON);
+    void setPreview (bool b) { gPreview = b; }
                         
   public:
 

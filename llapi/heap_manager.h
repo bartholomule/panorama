@@ -20,7 +20,13 @@
 #define _HEAP_MANAGER__
 
 #include <list>
-#include "llapi/attribute.h"
+
+#include "llapi/machine.h"
+// Instead of this next line:
+//#include "llapi/attribute.h"
+// Create a forward decl for the TAttribute class.
+// This helps to avoid circular inclusion problems.
+class TAttribute;
 
 #define FX_REFERENCE_MAX    65535   // Reference count is defined as Word
 
@@ -56,4 +62,7 @@ class THeapManager
 
 extern THeapManager   tHeapManager;
 
+
 #endif  /* _HEAP_MANAGER__ */
+
+

@@ -86,7 +86,7 @@ class TVector2D
 
     void normalize (void);
 
-    void printDebug (void) const;
+    void printDebug (const string& indent) const;
 
     EClass classType (void) const { return FX_VECTOR2_CLASS; }
     string className (void) const { return "Vector2"; }
@@ -118,10 +118,10 @@ inline void TVector2D<TItem>::normalize (void)
 
 
 template <class TItem>
-inline void TVector2D<TItem>::printDebug (void) const
+inline void TVector2D<TItem>::printDebug (const string& indent) const
 {
 
-  cerr << "TVector2D <" << vx << ", " << vy << ">" << endl;
+  cerr << indent << "TVector2D <" << vx << ", " << vy << ">" << endl;
 
 }  /* printDebug() */
 

@@ -20,6 +20,8 @@
 #include "llapi/warning_eliminator.h"
 #include <cmath>
 #include "pat_leopard.h"
+#include "llapi/attribute.h"
+#include "llapi/extended_attribute.h"
 
 DEFINE_PLUGIN ("PatternLeopard", FX_PATTERN_CLASS, TPatternLeopard);
 
@@ -28,10 +30,18 @@ int TPatternLeopard::setAttribute (const string& rktNAME, NAttribute nVALUE, EAt
 
   if ( rktNAME == "color" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_COLOR )
     {
       setColor (*((TColor*) nVALUE.pvValue));
     }
+#else
+    magic_pointer<TAttribColor> col = get_color(nVALUE);
+    if( !!col )
+    {
+      setColor (col->tValue);
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -39,10 +49,18 @@ int TPatternLeopard::setAttribute (const string& rktNAME, NAttribute nVALUE, EAt
   }
   else if ( rktNAME == "base_color" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_COLOR )
     {
       setBaseColor (*((TColor*) nVALUE.pvValue));
     }
+#else
+    magic_pointer<TAttribColor> col = get_color(nVALUE);
+    if( !!col )
+    {
+      setBaseColor (col->tValue);
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -50,11 +68,19 @@ int TPatternLeopard::setAttribute (const string& rktNAME, NAttribute nVALUE, EAt
   }
   else if ( rktNAME == "zoom" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_VECTOR )
     {
       tZoom = *((TVector*) nVALUE.pvValue);
       tZoom.set (1.0 / tZoom.x(), 1.0 / tZoom.y(), 1.0 / tZoom.z());
     }
+#else
+    magic_pointer<TAttribVector> vec = get_vector(nVALUE);
+    if( !!vec )
+    {
+      tZoom.set (1.0 / vec->tValue.x(), 1.0 / vec->tValue.y(), 1.0 / vec->tValue.z());
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -73,6 +99,7 @@ int TPatternLeopard::setAttribute (const string& rktNAME, NAttribute nVALUE, EAt
 int TPatternLeopard::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 {
 
+#if !defined(NEW_ATTRIBUTES)
   if ( rktNAME == "base_color" )
   {
     rnVALUE.pvValue = &tColor;
@@ -86,6 +113,21 @@ int TPatternLeopard::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
     // [_ERROR_] It should return the inverse of this vector.
     rnVALUE.pvValue = &tZoom;
   }
+#else
+  if ( rktNAME == "base_color" )
+  {
+    rnVALUE = new TAttribColor (tColor);
+  }
+  else if ( rktNAME == "base_color" )
+  {
+    rnVALUE = new TAttribColor (tBaseColor);
+  }
+  else if ( rktNAME == "zoom" )
+  {
+    TVector inv(1.0 / tZoom.x(), 1.0 / tZoom.y(), 1.0 / tZoom.z());
+    rnVALUE = new TAttribVector (inv);
+  }  
+#endif
   else
   {
     return TPattern::getAttribute (rktNAME, rnVALUE);

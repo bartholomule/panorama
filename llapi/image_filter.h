@@ -27,6 +27,8 @@ struct SBuffers;
 
 class TScene;
 
+typedef bool (TUserUpdateFunction) (double, void*);
+
 class TImageFilter : public TProcedural
 {
 
@@ -34,15 +36,28 @@ class TImageFilter : public TProcedural
 
     Word      wNeededBuffers;
     TScene*   ptScene;
+    TUserUpdateFunction* pfUserUpdate;
+    void*            pvUserData;  
  
   public:
 
     TImageFilter (void) :
-      wNeededBuffers (0) {}
+      wNeededBuffers (0),
+      ptScene(NULL),
+      pfUserUpdate(NULL),
+      pvUserData(NULL)
+    {
+    }
       
     virtual void filter (SBuffers& rsBUFFERS) = 0;
 
     Word neededBuffers (void) { return wNeededBuffers; }
+
+    void setUserFunction (TUserUpdateFunction* pfUSER, void* pvDATA)
+    {
+      pfUserUpdate = pfUSER;
+      pvUserData   = pvDATA;
+    }  
 
     void setScene (TScene* ptSCENE)
     {
@@ -50,6 +65,8 @@ class TImageFilter : public TProcedural
     }
 
     EClass classType (void) const { return FX_IMAGE_FILTER_CLASS; }
+
+    virtual TImageFilter* clone_new() const = 0;
     
 };  /* class TImageFilter */
 

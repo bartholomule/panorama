@@ -25,30 +25,32 @@
 class TEntity : public TProcedural
 {
 
-  protected:
 
+  private:
+    // This is private, because I (KH) want to phase it out.  location() should
+    // always be called to retrieve the location. 
     TVector   tLocation;
 
+  protected:
     virtual void update (void) {};
 
   public:
 
-    virtual void translate (const TVector& rktNEW_POS)
-    {
-      tLocation += rktNEW_POS;
-      update();
-    }
-    virtual void rotate (const TVector& rktAXISPOINT1, const TVector& rktAXISPOINT2, TScalar tANGLE) {}
-    virtual void rotate (const TVector& rktANGLESXYZ) {}
+    virtual void translate (const TVector& rktNEW_POS);
+
+    virtual void rotate (const TVector& rktAXISPOINT1, const TVector& rktAXISPOINT2, TScalar tANGLE);
+    virtual void rotate (const TVector& rktANGLESXYZ);
   
-    virtual void rotate (const TQuaternion& rktQUAT) {}  
+    virtual void rotate (const TQuaternion& rktQUAT);
 
-    inline TVector location (void) const { return tLocation; }
+    virtual TVector location (void) const { return tLocation; }
 
-    inline void setLocation (const TVector& rktLOCATION)
+    virtual void setLocation (const TVector& rktLOCATION)
     {
       tLocation = rktLOCATION; update();
     }
+
+    virtual TUserFunctionMap getUserFunctions();
   
 };  /* class TEntity */
 

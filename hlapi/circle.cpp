@@ -18,16 +18,25 @@
 
 #include "llapi/warning_eliminator.h"
 #include "hlapi/circle.h"
+#include "llapi/attribute.h"
 
 int TCircle::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
 
   if ( rktNAME == "radius" )
   {
+#if !defined(NEW_ATTRIBUTES)      
     if ( eTYPE == FX_REAL )
     {
       setRadius (nVALUE.dValue);
     }
+#else
+    magic_pointer<TAttribReal> r = get_real(nVALUE);
+    if( !!r )
+    {
+      setRadius(r->tValue);
+    }
+#endif    
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -48,7 +57,11 @@ int TCircle::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 
   if ( rktNAME == "radius" )
   {
+#if !defined(NEW_ATTRIBUTES)    
     rnVALUE.dValue = sqrt (tRadius2);
+#else
+    rnVALUE = new TAttribReal (sqrt (tRadius2));
+#endif
   }
   else
   {

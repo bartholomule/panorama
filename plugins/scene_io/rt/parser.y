@@ -1,5 +1,6 @@
 /*
 *  Copyright (C) 1998, 1999 Angel Jimenez Jimenez and Carlos Jimenez Moreno
+*  Copyright (C) 2001, 2002 Kevin Harris
 *
 *  This program is free software; you can redistribute it and/or modify
 *  it under the terms of the GNU General Public License as published by
@@ -16,10 +17,60 @@
 *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+/*
+  TODO: Fix the FIXMEs. (added 15Oct2001 -- KH)
+        Some of the things labeled fixme may have already been fixed and they
+	should be checked for correctness/completeness.  In any case, the
+	FIXMEs were labeled that way in the first place either because they
+	were not possible to do with the structure of things at the time, or
+	because I did not know a good way to approach them (or if it should be
+	done) at the time they were labeled as such. 
+  
+        Real scoping. (added 15Oct2001 -- KH)
+        Change the datamap into a stack of datamaps.
+        This will allow defining of objects within a scope without affecting
+	other scopes (would be great for aggregates, as an object can be
+	defined once within and modified [translated/scaled] any number of
+	times within the aggregate and nowhere else). 
+
+        Attribute recovery. (added 15Oct2001 -- KH)
+	If a name is NOT within a datamap, attempt to check the attribute list
+	for the object corresponding to that scope before checking a higher
+	scope.  Note the possibility to obscure an attribute by defining
+	something of the same name.
+
+	Potentially remove the define keyword. (added 15Oct2001 -- KH)
+	It should be sufficient to use '=' for all operations instead of making
+	the distinction of attrbutes and objects.  It may be of some bennefit
+	to keep the define keyword and also allow the '=' form, as this could
+	allow defining of some read-only values (such as global colors, shapes,
+	etc), where it would be important to know when they are being
+	overritten (possibly by mistake).
+
+	Error handling. (added 15Oct2001 -- KH)
+	If an error is detected, the resulting parsed scene should NOT be
+	allowed to continue through the rendering process (It could be nice to
+	activate an editor in the gui to edit the scene file at the point of
+	the error -- this may require column tracking as well, which would slow
+	down the parser even more).
+
+ */
+
+/*
+  Notes:
+
+    Function recovery -- (KH 15Oct2001) The reason that I query each object for
+    its functions instead of storing the list along with it is that an object
+    could potentially offer different functions based on some internal state
+    (ie. the CSG object may offer different functions if it was a union than if
+    it was an intersection.
+ */
+
 %{
 
+  //#define REDUCTION_REPORTING
+  
 #include <map>
-#include <stack>
 #include <string>
 #include <iostream>
 #include "llapi/llapi_all.h"
@@ -28,89 +79,46 @@
 #include "hlapi/plugins_all.h"
 #include "parser_defs.h"
 #include "rt_io.h"
+#include "llapi/object_required.h"
 
-static map<string, TProcedural*, less<string> >       _tObjectMap;
-static map<string, TColor, less<string> >             _tColorMap;
-static map<string, TVector, less<string> >            _tVectorMap;
-static map<string, double(*)(void), less<string> >    _tFunctionMap;
-static map<string, EClass, less<string> >             _tTypeMap;
-static stack<TProcedural*>                            _tDataStack;
-
-static TProcedural*   _ptData;
-static TProcedural*   _ptParent;
-static Byte           _bVertices;
-static TVector        _tVector;
-static TVector2       _tVector2;
-static TColor         _tColor;
-static TAggregate*    _ptWorld;
-static NAttribute     _nAttrib;
-static TImageIO*      _ptImageIO;
-
-static double (*_pfFunction)(void);
-
-#define POP()           top(); _tDataStack.pop()            // Fix to STL's pop()
-
-#define DATA		(_tDataStack.top())
-#define ENTITY		((TEntity*) _tDataStack.top())
-#define VOLUME		((TVolume*) _tDataStack.top())
-#define VECTOR		((TVector*) _tDataStack.top())
-#define COLOR		((TColor*) _tDataStack.top())
-#define SCENE		(TSceneRT::_ptParsedScene)
-#define MATERIAL	((TMaterial*) _tDataStack.top())
-#define OBJECT		((TObject*) _tDataStack.top())
-#define AGGREGATE	((TAggregate*) _tDataStack.top())
-#define TRIANGLE	((TTriangle*) _tDataStack.top())
-#define RECTANGLE	((TRectangle*) _tDataStack.top())
-#define MESH		((TMeshObject*) _tDataStack.top())
+#include "parsed_types.h"
+#include "attribute_math.h"
+#include "language_functions.h"
+#include "attrib_tweak.h"
 
 #define YYDEBUG 1
-#define YYERROR_VERBOSE 
+#define YYERROR_VERBOSE 1
 
-static TProcedural* NewObject (const string& rktCLASS, const TProcedural* pktPARENT);
-static void* InstanceObject (const string& rktNAME);
-static void* UpdateObject (const string& rktNAME);
-static void DefineObject (const string& rktNAME, const string& rktCLASS, const string& rktDEF_CLASS);
+//---------------------------------------------------------------------------
+typedef TSceneRT::BASE_OBJECT_TYPE BASE_OBJECT_TYPE;
+typedef TSceneRT::attrib_type attrib_type;
+
+// Fix to STL's pop() 
+#define POP()           top(); TSceneRT::_tDataStack.pop()  
+
+#define DATA		(TSceneRT::_tDataStack.top())
+#define DATAMAP         (TSceneRT::_tDataMap)
+#define DATASTACK       (TSceneRT::_tDataStack) 
+#define SCENE		(TSceneRT::_ptParsedScene)
+#define PARENT_OBJECT   (TSceneRT::_ptParent)
+#define WORLD           (TSceneRT::_ptWorld)
+extern void rt_error (const string& rksTEXT);
+extern void rt_warning (const string& rksTEXT);
+//---------------------------------------------------------------------------
+
+  
+static BASE_OBJECT_TYPE NewObject (const string& rktCLASS, const BASE_OBJECT_TYPE& pktPARENT);
+
 static void CreateObject (const string& rktCLASS, const string& rktDEF_CLASS);
-static void SetParameter (const string& rktATTRIB, EAttribType eTYPE);
 
-static void DefineColor (const string& rktNAME);
-static TColor* InstanceColor (const string& rktNAME);
-
-static void DefineVector (const string& rktNAME);
-static TVector* InstanceVector (const string& rktNAME);
-
-static void UpdateAttribute (const string& rktATTRIBUTE, const string& rktIDENT);
-
-static void InitObjects (void);
-static void InitFunctions (void);
-
-static EAttribType MapClassToAttribute (const TBaseClass* pktClass);
-
-static string EAttribType_to_str (EAttribType eat);
+static magic_pointer<TAttribute> Instance(const string& s);
  
-%}
+static void InitObjects (void);
 
-%union {
-         char                  acIdent [200];
-         double                dValue;
-         bool                  gValue;
-         TColor*               ptColor;
-         TVector*              ptVector;
-         TVector2*             ptVector2;
-         TScene*               ptScene;
-         TRenderer*            ptRenderer;
-         TCamera*              ptCamera;
-         TLight*               ptLight;
-         TBsdf*                ptBsdf;
-         TMaterial*            ptMaterial;
-         TPattern*             ptPattern;
-         TPerturbation*        ptPerturbation; 
-         TObject*              ptObject;
-         TImageFilter*         ptIFilter;
-         TObjectFilter*        ptOFilter;
-         TAtmosphericObject*   ptAtmObject;
-         TImageIO*             ptImageIO;
-       }
+static void report_reduction(const string& s);
+
+static void FIXME(const string& s) { cerr << "FIXME: " << s << endl; }
+%}
 
 %token <gValue> T_BOOL
 %token <dValue> T_REAL
@@ -120,1494 +128,940 @@ static string EAttribType_to_str (EAttribType eat);
 
 /* "Reserved word" tokens.
    Modified to all act the same as identifiers (KH--07Aug2000)  */
-%token <acIdent> T_AGGREGATE
-%token <acIdent> T_ATM_OBJECT
 %token <acIdent> T_BLUE
-%token <acIdent> T_BOX
-%token <acIdent> T_BSDF
 %token <acIdent> T_CAMERA
-%token <acIdent> T_CIRCLE
 %token <acIdent> T_CLASS
-%token <acIdent> T_COLOR
-%token <acIdent> T_CONE
-%token <acIdent> T_CYLINDER
 %token <acIdent> T_DEFINE
 %token <acIdent> T_DIFFERENCE
 %token <acIdent> T_EXTENDS
 %token <acIdent> T_FILTER
 %token <acIdent> T_GREEN
-%token <acIdent> T_IMAGE_FILTER
 %token <acIdent> T_INTERSECTION
 %token <acIdent> T_LIGHT
-%token <acIdent> T_MATERIAL
-%token <acIdent> T_MESH
-%token <acIdent> T_OBJECT
-%token <acIdent> T_OBJECT_FILTER
 %token <acIdent> T_OUTPUT
-%token <acIdent> T_PATTERN
-%token <acIdent> T_PERTURBATION
-%token <acIdent> T_PHONG_TRIANGLE
-%token <acIdent> T_PLANE
-%token <acIdent> T_RECTANGLE
 %token <acIdent> T_RED
 %token <acIdent> T_RENDERER
-%token <acIdent> T_ROTATE
-%token <acIdent> T_SCALE
-%token <acIdent> T_SCENE
-%token <acIdent> T_SPHERE
-%token <acIdent> T_TORUS
-%token <acIdent> T_TRANSLATE
-%token <acIdent> T_TRIANGLE
-%token <acIdent> T_TYPE
 %token <acIdent> T_UNION
-%token <acIdent> T_VECTOR
-%token <acIdent> T_VERTEX
-%token <acIdent> T_X
-%token <acIdent> T_Y
-%token <acIdent> T_Z
+
+%token <gValue> AND_L
+%token <gValue> OR_L
+%token <gValue> EQUAL
+%token <gValue> NOT_EQ
+%token <gValue> GREATER
+%token <gValue> GREATER_EQ
+%token <gValue> LESS
+%token <gValue> LESS_EQ
+%token <acIdent> PARAM
+%token <acIdent> DEFINED
+%token <acIdent> THIS
+
+
 /* Tokens to allow user requested information about types/attribute lists.
    Added 06/Aug/2000 */ 
-%token <acIdent> T_ATTR_LIST
-%token <acIdent> T_ATTR_TYPE
 %type <acIdent> reserved_words
-%type <acIdent> potential_string
+%type <acIdent> potential_name
+%type <ptAttribute> instance;
 
-%type <dValue> real_expr
 %type <acIdent> name
 %type <acIdent> class
 %type <ptColor> color
 %type <ptVector> vector3
 %type <ptVector2> vector2
-%type <ptVector> vertex_instance
-%type <ptVector> vector_def
-%type <ptVector> vector_instance
-%type <ptColor> color_def
-//%type <ptColor> color_instance
-%type <ptScene> scene_def
-%type <ptScene> scene_instance
-%type <ptCamera> camera_def
-%type <ptCamera> camera_instance
-%type <ptBsdf> bsdf_def
-%type <ptBsdf> bsdf_instance
-%type <ptRenderer> renderer_def
-%type <ptRenderer> renderer_instance
-%type <ptLight> light_def
-%type <ptLight> light_instance
-%type <ptMaterial> material_def
-%type <ptMaterial> material_instance
-%type <ptPattern> pattern_def
-%type <ptPattern> pattern_instance
-%type <ptPerturbation> perturbation_def
-%type <ptPerturbation> perturbation_instance
-%type <ptIFilter> ifilter_def
-%type <ptIFilter> ifilter_instance
-%type <ptOFilter> ofilter_def
-%type <ptOFilter> ofilter_instance
-%type <ptObject> object
-%type <ptObject> object_def
-%type <ptObject> object_instance
-%type <ptObject> plane_def
-%type <ptObject> plane_instance
-%type <ptObject> sphere_def
-%type <ptObject> sphere_instance
-%type <ptObject> triangle_def
-%type <ptObject> triangle_instance
-%type <ptObject> phong_triangle_def
-%type <ptObject> phong_triangle_instance
-%type <ptObject> rectangle_def
-%type <ptObject> rectangle_instance
-%type <ptObject> circle_def
-%type <ptObject> circle_instance
-%type <ptObject> aggregate_def
-%type <ptObject> aggregate_instance
-%type <ptObject> box_def
-%type <ptObject> box_instance
-%type <ptObject> cylinder_def
-%type <ptObject> cylinder_instance
-%type <ptObject> cone_def
-%type <ptObject> cone_instance
-%type <ptObject> torus_def
-%type <ptObject> torus_instance
-%type <ptObject> mesh_def
-%type <ptObject> mesh_instance
-%type <ptObject> csg_def
-%type <ptObject> csg_instance
-%type <ptAtmObject> atm_object_def
-%type <ptAtmObject> atm_object_instance
-%type <ptImageIO> image_io_instance
+
+%type <ptAttribute> function_call;
+%type <ptAttribute> expression;
+%type <ptAttribute> prec_8;
+%type <ptAttribute> prec_7;
+%type <ptAttribute> prec_6;
+%type <ptAttribute> prec_5;
+%type <ptAttribute> prec_4;
+%type <ptAttribute> prec_3;
+%type <ptAttribute> prec_2;
+%type <ptAttribute> prec_1;
 
 %left '+' '-'
 %left '*' '/'
-%right UNARY_MINUS
+//%right UNARY_MINUS
 
 %start everything
 
 %%
 
 everything		: /* Nothing */
-			| everything instance
-			| everything definition
-			;
-
-instance		: T_SCENE scene_instance
-                          {}
-                        | T_ATM_OBJECT atm_object_instance
                           {
-                            SCENE->atmosphere()->addObject ($2);
-                          }
-			| object
+			    report_reduction("everything <-- nothing");
+			  }
+			| everything expression ';'
                           {
-			    // Sanity check to avoid adding an object more than
-			    // once. 
-			    if( !_ptWorld->containsObject( $1 ) )
+			    report_reduction("everything <-- everything expression ';'");
+			    magic_pointer<TAttribObject> ptobj = get_object($2);
+			    if( !!ptobj )
 			    {
-			      _ptWorld->add ($1);
+			      magic_pointer<TObject> obj = ptobj->tValue;
+			      if( !!obj )
+			      {
+				if( !WORLD->containsObject( obj ) )
+				{
+				  //				  cout << "Adding instance of " << obj->className() << " to world." << endl;
+				  WORLD->add ( obj );
+				}
+			      }
 			    }
 			    else
 			    {
-			      // Somehow, the object was added more than
-			      // once... 
-			      string s = "This object is already in the scene: ";
-			      rt_error(s + $1->className());
-			    }
-                          }
+			      magic_pointer<TProcedural> proc = get_procedural_var($2, false);
+			      if( !!proc )
+			      {
+				FIXME("Potentially add instance (" + $2->toString() + " to the global scene");
+			      }
+			    }			      
+			  }
+			| everything definition
+                          {
+			    report_reduction("everything <-- everything definition");
+			  }
 			;
                         
-definition		: T_DEFINE T_COLOR color_def
-			  {}
-			| T_DEFINE T_VECTOR vector_def
-			  {}
-			| T_DEFINE T_OBJECT object_def
-			  {}
-			| T_DEFINE T_SCENE scene_def
-			  {}
-			| T_DEFINE T_CAMERA camera_def
-			  {}
-			| T_DEFINE T_LIGHT light_def
-			  {}
-			| T_DEFINE T_BSDF bsdf_def
-			  {}
-			| T_DEFINE T_IMAGE_FILTER ifilter_def
-			  {}
-			| T_DEFINE T_OBJECT_FILTER ofilter_def
-			  {}
-			| T_DEFINE T_RENDERER renderer_def
-			  {}
-			| T_DEFINE T_MATERIAL material_def
-			  {}
-			| T_DEFINE T_PATTERN pattern_def
-			  {}
-                        | T_DEFINE T_PERTURBATION perturbation_def
-			  {}
-			| T_DEFINE T_PLANE plane_def
-			  {}
-			| T_DEFINE T_SPHERE sphere_def
-			  {}
-			| T_DEFINE T_TRIANGLE triangle_def
-			  {}
-			| T_DEFINE T_PHONG_TRIANGLE phong_triangle_def
-			  {}
-			| T_DEFINE T_RECTANGLE rectangle_def
-			  {}
-			| T_DEFINE T_CIRCLE circle_def
-			  {}
-			| T_DEFINE T_AGGREGATE aggregate_def
-			  {}
-			| T_DEFINE T_BOX box_def
-			  {}
-			| T_DEFINE T_CYLINDER cylinder_def
-			  {}
-			| T_DEFINE T_CONE cone_def
-			  {}
-			| T_DEFINE T_TORUS torus_def
-			  {}
-			| T_DEFINE T_MESH mesh_def
-			  {}
-			| T_DEFINE T_ATM_OBJECT atm_object_def
-			  {}
-			| T_DEFINE T_UNION csg_def
-			  {}
-			| T_DEFINE T_INTERSECTION csg_def
-			  {}
-			| T_DEFINE T_DIFFERENCE csg_def
-			  {}
-			;
-
-object                  : T_OBJECT object_instance
+definition		: T_DEFINE name expression ';'
                           {
-                            $$ = $2;
-                          }
-			| T_LIGHT light_instance
-			  {
-                            $$ = $2;
-			  } 
-			| T_PLANE plane_instance
-			  {
-                            $$ = $2;
-                          }
-			| T_SPHERE sphere_instance
-			  {
-			    $$ = $2;
+			    report_reduction("definition <-- DEFINE name expression ;");
+			    report_reduction(string("definition <-- DEFINE ") +
+					     $2 + " " + $3->toString());
+
+			    if( DATAMAP.find($2) != DATAMAP.end() )
+			    {
+			      rt_warning(string($2) + " redefined here");
+			      rt_warning("previously defined here: " + DATAMAP[$2].first);
+			    }
+			    cout << "Defining \"" << string($2) << "\"" << endl;
+			    
+			    char buffer[1024];
+			    sprintf(buffer,"%s line %d",
+				    TSceneRT::_tInputFileName.c_str(),
+				    int(TSceneRT::_dwLineNumber));
+			    DATAMAP[$2] = pair<string,attrib_type>(string(buffer),$3);
 			  }
-			| T_TRIANGLE triangle_instance
-			  {
-			    $$ = $2;
-                          }
-			| T_PHONG_TRIANGLE phong_triangle_instance
-			  {
-			    $$ = $2;
-                          }
-			| T_RECTANGLE rectangle_instance
-			  {
-			    $$ = $2;
-                          }
-			| T_CIRCLE circle_instance
-			  {
-			    $$ = $2;
-                          }
-                        | T_AGGREGATE aggregate_instance
+                        | T_DEFINE reserved_words name instance ';'
                           {
-                            $$ = $2;
-                          }
-			| T_BOX box_instance
-			  {
-			    $$ = $2;
-                          }
-			| T_CYLINDER cylinder_instance
-			  {
-			    $$ = $2;
-                          }
-			| T_CONE cone_instance
-			  {
-			    $$ = $2;
-                          }
-                        | T_TORUS torus_instance
-                          {
-                            $$ = $2;
-                          }
-                        | T_MESH mesh_instance
-                          {
-                            $$ = $2;
-                          }
-                        | T_UNION csg_instance
-			  {
-                            ((TCsg*) $2)->setOperation (FX_CSG_UNION);
-                            $$ = $2;
-                          }
-                        | T_INTERSECTION csg_instance
-			  {
-                            ((TCsg*) $2)->setOperation (FX_CSG_INTERSECTION);
-                            $$ = $2;
-                          }
-                        | T_DIFFERENCE csg_instance
-			  {
-                            ((TCsg*) $2)->setOperation (FX_CSG_DIFFERENCE);
-                            $$ = $2;
-                          }
+			    report_reduction("definition <-- DEFINE reserved_words name instance");
+			    cerr << "Warning: definition on line "
+			         << TSceneRT::_dwLineNumber
+				 << " should not have \"" << $2 << "\" anymore"
+				 << endl;
+
+			    if( DATAMAP.find($3) != DATAMAP.end() )
+			    {
+			      rt_warning(string($3) + " redefined here");
+			      rt_warning("previously defined here: " + DATAMAP[$3].first);
+			    }
+			    char buffer[1024];
+			    sprintf(buffer,"%s line %d",
+				    TSceneRT::_tInputFileName.c_str(),
+				    int(TSceneRT::_dwLineNumber));
+			    DATAMAP[$2] = pair<string,attrib_type>(string(buffer),$4);
+			  }
 			;
 
-real_expr		: T_REAL
+instance                : name
+                          {
+			    report_reduction("instance <-- name");
+			    report_reduction(string("instance <-- ") + $1);			    
+			    $$ = Instance($1);
+                          }
+                        | class
 			  {
+			    //			    cout << "Creating object..." << endl;
+			    CreateObject($1,"");
+                          }
+                          param_block
+                          {
+			    report_reduction("instance <--  class { params }");
+			    report_reduction(string("instance <-- ") + DATA->toString());
+			    
+			    //			    cout << "Type is " << DATA->AttributeName() << endl;
+			    $$ = DATASTACK.POP();
+			  }
+;
+
+param_block             : '{' params '}'
+                          {
+			    report_reduction("param_block <-- { params }");
+			  }
+                        | '{' '}'
+                          {
+			    report_reduction("param_block <-- { }");
+			  }
+;
+
+expression:
+                        prec_8
+                          {
 			    $$ = $1;
-			  }
-			| T_IDENTIFIER '(' ')'
-			  {
-                            if ( _tFunctionMap.find ($1) == _tFunctionMap.end() )
-                            {
-			      yyerror ("function does not exist");
-			      exit (1);
-                            }
+			    report_reduction("expression <-- prec_8");
+			    report_reduction("expression <-- " + $1->toString());
+                          }
+;
 
-			    _pfFunction = _tFunctionMap [$1];
+prec_8:
+                        prec_7
+                        {
+			  report_reduction("prec_8 <-- prec_7");
+			  report_reduction("prec_8 <-- " + $1->toString());
+			  $$ = $1;
+			}
+			| prec_8 OR_L prec_7
+                        {
+			  report_reduction("prec_8 <-- prec_8 OR prec_7");
+			  report_reduction("prec_8 <-- " + $1->toString() + " OR " + $3->toString());
+			  $$ = new TAttribBool(check_get_bool($1) ||
+					       check_get_bool($3));
+			}
+;
 
-			    $$ = (*_pfFunction)();
-			  }
-			| real_expr '+' real_expr
+prec_7:
+                        prec_6
+                        {
+			  report_reduction("prec_7 <-- prec_6");
+			  report_reduction("prec_7 <-- " + $1->toString());			  
+			  $$ = $1;
+			}
+                        | prec_7 AND_L prec_6
+                        {
+			  report_reduction("prec_7 <-- prec_7 AND prec_6");
+			  report_reduction("prec_7 <-- " + $1->toString() + " AND " + $3->toString());
+			  $$ = new TAttribBool(check_get_bool($1) &&
+					       check_get_bool($3));
+			}
+;
+
+prec_6:
+			
+                        prec_5
+                        {
+			  report_reduction("prec_6 <-- prec_5");
+			  report_reduction("prec_6 <-- " + $1->toString());			  
+			  $$ = $1;
+			}
+                        | prec_6 EQUAL prec_5
+                        {
+			  report_reduction("prec_6 <-- prec_6 EQUAL prec_5");
+			  if( !types_match($1, $3 ) )
 			  {
-			    $$ = $1 + $3;
+			    rt_error( ("Cannot convert " + EAttribType_to_str($3->eType) +
+				       " to " + EAttribType_to_str($1->eType)) );
 			  }
-			| real_expr '-' real_expr
+			  if( $1->eType == FX_REAL )
 			  {
-			    $$ = $1 - $3;
+			    $$ = new TAttribBool(check_get_real($1) == check_get_real($3));
 			  }
-			| real_expr '*' real_expr
+			  else if( $1->eType == FX_BOOL )
 			  {
-			    $$ = $1 * $3;
+			    $$ = new TAttribBool(check_get_bool($1) ==
+						 check_get_bool($3));
 			  }
-			| real_expr '/' real_expr
+			  else if( $1->eType == FX_VECTOR )
 			  {
-			    $$ = $1 / $3;
+			    $$ = new TAttribBool(get_vector($1)->tValue ==
+						 get_vector($3)->tValue);
 			  }
-			| '-' real_expr %prec UNARY_MINUS
+			  else if( $1->eType == FX_VECTOR2 )
 			  {
-			    $$ = -$2;
+			    $$ = new TAttribBool(get_vector2($1)->tValue ==
+						 get_vector2($3)->tValue);
 			  }
-			| '(' real_expr ')'
+			  else if( $1->eType == FX_STRING || $1->eType == FX_STRING_LIST )
 			  {
-			    $$ = $2;
+			    $$ = new TAttribBool(check_get_string($1) ==
+						 check_get_string($3));	  
 			  }
-			;
-color                   : '{' T_RED real_expr T_GREEN real_expr T_BLUE real_expr '}'
+			  else if( $1->eType == FX_INTEGER )
+			  {
+			    $$ = new TAttribBool(get_int($1)->tValue ==
+						 get_int($3)->tValue);	  
+			  }			  
+			  else
+			  {
+			    rt_error("I can't compare a " + EAttribType_to_str($3->eType));
+			  }
+			}
+                        | prec_6 NOT_EQ prec_5
+                        {
+			  report_reduction("prec_6 <-- prec_6 NOT_EQ prec_5");
+			  if( !types_match($1, $3 ) )
+			  {
+			    rt_error( ("Cannot convert " + EAttribType_to_str($3->eType) +
+				       " to " + EAttribType_to_str($1->eType)) );
+			  }
+			  if( $1->eType == FX_REAL )
+			  {
+			    $$ = new TAttribBool(check_get_real($1) !=
+						 check_get_real($3));
+			  }
+			  else if( $1->eType == FX_BOOL )
+			  {
+			    $$ = new TAttribBool(check_get_bool($1) !=
+						 check_get_bool($3));
+			  }
+			  else if( $1->eType == FX_VECTOR )
+			  {
+			    $$ = new TAttribBool(get_vector($1) != get_vector($3));
+			  }
+			  else if( $1->eType == FX_VECTOR2 )
+			  {
+			    $$ = new TAttribBool(get_vector2($1) != get_vector2($3));
+			  }
+			  else if( $1->eType == FX_STRING || $1->eType == FX_STRING_LIST )
+			  {
+			    $$ = new TAttribBool(check_get_string($1) != check_get_string($3));	  
+			  }
+			  else if( $1->eType == FX_INTEGER )
+			  {
+			    $$ = new TAttribBool(get_int($1)->tValue == get_int($3)->tValue);	  
+			  }
+			  else
+			  {
+			    rt_error("I can't compare a " + EAttribType_to_str($3->eType));
+			  }
+			}
+;
+
+prec_5:
+			prec_4
+                        {
+			  report_reduction("prec_5 <-- prec_4");
+			  report_reduction("prec_5 <-- " + $1->toString());			  
+			  
+			  $$ = $1;
+			}
+			| prec_4 GREATER_EQ prec_4
+                        {
+			  report_reduction("prec_4 <-- prec_6 >= prec_5");
+			  $$ = new TAttribBool(check_get_real($1) >= check_get_real($3));
+			}
+                        | prec_4 GREATER prec_4
+                        {
+			  report_reduction("prec_4 <-- prec_6 > prec_5");
+			  $$ = new TAttribBool(check_get_real($1) > check_get_real($3));
+			}
+                        | prec_4 LESS_EQ prec_4
+                        {
+			  report_reduction("prec_4 <-- prec_6 <= prec_5");
+			  $$ = new TAttribBool(check_get_real($1) <= check_get_real($3));
+			}
+                        | prec_4 LESS prec_4
+                        {
+			  report_reduction("prec_4 <-- prec_6 < prec_5");
+			  $$ = new TAttribBool(check_get_real($1) < check_get_real($3));
+			} 
+;
+
+prec_4:
+			prec_3
+                        {
+			  report_reduction("prec_4 <-- prec_3");
+			  report_reduction("prec_4 <-- " + $1->toString());			  
+			  $$ = $1;
+			}
+                        | prec_4 '+' prec_3
+                        {
+
+			  report_reduction("prec_4 <-- prec_4 + prec_3");
+			  report_reduction("prec_4 <-- " + $1->toString() + " + " + $3->toString());
+			  
+			  $$ = add($1,$3);
+			  if( !$$ )
+			  {
+			    rt_error("addition of " + EAttribType_to_str($1->eType) +
+				     " and " + EAttribType_to_str($3->eType) + " failed");
+			  }
+			} 
+                        | prec_4 '-' prec_3
+                        {
+			  report_reduction("prec_4 <-- prec_4 - prec_3");
+			  report_reduction("prec_4 <-- " + $1->toString() + " - " + $3->toString());			  
+			  $$ = sub($1,$3);
+			  if( !$$ )
+			  {
+			    rt_error("subtraction of " + EAttribType_to_str($1->eType) +
+				     " and " + EAttribType_to_str($3->eType) + " failed");
+			  }
+			} 
+;
+
+prec_3:
+			prec_2
+                        {
+			  report_reduction("prec_3 <-- prec_2");
+			  report_reduction("prec_3 <-- " + $1->toString());			  
+			  $$ = $1;
+			}			
+			| prec_3 '*' prec_2
+                        {
+			  report_reduction("prec_3 <-- prec_3 * prec_2");
+			  report_reduction("prec_4 <-- " + $1->toString() + " * " + $3->toString());			  
+			  
+			  $$ = mul($1,$3);
+			  if( !$$ )
+			  {
+			    rt_error("multiplication of " + EAttribType_to_str($1->eType) +
+				     " and " + EAttribType_to_str($3->eType) + " failed");
+			  }
+			}
+                        | prec_3 '/' prec_2
+                        {
+			  report_reduction("prec_3 <-- prec_3 / prec_2");
+			  report_reduction("prec_4 <-- " + $1->toString() + " / " + $3->toString());			  
+			  
+			  $$ = div($1,$3);
+			  if( !$$ )
+			  {
+			    rt_error("division of " + EAttribType_to_str($1->eType) +
+				     " and " + EAttribType_to_str($3->eType) + " failed");
+			  }
+			}
+;
+
+prec_2:
+			prec_1
+                        {
+			  report_reduction("prec_2 <-- prec_1");
+			  report_reduction("prec_2 <-- " + $1->toString());			  
+			  $$ = $1;
+			}			
+			| '!' prec_2
+                        {
+			  report_reduction("prec_2 <-- ! prec_2");
+			  report_reduction("prec_2 <-- ! " + $2->toString());
+
+			  $$ = new TAttribBool(!check_get_bool($2));
+			}
+                        | '+' prec_2
+                        {
+			  report_reduction("prec_2 <-- + prec_2");
+			  report_reduction("prec_2 <-- + " + $2->toString());
+			  
+			  $$ = $2;
+			} 
+                        | '-' prec_2
+                        {
+			  report_reduction("prec_2 <-- - prec_2");
+			  report_reduction("prec_2 <-- - " + $2->toString());
+			  
+			  $$ = sub(new TAttribInt(0), $2);
+			  if( !$$ )
+			  {
+			    rt_error("negation of " + EAttribType_to_str($2->eType) + " failed");
+			  }			  
+			}
+;
+
+prec_1:
+			T_QUOTED_STRING
+                        {
+			  report_reduction("prec_1 <-- quoted_string");
+			  report_reduction("prec_1 <-- " + string($1));
+			  
+			  $$ = new TAttribString($1);
+			}
+                        | PARAM prec_1
+                        {
+			  report_reduction("prec_1 <-- PARAM prec_1");
+			  
+			  FIXME("recovering a paramater (how?)");
+			}
+                        | DEFINED name
+                        {
+			  report_reduction("prec_1 <-- DEFINED name");
+
+			  if( DATAMAP.find($2) != DATAMAP.end() )
+			  {
+			    $$ = new TAttribBool(true);
+			  }
+			  else
+			  {
+			    $$ = new TAttribBool(false);
+			  }
+			}
+                        | T_BOOL
+                        {
+			  report_reduction("prec_1 <-- BOOL");
+			  
+			  $$ = new TAttribBool($1);
+			}
+                        | T_INTEGER
+                        {
+			  report_reduction("prec_1 <-- INTEGER");
+			  
+			  $$ = new TAttribInt($1);
+			}
+                        | T_REAL
                           {
-			    _tColor.setRed ($3);
-			    _tColor.setGreen ($5);
-			    _tColor.setBlue ($7);
-			    $$ = (TColor*) &_tColor;
+			    report_reduction("prec_1 <-- REAL");
+			    
+			    $$ = new TAttribReal($1);
+                          }
+
+                        | '(' expression ')'
+                        {
+			  report_reduction("prec_1 <-- ( expression )");
+			  report_reduction("prec_1 <-- ( " + $2->toString() + " )");
+
+			  $$ = $2;
+			}
+                        | color
+                        {
+			  report_reduction("prec_1 <-- color");
+			  $$ = new TAttribColor(*$1);
+			}
+                        | vector3
+                        {
+			  report_reduction("prec_1 <-- vector3");
+			  $$ = new TAttribVector(*$1);
+			}
+                        | vector2
+                        {
+			  report_reduction("prec_1 <-- vector2");
+			  $$ = new TAttribVector2(*$1);
+			}
+                        | THIS
+                        {
+			  report_reduction("prec_1 <-- THIS");
+			  $$ = DATA;
+			}
+                        | instance
+                        {
+			  report_reduction("prec_1 <-- instance");
+			  $$ = $1;			  
+                        }
+                        | function_call
+;
+
+function_call           : potential_name '(' ')'
+                        {
+			  report_reduction("function_call <-- potential_name ( )");
+			  report_reduction("function_call <-- " + string($1) +  "( )");
+
+#if defined(DEBUG_IT)
+			  rt_error("about to call a function");
+#endif /* defined(DEBUG_IT) */
+			  
+			  // Lookup using all objects in the current stack,
+			  // then check the global table... 
+			  TUserFunctionMap functions = all_user_functions();
+
+			  if( functions.find($1) != functions.end() )
+			  {
+			    user_arg_vector empty_args;
+			    $$ = functions[$1]->call(empty_args);
+			  }
+			  else
+			  {
+			    rt_error("function " + string($1) + " does not exist");
+			    $$ = new TAttribute();
+			  }
+			}
+                        | potential_name '(' expression ')'
+                        {
+			  report_reduction("function_call <-- potential_name ( expression )");
+			  report_reduction("function_call <-- " + string($1) + "( " + $3->toString() + " )");
+			  
+			  
+#if defined(DEBUG_IT)
+			  rt_error("about to call a function");
+#endif /* defined(DEBUG_IT) */
+			  
+			  // Lookup using all objects in the current stack,
+			  // then check the global table...
+			  TUserFunctionMap functions = all_user_functions();
+			  
+			  if( functions.find($1) != functions.end() )
+			  {
+			    user_arg_vector args;
+			    args.push_back($3);
+			    $$ = functions[$1]->call(args);
+
+			  }
+			  else
+			  {
+			    rt_error("function " + string($1) + " does not exist");
+			    $$ = new TAttribute();
+			  }			    
+			}
+                        | potential_name '(' expression ',' expression ')'
+                        {
+			  report_reduction("function_call <-- potential_name ( expression , expression )");
+			  report_reduction("function_call <-- " + string($1) + "( " + $3->toString() + "," + $5->toString() + " )");
+			  
+			  
+#if defined(DEBUG_IT)
+			  rt_error("about to call a function");
+#endif /* defined(DEBUG_IT) */
+			  
+			  // Lookup using all objects in the current stack,
+			  // then check the global table...
+			  TUserFunctionMap functions = all_user_functions();
+			  
+			  if( functions.find($1) != functions.end() )
+			  {
+			    user_arg_vector args;
+			    args.push_back($3);
+			    args.push_back($5);			    
+			    $$ = functions[$1]->call(args);
+
+			  }
+			  else
+			  {
+			    rt_error("function " + string($1) + " does not exist");
+			    $$ = new TAttribute();
+			  }			    
+			}
+;
+
+
+color                   : '{' T_RED expression T_GREEN expression T_BLUE expression '}'
+                          {
+			    report_reduction("color <-- { RED expression GREEN expression BLUE expression }");
+			    report_reduction("color <-- { RED " + $3->toString() +
+					     " GREEN " + $5->toString() +
+					     " BLUE " + $7->toString() + " }");
+
+			    double r = check_get_real($3);
+			    double g = check_get_real($5);
+			    double b = check_get_real($7);
+
+			    cout << "r=" << r << " g=" << g << " b=" << b << endl;
+			    TColor* c = new TColor(r,g,b);
+			    cerr << "Here's what was really created: ";
+			    c->printDebug(""); cerr << endl;
+			    
+			    $$ = c;
 			  }
                        ;
 
-vector3                 : '<' real_expr ',' real_expr ',' real_expr '>'
+vector3                 : '<' expression ',' expression ',' expression '>'
 			  {
-			    _tVector.set ($2, $4, $6);
-			    $$ = &_tVector;
+			    report_reduction("vector3 <-- < expression , expression , expression >");
+			    TVector tVector;
+			    double x = check_get_real($2);
+			    double y = check_get_real($4);
+			    double z = check_get_real($6);
+#if defined(DEBUG_IT)
+			    cout << "Creating vector ("
+				 << x << ","
+				 << y << ","
+				 << z << ")" << endl;
+#endif
+			    tVector.set (x,y,z);
+                            $$ = new TVector(tVector);
 			  }
 			;
-vector2			: '<' real_expr ',' real_expr '>'
+vector2			: '<' expression ',' expression '>'
 			  {
-			    _tVector2.set ($2, $4);
-			    $$ = &_tVector2;
+			    report_reduction("vector2 <-- < expression , expression >");
+			    TVector2 tVector2;
+			    tVector2.set (check_get_real($2), check_get_real($4));
+                            $$ = new TVector2(tVector2);
 			  }
 			;
 
-vertex_instance		: vector3
+name			:
+                        /*
 			  {
-			    $$ = $1;
-			  }
-			| T_VERTEX vector3
-			  {
-			    $$ = $2;
-			  }
-			;
-
-name			: /* Nothing */
-			  {
+			    report_reduction("name <-- nothing");
 			    strcpy ($$, "");
 			  }
-			| T_IDENTIFIER
+			|
+                        Nothing */			
+                        T_IDENTIFIER
 			  {
+			    report_reduction("name <-- IDENTIFIER");
 			    strcpy ($$, $1);
 			  }
 			;
 
-class			: /* Nothing */
+class			: /* Nothing 
 			  {
+			  
+			    report_reduction("class <-- nothing");
 			    strcpy ($$, "");
 			  }
-			| ':' T_EXTENDS T_IDENTIFIER
+			| */
+                          T_IDENTIFIER /*':' T_EXTENDS */
 			  {
-                            if ( _tObjectMap.find ($3) == _tObjectMap.end() )
+			    report_reduction("class <-- : EXTENDS IDENTIFIER");
+                            if ( DATAMAP.find ($1) == DATAMAP.end() )
                             {
 			      yyerror ("trying to extend from non existing object");
 			      exit (1);
                             }
-                            _ptParent = _tObjectMap [$3];
-			    strcpy ($$, _ptParent->className().c_str());
+
+			    //			    cout << "the type of the parent is " << DATAMAP [$1].second->AttributeName() << endl;
+                            PARENT_OBJECT = attr_to_base(DATAMAP [$1].second);
+			    //			    cout << "the parent's classname is " << PARENT_OBJECT->className() << endl;
+			    strcpy ($$, PARENT_OBJECT->className().c_str());
 			  }
-			| ':' T_CLASS T_IDENTIFIER
+			| T_CLASS T_IDENTIFIER
 			  {
-			    _ptParent = NULL;
-			    strcpy ($$, $3);
+			    report_reduction("class <-- : CLASS IDENTIFIER");
+			    PARENT_OBJECT = NULL;
+			    strcpy ($$, $2);
 			  }
 			;
 
-params			: /* Nothing */
-			| params param
-			;
-
-param			: T_ATTR_LIST '(' ')' 
+params			: /* Nothing  
                           {
-			    /* Print out an attribute list [names w/types] for
-			       the current object */ 
-			    TAttributeList   tal;
+			    report_reduction("params <-- nothing");
+                          }
+                        | */
+                        param ';'
+                        {
+			  report_reduction("params <-- param ;");
+                        }
+                        | error ';'
+                        {
+			  report_reduction("params <-- error ;");
+			  rt_error("expected parameter expression");
+                        }
+			| params param ';'
+                        {
+			  report_reduction("params <-- params param ;");
+			}
+			| params error ';'
+                        {
+			  report_reduction("params <-- params error ;");
+			  rt_error("expected parameter expression");
+			}
+                        ;
+
+param			: T_IDENTIFIER '=' expression
+			{
+			  report_reduction("param <-- IDENTIFIER = expression");
+			  SetParameter ($1, $3);
+			}
+                        | expression
+                        {
+			  report_reduction("param <-- expression");
 			  
-			    DATA->getAttributeList (tal);
-			    
-			    cout << "Requested attribute list for \""
-				 << DATA->className() << "\"" << endl;
-			    
-			    for(TAttributeList::const_iterator i = tal.begin();
-				i != tal.end();
-				++i)
+			  magic_pointer<TAttribObject> ptobj = get_object($1);
+
+			  // If it is an object, check to see if there is an
+			  // 'addObject' function in the current object. 
+			  if( !!ptobj  && !!ptobj->tValue )
+			  {
+
+			    magic_pointer<TAttribute> attr = DATASTACK.top();
+			    if( !!attr )
 			    {
-			      cout << "  ("
-				   << EAttribType_to_str (i->second)
-				   << ") "
-				   << i->first << endl;
+			      magic_pointer<TProcedural> proc = get_procedural_var(attr);
+			      
+			      if( !!proc )
+			      {
+				TUserFunctionMap functions = proc->getUserFunctions();
+				if( functions.find("addObject") !=
+				    functions.end() )
+				{
+				  user_arg_vector args;
+				  args.push_back ($1);
+
+				  functions["addObject"]->call(args);
+
+				  static bool warned = false;
+				  if( !warned )
+				  {
+				    rt_warning("DEPRECATION: adding instance of " +
+					       ptobj->tValue->className() +
+					       " to the current object (likely aggregate or CSG) instead of ignoring it.  This feature may soon be removed.");
+				    warned = true;
+				  }
+				}
+			      }
 			    }
 			  }
-                        | T_ATTR_TYPE '(' potential_string ')' 
-                          {
-			    /* Print out the type of the given attribute */
-			    TAttributeList                   tal;
-			    TAttributeList::const_iterator   loc;
-			    
-			    DATA->getAttributeList (tal);
-			    
-			    loc = tal.find (string($3)); 
-			    
-			    cout << "Requested attribute type for \"" << $3
-				 << "\" in \"" << DATA->className() << "\": ";
-			    
-			    if ( loc != tal.end() )
+			  else
+			  {
+			    magic_pointer<TProcedural> proc = get_procedural_var($1, false);
+			    if( !!proc )
 			    {
-			      cout << EAttribType_to_str (loc->second) << endl;
+			      FIXME("Potentially do something with (" + $1->toString() + ") in the current object");
+			    }
+			  }
+			}
+                        | reserved_words '=' expression
+                        {
+			  report_reduction("param <-- reserved_words = expression");
+			  SetParameter ($1, $3);			    
+			}
+			| object_param
+                        {
+			  report_reduction("param <-- object_param");
+			}
+			| scene_param
+                        {
+			  report_reduction("param <-- scene_param");
+			}
+			;
+
+object_param		: T_FILTER '=' instance
+                        {
+			  // If an object, object->addFilter.
+			  // If a scene, scene->addImageFilter
+			  report_reduction("object_param <-- FILTER = instance");
+			  // The object will clone this filter (a good idea?)
+			  // The alternative was to either:
+			  // 1) Use a magic pointer for the filter.
+			  // 2) Maintain a list of all object filters for
+			  //    proper deletion/deallocation. 
+			  //			    OBJECT->addFilter ($2.get_pointer());
+			  
+			  magic_pointer<TObject> obj = check_get_object(DATASTACK.top());
+			  magic_pointer<TScene> scene = check_get_scene(DATASTACK.top());
+			  if( !!obj )
+			  {
+			    // Do it (obj->addFilter)
+			    FIXME("object filters need work");
+			  }
+			  else if ( scene )
+			  {
+			    // Do it (scene->addImageFilter)
+			    FIXME("image filters need work");
+			  }
+			  else
+			  {
+			    SetParameter($1,$3);
+			  }
+			}
+			;
+
+
+scene_param		: T_LIGHT '=' instance
+			{
+			  report_reduction("scene_param <-- LIGHT = instance");
+			  // This is no longer needed, as there are special
+			  // cases for this in the light_instance rule.
+			  if( !!$3 )
+			  {
+			    static bool gave_warning = false;
+			    
+			    if(!gave_warning)
+			    {
+			      cerr << "Note for light instance on line "
+				   << TSceneRT::_dwLineNumber
+				   << endl;
+			      cerr << "  Usage of lights in the 'scene' section is no longer required" << endl;
+			      cerr << "  They may now be added to aggregates, csg, etc., or used "
+				   << endl
+				   << "  external to the scene section (same syntax)." 
+				   << endl;
+			      gave_warning = true;
+			    }
+			    
+			    magic_pointer<TObject> obj = check_get_object($3);
+			    if( !!obj )
+			    {
+			      SCENE->addLight (rcp_static_cast<TLight>(obj)->clone_new());
 			    }
 			    else
 			    {
-			      cout << "no such attribute" << endl;
+			      rt_error("NULL light given (BUG?)");
 			    }
 			  }
-                        | T_IDENTIFIER vector3
-                          {
-			    _nAttrib.pvValue = $2;
-			    SetParameter ($1, FX_VECTOR);
-                          }
-			| T_IDENTIFIER vector2
+			}
+			| T_OUTPUT '=' instance
+			{
+			  report_reduction("scene_param <-- OUTPUT = instance");
+			  FIXME("Image output");
+			  magic_pointer<TAttribScene> pscene = get_scene(DATA);
+			  if( !!pscene )
 			  {
-			    _nAttrib.pvValue = $2;
-			    SetParameter ($1, FX_VECTOR2);
-			  }
-			| T_IDENTIFIER real_expr
-			  {
-			    _nAttrib.dValue = $2;
-			    SetParameter ($1, FX_REAL);
-			  }
-			| T_IDENTIFIER T_BOOL
-			  {
-			    _nAttrib.gValue = $2;
-			    SetParameter ($1, FX_BOOL);
-			  }
-			| T_IDENTIFIER T_QUOTED_STRING
-			  {
-			    _nAttrib.pvValue = $2;
-			    SetParameter ($1, FX_STRING);
-			  }
-			| T_IDENTIFIER pattern_instance
-			  {
-			    _nAttrib.pvValue = $2;
-			    SetParameter ($1, MapClassToAttribute ((TBaseClass*) $2));
-                          }
-			| T_IDENTIFIER perturbation_instance
-			  {
-			    _nAttrib.pvValue = $2;
-			    SetParameter ($1, MapClassToAttribute ((TBaseClass*) $2));
-                          }
-			| T_IDENTIFIER color
-			  {
-			    _nAttrib.pvValue = $2;
-			    SetParameter ($1, FX_COLOR);
-			  }
-			| T_IDENTIFIER name
-			  {
-			    UpdateAttribute ($1, $2);
-			  }
-			| T_COLOR name
-			  {
-			    UpdateAttribute ("color", $2);
-			  }
-			| T_COLOR real_expr
-			  {
-			    _nAttrib.dValue = $2;
-			    SetParameter ("color", FX_REAL);
-			  }
-			| T_COLOR color
-			  {
-			    _nAttrib.pvValue = $2;
-			    SetParameter ("color", FX_COLOR);
-			  }
-			| T_COLOR pattern_instance
-			  {
-			    _nAttrib.pvValue = $2;
-			    SetParameter ("color", FX_PATTERN);
-                          }
-			| T_VECTOR vector_instance
-			  {
-			    _nAttrib.pvValue = $2;
-			    SetParameter ("vector", FX_VECTOR);
-			  }
-			| T_CAMERA camera_instance
-			  {
-			    _nAttrib.pvValue = $2;
-			    SetParameter ("camera", FX_CAMERA);
-			  }
-			| T_RENDERER renderer_instance
-			  {
-			    _nAttrib.pvValue = $2;
-			    SetParameter ("renderer", FX_RENDERER);
-			  }
-			| T_BSDF bsdf_instance
-			  {
-			    _nAttrib.pvValue = $2;
-			    SetParameter ("bsdf", FX_BSDF);
-			  }
-			;
-
-entity_params		: /* Nothing */
-			| entity_params entity_param
-			;
-
-entity_param		: T_TRANSLATE vector3
-			  {
-			    ENTITY->translate (*$2);
-			  }
-			| T_ROTATE vector3
-			  {
-			    ENTITY->rotate (*$2);
-			  }
-			| T_ROTATE real_expr ',' vector3
-                          {
-			    ENTITY->rotate (makeUnitQuaternion ($2, *$4));
-                          }
-			| T_TRANSLATE vector_instance
-			  {
-			    ENTITY->translate (*$2);
-			  }
-			| T_ROTATE vector_instance
-			  {
-			    ENTITY->rotate (*$2);
-			  }
-			| T_ROTATE real_expr ',' vector_instance
-                          {
-			    ENTITY->rotate (makeUnitQuaternion ($2, *$4));
-                          }
-			| param
-			;
-
-volume_param		: T_SCALE vector3
-			  {
-			    VOLUME->scale (*$2, TVector (0, 0, 0));
-			  }
-			| entity_param
-			;
-
-object_params		: /* Nothing */
-			| object_params object_param
-			;
-
-object_param		: T_MATERIAL material_instance
-			  {
-			    OBJECT->setMaterial ($2);
-			  }
-			| T_FILTER ofilter_instance
-			  {
-			    OBJECT->addFilter ($2);
-			  }
-			| volume_param
-			;
-
-color_def		: name class
-			  {
-			    DefineColor ($1);
-			  }
-			  '{' color_params '}'
-			  {
-                            _tColorMap [$1] = _tColor;
-			    _tTypeMap  [$1] = FX_COLOR_CLASS;
-                            
-                            $$ = &_tColor;
-			  }
-			;
-
-
-/*
-color_instance		: name
-			  {
-			    $$ = InstanceColor ($1);
-			  }
-			| class
-			  {
-                            _tColor = TColor::_black();
-			  }
-			  '{' color_params '}'
-			  {
-			    $$ = (TColor*) &_tColor;
-			  }
-			;
-*/
-
-color_params		: /* Nothing */
-			| color_params color_param
-			;
-
-color_param		: T_RED real_expr
-			  {
-			    _tColor.setRed ($2);
-			  }
-			| T_GREEN real_expr
-			  {
-			    _tColor.setGreen ($2);
-			  }
-			| T_BLUE real_expr
-			  {
-			    _tColor.setBlue ($2);
-			  }
-			;
-
-vector_def		: name class
-			  {
-			    DefineVector ($1);
-			  }
-                          '{' vector_params '}'
-			  {
-                            _tVectorMap [$1] = _tVector;
-			    _tTypeMap   [$1] = FX_VECTOR_CLASS;
-                            
-                            $$ = &_tVector;
-			  }
-			;
-
-vector_instance		: name
-			  {
-			    $$ = InstanceVector ($1);
-			  }
-			| class
-			  {
-                            _tVector = TVector (0, 0, 0);
-			  }
-			  '{' vector_params '}'
-			  {
-			    $$ = (TVector*) &_tVector;
-			  }
-			;
-
-vector_params		: /* Nothing */
-			| vector_params vector_param
-			;
-
-vector_param		: T_X real_expr
-			  {
-			    _tVector.setX ($2);
-			  }
-			| T_Y real_expr
-			  {
-			    _tVector.setY ($2);
-			  }
-			| T_Z real_expr
-			  {
-			    _tVector.setZ ($2);
-			  }
-			;
-
-image_io_instance      	: '{'
-                          {
-                            _tDataStack.push (TImageManager::_getImageIO ("tga"));
-                          }
-			  image_io_params '}'
-			  {
-			    $$ = (TImageIO*) _tDataStack.POP();
-			  }
-			;
-
-image_io_params		: /* Nothing */
-			| image_io_params image_io_param
-			;
-
-image_io_param		: T_TYPE T_QUOTED_STRING
-			  {
-                            _ptImageIO = (TImageIO*) _tDataStack.POP();
-                            delete _ptImageIO;
-                            
-                            _ptImageIO = TImageManager::_getImageIO ($2);
-                            if ( !_ptImageIO )
-                            {
-                              yyerror ("Image output type not available");
-                              exit (1);
-                            }
-                            _tDataStack.push (_ptImageIO);
-			  }
-			| param
-			;
-
-scene_def		: name class
-			  {
-			    DefineObject ($1, $2, "Scene");
-			  }
-			  '{' scene_params '}'
-			  {
-			    $$ = (TScene*) UpdateObject ($1);
-			  }
-			;
-
-scene_instance		: name
-			  {
-			    $$ = (TScene*) InstanceObject ($1);
-			    TSceneRT::_ptParsedScene = $$;
-			  }
-			| class
-			  {
-//			    CreateObject ($1, "Scene");
-			    _ptData = TSceneRT::_ptParsedScene;
-			    _tDataStack.push (_ptData);
-			  }
-			  '{' scene_params '}'
-			  {
-			    $$ = (TScene*) _tDataStack.POP();
-//			    $$ = &tScene;
-			  }
-			;
-
-scene_params		: /* Nothing */
-			| scene_params scene_param
-			;
-
-scene_param		: T_LIGHT light_instance
-			  {
-			    // This is no longer needed, as there are speial
-			    // cases for this in the light_instance rule.
-			    if( $2 )
+			    //			    magic_pointer<TScene> scene = pscene->tValue;
+			    cout << "Warning: Ignoring locally defined scene" << endl;
+			    magic_pointer<TScene> scene = TSceneRT::_ptParsedScene;
+			    if( !!scene )
 			    {
-			      static bool gave_warning = false;
-
-			      if(!gave_warning)
+			      magic_pointer<TAttribImageIO> io = get_imageio($3);
+			      if( !!io )
 			      {
-                                cerr << "Note for light instance on line "
-				     << TSceneRT::_dwLineNumber
-				     << endl;
-				cerr << "  Usage of lights in the 'scene' section is no longer required" << endl;
-				cerr << "  They may now be added to aggregates, csg, etc., or used "
-				     << endl
-				     << "  external to the scene section (same syntax)." 
-				     << endl;
-				gave_warning = true;
+				//				cout << "Setting image IO to " << io->toString() << endl;
+				scene->setImageOutput (io->tValue);
 			      }
-			      SCENE->addLight ($2);
+			      else
+			      {
+				rt_error("Not an image io");
+			      }
 			    }
-			  }
-			| T_FILTER ifilter_instance
-			  {
-			    SCENE->addImageFilter ($2);
-			  }
-			| T_OUTPUT image_io_instance
-			  {
-			    SCENE->setImageOutput ($2);
-			  }
-			| param
-			;
-
-light_def		: name class
-			  {
-			    DefineObject ($1, $2, "PointLight");
-			  }
-			  '{' entity_params '}'
-			  {
-			    $$ = (TLight*) UpdateObject ($1);
-			  }
-			;
-
-light_instance		: name
-			  {
-			    $$ = (TLight*) InstanceObject ($1);
-			  }
-			| class
-			  {
-			    CreateObject ($1, "PointLight");
-			  }
-			  '{' entity_params '}'
-			  {
-			    $$ = (TLight*) _tDataStack.POP();
-			    // This one is passed back to the scene instance...
-			  }
-			;
-
-bsdf_def		: name class
-			  {
-			    DefineObject ($1, $2, "Bsdf");
-			  }
-			  '{' params '}'
-			  {
-			    $$ = (TBsdf*) UpdateObject ($1);
-			  }
-			;
-
-bsdf_instance		: name
-			  {
-			    $$ = (TBsdf*) InstanceObject ($1);
-			  }
-			| class
-			  {
-                            CreateObject ($1, "Bsdf");
-			  }
-			  '{' params '}'
-			  {
-                            $$ = (TBsdf*) _tDataStack.POP();
-			  }
-			;
-
-renderer_def		: name class
-			  {
-			    DefineObject ($1, $2, "Raytracer");
-			  }
-			  '{' params '}'
-			  {
-			    $$ = (TRenderer*) UpdateObject ($1);
-			  }
-			;
-
-renderer_instance	: name
-			  {
-			    $$ = (TRenderer*) InstanceObject ($1);
-			  }
-			| class
-			  {
-			    CreateObject ($1, "Raytracer");
-			  }
-			  '{' params '}'
-			  {
-			    $$ = (TRenderer*) _tDataStack.POP();
-			  }
-			;
-
-material_def		: name class
-			  {
-			    DefineObject ($1, $2, "Material");
-			  }
-			  '{' params '}'
-			  {
-                            $$ = (TMaterial*) UpdateObject ($1);
-			  }
-			;
-
-material_instance	: name
-			  {
-			    $$ = (TMaterial*) InstanceObject ($1);
-			  }
-			| class
-			  {
-			    CreateObject ($1, "Material");
-			  }
-			  '{' params '}'
-			  {
-			    $$ = (TMaterial*) _tDataStack.POP();
-			  }
-			;
-
-pattern_def		: name class
-			  {
-			    DefineObject ($1, $2, "Pattern");
-			  }
-			  '{' params '}'
-			  {
-                            $$ = (TPattern*) UpdateObject ($1);
-			  }
-			;
-
-pattern_instance	: name
-			  {
-			    $$ = (TPattern*) InstanceObject ($1);
-			  }
-			| class
-			  {
-			    CreateObject ($1, "Pattern");
-			  }
-			  '{' params '}'
-			  {
-			    $$ = (TPattern*) _tDataStack.POP();
-			  }
-			;
-
-perturbation_def       	: name class
-			  {
-			    DefineObject ($1, $2, "Perturbation");
-			  }
-			  '{' params '}'
-			  {
-                            $$ = (TPerturbation*) UpdateObject ($1);
-			  }
-			;
-
-perturbation_instance	: name
-			  {
-			    $$ = (TPerturbation*) InstanceObject ($1);
-			  }
-			| class
-			  {
-			    CreateObject ($1, "Perturbation");
-			  }
-			  '{' params '}'
-			  {
-			    $$ = (TPerturbation*) _tDataStack.POP();
-			  }
-			;
-
-ifilter_def		: name class
-			  {
-			    DefineObject ($1, $2, "");
-			  }
-			  '{' params '}'
-			  {
-			    $$ = (TImageFilter*) UpdateObject ($1);
-			  }
-			;
-
-ifilter_instance	: name
-			  {
-			    $$ = (TImageFilter*) InstanceObject ($1);
-			  }
-			| class
-			  {
-			    CreateObject ($1, "");
-			  }
-			  '{' params '}'
-			  {
-			    $$ = (TImageFilter*) _tDataStack.POP();
-			  }
-			;
-
-ofilter_def		: name class
-			  {
-			    DefineObject ($1, $2, "");
-			  }
-			  '{' params '}'
-			  {
-			    $$ = (TObjectFilter*) UpdateObject ($1);
-			  }
-			;
-
-ofilter_instance	: name
-			  {
-			    $$ = (TObjectFilter*) InstanceObject ($1);
-			  }
-			| class
-			  {
-			    CreateObject ($1, "");
-			  }
-			  '{' params '}'
-			  {
-			    $$ = (TObjectFilter*) _tDataStack.POP();
-			  }
-			;
-
-camera_def		: name class
-			  {
-			    DefineObject ($1, $2, "PinholeCamera");
-			  }
-			  '{' entity_params '}'
-			  {
-			    $$ = (TCamera*) UpdateObject ($1);
-			  }
-			;
-
-camera_instance		: name
-			  {
-			    $$ = (TCamera*) InstanceObject ($1);
-			  }
-			| class
-			  {
-			    CreateObject ($1, "PinholeCamera");
-			  }
-			  '{' entity_params '}'
-			  {
-			    $$ = (TCamera*) _tDataStack.POP();
-			  }
-			;
-
-object_def		: name class
-			  {
-			    DefineObject ($1, $2, "");
-			  }
-			  '{' object_params '}'
-			  {
-			    $$ = (TObject*) UpdateObject ($1);
-			  }
-			;
-
-object_instance		: name
-			  {
-			    $$ = (TObject*) InstanceObject ($1);
-			  }
-			| class
-			  {
-			    CreateObject ($1, "");
-			  }
-			  '{' object_params '}'
-			  {
-			    $$ = (TObject*) _tDataStack.POP();
-			  }
-			;
-
-plane_def		: name class
-			  {
-			    DefineObject ($1, $2, "Plane");
-			  }
-			  '{' object_params '}'
-			  {
-			    $$ = (TPlane*) UpdateObject ($1);
-			  }
-			;
-
-plane_instance		: name
-			  {
-			    $$ = (TPlane*) InstanceObject ($1);
-			  }
-			| class
-			  {
-			    CreateObject ($1, "Plane");
-			  }
-			  '{' object_params '}'
-			  {
-			    $$ = (TPlane*) _tDataStack.POP();
-			  }
-			;
-
-sphere_def		: name class
-			  {
-			    DefineObject ($1, $2, "Sphere");
-			  }
-			  '{' object_params '}'
-			  {
-			    $$ = (TSphere*) UpdateObject ($1);
-			  }
-			;
-
-sphere_instance		: name
-			  {
-			    $$ = (TSphere*) InstanceObject ($1);
-			  }
-			| class
-			  {
-			    CreateObject ($1, "Sphere");
-			  }
-			  '{' object_params '}'
-			  {
-			    $$ = (TSphere*) _tDataStack.POP();
-			  }
-			;
-
-triangle_def		: name class
-			  {
-			    DefineObject ($1, $2, "Triangle");
-			    _bVertices = 0;
-			  }
-			  '{' triangle_params '}'
-			  {
-			    if ( _bVertices != 3 )
+			    else
 			    {
-			      yyerror ("wrong number of vertices in triangle");
-			      exit (1);
+			      rt_error("internal: scene is NULL");
 			    }
-			    $$ = (TTriangle*) UpdateObject ($1);
 			  }
-			;
+			  else
+			  {
+			    SetParameter($1,$3);
+			  }
+			}
+                        ;
 
-triangle_instance	: name
-			  {
-			    $$ = (TTriangle*) InstanceObject ($1);
-			  }
-			| class
-			  {
-			    CreateObject ($1, "Triangle");
-			    _bVertices = 0;
-			  }
-			  '{' triangle_params '}'
-			  {
-			    if ( _bVertices != 3 )
-			    {
-			      yyerror ("wrong number of vertices in triangle");
-			      exit (1);
-			    }
-			    $$ = (TTriangle*) _tDataStack.POP();
-			  }
-			;
-
-triangle_params		: /* Nothing */
-			| triangle_params triangle_param
-			;
-
-triangle_param		: vertex_instance
-			  {
-			    TRIANGLE->setVertex (*$1);
-			    _bVertices++;
-			  }
-			| object_param
-			;
-
-phong_triangle_def	: name class
-			  {
-			    DefineObject ($1, $2, "PhongTriangle");
-			    _bVertices = 0;
-			  }
-			  '{' phong_triangle_params '}'
-			  {
-			    if ( _bVertices != 3 )
-			    {
-			      yyerror ("wrong number of vertices in phong_triangle");
-			      exit (1);
-			    }
-			    $$ = (TPhongTriangle*) UpdateObject ($1);
-			  }
-			;
-
-phong_triangle_instance	: name
-			  {
-			    $$ = (TPhongTriangle*) InstanceObject ($1);
-			  }
-			| class
-			  {
-			    CreateObject ($1, "PhongTriangle");
-			    _bVertices = 0;
-			  }
-			  '{' phong_triangle_params '}'
-			  {
-			    if ( _bVertices != 3 )
-			    {
-			      yyerror ("wrong number of vertices in phong_triangle");
-			      exit (1);
-			    }
-			    $$ = (TPhongTriangle*) _tDataStack.POP();
-			  }
-			;
-
-phong_triangle_params	: /* Nothing */
-			| phong_triangle_params phong_triangle_param
-			;
-
-phong_triangle_param	: vertex_instance
-			  {
-			    TRIANGLE->setVertex (*$1);
-			    _bVertices++;
-			  }
-			| object_param
-			;
-
-rectangle_def		: name class
-			  {
-			    DefineObject ($1, $2, "Rectangle");
-			    _bVertices = 0;
-			  }
-			  '{' rectangle_params '}'
-			  {
-			    if ( _bVertices != 4 )
-			    {
-			      yyerror ("wrong number of vertices in rectangle");
-			      exit (1);
-			    }
-			    $$ = (TRectangle*) UpdateObject ($1);
-			  }
-			;
-
-rectangle_instance	: name
-			  {
-			    $$ = (TRectangle*) InstanceObject ($1);
-			  }
-			| class
-			  {
-			    CreateObject ($1, "Rectangle");
-			    _bVertices = 0;
-			  }
-			  '{' rectangle_params '}'
-			  {
-			    if ( _bVertices != 4 )
-			    {
-			      yyerror ("wrong number of vertices in rectangle");
-			      exit (1);
-			    }
-			    $$ = (TRectangle*) _tDataStack.POP();
-			  }
-			;
-
-rectangle_params	: /* Nothing */
-			| rectangle_params rectangle_param
-			;
-
-rectangle_param		: vertex_instance
-			  {
-			    RECTANGLE->setVertex (*$1);
-			    _bVertices++;
-			  }
-			| object_param
-			;
-
-circle_def		: name class
-			  {
-			    DefineObject ($1, $2, "Circle");
-			  }
-			  '{' object_params '}'
-			  {
-			    $$ = (TCircle*) UpdateObject ($1);
-			  }
-			;
-
-circle_instance		: name
-			  {
-			    $$ = (TCircle*) InstanceObject ($1);
-			  }
-			| class
-			  {
-			    CreateObject ($1, "Circle");
-			  }
-			  '{' object_params '}'
-			  {
-			    $$ = (TCircle*) _tDataStack.POP();
-			  }
-			;
-
-aggregate_params       	: /* Nothing */
-			| aggregate_params aggregate_param
-			;
-
-aggregate_param		: object
-			  {
-			    AGGREGATE->add ($1);
-			  }
-			| object_param
-			;
-
-aggregate_def		: name class
-			  {
-			    DefineObject ($1, $2, "Aggregate");
-			  }
-			  '{' aggregate_params '}'
-			  {
-			    $$ = (TAggregate*) UpdateObject ($1);
-			  }
-			;
-
-aggregate_instance     	: name
-			  {
-			    $$ = (TAggregate*) InstanceObject ($1);
-			  }
-			| class
-			  {
-			    CreateObject ($1, "Aggregate");
-			  }
-			  '{' aggregate_params '}'
-			  {
-			    $$ = (TAggregate*) _tDataStack.POP();
-			  }
-			;
-
-atm_object_def		: name class
-			  {
-			    DefineObject ($1, $2, "AtmConst");
-			  }
-			  '{' params '}'
-			  {
-			    $$ = (TAtmosphericObject*) UpdateObject ($1);
-			  }
-			;
-
-atm_object_instance	: name
-			  {
-			    $$ = (TAtmosphericObject*) InstanceObject ($1);
-			  }
-			| class
-			  {
-			    CreateObject ($1, "AtmConst");
-			  }
-			  '{' params '}'
-			  {
-			    $$ = (TAtmosphericObject*) _tDataStack.POP();
-			  }
-			;
-
-box_def			: name class
-			  {
-			    DefineObject ($1, $2, "Box");
-			  }
-			  '{' object_params '}'
-			  {
-			    $$ = (TBox*) UpdateObject ($1);
-			  }
-			;
-
-box_instance		: name
-			  {
-			    $$ = (TBox*) InstanceObject ($1);
-			  }
-			| class
-			  {
-			    CreateObject ($1, "Box");
-			  }
-			  '{' object_params '}'
-			  {
-			    $$ = (TBox*) _tDataStack.POP();
-			  }
-			;
-
-cylinder_def		: name class
-			  {
-			    DefineObject ($1, $2, "Cylinder");
-			  }
-			  '{' object_params '}'
-			  {
-			    $$ = (TCylinder*) UpdateObject ($1);
-			  }
-			;
-
-cylinder_instance	: name
-			  {
-			    $$ = (TCylinder*) InstanceObject ($1);
-			  }
-			| class
-			  {
-			    CreateObject ($1, "Cylinder");
-			  }
-			  '{' object_params '}'
-			  {
-			    $$ = (TCylinder*) _tDataStack.POP();
-			  }
-			;
-
-cone_def		: name class
-			  {
-			    DefineObject ($1, $2, "Cone");
-			  }
-			  '{' object_params '}'
-			  {
-			    $$ = (TCone*) UpdateObject ($1);
-			  }
-			;
-
-cone_instance		: name
-			  {
-			    $$ = (TCone*) InstanceObject ($1);
-			  }
-			| class
-			  {
-			    CreateObject ($1, "Cone");
-			  }
-			  '{' object_params '}'
-			  {
-			    $$ = (TCone*) _tDataStack.POP();
-	       		  }
-			;
-
-torus_def   		: name class
-			  {
-			    DefineObject ($1, $2, "Torus");
-			  }
-			  '{' object_params '}'
-			  {
-			    $$ = (TTorus*) UpdateObject ($1);
-			  }
-			;
-
-torus_instance      	: name
-			  {
-			    $$ = (TTorus*) InstanceObject ($1);
-			  }
-			| class
-			  {
-			    CreateObject ($1, "Torus");
-			  }
-			  '{' object_params '}'
-			  {
-			    $$ = (TTorus*) _tDataStack.POP();
-			  }
-			;
-
-mesh_def   		: name class
-			  {
-			    DefineObject ($1, $2, "Mesh");
-			  }
-			  '{' mesh_params '}'
-			  {
-			    $$ = (TMeshObject*) UpdateObject ($1);
-			  }
-			;
-
-mesh_instance      	: name
-			  {
-			    $$ = (TMeshObject*) InstanceObject ($1);
-			  }
-			| class
-			  {
-			    CreateObject ($1, "Mesh");
-			  }
-			  '{' mesh_params '}'
-			  {
-			    $$ = (TMeshObject*) _tDataStack.POP();
-			  }
-			;
-
-mesh_params		: /* Nothing */
-			| mesh_params mesh_param
-			;
-
-mesh_param		: T_TRIANGLE triangle_instance
-			  {
-			    MESH->addTriangle ((TTriangle*) $2);
-                            delete $2;
-			  }
-			| object_param
-			;
-
-csg_def	  		: name class
-			  {
-			    DefineObject ($1, $2, "Csg");
-			  }
-			  '{' aggregate_params '}'
-			  {
-			    $$ = (TCsg*) UpdateObject ($1);
-			  }
-			;
-
-csg_instance     	: name
-			  {
-			    $$ = (TCsg*) InstanceObject ($1);
-			  }
-			| class
-			  {
-			    CreateObject ($1, "Csg");
-			  }
-			  '{' aggregate_params '}'
-			  {
-			    $$ = (TCsg*) _tDataStack.POP();
-			  }
-			;
-
-potential_string        : T_IDENTIFIER
-			| reserved_words
+potential_name          : name
+                        {
+			  report_reduction("potential_name <-- name");
+			}
+                        | reserved_words
+                        {
+			  report_reduction("potential_name <-- reserved_words");
+			}
 			;
 
 
-reserved_words          : T_AGGREGATE 
-			| T_ATM_OBJECT
-			| T_BLUE
-			| T_BOX
-			| T_BSDF
-			| T_CAMERA
-			| T_CIRCLE
+reserved_words          : T_BLUE
+                          {
+			    report_reduction("reserved_words <-- BLUE");
+			    $$ = $1;
+			  }
 			| T_CLASS
-			| T_COLOR
-			| T_CONE
-			| T_CYLINDER
+                          {
+			    report_reduction("reserved_words <-- CLASS");
+			    $$ = $1;
+			  }
 			| T_DEFINE
+                          {
+			    report_reduction("reserved_words <-- DEFINE");
+			    $$ = $1;
+			  }
 			| T_DIFFERENCE
+                          {
+			    report_reduction("reserved_words <-- DIFFERENCE");
+			    $$ = $1;
+			  }
 			| T_EXTENDS
-			| T_FILTER
+                          {
+			    report_reduction("reserved_words <-- EXTENDS");
+			    $$ = $1;
+			  }
 			| T_GREEN
-			| T_IMAGE_FILTER
+                          {
+			    report_reduction("reserved_words <-- GREEN");
+			    $$ = $1;
+			  }
 			| T_INTERSECTION
-			| T_LIGHT
-			| T_MATERIAL
-			| T_MESH
-			| T_OBJECT
-			| T_OBJECT_FILTER
-			| T_OUTPUT
-			| T_PATTERN
-			| T_PERTURBATION
-			| T_PHONG_TRIANGLE
-			| T_PLANE
-			| T_RECTANGLE
+                          {
+			    report_reduction("reserved_words <-- INTERSECTION");
+			    $$ = $1;
+			  }
 			| T_RED
+                          {
+			    report_reduction("reserved_words <-- RED");
+			    $$ = $1;
+			  }
 			| T_RENDERER
-			| T_ROTATE
-			| T_SCALE
-			| T_SCENE
-			| T_SPHERE
-			| T_TORUS
-			| T_TRANSLATE
-			| T_TRIANGLE
-			| T_TYPE
+                          {
+			    report_reduction("reserved_words <-- RENDERER");
+			    $$ = $1;
+			  }
 			| T_UNION
-			| T_VECTOR
-			| T_VERTEX
-			| T_X
-			| T_Y
-		        | T_Z
-			| T_ATTR_LIST
-			| T_ATTR_TYPE
+                          {
+			    report_reduction("reserved_words <-- UNION");
+			    $$ = $1;
+			  }
 			;
 
 %%
@@ -1626,21 +1080,30 @@ void rt_error (const string& rksTEXT)
 
 }  /* rt_error() */
 
+void rt_warning (const string& rksTEXT)
+{
+
+  cerr << TSceneRT::_tInputFileName << "(" << TSceneRT::_dwLineNumber << ") Warning: " << rksTEXT << endl;
+
+}  /* rt_error() */
+
 
 void RT_InitParser (void)
 {
 
   InitObjects();
-  InitFunctions();
+  GlobalInitFunctions();
 
-  _tColorMap.clear();
-  _tVectorMap.clear();
-  _tTypeMap.clear();  
-  while(!_tDataStack.empty()) _tDataStack.pop();
+  while(!DATASTACK.empty()) DATASTACK.pop();
 
-  _ptWorld = new TAggregate();
+  WORLD = new TAggregate();
+  PARENT_OBJECT = NULL;
   
-  TSceneRT::_ptParsedScene->setWorld (_ptWorld);
+  TSceneRT::_ptParsedScene->setWorld (rcp_static_cast<TObject>(WORLD));
+
+  // Set the globalmost object to be the scene.  This allows operation on the
+  // scene without the need for a dedicated scene section.
+  DATASTACK.push (new TAttribScene(TSceneRT::_ptParsedScene));
   
 }  /* RT_InitParser() */
 
@@ -1648,32 +1111,25 @@ void RT_InitParser (void)
 void RT_CloseParser (void)
 {
 
-  _tObjectMap.clear();
+  DATAMAP.clear();
 
 }  /* RT_CloseParser() */
 
 
-void InitFunctions (void)
-{
-  _tFunctionMap.clear();
-  _tFunctionMap ["rand"] = (double(*)(void)) &frand;
-}  /* InitFunctions() */
 
 
 void InitObjects (void)
 {
-  _tObjectMap.clear();
+  DATAMAP.clear();
 }  /* InitObjects() */
 
 
-TProcedural* NewObject (const string& rktCLASS, const TProcedural* pktPARENT)
+magic_pointer<TBaseClass> NewObject (const string& rktCLASS,
+				     const magic_pointer<TBaseClass>& pktParent)
 {
+  TBaseClass* ptChild = TClassManager::_newObject (rktCLASS,
+						   pktParent.get_pointer());
 
-  TProcedural*   ptChild;
-
-  //  cout << "New object : \"" << rktCLASS << "\"" << endl;
-
-  ptChild = (TProcedural*) TClassManager::_newObject (rktCLASS, pktPARENT);
   if ( !ptChild )
   {
     string   tMessage = string ("class ") + rktCLASS + " does not exist";
@@ -1685,373 +1141,58 @@ TProcedural* NewObject (const string& rktCLASS, const TProcedural* pktPARENT)
 
 }  /* NewObject() */
 
-
-void* InstanceObject (const string& rktNAME)
-{
-
-  void*   pvObject;
-
-  if ( rktNAME == "" )
-  {
-    yyerror ("instanced object cannot be unnamed");
-    exit (1);
-  }
-
-  if ( _tObjectMap.find (rktNAME) == _tObjectMap.end() )
-  {
-    yyerror ("object does not exist");
-    exit (1);
-  }
-
-  pvObject = _tObjectMap [rktNAME];
-
-  return pvObject;
-
-}  /* InstanceObject() */
-
-
-void* UpdateObject (const string& rktNAME)
-{
-
-  TProcedural*   ptObject;
-
-  // cout << "Updating object : \"" << rktNAME << "\"" << endl;
-
-  ptObject = _tDataStack.POP();
-
-  _tObjectMap [rktNAME] = ptObject;
-  _tTypeMap   [rktNAME] = ptObject->classType();
-
-  return ptObject;
-
-}  /* UpdateObject() */
-
-
-void DefineObject (const string& rktNAME, const string& rktCLASS, const string& rktDEF_CLASS)
-{
-
-  // cout << "Defining object : \"" << rktNAME << "\", \"" << rktCLASS << "\", \"" << rktDEF_CLASS << "\"" << endl;
-
-  if ( rktNAME == "" )
-  {
-    yyerror ("defined object cannot be unnamed");
-    exit (1);
-  }
-
-  if ( _tTypeMap.find (rktNAME) != _tTypeMap.end() )
-  {
-    yyerror ("cannot redefine an existing object");
-    exit (1);
-  }
-
-  if ( ( _tObjectMap.find (rktNAME) != _tObjectMap.end() ) ||
-       ( _tTypeMap  .find (rktNAME) != _tTypeMap.  end() ) )
-  {
-    yyerror ("cannot redefine an existing object");
-    exit (1);
-  }
-
-  if ( rktCLASS == "" )
-  {
-    _ptData = NewObject (rktDEF_CLASS, _ptParent);
-  }
-  else
-  {
-    _ptData = NewObject (rktCLASS, _ptParent);
-  }
-
-  _tDataStack.push (_ptData);
-  _ptParent = NULL;
-
-}  /* DefineObject() */
-
-
 void CreateObject (const string& rktCLASS, const string& rktDEF_CLASS)
 {
-
-  // cout << "Creating object : \"" << rktCLASS << "\", \"" << rktDEF_CLASS << "\"" << endl;
-  
+  //  cout << "Attempting to create instance of " << rktCLASS << endl;
+  magic_pointer<TBaseClass> ptData;
   if ( rktCLASS == "" )
   {
-    _ptData = NewObject (rktDEF_CLASS, _ptParent);
+    ptData = NewObject (rktDEF_CLASS, PARENT_OBJECT);
   }
   else
   {
-    _ptData = NewObject (rktCLASS, _ptParent);
+    ptData = NewObject (rktCLASS, PARENT_OBJECT);
   }
-
-  _tDataStack.push (_ptData);
-  _ptParent = NULL;
+  //  cout << "Instance created... " << ptData->className() << endl;
+  
+  DATASTACK.push (base_to_attr(ptData));
+  PARENT_OBJECT = NULL;
 
 }  /* CreateObject() */
 
 
-void DefineColor (const string& rktNAME)
+
+void report_reduction(const string& s)
 {
+#if defined(REDUCTION_REPORTING)
+  cout << s << endl;
+#endif
+}
 
-  if ( rktNAME == "" )
-  {
-    yyerror ("cannot define unnamed color");
-    exit (1);
-  }
-
-  if ( _tColorMap.find (rktNAME) != _tColorMap.end() )
-  {
-    yyerror ("cannot redefine an existing color");
-    exit (1);
-  }
-
-  if ( _tTypeMap.find (rktNAME) != _tTypeMap.end() )
-  {
-    yyerror ("cannot redefine an existing object");
-    exit (1);
-  }
-
-  _tColor = TColor::_black();
-  
-  _ptParent = NULL;
-
-}  /* DefineColor() */
-
-
-TColor* InstanceColor (const string& rktNAME)
+magic_pointer<TAttribute> Instance(const string& s)
 {
-
-  TColor*   ptColor;
-
-  if ( rktNAME == "" )
+  if( s == "" )
   {
-    yyerror ("instanced object cannot be unnamed");
-    exit (1);
-  }
-  
-  if ( _tColorMap.find (rktNAME) == _tColorMap.end() )
-  {
-    yyerror ("pattern/color does not exist");
-    exit (1);
-  }
-  
-  ptColor = (TColor*) &(_tColorMap [rktNAME]);
-  
-  return ptColor;
-
-}  /* InstanceColor() */
-
-
-void DefineVector (const string& rktNAME)
-{
-
-  if ( rktNAME == "" )
-  {
-    yyerror ("cannot define unnamed vector");
-    exit (1);
-  }
-  
-  if ( _tVectorMap.find (rktNAME) != _tVectorMap.end() )
-  {
-    yyerror ("cannot redefine an existing vector");
+    rt_error ("instanced object cannot be unnamed");
     exit (1);
   }
 
-  if ( _tTypeMap.find (rktNAME) != _tTypeMap.end() )
+  if ( DATAMAP.find (s) == DATAMAP.end() )
   {
-    yyerror ("cannot redefine an existing object");
-    exit (1);
-  }
-  
-  _tVector = TVector (0, 0, 0);
-  
-  _ptParent = NULL;
-
-}  /* DefineVector() */
-
-
-TVector* InstanceVector (const string& rktNAME)
-{
-
-  TVector*   ptVector;
-
-  if ( rktNAME == "" )
-  {
-    yyerror ("instanced object cannot be unnamed");
-    exit (1);
-  }
-  
-  if ( _tVectorMap.find (rktNAME) == _tVectorMap.end() )
-  {
-    yyerror ("vector does not exist");
-    exit (1);
-  }
-  
-  ptVector = (TVector*) &(_tVectorMap [rktNAME]);
-  
-  return ptVector;
-
-}  /* InstanceVector() */
-
-
-EAttribType MapClassToAttribute (const TBaseClass* pktClass)
-{
-
-  EClass   eIdentifierClass = pktClass->classType();
-
-  switch (eIdentifierClass) 
-  {
-    case FX_PATTERN_CLASS:
-      return FX_PATTERN;
-
-    case FX_PERTURBATION_CLASS:
-      return FX_PERTURBATION;
-
-    default:
-      return FX_NONE;
-  }
-
-}  /* MapClassToAttribute() */
-
-
-void UpdateAttribute (const string& rktATTRIBUTE, const string& rktIDENT)
-{
-
-  EClass        eIdentifierClass = _tTypeMap [rktIDENT];
-  EAttribType   eAttribute;
-  void*         vpInstance;
-  
-  switch (eIdentifierClass) 
-  {
-    case FX_COLOR_CLASS:
-      vpInstance = InstanceColor (rktIDENT);
-      eAttribute = FX_COLOR;
-      break;
-
-    case FX_VECTOR_CLASS:
-      vpInstance = InstanceVector (rktIDENT);
-      eAttribute = FX_VECTOR;
-      break;
-      
-    case FX_BSDF_CLASS:
-      vpInstance = InstanceObject (rktIDENT);
-      eAttribute = FX_BSDF;
-      break;
-
-    case FX_PATTERN_CLASS:
-      vpInstance = InstanceObject (rktIDENT);
-      eAttribute = FX_PATTERN;
-      break;
-
-    case FX_PERTURBATION_CLASS:
-      vpInstance = InstanceObject (rktIDENT);
-      eAttribute = FX_PERTURBATION;
-      break;
-
-    default:
-      vpInstance = NULL;
-      eAttribute = FX_NONE;
-
-      cerr << "Warning: identifier class not recognized." << endl;
-  }
-  
-  _nAttrib.pvValue = vpInstance;
-  SetParameter (rktATTRIBUTE, eAttribute);
-  
-}  /* UpdateAttribute() */
-
-
-void SetParameter (const string& rktATTRIB, EAttribType eTYPE)
-{
-
-  int   iResult;
-
-  iResult = DATA->setAttribute (rktATTRIB, _nAttrib, eTYPE);
-
-  if ( iResult == FX_ATTRIB_WRONG_PARAM )
-  {
-    yyerror ("object does not have such attribute");
-    exit (1);
-  }
-  else if ( iResult == FX_ATTRIB_WRONG_TYPE )
-  {
-    yyerror ("incorrect type in attribute value");
-    exit (1);
-  }
-  else if ( iResult == FX_ATTRIB_WRONG_VALUE )
-  {
-    yyerror ("value not accepted for this attribute");
-    exit (1);
-  }
-  else if ( iResult == FX_ATTRIB_USER_ERROR )
-  {
-    yyerror (TProcedural::_tUserErrorMessage.c_str());
+    rt_error ("\"" + s + "\" is not defined");
     exit (1);
   }
 
-}  /* SetParameter() */
+  magic_pointer<TAttribute> attr = DATAMAP [s].second;
 
-
-string EAttribType_to_str (EAttribType eTYPE)
-{
-
-  /* This function is pretty dumb, but I (KH) couldn't find another one
-     anywhere else.  Added on 07Aug2000  */ 
-
-  switch ( eTYPE )
+  if( !!attr )
   {
-    case FX_NONE: 
-      return "none";
-
-    case FX_REAL: 
-      return "real";
-
-    case FX_BOOL: 
-      return "bool";
-
-    case FX_STRING: 
-      return "string";
-
-    case FX_COLOR: 
-      return "color";
-
-    case FX_VECTOR: 
-      return "vector";
-
-    case FX_VECTOR2: 
-      return "2d_vector";
-
-    case FX_IMAGE: 
-      return "image";
-
-    case FX_BSDF: 
-      return "bsdf";
-
-    case FX_CAMERA: 
-      return "camera";
-
-    case FX_LIGHT: 
-      return "light";
-
-    case FX_MATERIAL: 
-      return "material";
-
-    case FX_PATTERN: 
-      return "pattern";
-
-    case FX_PERTURBATION: 
-      return "perturbation";
-
-    case FX_RENDERER: 
-      return "renderer";
-
-    case FX_OBJECT: 
-      return "object";
-
-    case FX_OBJECT_FILTER: 
-      return "object_filter";
-
-    case FX_IMAGE_FILTER: 
-      return "image_filter";
-
-    default: 
-      return "unknown";
+    return attr;
   }
+  else
+  {
+    rt_error("\"" + s + "\" is defined as NULL");
+    exit(1);
+  }
+}
 
-}  /* EAttribType_to_str() */

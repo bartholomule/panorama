@@ -49,6 +49,8 @@ class TIF_Text : public TImageFilter
 
     string className (void) const { return "IF_Text"; }
 
+    virtual TIF_Text* clone_new() const { return new TIF_Text(*this); }
+  
 };  /* class TIF_Text */
 
 #endif  /* _IF_TEXT__ */

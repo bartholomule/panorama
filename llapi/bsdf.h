@@ -38,7 +38,9 @@ class TBsdf : public TProcedural
     virtual bool initialize (void) { return TProcedural::initialize(); }
     
     EClass classType (void) const { return FX_BSDF_CLASS; }
-    
+
+    virtual TBsdf* clone_new() const = 0;
+  
 };  /* class TBsdf */
 
 #endif  /* _BSDF__ */

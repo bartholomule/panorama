@@ -74,7 +74,10 @@ class TCamera : public TEntity
     }
 
     EClass classType (void) const { return FX_CAMERA_CLASS; }
-    
+    virtual TCamera* clone_new() const = 0;
+  
+    virtual TUserFunctionMap getUserFunctions();
+  
 };  /* class TCamera */
 
 #endif  /* _CAMERA__ */

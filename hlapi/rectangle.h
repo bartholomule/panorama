@@ -51,8 +51,10 @@ class TRectangle : public TPlane
 
     void getMesh (list<TMesh*>& rtMESH_LIST) const;
     
-    void printDebug (void) const;
+    void printDebug (const string& indent) const;
     string className (void) const { return "Rectangle"; }
+
+    virtual TUserFunctionMap getUserFunctions();  
 
 };  /* class TRectangle */
 

@@ -2,7 +2,7 @@
  Main developers:
  ================
 
-   Angel Jimenez Jimenez (ajimenez@vnet.es)
+   Angel Jimenez Jimenez (ajimenez@gnu.org)
 
    Carlos Jimenez Moreno (carlosj@leader.es) (carlosj@vnet.es)
 
@@ -28,8 +28,14 @@
                                                        SchlickDouble BSDF
                                                        Cook-Torrance BSDF
 
-   Kevin Harris (kharris@usa.net)                      Area lights
+   Kevin Harris (kpharris@users.sourceforge.net)       Area lights
                                                        Thin-lens camera
                                                        Generic root solvers
+                                                       New attribute model
+                                                       New RT SDL
+                                                       Type abstraction stuff
+                                                       TIFF file format
+                                                       Wave perturbation
+
                                                        
 

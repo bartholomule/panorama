@@ -100,7 +100,7 @@ class TBoundingBox : public TVolume
     
     TScalar cost (void) const;
     
-    void printDebug (void) const;
+    void printDebug (const string& indent) const;
     
     EClass classType (void) const { return FX_BOUNDING_BOX_CLASS; }
     string className (void) const { return "BoundingBox"; }
@@ -109,7 +109,7 @@ class TBoundingBox : public TVolume
 
 
 bool Disjoint (const TBoundingBox& rktBBOX1, const TBoundingBox& rktBBOX2);
-TBoundingBox Merge (const vector<TObject*>& rktLIST);
+TBoundingBox Merge (const vector<magic_pointer<TObject> >& rktLIST);
 TBoundingBox Union (const TBoundingBox& rktBBOX1, const TBoundingBox& rktBBOX2);
 TBoundingBox Intersection (const TBoundingBox& rktBBOX1, const TBoundingBox& rktBBOX2);
 

@@ -24,6 +24,7 @@
 #include "llapi/material.h"
 #include "llapi/scene.h"
 #include "llapi/bsdf.h"
+#include "llapi/attribute.h"
 #include "raytracer.h"
 
 DEFINE_PLUGIN ("Raytracer", FX_RENDERER_CLASS, TRaytracer);
@@ -93,7 +94,7 @@ TColor TRaytracer::getRadiance (TSurfaceData& rtDATA, Word wDEPTH) const
     
     tRadiance = mediaRadiance (rtDATA, tRadiance);
 
-    for (list<const TObjectFilter*>::const_iterator tIter = rtDATA.object()->filterList().begin(); ( tIter != rtDATA.object()->filterList().end() ) ;tIter++)
+    for (list<magic_pointer<TObjectFilter> >::const_iterator tIter = rtDATA.object()->filterList().begin(); ( tIter != rtDATA.object()->filterList().end() ) ;tIter++)
     {
       tRadiance = (*tIter)->filterRadiance (rtDATA, tRadiance);
     }
@@ -118,6 +119,8 @@ TColor TRaytracer::getRadiance (TSurfaceData& rtDATA, Word wDEPTH) const
     tRadiance = mediaRadiance (rtDATA, ptScene->backgroundColor (rtDATA));
   }
 
+  //  tRadiance.printDebug();
+  
   return tRadiance;
   
 }  /* getRadiance() */
@@ -612,10 +615,18 @@ int TRaytracer::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribT
 
   if ( rktNAME == "ambient" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_COLOR )
     {
       setAmbientLight (*((TColor*) nVALUE.pvValue));
     }
+#else
+    magic_pointer<TAttribColor> col = get_color(nVALUE);
+    if( !!col )
+    {
+      setAmbientLight (col->tValue);
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -623,10 +634,18 @@ int TRaytracer::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribT
   }
   else if ( rktNAME == "depth" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_REAL )
     {
       wMaxDepth = Word (nVALUE.dValue);
     }
+#else
+    magic_pointer<TAttribInt> i = get_int(nVALUE);
+    if( !!i )
+    {
+      wMaxDepth = i->tValue;
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -634,10 +653,18 @@ int TRaytracer::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribT
   }
   else if ( rktNAME == "max_diff" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_REAL )
     {
       tMaxColorDiff = nVALUE.dValue;
     }
+#else
+    magic_pointer<TAttribReal> r = get_real(nVALUE);
+    if( !!r )
+    {
+      tMaxColorDiff = r->tValue;
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -645,10 +672,18 @@ int TRaytracer::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribT
   }
   else if ( rktNAME == "aa_depth" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_REAL )
     {
       bMaxAADepth = Byte (nVALUE.dValue);
     }
+#else
+    magic_pointer<TAttribInt> i = get_int(nVALUE);
+    if( !!i )
+    {
+      bMaxAADepth = i->tValue;
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -656,39 +691,49 @@ int TRaytracer::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribT
   }
   else if ( rktNAME == "sampling" )
   {
-    if ( eTYPE == FX_STRING )
+#if !defined(NEW_ATTRIBUTES)
+    if ( eTYPE != FX_STRING )
     {
-      string   tName = (char*) nVALUE.pvValue;
-      if ( tName == "single" )
-      {
-        eSamplingMethod = FX_SINGLE;
-      }
-      else if ( tName == "uniform" )
-      {
-        eSamplingMethod = FX_UNIFORM;
-      }
-      else if ( tName == "stochastic" )
-      {
-        eSamplingMethod = FX_STOCHASTIC;
-      }
-      else if ( tName == "adaptive" )
-      {
-        eSamplingMethod = FX_ADAPTIVE;
-      }
-      else if ( tName == "false_color" )
-      {
-        eSamplingMethod = FX_FALSE_COLOR;
-      }
-      else
-      {
-        TProcedural::_tUserErrorMessage = "unknown sampling method : " + tName;
-
-        return FX_ATTRIB_USER_ERROR;
-      }
+      return FX_ATTRIB_WRONG_TYPE;
+    }
+    string tName = (char*) nVALUE.pvValue;
+#else
+    magic_pointer<TAttribString> str = get_string(nVALUE);
+    if( !str )
+    {
+      return FX_ATTRIB_WRONG_TYPE;      
+    }
+    string tName = str->tValue;
+#endif   
+    if ( tName == "single" )
+    {
+      eSamplingMethod = FX_SINGLE;
+    }
+    else if ( tName == "uniform" )
+    {
+      eSamplingMethod = FX_UNIFORM;
+    }
+    else if ( tName == "regular" )
+    {
+      eSamplingMethod = FX_UNIFORM;
+    }    
+    else if ( tName == "stochastic" )
+    {
+      eSamplingMethod = FX_STOCHASTIC;
+    }
+    else if ( tName == "adaptive" )
+    {
+      eSamplingMethod = FX_ADAPTIVE;
+    }
+    else if ( tName == "false_color" )
+    {
+      eSamplingMethod = FX_FALSE_COLOR;
     }
     else
     {
-      return FX_ATTRIB_WRONG_TYPE;
+      TProcedural::_tUserErrorMessage = "unknown sampling method : " + tName;
+      
+      return FX_ATTRIB_USER_ERROR;
     }
   }
   else
@@ -704,6 +749,7 @@ int TRaytracer::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribT
 int TRaytracer::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 {
 
+#if !defined(NEW_ATTRIBUTES)
   if ( rktNAME == "ambient" )
   {
     rnVALUE.pvValue = &tAmbientLight;
@@ -720,6 +766,46 @@ int TRaytracer::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
   {
     rnVALUE.dValue = bMaxAADepth;
   }
+#else
+  if ( rktNAME == "ambient" )
+  {
+    rnVALUE = new TAttribColor (tAmbientLight);
+  }
+  else if ( rktNAME == "depth" )
+  {
+    rnVALUE = new TAttribInt (wMaxDepth);
+  }
+  else if ( rktNAME == "max_diff" )
+  {
+    rnVALUE = new TAttribReal (tMaxColorDiff);
+  }
+  else if ( rktNAME == "aa_depth" )
+  {
+    rnVALUE = new TAttribInt (bMaxAADepth);
+  }
+  else if ( rktNAME == "sampling" )
+  {
+    static map<ESamplingMethod,string> sampling_strings;
+    static vector<string> sampling_choices;
+
+    if( sampling_strings.empty() )
+    {
+      sampling_strings[FX_SINGLE] = "single";
+      sampling_strings[FX_UNIFORM] = "uniform";
+      sampling_strings[FX_STOCHASTIC] = "stochastic";
+      sampling_strings[FX_ADAPTIVE] = "adaptive";
+      sampling_strings[FX_FALSE_COLOR] = "false_color";
+      sampling_choices.erase(sampling_choices.begin(), sampling_choices.end());
+      sampling_choices.push_back (sampling_strings[FX_SINGLE]);
+      sampling_choices.push_back (sampling_strings[FX_UNIFORM]);
+      sampling_choices.push_back (sampling_strings[FX_STOCHASTIC]);
+      sampling_choices.push_back (sampling_strings[FX_ADAPTIVE]);
+      sampling_choices.push_back (sampling_strings[FX_FALSE_COLOR]);
+    }
+    rnVALUE = new TAttribStringList (sampling_choices,
+				     sampling_strings[eSamplingMethod]);
+  }
+#endif
   else
   {
     return TRenderer::getAttribute (rktNAME, rnVALUE);
@@ -736,10 +822,16 @@ void TRaytracer::getAttributeList (TAttributeList& rtLIST) const
   TRenderer::getAttributeList (rtLIST);
 
   rtLIST ["ambient"]  = FX_COLOR;
-  rtLIST ["depth"]    = FX_REAL;
   rtLIST ["max_diff"] = FX_REAL;
+#if !defined(NEW_ATTRIBUTES)
+  rtLIST ["depth"]    = FX_REAL;
   rtLIST ["aa_depth"] = FX_REAL;
-  rtLIST ["sampling"] = FX_STRING;  
+  rtLIST ["sampling"] = FX_STRING;
+#else
+  rtLIST ["depth"]    = FX_INTEGER;
+  rtLIST ["aa_depth"] = FX_INTEGER;
+  rtLIST ["sampling"] = FX_STRING_LIST;
+#endif
 
 }  /* getAttributeList() */
 
@@ -784,6 +876,11 @@ void TRaytracer::render (SBuffers& rsBUFFERS)
     }
   }
 
+  if ( pfUserDoneFunction )
+  {
+    pfUserDoneFunction ( pvUserData );
+  }
+  
 }  /* render() */
 
 
@@ -1007,16 +1104,14 @@ TColor TRaytracer::specularTransmittedLight (const TSurfaceData& rktDATA, Word w
 }  /* specularTransmittedLight() */
 
 
-void TRaytracer::printDebug (void) const
+void TRaytracer::printDebug (const string& indent) const
 {
 
-  cerr << TDebug::_indent() << "[_Raytracer_]" << endl;
+  cerr << indent << "[_Raytracer_]" << endl;
 
-  TDebug::_push();
+  string new_indent = TDebug::Indent(indent);
 
-  cerr << TDebug::_indent() << "Max. depth    : " << wMaxDepth << endl;
-  cerr << TDebug::_indent() << "Ambient light : "; tAmbientLight.printDebug(); cerr << endl;
-
-  TDebug::_pop();
+  cerr << new_indent << "Max. depth    : " << wMaxDepth << endl;
+  cerr << new_indent << "Ambient light : "; tAmbientLight.printDebug(new_indent); cerr << endl;
   
 }  /* printDebug() */

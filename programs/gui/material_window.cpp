@@ -19,6 +19,7 @@
 #include "llapi/material.h"
 #include "hlapi/plugin_manager.h"
 #include "hlapi/sphere.h"
+#include "llapi/attribute.h"
 #include "material_window.h"
 #include <gtk--/button.h>
 #include <gtk--/table.h>
@@ -49,7 +50,11 @@ void TMaterialWindow::setupScene (void)
   
   ptBsdf = (TBsdf*) tPluginManager.newObject ("BsdfPhong");
 
+#if !defined(NEW_ATTRIBUTES)
   nAttrib.dValue = 20;
+#else
+  nAttrib = new TAttribReal (20);
+#endif
   ptBsdf->setAttribute ("exponent", nAttrib, FX_REAL);
                         
   ptMaterial = new TMaterial;

@@ -56,6 +56,8 @@ class TBsdfSchlickDouble : public TBsdf
 
     string className (void) const { return "BsdfSchlickDouble"; }
 
+  TBsdfSchlickDouble* clone_new() const { return new TBsdfSchlickDouble(*this); }
+  
 };  /* class TBsdfSchlickDouble */
 
 
@@ -69,7 +71,7 @@ inline TColor TBsdfSchlickDouble::evaluateReflection (const TSurfaceData& rktDAT
   TVector      tHalfway = rktLIGHT - rktDATA.ray().direction();
   TVector      tTangent;
   TVector      tHalfwayProj;
-  TMaterial*   ptMat    = rktDATA.object()->material();
+  magic_pointer<TMaterial> ptMat = rktDATA.object()->material();
   TScalar      k        = ptMat->diffuseReflection (rktDATA) + ptMat->specularReflection (rktDATA);
   TScalar      tGeometrical, tL2_Geometrical;
   TScalar      tDirectional, tL2_Directional;

@@ -102,22 +102,31 @@ int TImageGif::save (const TImage* pktIMAGE) {
 
   iErrorCode = EGifPutScreenDesc (ptOutput, zWidth, zHeight, ptOutputMapObject->BitsPerPixel, ptOutput->SBackGroundColor, ptOutputMapObject);
   if ( iErrorCode == GIF_ERROR )
-  { 
-    cerr << "TImageGif::save : Error saving " << tFileName << endl;
+  {
+    if( !bSilent )
+    {
+      cerr << "TImageGif::save : Error saving " << tFileName << endl;
+    }
     return -1;
   }
 
   iErrorCode = EGifPutImageDesc (ptOutput, 0, 0, zWidth, zHeight, FALSE, ptOutputMapObject);
   if ( iErrorCode == GIF_ERROR )
   { 
-    cerr << "TImageGif::save : Error saving " << tFileName << endl;
+    if( !bSilent )
+    {
+      cerr << "TImageGif::save : Error saving " << tFileName << endl;
+    }
     return -1;
   }
  
   iErrorCode = EGifPutLine (ptOutput, ptOutputImage, (zWidth * zHeight));
   if ( iErrorCode == GIF_ERROR )
   { 
-    cerr << "TImageGif::save : Error saving " << tFileName << endl;
+    if( !bSilent )
+    {
+      cerr << "TImageGif::save : Error saving " << tFileName << endl;
+    }
     return -1;
   }
 
@@ -155,13 +164,19 @@ TImage* TImageGif::load (void)
   
   if ( !ptInput )
   {
-    cerr << "TImageGif::load : Error loading " << tFileName << endl;
+    if( !bSilent )
+    {
+      cerr << "TImageGif::load : Error loading " << tFileName << endl;
+    }
     return NULL;
   }
   
   if ( DGifSlurp (ptInput) == GIF_ERROR )
   { 
-    cerr << "TImageGif::load : Error loading " << tFileName << endl;
+    if( !bSilent )
+    {
+      cerr << "TImageGif::load : Error loading " << tFileName << endl;
+    }
     return NULL;
   }
 

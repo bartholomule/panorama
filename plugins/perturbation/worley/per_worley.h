@@ -30,7 +30,7 @@ class TPerturbationWorley : public TPerturbation
   protected:
 
     TScalar           tBumpFactor;
-    TPatternWorley*   ptWorleyPattern;
+    magic_pointer<TPatternWorley>   ptWorleyPattern;
 
   public:
 
@@ -47,10 +47,10 @@ class TPerturbationWorley : public TPerturbation
     int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
     void getAttributeList (TAttributeList& rtLIST) const;
 
-    void setWorleyPattern (TPatternWorley* ptPATTERN) { ptWorleyPattern = ptPATTERN; }
+    void setWorleyPattern (magic_pointer<TPatternWorley> ptPATTERN) { ptWorleyPattern = ptPATTERN; }
 
     string className (void) const { return "PerturbationWorley"; }
-
+    TPerturbationWorley* clone_new() const { return new TPerturbationWorley(*this); }
 };  /* class TPerturbationWorley */
 
 

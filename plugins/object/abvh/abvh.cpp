@@ -148,7 +148,6 @@ void TABVH::insertObject (TObject* ptOBJ)
 
 bool TABVH::initialize (void)
 {
-
   size_t                  zPos;
   TObject*                ptObj;
   TObjectList::iterator   tIter;
@@ -156,7 +155,7 @@ bool TABVH::initialize (void)
 
   if ( tObjectList.empty() )
   {
-    return true;
+    return val;
   }
 
   for (tIter = tObjectList.begin(); ( tIter != tObjectList.end() ) ;tIter++)
@@ -255,7 +254,7 @@ bool TABVH::findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) const
 //    return false;
 //  }
   
-  for (vector<TObject*>::const_iterator tIter = tObjectList.begin(); ( tIter != tObjectList.end() ) ;tIter++)
+  for (TObjectList::const_iterator tIter = tObjectList.begin(); ( tIter != tObjectList.end() ) ;tIter++)
   {
     if ( (*tIter)->findAllIntersections (rktRAY, rtLIST) )
     {

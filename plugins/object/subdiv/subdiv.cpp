@@ -23,6 +23,7 @@
 #include "subdivvert.h"
 #include "subdivedge.h"
 #include "subdivface.h"
+#include "llapi/attribute.h"
 
 DEFINE_PLUGIN ("SubdivisionSurface", FX_OBJECT_CLASS, TSubdiv);
 
@@ -70,12 +71,22 @@ int TSubdiv::setAttribute (const string& rktNAME, NAttribute nVALUE,
 
   if ( rktNAME == "method" )
   {
+#if !defined(NEW_ATTRIBUTES)    
     if ( eTYPE != FX_STRING )
     {
       return FX_ATTRIB_WRONG_TYPE;
     }
- 
+
     tVal = (char *)nVALUE.pvValue;
+#else
+    magic_pointer<TAttribString> str = get_string(nVALUE);
+    if( !str )
+    {
+      return FX_ATTRIB_WRONG_TYPE;
+    }
+
+    tVal = str->tValue;
+#endif
     if ( tVal == "Catmull-Clark" )
     {
       //  This is the default method, so do nothing.
@@ -91,6 +102,7 @@ int TSubdiv::setAttribute (const string& rktNAME, NAttribute nVALUE,
   
   if ( rktNAME == "vert" )
   {
+#if !defined(NEW_ATTRIBUTES)  
     if ( eTYPE != FX_STRING )
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -101,12 +113,26 @@ int TSubdiv::setAttribute (const string& rktNAME, NAttribute nVALUE,
       _tUserErrorMessage = "Error in vertex specification";
       return FX_ATTRIB_USER_ERROR;
     }
+#else
+    magic_pointer<TAttribString> str = get_string(nVALUE);
+    if ( !str )
+    {
+      return FX_ATTRIB_WRONG_TYPE;      
+    }
+
+    if( addVertex (str->tValue) )
+    {
+      _tUserErrorMessage = "Error in vertex specification";
+      return FX_ATTRIB_USER_ERROR;      
+    }
+#endif
 
     return FX_ATTRIB_OK;
   }
   
   if ( rktNAME == "face" )
   { 
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE != FX_STRING )
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -117,6 +143,19 @@ int TSubdiv::setAttribute (const string& rktNAME, NAttribute nVALUE,
       _tUserErrorMessage = "Error in face specification";
       return FX_ATTRIB_USER_ERROR;
     }
+#else
+    magic_pointer<TAttribString> str = get_string(nVALUE);
+    if ( !str )
+    {
+      return FX_ATTRIB_WRONG_TYPE;      
+    }
+
+    if( addFace (str->tValue) )
+    {
+      _tUserErrorMessage = "Error in face specification";
+      return FX_ATTRIB_USER_ERROR;      
+    }    
+#endif
 
     return FX_ATTRIB_OK;
   }

@@ -27,11 +27,12 @@
 
 class TBsdfCookTorrance : public TBsdf
 {
-
+  public:
+    typedef magic_pointer<TPattern> PTPattern;
   protected:
 
-    TPattern*           ptStandardDeviation;
-    TPattern*           ptSpecularReflectionCoefficients;
+    PTPattern           ptStandardDeviation;
+    PTPattern           ptSpecularReflectionCoefficients;
 
     mutable TScalar     tStandardDeviationSqr;
     mutable TScalar     tNred;
@@ -45,8 +46,8 @@ class TBsdfCookTorrance : public TBsdf
     void setCurrentStandardDeviation (TScalar tSTDDEV) const;
     void setCurrentSpecularReflectionCoefficients (TColor tFRESNELZERO) const;
 
-    void setStandardDeviation (TPattern* ptSTDDEV) { ptStandardDeviation = ptSTDDEV; }
-    void setSpecularReflectionCoefficients (TPattern* ptFRESNELZERO) { ptSpecularReflectionCoefficients = ptFRESNELZERO; }
+    void setStandardDeviation (PTPattern ptSTDDEV) { ptStandardDeviation = ptSTDDEV; }
+    void setSpecularReflectionCoefficients (PTPattern ptFRESNELZERO) { ptSpecularReflectionCoefficients = ptFRESNELZERO; }
 
     TScalar calculateFresnel (const TScalar& N, TScalar& rtCosVH) const;
 
@@ -70,6 +71,7 @@ class TBsdfCookTorrance : public TBsdf
     void getAttributeList (TAttributeList& rtLIST) const;
 
     string className (void) const { return "BsdfCookTorrance"; }
+    TBsdfCookTorrance* clone_new() const { return new TBsdfCookTorrance(*this); }
 
 };  /* class TBsdfCookTorrance */
 
@@ -124,7 +126,7 @@ inline TColor TBsdfCookTorrance::evaluateReflection (const TSurfaceData& rktDATA
   TScalar      tCosNV;
   TScalar      tAngleNH;
   TVector      tHalfway = rktLIGHT - rktDATA.ray().direction();
-  TMaterial*   ptMat    = rktDATA.object()->material();
+  magic_pointer<TMaterial> ptMat = rktDATA.object()->material();
   TColor       tColor   = ptMat->color (rktDATA);
   TScalar      kd       = ptMat->diffuseReflection (rktDATA);
   TScalar      ks       = ptMat->specularReflection (rktDATA);

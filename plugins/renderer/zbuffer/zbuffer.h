@@ -90,8 +90,9 @@ class TZBufferRenderer : public TRaytracer
     Word neededBuffers (void) const { return FX_ZBUFFER; }
     
     string className (void) const { return "ZBufferRenderer"; }
-
-    void printDebug (void) const;
+    virtual TZBufferRenderer* clone_new() const { return new TZBufferRenderer(*this); }
+  
+    void printDebug (const string& indent) const;
     
 };  /* class TZBufferRenderer */
 

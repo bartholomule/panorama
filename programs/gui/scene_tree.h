@@ -29,19 +29,20 @@ class TSceneTree : public Gtk::Tree
 
   protected:
 
-    TScene*   ptScene;
+    magic_pointer<TScene> ptScene;
 
-    bool recSetObjects (Gtk::Tree* ptTREE, TObject* ptOBJ);
+    bool recSetObjects (Gtk::Tree* ptTREE, magic_pointer<TObject> ptOBJ);
     
     bool setCamera (Gtk::Tree* ptTREE);
     bool setLights (Gtk::Tree* ptTREE);
+    bool setRenderer (Gtk::Tree* ptTREE);  
     bool setObjects (Gtk::Tree* ptTREE);
     
   public:
 
-    TSceneTree (TScene* ptSCENE);
+    TSceneTree (magic_pointer<TScene> ptSCENE);
 
-    gint manageButtonPress (GdkEventButton* ptBUTTON, TProcedural* ptOBJECT);
+    gint manageButtonPress (GdkEventButton* ptBUTTON, magic_pointer<TProcedural> ptOBJECT);
 
 };  /* class TSceneTree */
 

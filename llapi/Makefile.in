@@ -13,8 +13,10 @@ SRC_DIR = @srcdir@
 
 LIBNAME = libllapi.so.0
 
-OBJ = atmosphere.o \
+OBJ = entity.o \
+      atmosphere.o \
       atmospheric_object.o \
+      attribute.o \
       base_class.o \
       bounding_box.o \
       bsdf.o \
@@ -26,6 +28,7 @@ OBJ = atmosphere.o \
       heap_manager.o \
       image.o \
       image_io.o \
+      scene_io.o \
       light.o \
       material.o \
       mesh.o \
@@ -41,7 +44,9 @@ OBJ = atmosphere.o \
       span_list.o \
       surface_data.o \
       wood.o \
-      worley_basis.o
+      worley_basis.o \
+      type_functions.o 
+
 
 ALL_FILES = $(strip $(wildcard $(OBJ:%.o=%.cpp)))
 

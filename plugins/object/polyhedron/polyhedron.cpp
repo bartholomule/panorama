@@ -19,6 +19,7 @@
 #include "llapi/warning_eliminator.h"
 #include <list>
 #include "polyhedron.h"
+#include "llapi/attribute.h"
 
 bool               TPolyhedron::_gClassInitialized = false;
 list<TPlaneData>   TPolyhedron::_atPlaneDataList[5];
@@ -29,12 +30,12 @@ void TPolyhedron::_initializeClass (void)
 {
 
   // Cube
-  _atPlaneDataList[FX_CUBE].push_back (TPlaneData (0, 1, 0, -1));
-  _atPlaneDataList[FX_CUBE].push_back (TPlaneData (0, -1, 0, -1));
-  _atPlaneDataList[FX_CUBE].push_back (TPlaneData (-1, 0, 0, -1));
-  _atPlaneDataList[FX_CUBE].push_back (TPlaneData (1, 0, 0, -1));
-  _atPlaneDataList[FX_CUBE].push_back (TPlaneData (0, 0, 1, -1));
-  _atPlaneDataList[FX_CUBE].push_back (TPlaneData (0, 0, -1, -1));
+  _atPlaneDataList[FX_CUBE].push_back (TPlaneData ( 0,  1,  0, -1));
+  _atPlaneDataList[FX_CUBE].push_back (TPlaneData ( 0, -1,  0, -1));
+  _atPlaneDataList[FX_CUBE].push_back (TPlaneData (-1,  0,  0, -1));
+  _atPlaneDataList[FX_CUBE].push_back (TPlaneData ( 1,  0,  0, -1));
+  _atPlaneDataList[FX_CUBE].push_back (TPlaneData ( 0,  0,  1, -1));
+  _atPlaneDataList[FX_CUBE].push_back (TPlaneData ( 0,  0, -1, -1));
 
 }  /* _initializeClass() */
 
@@ -58,10 +59,50 @@ int TPolyhedron::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttrib
 
   if ( rktNAME == "shape" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_REAL )
     {
       eShape = (EShape) ((int) nVALUE.dValue);
     }
+#else
+    magic_pointer<TAttribInt>      i = get_int(nVALUE);
+    magic_pointer<TAttribString> str = get_string(nVALUE);
+    // For backwards compatibility...
+    if( !!i )
+    {
+      eShape = (EShape) i->tValue;
+    }
+    // A better method, allowing user selection without magic numbers
+    else if( !!str )
+    {
+      string shape = str->tValue;
+
+      if ( shape == "tetrahedron" )
+      {
+	eShape = FX_TETRAHEDRON;
+      }
+      else if ( shape == "cube" )
+      {
+	eShape = FX_CUBE;
+      }
+      else if ( shape == "octahedron" )
+      {
+	eShape = FX_OCTAHEDRON;
+      }
+      else if ( shape == "icosahedron" )
+      {
+	eShape = FX_ICOSAHEDRON;
+      }
+      else if ( shape == "dodecahedron" )
+      {
+	eShape = FX_DODECAHEDRON;
+      }
+      else
+      {
+	return FX_ATTRIB_WRONG_VALUE;
+      }
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -80,10 +121,34 @@ int TPolyhedron::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttrib
 int TPolyhedron::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 {
 
+#if !defined(NEW_ATTRIBUTES)
   if ( rktNAME == "shape" )
   {
     rnVALUE.dValue = eShape;
   }
+#else
+  if ( rktNAME == "shape" )
+  {
+    static map<EShape,string> shape_strings;
+    static vector<string> shape_choices;
+
+    if( shape_strings.empty() )
+    {
+      shape_strings[FX_TETRAHEDRON]  = "tetrahedron";
+      shape_strings[FX_CUBE]         = "cube";
+      shape_strings[FX_OCTAHEDRON]   = "octahedron";
+      shape_strings[FX_ICOSAHEDRON]  = "icosahedron";
+      shape_strings[FX_DODECAHEDRON] = "dodecahedron";
+      shape_choices.erase(shape_choices.begin(), shape_choices.end());
+      shape_choices.push_back (shape_strings[FX_TETRAHEDRON]);
+      shape_choices.push_back (shape_strings[FX_CUBE]);
+      shape_choices.push_back (shape_strings[FX_OCTAHEDRON]);
+      shape_choices.push_back (shape_strings[FX_ICOSAHEDRON]);
+      shape_choices.push_back (shape_strings[FX_DODECAHEDRON]);
+    }
+    rnVALUE = new TAttribStringList (shape_choices, shape_strings[eShape]);
+  }
+#endif
   else
   {
     return TObject::getAttribute (rktNAME, rnVALUE);
@@ -99,7 +164,11 @@ void TPolyhedron::getAttributeList (TAttributeList& rtLIST) const
 
   TObject::getAttributeList (rtLIST);
 
+#if !defined(NEW_ATTRIBUTES)
   rtLIST ["shape"] = FX_REAL;
+#else
+  rtLIST ["shape"] = FX_STRING_LIST;
+#endif
 
 }  /* getAttributeList() */
 
@@ -132,7 +201,7 @@ bool TPolyhedron::findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) c
   tSurfaceData.setup (this, rktRAY);
 
 //  cout << "poly : " << endl;
-  
+
   for (list<TPlaneData>::const_iterator tIter = _atPlaneDataList[eShape].begin(); ( tIter != _atPlaneDataList[eShape].end() ) ;tIter++)
   {
     pktPlaneData = &(*tIter);
@@ -187,24 +256,24 @@ bool TPolyhedron::findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) c
   {
     tNormalNear.applyTransform (ptMatrix);
     tNormalNear.normalize();
-      
+
     tSurfaceData.setPoint (tFactor * tNear, tNormalNear);
-    
+
     rtLIST.add (tSurfaceData);
     gIntersection = true;
   }
-    
+
   if ( ( tFar > FX_EPSILON ) && ( tFar < tRayIT.limit() ) )
   {
     tNormalFar.applyTransform (ptMatrix);
     tNormalFar.normalize();
-      
+
     tSurfaceData.setPoint (tFactor * tFar, tNormalFar);
-    
+
     rtLIST.add (tSurfaceData);
     gIntersection = true;
   }
-  
+
   return gIntersection;
 
 }  /* findAllIntersections() */
@@ -236,7 +305,7 @@ bool TPolyhedron::findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) c
   tSurfaceData.setup (this, rktRAY);
 
 //  cout << "poly : " << endl;
-  
+
   for (list<TPlaneData>::const_iterator tIter = atPlaneDataList[eShape].begin(); ( tIter != atPlaneDataList[eShape].end() ) ;tIter++)
   {
     pktPlaneData = &(*tIter);
@@ -255,7 +324,7 @@ bool TPolyhedron::findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) c
     else
     {
       t = -tDist / tDen;
-      
+
       if ( tDen > 0 )
       {
         tInt = Intersection (tInt, TInterval (-SCALAR_MAX, t));
@@ -283,7 +352,7 @@ bool TPolyhedron::findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) c
       gIntersection = true;
     }
   }
-    
+
   if ( ( tInt.max() > FX_EPSILON ) && ( tInt.max() < tRayIT.limit() ) )
   {
     if ( tSurfaceData.setPoint (tFactor * tInt.max()) )
@@ -292,7 +361,7 @@ bool TPolyhedron::findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) c
       gIntersection = true;
     }
   }
-    
+
   return gIntersection;
 
 }*/  /* findAllIntersections() */

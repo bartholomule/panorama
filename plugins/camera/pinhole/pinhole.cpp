@@ -18,6 +18,7 @@
 
 #include "llapi/warning_eliminator.h"
 #include "pinhole.h"
+#include "llapi/attribute.h"
 
 DEFINE_PLUGIN ("PinholeCamera", FX_CAMERA_CLASS, TPinholeCamera);
 
@@ -26,10 +27,18 @@ int TPinholeCamera::setAttribute (const string& rktNAME, NAttribute nVALUE, EAtt
 
   if ( rktNAME == "angle" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_REAL )
     {
       setAngle (nVALUE.dValue);
     }
+#else
+    magic_pointer<TAttribReal> r = get_real(nVALUE);
+    if( !!r )
+    {
+      setAngle (r->tValue);
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -50,7 +59,11 @@ int TPinholeCamera::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 
   if ( rktNAME == "angle" )
   {
+#if !defined(NEW_ATTRIBUTES)
     rnVALUE.dValue = tHalfAngle * 2;
+#else
+    rnVALUE = new TAttribReal (tHalfAngle * 2);    
+#endif
   }
   else
   {
@@ -76,7 +89,7 @@ bool TPinholeCamera::initialize (void)
 {
   bool val = true;
 
-  tDirection = (tLookAt - tLocation);
+  tDirection = (tLookAt - location());
   tDirection.normalize();
 
   if ( fabs (dotProduct (tDirection, tUp)) == 1 )
@@ -104,7 +117,7 @@ bool TPinholeCamera::getPlaneProjection (const TVector& rktPOINT, TVector2& rtPR
 
   TScalar   u, v;
   TScalar   pt, pu, pv;
-  TVector   tPoint = (rktPOINT - tLocation);
+  TVector   tPoint = (rktPOINT - location());
   
   pt = dotProduct (tDirection, tPoint);
   pu = dotProduct (I, tPoint) / tPixelSize;
@@ -128,17 +141,15 @@ bool TPinholeCamera::getPlaneProjection (const TVector& rktPOINT, TVector2& rtPR
 }  /* getPlaneProjection() */
 
 
-void TPinholeCamera::printDebug (void) const
+void TPinholeCamera::printDebug (const string& indent) const
 {
 
-  cerr << TDebug::_indent() << "[_" << className() << "_]" << endl;
+  cerr << indent << "[_" << className() << "_]" << endl;
 
-  TDebug::_push();
+  string new_indent = TDebug::Indent(indent);
 
-  cerr << TDebug::_indent() << "Angle     : " << getAngle() << endl;
-  cerr << TDebug::_indent() << "Up vector : "; tUp.printDebug();
-  cerr << TDebug::_indent() << "Look at   : "; tLookAt.printDebug();
-
-  TDebug::_pop();
+  cerr << new_indent << "Angle     : " << getAngle() << endl;
+  cerr << new_indent << "Up vector : "; tUp.printDebug(new_indent);
+  cerr << new_indent << "Look at   : "; tLookAt.printDebug(new_indent);
   
 }  /* printDebug() */

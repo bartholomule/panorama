@@ -110,7 +110,7 @@ class TVector3D : public TBaseClass
 
     void applyTransform (const TBaseMatrix<TItem>* pktMATRIX);
 
-    void printDebug (void) const;
+    virtual void printDebug (const string& indent) const;
 
     EClass classType (void) const { return FX_VECTOR_CLASS; }
     string className (void) const { return "Vector"; }
@@ -171,10 +171,10 @@ inline void TVector3D<TItem>::applyTransform (const TBaseMatrix<TItem>* pktMATRI
 
                                 
 template <class TItem>
-inline void TVector3D<TItem>::printDebug (void) const
+inline void TVector3D<TItem>::printDebug (const string& indent) const
 {
 
-  cerr << "TVector3D <" << vx << ", " << vy << ", " << vz << ">" << endl;
+  cerr << "TVector3D <" << vx << ", " << vy << ", " << vz << ">";
 
 }  /* printDebug() */
 

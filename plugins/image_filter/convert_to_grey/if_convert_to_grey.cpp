@@ -26,13 +26,30 @@ void TIF_ConvertToGrey::filter (SBuffers& rsBUFFERS)
 {
 
   TImage*   ptImage = rsBUFFERS.ptImage;
-
+  
+  if( pfUserUpdate )
+  {
+    pfUserUpdate(0.0, pvUserData);
+  }
+  
   for (size_t J = 0; ( J < ptImage->height() ) ;J++)
   {
     for (size_t I = 0; ( I < ptImage->width() ) ;I++)
     {
       ptImage->setPixel (I, J, ptImage->getPixel (I, J).convertToGrey());
     }
+    
+    if( pfUserUpdate )
+    {
+      if(!pfUserUpdate(J / double(ptImage->height()), pvUserData))
+      {
+	break;
+      }
+    }    
+  }
+  if( pfUserUpdate )
+  {
+    pfUserUpdate(1.0, pvUserData);
   }
 
 }  /* filter() */

@@ -47,7 +47,7 @@ class TSpanList : public map<TScalar, TSurfaceData, less <TScalar> >
       return (*tIter).second;
     }
 
-    void printDebug (void) const;
+    void printDebug (const string& indent) const;
     
 };  /* class TSpanList */
 

@@ -98,6 +98,8 @@ class TIF_Lens_Flare : public TImageFilter
 
     string className (void) const { return "IF_Lens_Flare"; }
 
+    virtual TIF_Lens_Flare* clone_new() const { return new TIF_Lens_Flare(*this); }
+
 };  /* class TIF_Lens_Flare */
 
 #endif  /* _IF_LENS_FLARE__ */

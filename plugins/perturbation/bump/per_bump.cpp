@@ -22,6 +22,8 @@
 #include <time.h>
 #include "llapi/mat_utils.h"
 #include "per_bump.h"
+#include "llapi/attribute.h"
+#include "llapi/extended_attribute.h"
 
 DEFINE_PLUGIN ("PerturbationBump", FX_PERTURBATION_CLASS, TPerturbationBump);
 
@@ -168,10 +170,18 @@ int TPerturbationBump::setAttribute (const string& rktNAME, NAttribute nVALUE, E
 
   if ( rktNAME == "source" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_PATTERN )
     {
-      setPattern ((TPattern*) nVALUE.pvValue);
+      setPattern (((TPattern*) nVALUE.pvValue)->clone_new());
     }
+#else
+    magic_pointer<TAttribPattern> pat = get_pattern(nVALUE);
+    if( !!pat )
+    {
+      setPattern (pat->tValue);
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -179,10 +189,18 @@ int TPerturbationBump::setAttribute (const string& rktNAME, NAttribute nVALUE, E
   }
   else if ( rktNAME == "grad_disp" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_VECTOR2 )
     {
       tGradientDisplacement = (*((TVector2*) nVALUE.pvValue));
     }
+#else
+    magic_pointer<TAttribVector2> vec = get_vector2(nVALUE);
+    if( !!vec )
+    {
+      tGradientDisplacement = vec->tValue;
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -190,10 +208,18 @@ int TPerturbationBump::setAttribute (const string& rktNAME, NAttribute nVALUE, E
   }
   else if ( rktNAME == "bump" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_REAL )
     {
       tBumpFactor = nVALUE.dValue;
     }
+#else
+    magic_pointer<TAttribReal> r = get_real(nVALUE);
+    if( !!r )
+    {
+      tBumpFactor = r->tValue;
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -201,10 +227,18 @@ int TPerturbationBump::setAttribute (const string& rktNAME, NAttribute nVALUE, E
   }
   else if ( rktNAME == "samples" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_VECTOR2 )
     {
       tSamples = (*((TVector2*) nVALUE.pvValue));
     }
+#else
+    magic_pointer<TAttribVector2> vec = get_vector2(nVALUE);
+    if( !!vec )
+    {
+      tSamples = vec->tValue;
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -223,6 +257,7 @@ int TPerturbationBump::setAttribute (const string& rktNAME, NAttribute nVALUE, E
 int TPerturbationBump::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 {
 
+#if !defined(NEW_ATTRIBUTES)
   if ( rktNAME == "source" )
   {
     rnVALUE.pvValue = ptPattern;
@@ -239,6 +274,24 @@ int TPerturbationBump::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
   {
     rnVALUE.pvValue = &tSamples;
   }
+#else
+  if ( rktNAME == "source" )
+  {
+    rnVALUE = new TAttribPattern (ptPattern);
+  }
+  else if ( rktNAME == "grad_disp" )
+  {
+    rnVALUE = new TAttribVector2 (tGradientDisplacement);
+  }
+  else if ( rktNAME == "bump" )
+  {
+    rnVALUE = new TAttribReal (tBumpFactor);
+  }
+  else if ( rktNAME == "samples" )
+  {
+    rnVALUE = new TAttribVector2 (tSamples);
+  }  
+#endif
   else
   {
     return TPerturbation::getAttribute (rktNAME, rnVALUE);

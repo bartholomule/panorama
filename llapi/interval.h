@@ -65,7 +65,7 @@ class TBaseInterval
 
     bool inside (TItem tVALUE) const;
 
-    void printDebug (void) const;
+    void printDebug (const string& indent) const;
     
 };  /* class TBaseInterval */
 
@@ -132,16 +132,16 @@ inline TItem TBaseInterval<TItem>::adjustValue (TItem tVALUE) const
 
 
 template <class TItem>
-inline void TBaseInterval<TItem>::printDebug (void) const
+inline void TBaseInterval<TItem>::printDebug (const string& indent) const
 {
 
   if ( gEmpty )
   {
-    cerr << "Interval [ empty ]" << endl;
+    cerr << indent << "Interval [ empty ]" << endl;
   }
   else
   {
-    cerr << "Interval [" << tMin << ", " << tMax << "]" << endl;
+    cerr << indent << "Interval [" << tMin << ", " << tMax << "]" << endl;
   }
 
 }  /* printDebug() */

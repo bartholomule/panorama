@@ -24,7 +24,8 @@
 #include "llapi/light.h"
 #include "llapi/procedural.h"
 
-typedef void (TUserFunction) (size_t, void*);
+typedef bool (TUserFunction) (size_t, void*);
+typedef void (TUserDoneFunction) (void*);
 
 struct SBuffers;
 class TScene;
@@ -34,15 +35,25 @@ class TRenderer : public TProcedural
 
   protected:
 
-    TUserFunction*   pfUserFunction;
-    void*            pvUserData;
+    TUserFunction*     pfUserFunction;
+    TUserDoneFunction* pfUserDoneFunction;  
+    void*              pvUserData;
     
   public:
 
-  virtual bool initialize (TScene& rtSCENE)
-  {
-    return TProcedural::initialize();
-  }
+    TRenderer ():
+      TProcedural(),
+      pfUserFunction(NULL),
+      pfUserDoneFunction(NULL),
+      pvUserData(NULL)
+    {
+    }
+  
+    virtual bool initialize (TScene& rtSCENE)
+    {
+      return TProcedural::initialize();
+    }
+  
     virtual void finalize (void) {}
     virtual void render (SBuffers& rsBUFFERS) = 0;
 
@@ -51,6 +62,12 @@ class TRenderer : public TProcedural
       pfUserFunction = pfUSER;
       pvUserData     = pvDATA;
     }
+    void setUserFunction (TUserFunction* pfUSER, TUserDoneFunction* pfDONE, void* pvDATA)
+    {
+      pfUserFunction = pfUSER;
+      pfUserDoneFunction = pfDONE;
+      pvUserData     = pvDATA;
+    }  
 
     virtual TColor mediaRadiance (const TSurfaceData& rktDATA, const TColor& rktRAD) const = 0;
     virtual TColor directLight (const TSurfaceData& rktDATA) const = 0;
@@ -64,7 +81,8 @@ class TRenderer : public TProcedural
     virtual Word neededBuffers (void) const { return 0; }
 
     EClass classType (void) const { return FX_RENDERER_CLASS; }
-    
+    virtual TRenderer* clone_new() const = 0;
+  
 };  /* class TRenderer */
 
 #endif  /* _RENDERER__ */

@@ -18,6 +18,8 @@
 
 #include "llapi/warning_eliminator.h"
 #include "pat_wood.h"
+#include "llapi/attribute.h"
+#include "llapi/extended_attribute.h"
 
 DEFINE_PLUGIN ("PatternWood", FX_PATTERN_CLASS, TPatternWood);
 
@@ -53,10 +55,18 @@ int TPatternWood::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttri
 
   if ( rktNAME == "color" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_COLOR )
     {
       setColor (*((TColor*) nVALUE.pvValue));
     }
+#else
+    magic_pointer<TAttribColor> col = get_color(nVALUE);
+    if( !!col )
+    {
+      setColor (col->tValue);
+    }
+#endif
     else 
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -64,6 +74,7 @@ int TPatternWood::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttri
   }
   else if ( rktNAME == "base_color" )
   {
+#if !defined(NEW_ATTRIBUTES)    
     if ( eTYPE == FX_COLOR )
     {
       setBaseColor (*((TColor*) nVALUE.pvValue));
@@ -72,6 +83,18 @@ int TPatternWood::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttri
     {
       bGradientLoaded = tGradient.loadGradient((char *) nVALUE.pvValue);
     }
+#else
+    magic_pointer<TAttribColor>  col = get_color(nVALUE);
+    magic_pointer<TAttribString> str = get_string(nVALUE);    
+    if( !!col )
+    {
+      setBaseColor (col->tValue);
+    }
+    else if( !!str )
+    {
+      bGradientLoaded = tGradient.loadGradient (str->tValue);
+    }
+#endif    
     else 
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -79,10 +102,18 @@ int TPatternWood::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttri
   }
   else if ( rktNAME == "ringscale" )
   {
+#if !defined(NEW_ATTRIBUTES)    
     if ( eTYPE == FX_REAL )
     {
       tRingScale = nVALUE.dValue;
     }
+#else
+    magic_pointer<TAttribReal> r = get_real(nVALUE);
+    if( !!r )
+    {
+      tRingScale = r->tValue;
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -90,10 +121,18 @@ int TPatternWood::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttri
   }
   else if ( rktNAME == "grain" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_REAL )
     {
       tGrainFactor = nVALUE.dValue;
     }
+#else
+    magic_pointer<TAttribReal> r = get_real(nVALUE);
+    if( !!r )
+    {
+      tGrainFactor = r->tValue;
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -101,11 +140,20 @@ int TPatternWood::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttri
   }
   else if ( rktNAME == "zoom" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_VECTOR )
     {
       tZoom = *((TVector*) nVALUE.pvValue);
       tZoom.set (1.0 / tZoom.x(), 1.0 / tZoom.y(), 1.0 / tZoom.z());
     }
+#else
+    magic_pointer<TAttribVector> vec = get_vector(nVALUE);
+    if( !!vec )
+    {
+      tZoom = vec->tValue;
+      tZoom.set (1.0 / tZoom.x(), 1.0 / tZoom.y(), 1.0 / tZoom.z());      
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -124,6 +172,7 @@ int TPatternWood::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttri
 int TPatternWood::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 {
 
+#if !defined(NEW_ATTRIBUTES)
   if ( rktNAME == "color" )
   {
     rnVALUE.pvValue = &tColor;
@@ -145,6 +194,29 @@ int TPatternWood::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
     // [_ERROR_] It should return the inverse of this vector.
     rnVALUE.pvValue = &tZoom;
   }
+#else
+  if ( rktNAME == "color" )
+  {
+    rnVALUE = new TAttribColor (tColor);
+  }
+  else if ( rktNAME == "base_color" )
+  {
+    rnVALUE = new TAttribColor (tBaseColor);
+  }
+  else if ( rktNAME == "ringscale" )
+  {
+    rnVALUE = new TAttribReal (tRingScale);
+  }
+  else if ( rktNAME == "grain" )
+  {
+    rnVALUE = new TAttribReal (tGrainFactor);
+  }
+  else if ( rktNAME == "zoom" )
+  {
+    TVector inv(1.0 / tZoom.x(), 1.0 / tZoom.y(), 1.0 / tZoom.z());
+    rnVALUE = new TAttribVector (inv);
+  }  
+#endif
   else
   {
     return TPattern::getAttribute (rktNAME, rnVALUE);

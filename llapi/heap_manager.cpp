@@ -16,6 +16,7 @@
 *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "llapi/attribute.h"
 #include "llapi/heap_manager.h"
 
 THeapManager   tHeapManager;

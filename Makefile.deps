@@ -45,7 +45,7 @@ dep: deps
 # A rule that does no action, but indirectly causes all of the dependency files
 # to be generated.
 deps: $(ALL_FILES) $(DEP_FILES)
-	echo "Dependency files generated" 
+	@echo "Dependency files generated" 
 
 # A rule which can be placed in makefiles which are in directories containing
 # only subdirectories:

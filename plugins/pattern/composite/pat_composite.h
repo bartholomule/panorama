@@ -25,13 +25,14 @@
 
 class TPatternComposite : public TPattern
 {
-
+  public:
+    typedef magic_pointer<TPattern> pattern_pointer;
   protected:
 
-    TPattern*   ptPattern1;
-    TPattern*   ptPattern2;
-    TScalar     tPattern1Amount;
-    TScalar     tPattern2Amount;
+    pattern_pointer   ptPattern1;
+    pattern_pointer   ptPattern2;
+    TScalar           tPattern1Amount;
+    TScalar           tPattern2Amount;
 
   public:
 
@@ -62,17 +63,19 @@ class TPatternComposite : public TPattern
     int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
     void getAttributeList (TAttributeList& rtLIST) const;
 
-    void setPattern1 (TPattern* ptPATTERN)
+    void setPattern1 (pattern_pointer ptPATTERN)
     {
       ptPattern1 = ptPATTERN;
     }
-    void setPattern2 (TPattern* ptPATTERN)
+    void setPattern2 (pattern_pointer ptPATTERN)
     {
       ptPattern2 = ptPATTERN;
     }
 
     string className (void) const { return "PatternComposite"; }
 
+    TPatternComposite* clone_new() const { return new TPatternComposite(*this); }
+  
 };  /* class TPatternComposite */
 
 #endif  /* _PATTERN_COMPOSITE__ */

@@ -19,6 +19,8 @@
 #include "llapi/warning_eliminator.h"
 #include <cmath>
 #include "pat_marble.h"
+#include "llapi/attribute.h"
+#include "llapi/extended_attribute.h"
 
 DEFINE_PLUGIN ("PatternMarble", FX_PATTERN_CLASS, TPatternMarble);
 
@@ -28,10 +30,18 @@ int TPatternMarble::setAttribute (const string& rktNAME, NAttribute nVALUE, EAtt
 
   if ( rktNAME == "color" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_COLOR )
     {
       setColor (*((TColor*) nVALUE.pvValue));
     }
+#else
+    magic_pointer<TAttribColor> col = get_color(nVALUE);
+    if( !!col )
+    {
+      setColor (col->tValue);
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -39,6 +49,7 @@ int TPatternMarble::setAttribute (const string& rktNAME, NAttribute nVALUE, EAtt
   }
   else if ( rktNAME == "base_color" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_COLOR )
     {
       setBaseColor (*((TColor*) nVALUE.pvValue));
@@ -47,6 +58,18 @@ int TPatternMarble::setAttribute (const string& rktNAME, NAttribute nVALUE, EAtt
     {
       bGradientLoaded = tGradient.loadGradient((char *) nVALUE.pvValue);
     }
+#else
+    magic_pointer<TAttribColor> col = get_color(nVALUE);
+    magic_pointer<TAttribString> str = get_string(nVALUE);    
+    if( !!col )
+    {
+      setColor (col->tValue);
+    }
+    else if( !!str )
+    {
+      bGradientLoaded = tGradient.loadGradient (str->tValue);
+    }
+#endif    
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -54,11 +77,19 @@ int TPatternMarble::setAttribute (const string& rktNAME, NAttribute nVALUE, EAtt
   }
   else if ( rktNAME == "zoom" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_VECTOR )
     {
       tZoom = *((TVector*) nVALUE.pvValue);
       tZoom.set (1.0 / tZoom.x(), 1.0 / tZoom.y(), 1.0 / tZoom.z());
     }
+#else
+    magic_pointer<TAttribVector> vec = get_vector(nVALUE);
+    if( !!vec )
+    {
+      tZoom.set (1.0 / vec->tValue.x(), 1.0 / vec->tValue.y(), 1.0 / vec->tValue.z());
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -66,6 +97,7 @@ int TPatternMarble::setAttribute (const string& rktNAME, NAttribute nVALUE, EAtt
   }
   else if ( rktNAME == "lacunarity" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_REAL )
     {
       if ( nVALUE.dValue > 0.0 )
@@ -77,6 +109,17 @@ int TPatternMarble::setAttribute (const string& rktNAME, NAttribute nVALUE, EAtt
         return FX_ATTRIB_WRONG_VALUE;
       }
     }
+#else
+    magic_pointer<TAttribReal> r = get_real(nVALUE);
+    if( !!r )
+    {
+      if( r->tValue <= 0.0 )
+      {
+        return FX_ATTRIB_WRONG_VALUE;	
+      }
+      tLacunarity = r->tValue;
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -84,6 +127,7 @@ int TPatternMarble::setAttribute (const string& rktNAME, NAttribute nVALUE, EAtt
   }
   else if ( rktNAME == "octaves" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_REAL )
     {
       if ( nVALUE.dValue >= 1.0 )
@@ -95,16 +139,44 @@ int TPatternMarble::setAttribute (const string& rktNAME, NAttribute nVALUE, EAtt
         return FX_ATTRIB_WRONG_VALUE;
       }
     }
+#else
+    magic_pointer<TAttribReal> r = get_real(nVALUE);
+    if( !!r )
+    {
+      if( r->tValue < 1.0 )
+      {
+        return FX_ATTRIB_WRONG_VALUE;	
+      }
+      tNumOctaves = r->tValue;
+    }
+#endif
+    else
+    {
+      return FX_ATTRIB_WRONG_TYPE;
+    }    
   }
   else if ( rktNAME == "offset" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_REAL )
     {
       tOffset = nVALUE.dValue;
     }
+#else
+    magic_pointer<TAttribReal> r = get_real(nVALUE);
+    if( !!r )
+    {
+      tOffset = r->tValue;
+    }
+#endif
+    else
+    {
+      return FX_ATTRIB_WRONG_TYPE;
+    }    
   }
   else if ( rktNAME == "multiplier" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_REAL )
     {
       if ( fabs (nVALUE.dValue) > FX_EPSILON )
@@ -116,6 +188,21 @@ int TPatternMarble::setAttribute (const string& rktNAME, NAttribute nVALUE, EAtt
         return FX_ATTRIB_WRONG_VALUE;
       }
     }
+#else
+    magic_pointer<TAttribReal> r = get_real(nVALUE);
+    if( !!r )
+    {
+      if( fabs(r->tValue) <= FX_EPSILON )
+      {
+        return FX_ATTRIB_WRONG_VALUE;	
+      }
+      tMultiplier = r->tValue;
+    }
+#endif
+    else
+    {
+      return FX_ATTRIB_WRONG_TYPE;
+    }    
   }  
   else
   {
@@ -130,6 +217,7 @@ int TPatternMarble::setAttribute (const string& rktNAME, NAttribute nVALUE, EAtt
 int TPatternMarble::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 {
 
+#if !defined(NEW_ATTRIBUTES)
   if ( rktNAME == "color" )
   {
     rnVALUE.pvValue = &tColor;
@@ -159,6 +247,37 @@ int TPatternMarble::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
   {
     rnVALUE.dValue = tNumOctaves;
   }
+#else
+  if ( rktNAME == "color" )
+  {
+    rnVALUE = new TAttribColor (tColor);
+  }
+  else if ( rktNAME == "base_color" )
+  {
+    rnVALUE = new TAttribColor (tBaseColor);
+  }
+  else if ( rktNAME == "zoom" )
+  {
+    TVector inv(1.0 / tZoom.x(), 1.0 / tZoom.y(), 1.0 / tZoom.z());
+    rnVALUE = new TAttribVector (inv);
+  }
+  else if ( rktNAME == "offset" )
+  {
+    rnVALUE = new TAttribReal (tOffset);
+  }
+  else if ( rktNAME == "multiplier" )
+  {
+    rnVALUE = new TAttribReal (tMultiplier);
+  }
+  else if ( rktNAME == "lacunarity" )
+  {
+    rnVALUE = new TAttribReal (tLacunarity);
+  }
+  else if ( rktNAME == "octaves" )
+  {
+    rnVALUE = new TAttribReal (tNumOctaves);
+  }
+#endif
   else
   {
     return TPattern::getAttribute (rktNAME, rnVALUE);

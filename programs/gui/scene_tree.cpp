@@ -22,8 +22,8 @@
 
 static void accept_properties(TObjectPropertiesDialog* tOPD)
 {
-  tOPD->accept_changes();
   tOPD->hide();
+  tOPD->accept_changes();
   delete tOPD;
 }
 
@@ -32,10 +32,10 @@ bool TSceneTree::setCamera (Gtk::Tree* ptTREE)
   
   Gtk::TreeItem*   ptItem;
   Gtk::Tree*       ptSubtree;
-  TCamera*        ptCamera;
+  magic_pointer<TCamera> ptCamera;
   
   ptCamera = ptScene->camera();
-  if ( ptCamera )
+  if ( !!ptCamera )
   {
     ptSubtree = new Gtk::Tree;
 
@@ -53,7 +53,7 @@ bool TSceneTree::setCamera (Gtk::Tree* ptTREE)
     ptItem->show();
     ptSubtree->append (*ptItem);
 
-    ptItem->button_press_event.connect(bind(slot(this,&TSceneTree::manageButtonPress), (TProcedural*) ptCamera));
+    ptItem->button_press_event.connect(bind(slot(this,&TSceneTree::manageButtonPress), (TProcedural*) ptCamera.get_pointer()));
 
     ptItem = new Gtk::TreeItem ("Camera");
     ptItem->show();
@@ -112,22 +112,57 @@ bool TSceneTree::setLights (Gtk::Tree* ptTREE)
 
 }  /* setLights() */
 
-
-bool TSceneTree::recSetObjects (Gtk::Tree* ptTREE, TObject* ptOBJ)
+bool TSceneTree::setRenderer (Gtk::Tree* ptTREE)
 {
   
-  Gtk::TreeItem*       ptItem;
-  Gtk::Tree*           ptSubtree;
-  vector<TObject*>*   ptObjectList;
-  bool                gSubtree = false;
+  Gtk::TreeItem*      ptItem;
+  Gtk::Tree*          ptSubtree;
+  magic_pointer<TRenderer> renderer = ptScene->renderer();
+
+  if ( !!renderer )
+  {
+    ptSubtree = new Gtk::Tree;
+    
+    string entry_name = renderer->className();
+    if(!renderer->identifier().empty())
+    {
+      entry_name = renderer->identifier() + " [" + entry_name + ']';
+    }      
+    
+    ptItem = new Gtk::TreeItem (entry_name);
+    ptItem->show();
+    ptSubtree->append (*ptItem);
+    
+    ptItem->button_press_event.connect(bind(slot(this, &TSceneTree::manageButtonPress), (TProcedural*) renderer.get_pointer()));
+    
+    ptItem = new Gtk::TreeItem ("Renderer");
+    ptItem->show();
+    
+    ptTREE->append (*ptItem);
+    ptItem->set_subtree (*ptSubtree);
+
+    return true;
+  }
+
+  return false;
+
+}  /* setRenderer() */
+
+bool TSceneTree::recSetObjects (Gtk::Tree* ptTREE, magic_pointer<TObject> ptOBJ)
+{
+  
+  Gtk::TreeItem*  ptItem;
+  Gtk::Tree*      ptSubtree;
+  TObjectList*    ptObjectList;
+  bool            gSubtree = false;
 
   if ( ptOBJ->classType() == FX_AGGREGATE_CLASS )
   {
     ptSubtree = new Gtk::Tree;
 
-    ptObjectList = ((TAggregate*) ptOBJ)->objectList();
-
-    for (vector<TObject*>::iterator tIter = ptObjectList->begin(); ( tIter != ptObjectList->end() ) ;tIter++)
+    ptObjectList = rcp_static_cast<TAggregate>(ptOBJ)->objectList();
+  
+    for (TObjectList::iterator tIter = ptObjectList->begin(); ( tIter != ptObjectList->end() ) ;tIter++)
     {
       gSubtree |= recSetObjects (ptSubtree, *tIter);
     }
@@ -212,27 +247,28 @@ bool TSceneTree::setObjects (Gtk::Tree* ptTREE)
 }  /* setObjects() */
 
 
-TSceneTree::TSceneTree (TScene* ptSCENE)
+TSceneTree::TSceneTree (magic_pointer<TScene> ptSCENE)
 {
 
   Gtk::Tree*       ptSubtree;
   Gtk::TreeItem*   ptItem;
-  bool            gSubtree = false;
+  bool             gSubtree = false;
 
   ptScene = ptSCENE;
   
-  if ( ptScene )
+  if ( !!ptScene )
   {
     ptSubtree = new Gtk::Tree;
 
     gSubtree |= setCamera (ptSubtree);
+    gSubtree |= setRenderer (ptSubtree);    
     gSubtree |= setLights (ptSubtree);
     gSubtree |= setObjects (ptSubtree);
 
     ptItem = new Gtk::TreeItem ("Scene");
     ptItem->show();
 
-    ptItem->button_press_event.connect(bind(slot(this, &TSceneTree::manageButtonPress), (TProcedural*) ptScene));
+    ptItem->button_press_event.connect(bind(slot(this, &TSceneTree::manageButtonPress), rcp_static_cast<TProcedural>(ptScene)));
 
     append (*ptItem);
     
@@ -250,7 +286,7 @@ TSceneTree::TSceneTree (TScene* ptSCENE)
 }  /* TSceneTree() */
 
 
-gint TSceneTree::manageButtonPress (GdkEventButton* ptEVENT, TProcedural* ptOBJECT)
+gint TSceneTree::manageButtonPress (GdkEventButton* ptEVENT, magic_pointer<TProcedural> ptOBJECT)
 {
 
   TObjectPropertiesDialog*   ptDlg;

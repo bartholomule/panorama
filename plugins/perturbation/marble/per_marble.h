@@ -32,7 +32,7 @@ class TPerturbationMarble : public TPerturbation
   protected:
 
     TScalar           tBumpFactor;
-    TPatternMarble*   ptMarblePattern;
+    magic_pointer<TPatternMarble> ptMarblePattern;
 
   public:
 
@@ -49,10 +49,10 @@ class TPerturbationMarble : public TPerturbation
     int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
     void getAttributeList (TAttributeList& rtLIST) const;
 
-    void setMarblePattern (TPatternMarble* ptPATTERN) { ptMarblePattern = ptPATTERN; }
+    void setMarblePattern (magic_pointer<TPatternMarble> ptPATTERN) { ptMarblePattern = ptPATTERN; }
 
     string className (void) const { return "PerturbationMarble"; }
-
+    TPerturbationMarble* clone_new() const { return new TPerturbationMarble(*this); }
 };  /* class TPerturbationMarble */
 
 

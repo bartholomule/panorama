@@ -19,18 +19,32 @@
 
 #include "llapi/warning_eliminator.h"
 #include "thinlens.h"
+#include "llapi/attribute.h"
 
 DEFINE_PLUGIN ("ThinlensCamera", FX_CAMERA_CLASS, TThinlensCamera);
 
+#if !defined(NEW_ATTRIBUTES)
 #define MUST_BE_TYPE(type, required_type) \
 if(type != required_type)                 \
 {                                         \
   return FX_ATTRIB_WRONG_TYPE;            \
 }
+#else
+#define NON_NULL_TYPE(var)     \
+if( !var )                     \
+{                              \
+  return FX_ATTRIB_WRONG_TYPE; \
+}
+#endif
 
 int TThinlensCamera::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
 
+#if defined(NEW_ATTRIBUTES)  
+  magic_pointer<TAttribReal> r = get_real(nVALUE);
+#endif
+  
+#if !defined(NEW_ATTRIBUTES)
   if ( rktNAME == "aperture" )
   {
     MUST_BE_TYPE(eTYPE, FX_REAL);
@@ -58,7 +72,37 @@ int TThinlensCamera::setAttribute (const string& rktNAME, NAttribute nVALUE, EAt
     MUST_BE_TYPE(eTYPE, FX_REAL);
     setFilmHeight (nVALUE.dValue);
     adjAngle();
+  }
+#else
+  if ( rktNAME == "aperture" )
+  {
+    NON_NULL_TYPE(r);
+    setAperture (r->tValue);
+  }
+  else if ( rktNAME == "focal_distance" )
+  {
+    NON_NULL_TYPE(r);    
+    setFocalDistance (r->tValue);
+  }
+  else if ( rktNAME == "focal_length" )
+  {
+    NON_NULL_TYPE(r);    
+    setFocalLength (r->tValue);
+    adjAngle();    
+  }
+  else if ( rktNAME == "film_width" )
+  {
+    NON_NULL_TYPE(r);    
+    setFilmWidth (r->tValue);
+    adjAngle();
+  }
+  else if ( rktNAME == "film_height" )
+  {
+    NON_NULL_TYPE(r);
+    setFilmHeight (r->tValue);
+    adjAngle();
   }  
+#endif
   else
   {
     return TPinholeCamera::setAttribute (rktNAME, nVALUE, eTYPE);
@@ -72,6 +116,7 @@ int TThinlensCamera::setAttribute (const string& rktNAME, NAttribute nVALUE, EAt
 int TThinlensCamera::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 {
 
+#if !defined(NEW_ATTRIBUTES)
   if ( rktNAME == "aperture" )
   {
     rnVALUE.dValue = getAperture();
@@ -91,7 +136,29 @@ int TThinlensCamera::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
   else if ( rktNAME == "film_height" )
   {
     rnVALUE.dValue = getFilmHeight();
-  }        
+  }
+#else
+  if ( rktNAME == "aperture" )
+  {
+    rnVALUE = new TAttribReal (getAperture());
+  }
+  else if ( rktNAME == "focal_distance" )
+  {
+    rnVALUE = new TAttribReal (getFocalDistance());
+  }
+  else if ( rktNAME == "focal_length" )
+  {
+    rnVALUE = new TAttribReal (getFocalLength());
+  }
+  else if ( rktNAME == "film_width" )
+  {
+    rnVALUE = new TAttribReal (getFilmWidth());
+  }
+  else if ( rktNAME == "film_height" )
+  {
+    rnVALUE = new TAttribReal (getFilmHeight());
+  }
+#endif  
   else
   {
     return TCamera::getAttribute (rktNAME, rnVALUE);
@@ -176,6 +243,7 @@ void TThinlensCamera::getRay (TScalar X, TScalar Y, TRay& rtRAY) const
   //  y = r*sin(theta);
   //  z = 0
   // Where the r and theta used are the warped versions.
+  const TVector tLocation = location();
   const TScalar r1 = frand(), r2 = frand();
   const TScalar theta = 2 * PI * r1;
   const TScalar r = disc_radius * sqrt(r2);
@@ -194,20 +262,18 @@ void TThinlensCamera::getRay (TScalar X, TScalar Y, TRay& rtRAY) const
   rtRAY.normalize();
 }
 
-void TThinlensCamera::printDebug (void) const
+void TThinlensCamera::printDebug (const string& indent) const
 {
 
-  cerr << TDebug::_indent() << "[_" << className() << "_]" << endl;
+  cerr << indent << "[_" << className() << "_]" << endl;
 
-  TDebug::_push();
+  string new_indent = TDebug::Indent(indent);
 
-  TPinholeCamera::printDebug();
-  cerr << TDebug::_indent() << "Aperture     : " << getAperture() << endl;
-  cerr << TDebug::_indent() << "Focal Dist   : " << getFocalDistance() << endl;
-  cerr << TDebug::_indent() << "Focal Length : " << getFocalLength() << endl;
-  cerr << TDebug::_indent() << "Film Width   : " << getFilmWidth() << endl;
-  cerr << TDebug::_indent() << "Film Height  : " << getFilmHeight() << endl;
-
-  TDebug::_pop();
+  TPinholeCamera::printDebug(new_indent);
+  cerr << new_indent << "Aperture     : " << getAperture() << endl;
+  cerr << new_indent << "Focal Dist   : " << getFocalDistance() << endl;
+  cerr << new_indent << "Focal Length : " << getFocalLength() << endl;
+  cerr << new_indent << "Film Width   : " << getFilmWidth() << endl;
+  cerr << new_indent << "Film Height  : " << getFilmHeight() << endl;
   
 }  /* printDebug() */

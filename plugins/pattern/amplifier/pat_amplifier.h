@@ -22,15 +22,18 @@
 
 #include "llapi/pattern.h"
 #include "hlapi/plugin_manager.h"
+#include "generic/magic_pointer.h"
 
 class TPatternAmplifier : public TPattern
 {
 
-  protected:
+public:
+  typedef magic_pointer<TPattern> pattern_pointer;
+protected:
 
-    TPattern*   ptPattern;
-    TScalar     tOffset;
-    TScalar     tAmplification;
+    pattern_pointer ptPattern;
+    TScalar         tOffset;
+    TScalar         tAmplification;
 
   public:
 
@@ -63,12 +66,14 @@ class TPatternAmplifier : public TPattern
     int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
     void getAttributeList (TAttributeList& rtLIST) const;
 
-    void setPattern (TPattern* ptPATTERN)
+    void setPattern (pattern_pointer ptPATTERN)
     {
       ptPattern = ptPATTERN;
     }
 
     string className (void) const { return "PatternAmplifier"; }
+  
+    TPatternAmplifier* clone_new() const { return new TPatternAmplifier(*this); }  
 
 };  /* class TPatternAmplifier */
 

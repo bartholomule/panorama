@@ -218,28 +218,31 @@ TScalar TBoundingBox::cost (void) const
 }  /* cost() */
 
 
-void TBoundingBox::printDebug (void) const
+void TBoundingBox::printDebug (const string& indent) const
 {
 
-  cerr << "[_TBoundingBox_] <";
-  cerr << tPoint1.x() << ", ";
-  cerr << tPoint1.y() << ", ";
-  cerr << tPoint1.z() << "> <";
-  cerr << tPoint2.x() << ", ";
-  cerr << tPoint2.y() << ", ";
-  cerr << tPoint2.z() << ">" << endl;
+  cerr << indent
+       << "[_TBoundingBox_] <"
+       << tPoint1.x() << ", "
+       << tPoint1.y() << ", "
+       << tPoint1.z() << "> <"
+       << tPoint2.x() << ", "
+       << tPoint2.y() << ", "
+       << tPoint2.z() << ">" << endl;
 
 }  /* printDebug() */
 
 
-TBoundingBox Merge (const vector<TObject*>& rktLIST)
+TBoundingBox Merge (const vector<magic_pointer<TObject> >& rktLIST)
 {
 
   TInterval   tIntX, tIntY, tIntZ;
 
   if ( !rktLIST.empty() )
   {
-    for (vector<TObject*>::const_iterator tIter = rktLIST.begin(); ( tIter != rktLIST.end() ) ;tIter++)
+    for (vector<magic_pointer<TObject> >::const_iterator tIter = rktLIST.begin();
+	 ( tIter != rktLIST.end() );
+	 tIter++)
     {
       const TBoundingBox&   rktBBox = (*tIter)->boundingBox();
       

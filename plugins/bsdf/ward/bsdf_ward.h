@@ -28,11 +28,13 @@
 class TBsdfWard : public TBsdf
 {
 
+  public:
+    typedef magic_pointer<TPattern> PTPattern;
   protected:
 
-    TPattern*   ptStandardDeviation_x;
-    TPattern*   ptStandardDeviation_y;
-    TPattern*   ptSpecularColor;
+    PTPattern   ptStandardDeviation_x;
+    PTPattern   ptStandardDeviation_y;
+    PTPattern   ptSpecularColor;
 
   protected:
 
@@ -57,10 +59,12 @@ class TBsdfWard : public TBsdf
     int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
     void getAttributeList (TAttributeList& rtLIST) const;
 
-    void setSpecularColor (TPattern* ptCOLOR) { ptSpecularColor = ptCOLOR; }
+    void setSpecularColor (PTPattern ptCOLOR) { ptSpecularColor = ptCOLOR; }
 
     string className (void) const { return "BsdfWard"; }
 
+    TBsdfWard* clone_new() const { return new TBsdfWard(*this); }
+  
 };  /* class TBsdfWard */
 
 
@@ -74,7 +78,7 @@ inline TColor TBsdfWard::evaluateReflection (const TSurfaceData& rktDATA, const 
   TVector      tTangent_x;
   TVector      tTangent_y;
   TVector      tTangent_z;
-  TMaterial*   ptMat    = rktDATA.object()->material();
+  magic_pointer<TMaterial> ptMat = rktDATA.object()->material();
   TColor       tColor   = ptMat->color (rktDATA);
   TScalar      kd       = ptMat->diffuseReflection (rktDATA);
   TScalar      ks       = ptMat->specularReflection (rktDATA);

@@ -20,6 +20,8 @@
 #include "llapi/file.h"
 #include "hlapi/image_manager.h"
 #include "projector.h"
+#include "llapi/attribute.h"
+#include "llapi/extended_attribute.h"
 
 DEFINE_PLUGIN ("Projector", FX_LIGHT_CLASS, TProjector);
 
@@ -35,10 +37,18 @@ int TProjector::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribT
 
   if ( rktNAME == "point_at" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_VECTOR )
     {
       tPointAt = *((TVector*) nVALUE.pvValue);
     }
+#else
+    magic_pointer<TAttribVector> vec = get_vector(nVALUE);
+    if( !!vec )
+    {
+      tPointAt = vec->tValue;
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -46,10 +56,18 @@ int TProjector::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribT
   }
   else if ( rktNAME == "up" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_VECTOR )
     {
       tUp = *((TVector*) nVALUE.pvValue);
     }
+#else
+    magic_pointer<TAttribVector> vec = get_vector(nVALUE);
+    if( !!vec )
+    {
+      tUp = vec->tValue;
+    }
+#endif    
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -57,10 +75,18 @@ int TProjector::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribT
   }
   else if ( rktNAME == "angle" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_REAL )
     {
       tAngle = degreeToRadian (nVALUE.dValue);
     }
+#else
+    magic_pointer<TAttribReal> r = get_real (nVALUE);
+    if( !!r )
+    {
+      tAngle = degreeToRadian (r->tValue);
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -68,6 +94,7 @@ int TProjector::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribT
   }
   else if ( rktNAME == "texture" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_STRING )
     {
       char*   pcName = (char*) nVALUE.pvValue;
@@ -79,6 +106,49 @@ int TProjector::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribT
         return FX_ATTRIB_USER_ERROR;
       }
     }
+    else if ( eTYPE == FX_IMAGE )
+    {
+      TImage* im2 = (TImage*)nVALUE.pvValue;
+
+      if( im2 != NULL )
+      {
+	ptImage = new TImage(*im2);
+      }
+      else
+      {
+	TProcedural::_tUserErrorMessage = "null image given";
+	
+	return FX_ATTRIB_USER_ERROR;
+      }      
+    }
+#else
+    magic_pointer<TAttribString> str = get_string(nVALUE);
+    if( !!str )
+    {
+      string pcName = str->tValue;
+      ptImage = tImageManager.newImage (pcName, FileExtension (pcName));
+      if ( !ptImage )
+      {
+        TProcedural::_tUserErrorMessage = "could not open texture file " + pcName;
+        return FX_ATTRIB_USER_ERROR;
+      }      
+    }
+    else if( eTYPE == FX_IMAGE )
+    {
+      magic_pointer<TAttribImage> img = get_image(nVALUE);
+      
+      if( !!img )
+      {
+	ptImage = img->tValue;
+      }
+      else
+      {
+	TProcedural::_tUserErrorMessage = "null image given";
+	
+	return FX_ATTRIB_USER_ERROR;
+      }
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -94,9 +164,11 @@ int TProjector::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribT
 }  /* setAttribute() */
 
 
+
 int TProjector::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 {
 
+#if !defined(NEW_ATTRIBUTES)
   if ( rktNAME == "point_at" )
   {
     rnVALUE.pvValue = &tPointAt;
@@ -108,12 +180,31 @@ int TProjector::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
   else if ( rktNAME == "angle" )
   {
     // [_ERROR_] It should convert it to degree before returning.
-    rnVALUE.dValue = tAngle;
+    // (KH) Fixed.
+    rnVALUE.dValue = (tAngle * 180.0) / PI;
   }
   else if ( rktNAME == "texture" )
   {
-    rnVALUE.pvValue = ptImage;
+    rnVALUE.pvValue = ptImage.get_pointer();
   }
+#else
+  if ( rktNAME == "point_at" )
+  {
+    rnVALUE = new TAttribVector (tPointAt);
+  }
+  else if ( rktNAME == "up" )
+  {
+    rnVALUE = new TAttribVector (tUp);    
+  }
+  else if ( rktNAME == "angle" )
+  {
+    rnVALUE = new TAttribReal ((tAngle * 180.0) / PI);
+  }
+  else if ( rktNAME == "texture" )
+  {
+    rnVALUE = new TAttribImage (ptImage);
+  }  
+#endif
   else
   {
     return TPointLight::getAttribute (rktNAME, rnVALUE);
@@ -142,9 +233,9 @@ bool TProjector::initialize (void)
 
   bool val = TPointLight::initialize();
   
-  if ( ptImage )
+  if ( !!ptImage )
   {
-    tDirection = (tPointAt - tLocation);
+    tDirection = (tPointAt - location());
     tDirection.normalize();
 
     I = crossProduct (tDirection, tUp);
@@ -173,7 +264,7 @@ TColor TProjector::color (const TVector& rktPOS) const
     return TColor::_black();
   }
 
-  tPoint = (rktPOS - tLocation);
+  tPoint = (rktPOS - location() );
   
   pt = dotProduct (tDirection, tPoint);
   pu = dotProduct (I, tPoint);
@@ -198,17 +289,16 @@ TColor TProjector::color (const TVector& rktPOS) const
 }  /* color() */
 
 
-void TProjector::printDebug (void) const
+void TProjector::printDebug (const string& indent) const
 {
 
-  TPointLight::printDebug();
+  TPointLight::printDebug(indent);
 
-  TDebug::_push();
+  string new_indent = TDebug::Indent(indent);
 
-  cerr << TDebug::_indent() << "Angle     : " << tAngle << endl;
-  cerr << TDebug::_indent() << "Up vector : "; tUp.printDebug();
-  cerr << TDebug::_indent() << "Point at  : "; tPointAt.printDebug();
-    
-  TDebug::_pop();
+  cerr << new_indent << "Angle     : " << tAngle << endl;
+  cerr << new_indent << "Up vector : "; tUp.printDebug(new_indent);
+  cerr << new_indent << "Point at  : "; tPointAt.printDebug(new_indent);
+  cerr << indent << "." << endl;
 
 }  /* printDebug() */

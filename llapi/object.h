@@ -24,20 +24,24 @@
 #include "llapi/bounding_box.h"
 #include "llapi/span_list.h"
 #include "llapi/object_filter.h"
+#include "llapi/material.h"
 
 class TMaterial;
+
+
 
 class TObject : public TVolume
 {
 
   protected:
+    typedef list<magic_pointer<TObjectFilter> > FilterListType;
 
     TBoundingBox                 tBoundingBox;
-    TMaterial*                   ptMaterial;
-    list<const TObjectFilter*>   tObjectFilterList;
+    magic_pointer<TMaterial>     ptMaterial;
+    FilterListType tObjectFilterList;
     size_t                       zObjectCode;
-    TMatrix*                     ptMatrix;
-    TMatrix*                     ptInverseMatrix;
+    magic_pointer<TMatrix>                     ptMatrix;
+    magic_pointer<TMatrix>                     ptInverseMatrix;
 
     struct TCapabilities
     {
@@ -63,16 +67,19 @@ class TObject : public TVolume
       
     virtual ~TObject (void)
     {
-      delete ptMatrix;
-      delete ptInverseMatrix;
+      ptMatrix = NULL;
+      ptInverseMatrix = NULL;
+
+      tObjectFilterList.erase(tObjectFilterList.begin(),
+			      tObjectFilterList.end());
     }
       
     TObject (const TObject& rktOBJ) : TVolume(rktOBJ)
     {
       createMatrices();
       
-      *ptMatrix        = *(rktOBJ.ptMatrix);
-      *ptInverseMatrix = *(rktOBJ.ptInverseMatrix);
+      ptMatrix        = rktOBJ.ptMatrix;
+      ptInverseMatrix = rktOBJ.ptInverseMatrix;
 
       ptMaterial        = rktOBJ.ptMaterial;
       zObjectCode       = rktOBJ.zObjectCode;
@@ -83,13 +90,8 @@ class TObject : public TVolume
     {
       if( &rktOBJ != this )
       {
-        if ( !ptMatrix )
-        {
-          createMatrices();
-        }
-  
-        *ptMatrix        = *(rktOBJ.ptMatrix);
-        *ptInverseMatrix = *(rktOBJ.ptInverseMatrix);
+        ptMatrix        = rktOBJ.ptMatrix;
+        ptInverseMatrix = rktOBJ.ptInverseMatrix;
   
         ptMaterial        = rktOBJ.ptMaterial;
         zObjectCode       = rktOBJ.zObjectCode;
@@ -106,6 +108,29 @@ class TObject : public TVolume
     virtual bool initialize (void);
     virtual void finalize (void) {}
 
+
+    // These functions do exactly what they say they do.  The reason that they
+    // exist, is because points, vectors, and normals should NOT be transformed
+    // equally.  They should simplify the life of anyone using an object, as
+    // they don't have to worry about which matrix does what, and how to modify
+    // the data to make it real.
+    // * Vectors do not care about length preservation.
+    //   (9 muls, 6 adds)
+    // * Normals require re-normalization after transformation, and must be
+    //   transformed by the transposed matrix (strange, but there's
+    //   mathematical reasons for it, which I no longer remember).
+    //   (12 muls, 8 adds, 3 divs, 1 sqrt)
+    // * Points must be scaled, translated, and de-homogenized to fully work with
+    //   a generic transform matrix.
+    //   (12 muls, 12 adds, 3 divs)
+    TVector world_point_to_local(const TVector& point) const;
+    TVector world_vector_to_local(const TVector& vec) const;
+    TVector world_normal_to_local(const TVector& norm) const;
+    TVector local_point_to_world(const TVector& point) const;
+    TVector local_vector_to_world(const TVector& vec) const;
+    TVector local_normal_to_world(const TVector& norm) const;
+
+  
     virtual bool intersects (const TRay& rktRAY) const
     {
       TSurfaceData   tSurfaceData;
@@ -128,41 +153,51 @@ class TObject : public TVolume
       
     virtual bool findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) const = 0;
 
-    void translate (const TVector& rktNEW_POS);
+    void translate (const TVector& rktREL_POS);
     void rotate (const TVector& rktAXISPOINT1, const TVector& rktAXISPOINT2, TScalar tANGLE);
     void rotate (const TVector& rktANGLESXYZ);
     void rotate (const TQuaternion& rktQUAT);
     void scale (const TVector& rktSCALING_XYZ, const TVector& rktPOINT);
+    void scale (const TVector& rktSCALING_XYZ) { scale(rktSCALING_XYZ,
+						       TVector(0,0,0)); }
+    virtual TVector location (void) const;
+    virtual void setLocation(const TVector& rktLOCATION);
 
     virtual TVector normal (const TSurfaceData& rktDATA) const;
 
     TBoundingBox boundingBox (void) const { return tBoundingBox; }
-    TMaterial* material (void) const { return ptMaterial; }
+    magic_pointer<TMaterial> material (void) const { return ptMaterial; }
     size_t objectCode (void) const { return zObjectCode; }
-    const list<const TObjectFilter*>& filterList (void) const { return tObjectFilterList; }
+    const FilterListType filterList (void) const { return tObjectFilterList; }
     const TCapabilities& capabilities (void) const { return sCapabilities; }
     
-    virtual void setMaterial (TMaterial* ptMAT) { ptMaterial = ptMAT; }
+    virtual void setMaterial (magic_pointer<TMaterial> ptMAT) { ptMaterial = ptMAT; }
     virtual void setObjectCode (size_t zCODE) { zObjectCode = zCODE; }
 
-    virtual TMatrix* transformMatrix (void) const { return ptMatrix; }
-    virtual TMatrix* inverseTransformMatrix (void) const { return ptInverseMatrix; }
+    virtual magic_pointer<TMatrix> transformMatrix (void) const { return ptMatrix; }
+    virtual magic_pointer<TMatrix> inverseTransformMatrix (void) const { return ptInverseMatrix; }
 
     virtual void setTransformMatrix (const TMatrix& rktMATRIX)
     {
-      assert ( ptMatrix );
-      
-      *ptMatrix = rktMATRIX;
+      ptMatrix = new TMatrix(rktMATRIX);
     }
     
     virtual void setInverseTransformMatrix (const TMatrix& rktMATRIX)
     {
-      assert ( ptInverseMatrix );
-      
-      *ptInverseMatrix = rktMATRIX;
+      ptInverseMatrix = new TMatrix(rktMATRIX);
+    }
+
+    virtual void setTransformMatrix (const magic_pointer<TMatrix>& pktMATRIX)
+    {
+      ptMatrix = pktMATRIX;
     }
     
-    virtual void addFilter (const TObjectFilter* pktFILTER) { tObjectFilterList.push_back (pktFILTER); }
+    virtual void setInverseTransformMatrix (const magic_pointer<TMatrix>& pktMATRIX)
+    {
+      ptInverseMatrix = pktMATRIX;
+    }  
+
+    virtual void addFilter (const magic_pointer<TObjectFilter> pktFILTER) { tObjectFilterList.push_back (pktFILTER); }
       
     virtual void getMesh (list<TMesh*>& rtMESH_LIST) const {}
 
@@ -177,9 +212,18 @@ class TObject : public TVolume
     // This will be most commonly used for things such as area lights.
     virtual TVector RandomPointOnSurface() const { return TVector(0,0,0); }
   
-    void printDebug (void) const;
+    virtual void streamDebug (ostream& o, const string& indent) const;  
 
     EClass classType (void) const { return FX_OBJECT_CLASS; }
+
+
+    // Attribute management
+    virtual int setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
+  
+    virtual int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
+    virtual void getAttributeList (TAttributeList& rtLIST) const;
+  
+    virtual TUserFunctionMap getUserFunctions();
       
 };  /* class TObject */
 
@@ -189,11 +233,12 @@ inline TVector TObject::normal (const TSurfaceData& rktDATA) const
   TVector   tPoint  = (*ptInverseMatrix) * rktDATA.point();
   TVector   tNormal = localNormal (tPoint);
 
-  tNormal.applyTransform (ptInverseMatrix);
+  tNormal.applyTransform (&*ptInverseMatrix);
   tNormal.normalize();
 
   return tNormal;
 
 }  /* normal() */
+
 
 #endif  /* _OBJECT__ */

@@ -20,13 +20,14 @@
 #include <cmath>
 #include "llapi/math_tools.h"
 #include "hlapi/plane.h"
+#include "llapi/attribute.h"
 
 void TPlane::update (void)
 {
 
   tNormal.normalize();
 
-  D = -dotProduct (tNormal, tLocation);
+  D = -dotProduct (tNormal, location() );
 
 }  /* update() */
 
@@ -138,10 +139,18 @@ int TPlane::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType 
 
   if ( rktNAME == "normal" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_VECTOR )
     {
       setNormal (*((TVector*) nVALUE.pvValue));
     }
+#else
+    magic_pointer<TAttribVector> vec = get_vector(nVALUE);
+    if( !!vec )
+    {
+      setNormal (vec->tValue);
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -149,10 +158,18 @@ int TPlane::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType 
   }
   else if ( rktNAME == "one_sided" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_BOOL )
     {
       setOneSided (nVALUE.gValue);
     }
+#else
+    magic_pointer<TAttribBool> b = get_bool(nVALUE);
+    if( !!b )
+    {
+      setOneSided (b->tValue);
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -171,6 +188,7 @@ int TPlane::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType 
 int TPlane::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 {
 
+#if !defined(NEW_ATTRIBUTES)    
   if ( rktNAME == "normal" )
   {
     rnVALUE.pvValue = &tNormal;
@@ -179,6 +197,16 @@ int TPlane::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
   {
     rnVALUE.gValue = gOneSided;
   }
+#else
+  if ( rktNAME == "normal" )
+  {
+   rnVALUE = new TAttribVector(tNormal);
+  }
+  else if ( rktNAME == "one_sided" )
+  {
+    rnVALUE = new TAttribBool(gOneSided);    
+  }  
+#endif
   else
   {
     return TObject::getAttribute (rktNAME, rnVALUE);
@@ -200,16 +228,14 @@ void TPlane::getAttributeList (TAttributeList& rtLIST) const
 }  /* getAttributeList() */
 
 
-void TPlane::printDebug (void) const
+void TPlane::printDebug (const string& indent) const
 {
 
-  TObject::printDebug();
+  TObject::printDebug(indent);
 
-  TDebug::_push();
+  string new_indent = TDebug::Indent(indent);
 
-  cerr << TDebug::_indent() << "Normal   : "; tNormal.printDebug(); cerr << endl;
-  cerr << TDebug::_indent() << "OneSided : " << gOneSided << endl;
+  cerr << new_indent << "Normal   : "; tNormal.printDebug(new_indent); cerr << endl;
+  cerr << new_indent << "OneSided : " << gOneSided << endl;
 
-  TDebug::_pop();
-  
 }  /* printDebug() */

@@ -31,7 +31,7 @@ class TPerturbationLeopard : public TPerturbation
   protected:
 
     TScalar            tBumpFactor;
-    TPatternLeopard*   ptLeopardPattern;
+    magic_pointer<TPatternLeopard> ptLeopardPattern;
 
   public:
 
@@ -48,10 +48,10 @@ class TPerturbationLeopard : public TPerturbation
     int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
     void getAttributeList (TAttributeList& rtLIST) const;
 
-    void setLeopardPattern (TPatternLeopard* ptPATTERN) { ptLeopardPattern = ptPATTERN; }
+    void setLeopardPattern (magic_pointer<TPatternLeopard> ptPATTERN) { ptLeopardPattern = ptPATTERN; }
 
     string className (void) const { return "PerturbationLeopard"; }
-
+    TPerturbationLeopard* clone_new() const { return new TPerturbationLeopard(*this); }
 };  /* class TPerturbationLeopard */
 
 

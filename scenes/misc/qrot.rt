@@ -1,67 +1,72 @@
+print("---------------------------------------------------");
+print("The new parser has not yet implemented: Quaternions");
+print("---------------------------------------------------");
+halt();
+
 #include "materials.inc"
+#include "cameras.inc"
+#include "shapes.inc"
 
-define camera c
+define c Camera
 {
-  translate < 0, 0, -12>
-  look_at   < 0, 0,  0> 
-}
+  translate( < 0, 0, -12> );
+  look_at  = < 0, 0,  0>;
+};
 
-light 
+Light 
 {
-  translate <-1, 1, -8>
-  color CWhite
-}
+  translate( <-1, 1, -8> );
+  color = CWhite;
+};
 
-define torus t
+define t torus
 {
-  radius_a 3
-  radius_b 1
-  material : extends MPlastic
+  radius_a = 3;
+  radius_b = 1;
+  material = MPlastic
   {
-    color CBlue
-  }
-}
+    color = CBlue;
+  };
+};
 
 aggregate
 {
-  torus: extends t { rotate   0,<1,0,1>  } // Rotate   0 degrees around 
-                                           // the vector <1,0,1>
-  torus: extends t { rotate  60,<1,0,1>  } // Rotate  60 degrees 
-  torus: extends t { rotate 120,<1,0,1>  } // Rotate 120 degrees 
+  t { rotate(   0,<1,0,1> );  };// Rotate   0 degrees around the vector <1,0,1>
+  t { rotate(  60,<1,0,1> );  };// Rotate  60 degrees 
+  t { rotate( 120,<1,0,1> );  };// Rotate 120 degrees 
 
   sphere
   {
-    radius 2
-    material: extends MPlastic
+    radius = 2;
+    material = MPlastic
     {
-      emission : class PatternMarble
+      emission = class PatternMarble
       {
-        color CRed
-        base_color CBlue
-      }
-    }
-  }
+        color = CRed;
+        base_color = CBlue;
+      };
+    };
+  };
 
- rotate -22.5,<0,1,0>
- rotate 30,<1,0,0>
-}
+ rotate( -22.5,<0,1,0> );
+ rotate(    30,<1,0,0> );
+};
 
 
 scene
 {
-  camera	c
-  width		400
-  height	400
+  camera = c;
+  width	 = 400;
+  height = 400;
 
-  output
+  output = class png
   {
-    type        "png"
-    name	"qrot.png"
-  }
-  renderer : class Raytracer 
+    name = "qrot.png";
+  };
+  renderer = class Raytracer 
   {
-    aa_depth 8
-    depth 6
-    sampling "stochastic"
-  }
-}
+    aa_depth = 8;
+    depth = 6;
+    sampling = "stochastic";
+  };
+};

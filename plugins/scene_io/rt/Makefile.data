@@ -1,5 +1,5 @@
 PLUGIN_NAME = rt_io
-OBJ         = parser.o scanner.o rt_io.o
-BISONFLAGS  = --name-prefix=rt_
+OBJ         = parser.o scanner.o rt_io.o attribute_math.o language_functions.o attrib_tweak.o
+BISONFLAGS  = --name-prefix=rt_ -v -d
 LEXFLAGS   += -Prt_
-CXXFLAGS   += -O0
+CXXFLAGS   += -O0 -DNO_AUTO_PTR_CONV

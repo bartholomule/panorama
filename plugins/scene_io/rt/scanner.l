@@ -24,6 +24,7 @@
 #include "hlapi/mesh_object.h"
 #include "parser_defs.h"
 #include "rt_io.h"
+#include "parsed_types.h"
 #include "parser.h"
 
 #undef yywrap
@@ -54,7 +55,6 @@ extern multimap<string, string>   tConfigData;
 static void DeleteComments (void);
 static bool ProcessInclude (void);
 static bool IncludeFile (void);
-
 //
 //  Types
 //
@@ -83,6 +83,7 @@ static Byte               _bIncludeLevel = 0;
 {                                   \
   strcpy (rt_lval.acIdent, yytext); \
   rt_lval.acIdent [yyleng] = '\0';  \
+/*  cout << "scanner returning: \"" << rt_lval.acIdent << "\"" << endl; */ \
   return x;                         \
 } 
  
@@ -97,72 +98,29 @@ line_comment		"//".*\n
 natural			{digit}+
 integer			[+-]?{digit}+
 exponent		[eE]{integer}
-float			({integer}|{integer}?"."{natural}?)
+float			{integer}?"."{natural}?
 real			{float}({exponent})?
 
 %%
 
-aggregate               RESERVED (T_AGGREGATE);
-atm_object              RESERVED (T_ATM_OBJECT);
-attribute_list          RESERVED (T_ATTR_LIST);
-attribute_type          RESERVED (T_ATTR_TYPE);
+"<="                    RESERVED (LESS_EQ);
+">="                    RESERVED (GREATER_EQ);
+"=="                    RESERVED (EQUAL);
+"!="                    RESERVED (NOT_EQ);
 blue			RESERVED (T_BLUE);
-box			RESERVED (T_BOX);
-bsdf			RESERVED (T_BSDF);
-camera			RESERVED (T_CAMERA);
-circle			RESERVED (T_CIRCLE);
 class			RESERVED (T_CLASS);
-color			RESERVED (T_COLOR);
-colour			RESERVED (T_COLOR);
-cone                    RESERVED (T_CONE);
-cylinder		RESERVED (T_CYLINDER);
 define			RESERVED (T_DEFINE);
 difference              RESERVED (T_DIFFERENCE);
 extends			RESERVED (T_EXTENDS);
 filter			RESERVED (T_FILTER);
 green			RESERVED (T_GREEN);
-image_filter            RESERVED (T_IMAGE_FILTER);
 intersection            RESERVED (T_INTERSECTION);
 light			RESERVED (T_LIGHT);
-material		RESERVED (T_MATERIAL);
-mesh			RESERVED (T_MESH);
-object			RESERVED (T_OBJECT);
-object_filter           RESERVED (T_OBJECT_FILTER);
 output                  RESERVED (T_OUTPUT);
-pattern                 RESERVED (T_PATTERN);
-perturbation            RESERVED (T_PERTURBATION);
-phong_triangle		RESERVED (T_PHONG_TRIANGLE);
-plane			RESERVED (T_PLANE);
-rectangle		RESERVED (T_RECTANGLE);
 red			RESERVED (T_RED);
 renderer		RESERVED (T_RENDERER);
-rotate			RESERVED (T_ROTATE);
-scale                   RESERVED (T_SCALE);
-scene			RESERVED (T_SCENE);
-sphere			RESERVED (T_SPHERE);
-torus                   RESERVED (T_TORUS);
-translate		RESERVED (T_TRANSLATE);
-triangle		RESERVED (T_TRIANGLE);
-type			RESERVED (T_TYPE);
+this                    RESERVED (THIS);
 union                   RESERVED (T_UNION);
-vector			RESERVED (T_VECTOR);
-vertex			RESERVED (T_VERTEX);
-x                       RESERVED (T_X);
-y                       RESERVED (T_Y);
-z                       RESERVED (T_Z);
-"halt()"                {
-                          /* This simple rule is an easy way to get panorama to
-			     terminate before any expensive calculations are
-			     performed.  This may be useful for checking the
-			     syntax of a source file and terminating before any
-			     work is done on it.
-			  */ 
-                          cout << "Terminating due to halt request on line "
-			       << TSceneRT::_dwLineNumber
-			       << "."
-			       << endl;
-			  exit(1);
-                        }
 
 on			{
 			  rt_lval.gValue = true;
@@ -174,7 +132,40 @@ off			{
 			  return T_BOOL;
 			}
 
-{line_comment}		TSceneRT::_dwLineNumber++;
+true			{
+			  rt_lval.gValue = true;
+			  return T_BOOL;
+			}
+ 
+false			{
+			  rt_lval.gValue = false;
+			  return T_BOOL;
+			}
+
+"//"		        {
+                          // This is much safer than the old rule:
+                          // "//".*\n     TSceneRT::_dwLineNumber++;
+                          // It now should act in the proper manner when the
+                          // file ends within a line comment. 
+                          int c;
+			  for( c = yyinput();
+			       (c != EOF) && (c != '\n');
+			       c = yyinput() )
+			  {
+			    // Eat up the whole line of comments
+			  }
+			  if( c == EOF )
+			  {
+			    rt_warning("end of file within single line comment");
+			    // Put the char back, so that the end of file can
+			    // be matched correctly.
+			    unput(c);
+			  }
+			  else
+			  {
+			    TSceneRT::_dwLineNumber++;
+			  };
+                        }
 
 {horizontal_space}	;
 
@@ -183,6 +174,7 @@ off			{
 {identifier}		{
 			  strcpy (rt_lval.acIdent, yytext);
 			  rt_lval.acIdent [MAX_IDENTIFIER] = 0;
+			  /*			  cout << "scanner returning: \"" << rt_lval.acIdent << "\"" << endl; */
 			  return T_IDENTIFIER;
 			}
 
@@ -192,6 +184,11 @@ off			{
 
 #include		ProcessInclude();
 
+{integer}		{
+			  rt_lval.iValue = atoi (yytext);
+			  return T_INTEGER;
+			}
+
 {real}			{
 			  rt_lval.dValue = atof (yytext);
 			  return T_REAL;
@@ -200,10 +197,11 @@ off			{
 {quoted_string}		{
 			  strncpy (rt_lval.acIdent, yytext + 1, yyleng - 2);
 			  rt_lval.acIdent [yyleng - 2] = 0;
+			  /*			  cout << "scanner returning: \"" << rt_lval.acIdent << "\"" << endl;			   */
 			  return T_QUOTED_STRING;
 			}
 
-.			return yytext[0];
+.			/* cout << "scanner returning: '" << yytext[0] << "'" << endl; */ return yytext[0];
 
 <<EOF>>			{
 			  if ( _bIncludeLevel == 0 )
@@ -361,3 +359,24 @@ bool IncludeFile (void)
   return true;
 
 }  /* IncludeFile() */
+
+
+void scanner_unput_string(const string& s)
+{
+  // Unput the current yytext...
+  string old_text = string(yytext,yyleng);
+  string new_text = s;// + old_text;
+
+  for(int i = new_text.length() - 1;
+      i >= 0;
+      --i)
+  {
+    unput(new_text[i]);
+  }
+  cout << "Scanner: Just unput: \"" << new_text << "\"" << endl;
+
+  YY_FLUSH_BUFFER;
+  
+  string trash_text = string(yytext,yyleng);
+  cout << "  new yytext=\"" << trash_text << "\"" << endl;
+}

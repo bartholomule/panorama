@@ -44,8 +44,12 @@ class TPhongTriangle : public TTriangle
     void setNormal (const TVector& rktNORMAL);
     TVector normal (const TSurfaceData& rktDATA) const;
 
-    void printDebug (void) const;
+    void addVertex (const TVector& rktVERTEX, const TVector& rktNORMAL );
+
+    void printDebug (const string& indent) const;
     string className (void) const { return "PhongTriangle"; }
+
+    virtual TUserFunctionMap getUserFunctions();  
     
 };  /* class TPhongTriangle */
 

@@ -1,3 +1,16 @@
+>> Version 0.19 in progress (21 November 2002)
+
+ - New attribute model.
+
+ - Type abstraction interface.
+
+ - New RT scene description language (SDL).
+
+ - Lots and lots of reference counted pointers (will increase stability in the
+   future).  
+
+>> Version 0.18 released (21 November 2002)
+
  - Windows (MSVC++6) project files added, for a statically linked 'render'
    executable (done by Kevin Harris).
 

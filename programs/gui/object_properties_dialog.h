@@ -39,6 +39,7 @@ class TObjectPropertiesDialog : public Gtk::Dialog
     Gtk::Widget* createPropertiesWidget (void);
     Gtk::Widget* createStatusWidget (void);
     Gtk::Button* ptOkButton;
+
   public:
 
     TObjectPropertiesDialog (TProcedural* ptOBJECT);
@@ -48,7 +49,9 @@ class TObjectPropertiesDialog : public Gtk::Dialog
     const Gtk::Button& getOk() const { return *ptOkButton; }
 
     void accept_changes();
-    
+
+    vector<string> modified_attributes;
+  
 };  /* class TObjectPropertiesDialog */
 
 #endif  /* _OBJECT_PROPERTIES_DIALOG__ */

@@ -81,6 +81,8 @@ class TPatternBrick : public TPattern
     }
 
     string className (void) const { return "PatternBrick"; }
+  
+    TPatternBrick* clone_new() const { return new TPatternBrick(*this); }    
 
 };  /* class TPatternBrick */
 

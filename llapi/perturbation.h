@@ -31,6 +31,7 @@ class TPerturbation : public TProcedural
 
     EClass classType (void) const { return FX_PERTURBATION_CLASS; }
     string className (void) const { return "Perturbation"; }
+    virtual TPerturbation* clone_new() const { return new TPerturbation(*this); }
 
 };  /* class TPerturbation */
 

@@ -27,7 +27,7 @@ TColor TAtmosphere::filterRadiance (const TSurfaceData& rktDATA, const TColor& r
   // [_ERROR_] This code is not finished. It will only work if the objects do not intersect,
   // and the objects are accesed in back to front order.
   //
-  for (vector<TAtmosphericObject*>::const_iterator tIter = tAtmObjectList.begin(); ( tIter != tAtmObjectList.end() ) ;tIter++)
+  for (vector<magic_pointer<TAtmosphericObject> >::const_iterator tIter = tAtmObjectList.begin(); ( tIter != tAtmObjectList.end() ) ;tIter++)
   {
     tRadiance = (*tIter)->filterRadiance (rktDATA, tRadiance);
   }
@@ -42,7 +42,7 @@ TScalar TAtmosphere::transparency (const TVector& rktPOINT1, const TVector& rktP
 
   TScalar   tTransparency = 1;
   
-  for (vector<TAtmosphericObject*>::const_iterator tIter = tAtmObjectList.begin(); ( tIter != tAtmObjectList.end() ) ;tIter++)
+  for (vector<magic_pointer<TAtmosphericObject> >::const_iterator tIter = tAtmObjectList.begin(); ( tIter != tAtmObjectList.end() ) ;tIter++)
   {
     tTransparency *= (*tIter)->transparency (rktPOINT1, rktPOINT2);
   }
@@ -58,7 +58,7 @@ bool TAtmosphere::initialize (TScene* ptSCENE)
   
   ptScene = ptSCENE;
   
-  for (vector<TAtmosphericObject*>::iterator tIter = tAtmObjectList.begin(); ( tIter != tAtmObjectList.end() ) ;tIter++)
+  for (vector<magic_pointer<TAtmosphericObject> >::iterator tIter = tAtmObjectList.begin(); ( tIter != tAtmObjectList.end() ) ;tIter++)
   {
     val = val && (*tIter)->initialize (ptScene);
   }

@@ -3,169 +3,169 @@
 */
 
 #include "materials.inc"
+#include "cameras.inc"
 
-define camera c
+define c Camera
 {
-  translate	<0, 0, 600>
-  look_at	<0, 0, 0>
-}
+  translate(<0, 0, 600>);
+  look_at = <0, 0, 0>;
+};
 
-define light l
+define l class PointLight
 {
-}
+};
 
-define material WallMaterial : extends MLambertian
+define WallMaterial MLambertian
 {
-}
+};
 
 // Floor
-plane
+class Plane
 {
-  normal	<0, 1, 0>
-  translate	<0, -150, 0>
-  material : extends WallMaterial
+  normal   = <0, 1, 0>;
+  translate( <0, -150, 0> );
+  material = WallMaterial
   {
-    color	CWhite
-  }
-}
+    color = CWhite;
+  };
+};
 
 // Ceiling
-plane
+class Plane
 {
-  normal	<0, -1, 0>
-  translate	<0, 150, 0>
-  material : extends WallMaterial
+  normal = <0, -1, 0>;
+  translate( <0, 150, 0> );
+  material = WallMaterial
   {
-    color	CWhite
-  }
-}
+    color = CWhite;
+  };
+};
 
 // Left wall
-plane
+class Plane
 {
-  normal	<1, 0, 0>
-  translate	<-200, 0, 0>
-  material : extends WallMaterial
+  normal = <1, 0, 0>;
+  translate( <-200, 0, 0> );
+  material = WallMaterial
   {
-    color	CRed
-  }
-}
+    color = CRed;
+  };
+};
 
 // Right wall
-plane
+class Plane
 {
-  normal	<-1, 0, 0>
-  translate	<200, 0, 0>
-  material : extends WallMaterial
+  normal = <-1, 0, 0>;
+  translate( <200, 0, 0> );
+  material = WallMaterial
   {
-    color	CBlue
-  }
-}
+    color = CBlue;
+  };
+};
 
 // Front wall
-plane
+class Plane
 {
-  normal	<0, 0, 1>
-  translate	<0, 0, -200>
-  material : extends WallMaterial
+  normal = <0, 0, 1>;
+  translate( <0, 0, -200> );
+  material = WallMaterial
   {
-    color	CWhite
-  }
-}
+    color = CWhite;
+  };
+};
 
 // Back wall
-plane
+class Plane
 {
-  normal	<0, 0, -1>
-  translate	<0, 0, 200>
-  one_sided     on
-  material : extends WallMaterial
+  normal = <0, 0, -1>;
+  translate( <0, 0, 200> );
+  one_sided = on;
+  material = WallMaterial
   {
-    color	CWhite
-  }
-}
+    color = CWhite;
+  };
+};
 
-sphere
+class Sphere
 {
-  translate	<-50, -80, 100>
-  radius	60
-  material : extends MCrystal
+  translate( <-50, -80, 100> );
+  radius = 60;
+  material = MCrystal
   {
-    color	CWhite
-  }
-}
+    color = CWhite;
+  };
+};
 
-sphere
+class Sphere
 {
-  translate	<80, -90, 0>
-  radius	60
-  material : extends MPlastic
+  translate( <80, -90, 0> );
+  radius = 60;
+  material = MPlastic
   {
-    color	CWhite
-  }
-}
+    color = CWhite;
+  };
+};
 
-scene
+class Scene
 {
-  camera	c
-  light : extends l
+  camera = c;
+  light = l
   {
-    translate   <-100 + rand() * 200, -100 + rand() * 200, -100 + rand() * 200>
-    color       { red rand() * .3 green rand() * .3 blue rand() * .3 }
-    halo        rand() * 5
-  }
-  light : extends l
+    translate( <-100 + rand() * 200, -100 + rand() * 200, -100 + rand() * 200> );
+    color = < rand() * .3, rand() * .3, rand() * .3 >;
+    halo = rand() * 5;
+  };
+  light = l
   {
-    translate   <-100 + rand() * 200, -100 + rand() * 200, -100 + rand() * 200>
-    color       { red rand() * .3 green rand() * .3 blue rand() * .3 }
-    halo        rand() * 5
-  }
-  light : extends l
+    translate( <-100 + rand() * 200, -100 + rand() * 200, -100 + rand() * 200> );
+    color = < rand() * .3, rand() * .3, rand() * .3 >;
+    halo = rand() * 5;
+  };
+  light = l
   {
-    translate   <-100 + rand() * 200, -100 + rand() * 200, -100 + rand() * 200>
-    color       { red rand() * .3 green rand() * .3 blue rand() * .3 }
-    halo        rand() * 5
-  }
-  light : extends l
+    translate( <-100 + rand() * 200, -100 + rand() * 200, -100 + rand() * 200> );
+    color = < rand() * .3, rand() * .3, rand() * .3 >;
+    halo = rand() * 5;
+  };
+  light = l
   {
-    translate   <-100 + rand() * 200, -100 + rand() * 200, -100 + rand() * 200>
-    color       { red rand() * .3 green rand() * .3 blue rand() * .3 }
-    halo        rand() * 5
-  }
-  light : extends l
+    translate( <-100 + rand() * 200, -100 + rand() * 200, -100 + rand() * 200> );
+    color = < rand() * .3, rand() * .3, rand() * .3 >;
+    halo = rand() * 5;
+  };
+  light = l
   {
-    translate   <-100 + rand() * 200, -100 + rand() * 200, -100 + rand() * 200>
-    color       { red rand() * .3 green rand() * .3 blue rand() * .3 }
-    halo        rand() * 5
-  }
-  light : extends l
+    translate( <-100 + rand() * 200, -100 + rand() * 200, -100 + rand() * 200> );
+    color = < rand() * .3, rand() * .3, rand() * .3 >;
+    halo = rand() * 5;
+  };
+  light = l
   {
-    translate   <-100 + rand() * 200, -100 + rand() * 200, -100 + rand() * 200>
-    color       { red rand() * .3 green rand() * .3 blue rand() * .3 }
-    halo        rand() * 5
-  }
-  light : extends l
+    translate( <-100 + rand() * 200, -100 + rand() * 200, -100 + rand() * 200> );
+    color = < rand() * .3, rand() * .3, rand() * .3 >;
+    halo = rand() * 5;
+  };
+  light = l
   {
-    translate   <-100 + rand() * 200, -100 + rand() * 200, -100 + rand() * 200>
-    color       { red rand() * .3 green rand() * .3 blue rand() * .3 }
-    halo        rand() * 5
-  }
-  light : extends l
+    translate( <-100 + rand() * 200, -100 + rand() * 200, -100 + rand() * 200> );
+    color = < rand() * .3, rand() * .3, rand() * .3 >;
+    halo = rand() * 5;
+  };
+  light = l
   {
-    translate   <-100 + rand() * 200, -100 + rand() * 200, -100 + rand() * 200>
-    color       { red rand() * .3 green rand() * .3 blue rand() * .3 }
-    halo        rand() * 5
-  }
-  width		400
-  height	400
-  background    CBlack
-  output
+    translate( <-100 + rand() * 200, -100 + rand() * 200, -100 + rand() * 200> );
+    color = < rand() * .3, rand() * .3, rand() * .3 >;
+    halo = rand() * 5;
+  };
+  width		= 200;
+  height	= 200;
+  background    = CBlack;
+  output = class png
   {
-    type        "png"
-    name	"halo_lights.png"
-  }
-  renderer : class Raytracer
+    name = "halo_lights.png";
+  };
+  renderer = class Raytracer
   {
 //    sampling    "adaptive"
-  }
-}
+  };
+};

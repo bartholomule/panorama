@@ -21,6 +21,8 @@
 #include "llapi/object.h"
 #include "llapi/material.h"
 #include "bsdf_ward.h"
+#include "llapi/attribute.h"
+#include "llapi/extended_attribute.h"
 
 DEFINE_PLUGIN ("BsdfWard", FX_BSDF_CLASS, TBsdfWard);
 
@@ -41,6 +43,7 @@ int TBsdfWard::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribTy
 
   if ( rktNAME == "roughness_x" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_PATTERN )
     {
       ptStandardDeviation_x = (TPattern*) nVALUE.pvValue;
@@ -53,6 +56,13 @@ int TBsdfWard::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribTy
     {
       ptStandardDeviation_x = new TPattern (*((TColor*) nVALUE.pvValue));
     }
+#else
+    magic_pointer<TAttribPattern> pat = get_pattern(nVALUE);
+    if( !!pat )
+    {
+      ptStandardDeviation_x = pat->tValue;
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -60,6 +70,7 @@ int TBsdfWard::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribTy
   }
   else if ( rktNAME == "roughness_y" )
   {
+#if !defined(NEW_ATTRIBUTES)    
     if ( eTYPE == FX_PATTERN )
     {
       ptStandardDeviation_y = (TPattern*) nVALUE.pvValue;
@@ -72,6 +83,13 @@ int TBsdfWard::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribTy
     {
       ptStandardDeviation_y = new TPattern (*((TColor*) nVALUE.pvValue));
     }
+#else
+    magic_pointer<TAttribPattern> pat = get_pattern(nVALUE);
+    if( !!pat )
+    {
+      ptStandardDeviation_y = pat->tValue;
+    }
+#endif    
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -79,9 +97,10 @@ int TBsdfWard::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribTy
   }
   else if ( rktNAME == "specular_color" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_PATTERN )
     {
-      setSpecularColor ((TPattern*) nVALUE.pvValue);
+      setSpecularColor (((TPattern*) nVALUE.pvValue)->clone_new());
     }
     else if ( eTYPE == FX_REAL )
     {
@@ -91,6 +110,13 @@ int TBsdfWard::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribTy
     {
       setSpecularColor (new TPattern (*((TColor*) nVALUE.pvValue)));
     }
+#else
+    magic_pointer<TAttribPattern> pat = get_pattern(nVALUE);
+    if( !!pat )
+    {
+      setSpecularColor (pat->tValue);
+    }
+#endif    
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -109,18 +135,33 @@ int TBsdfWard::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribTy
 int TBsdfWard::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 {
 
+#if !defined(NEW_ATTRIBUTES)  
   if ( rktNAME == "roughness_x" )
   {
-    rnVALUE.pvValue = ptStandardDeviation_x;
+    rnVALUE.pvValue = ptStandardDeviation_x.get_pointer();
   }
   else if ( rktNAME == "roughness_y" )
   {
-    rnVALUE.pvValue = ptStandardDeviation_y;
+    rnVALUE.pvValue = ptStandardDeviation_y.get_pointer();
   }
   else if ( rktNAME == "specular_color" )
   {
-    rnVALUE.pvValue = ptSpecularColor;
+    rnVALUE.pvValue = ptSpecularColor.get_pointer();
   }
+#else
+  if ( rktNAME == "roughness_x" )
+  {
+    rnVALUE = new TAttribPattern (ptStandardDeviation_x);
+  }
+  else if ( rktNAME == "roughness_y" )
+  {
+    rnVALUE = new TAttribPattern (ptStandardDeviation_y);
+  }
+  else if ( rktNAME == "specular_color" )
+  {
+    rnVALUE = new TAttribPattern (ptSpecularColor);
+  }
+#endif
   else
   {
     return TBsdf::getAttribute (rktNAME, rnVALUE);

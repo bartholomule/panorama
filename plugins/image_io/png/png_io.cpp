@@ -19,6 +19,7 @@
 #include <fstream.h>
 #include "hlapi/image_manager.h"
 #include "png_io.h"
+#include "llapi/attribute.h"
 
 #if PNG_LIBPNG_VER < 90
 /* Compatibility defines for older library versions */
@@ -189,7 +190,10 @@ TImage* TImagePng::load (void)
 
   if ( ! tInput.good() )
   {
-    cerr << "TImagePng::load : Error loading " << tFileName << endl;
+    if( !bSilent )
+    {
+      cerr << "TImagePng::load : Error loading " << tFileName << endl;
+    }
     return NULL;
   }
   
@@ -199,7 +203,10 @@ TImage* TImagePng::load (void)
 
   if ( ! iIsPng )
   {
-    cerr << "TImagePng::load : " << tFileName << " is not a PNG file." << endl;
+    if( !bSilent )
+    {
+      cerr << "TImagePng::load : " << tFileName << " is not a PNG file." << endl;
+    }
     tInput.close();
     return NULL;
   }
@@ -208,7 +215,10 @@ TImage* TImagePng::load (void)
                                   error_callback, error_callback);
   if ( ! ptPng )
   {
-    cerr << "TImagePng::load : Error loading " << tFileName << endl;
+    if( !bSilent )
+    {
+      cerr << "TImagePng::load : Error loading " << tFileName << endl;
+    }
     tInput.close();
     return NULL;
   }
@@ -216,7 +226,10 @@ TImage* TImagePng::load (void)
   ptInfo = png_create_info_struct (ptPng);
   if ( ! ptInfo )
   {
-    cerr << "TImagePng::load : Error loading " << tFileName << endl;
+    if( !bSilent )
+    {
+      cerr << "TImagePng::load : Error loading " << tFileName << endl;
+    }
     png_destroy_read_struct (&ptPng, (png_infopp) NULL, (png_infopp) NULL);
     tInput.close();
     return NULL;
@@ -225,7 +238,10 @@ TImage* TImagePng::load (void)
   ptEndInfo = png_create_info_struct (ptPng);
   if ( ! ptEndInfo )
   {
-    cerr << "TImagePng::load : Error loading " << tFileName << endl;
+    if( !bSilent )
+    {
+      cerr << "TImagePng::load : Error loading " << tFileName << endl;
+    }
     png_destroy_read_struct (&ptPng, &ptInfo, (png_infopp) NULL);
     tInput.close();
     return NULL;
@@ -249,7 +265,10 @@ TImage* TImagePng::load (void)
   tInput.open(tFileName.c_str());
   if ( ! tInput.good() )
   {
-    cerr << "TImagePng::load : Error loading " << tFileName << endl;
+    if( !bSilent )
+    {
+      cerr << "TImagePng::load : Error loading " << tFileName << endl;
+    }
     return NULL;
   }
       
@@ -297,8 +316,11 @@ TImage* TImagePng::load (void)
 #if PNG_LIBPNG_VER > 89
     png_set_strip_alpha (ptPng);
 #else
-    cerr << "TImagePng::load : Error loading " << tFileName << 
-      " alpha channel not supported" << endl;
+    if( !bSilent )
+    {
+      cerr << "TImagePng::load : Error loading " << tFileName
+	   << " alpha channel not supported" << endl;
+    }
     png_destroy_read_struct (&ptPng, &ptInfo, (png_infopp) NULL);
     tInput.close();
     return NULL;
@@ -348,6 +370,7 @@ int TImagePng::setAttribute (const string& rktNAME, NAttribute nVALUE,
   
   if ( rktNAME == "compression" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_REAL )
     {
       if( floor(nVALUE.dValue) != nVALUE.dValue ||
@@ -357,6 +380,17 @@ int TImagePng::setAttribute (const string& rktNAME, NAttribute nVALUE,
       }
       setCompression (int(nVALUE.dValue));
     }
+#else
+    magic_pointer<TAttribInt> i = get_int(nVALUE);
+    if( !!i )
+    {
+      if( i->tValue < -1 || i->tValue > 9 )
+      {
+	return FX_ATTRIB_WRONG_VALUE;
+      }
+      setCompression (i->tValue);
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -377,7 +411,11 @@ int TImagePng::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 
   if ( rktNAME == "compression" )
   {
+#if !defined(NEW_ATTRIBUTES)
     rnVALUE.dValue = TImagePng::iCompression;
+#else
+    rnVALUE = new TAttribInt (TImagePng::iCompression);
+#endif
   }
   else
   {
@@ -394,6 +432,10 @@ void TImagePng::getAttributeList (TAttributeList& rtLIST) const
 
   TImageIO::getAttributeList (rtLIST);
 
+#if !defined(NEW_ATTRIBUTES)  
   rtLIST ["compression"] = FX_REAL;
+#else
+  rtLIST ["compression"] = FX_INTEGER;  
+#endif
 
 }  /* TImagePng::getAttributeList() */

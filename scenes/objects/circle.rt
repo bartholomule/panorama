@@ -3,51 +3,51 @@
 */
 
 #include "materials.inc"
+#include "cameras.inc"
+#include "shapes.inc"
 
-define camera c
+define c Camera
 {
-  translate	<0, 200, 600>
-  look_at	<0, 100, 0>
-}
+  translate(<0, 200, 600>);
+  look_at = <0, 100,   0>;
+};
 
-define light l
+Light
 {
-  translate	<-500, 300, 500>
-  color		CWhite
-}
+  translate(<-500, 300, 500>);
+  color = CWhite;
+};
 
 circle
 {
-  translate	<0, 0, 0>
-  normal	<0, 1, 0>
-  radius	200
-  material : extends MPlastic
+  translate (<0, 0, 0>);
+  normal   = <0, 1, 0>;
+  radius   = 200;
+  material = MPlastic
   {
-    color	CGreen
-  }
-}
+    color = CGreen;
+  };
+};
 
 sphere
 {
-  translate	<0, 50, 0>
-  radius	50
-  material : extends MPlastic
+  translate(<0, 50, 0>);
+  radius = 50;
+  material = MPlastic
   {
-    color	CWhite
-  }
-}
+    color = CWhite;
+  };
+};
 
-scene
+class Scene
 {
-  camera	c
-  light		l
-  width		600
-  height	400
-  background	CSummerSky
-  output
+  camera      = c;
+  width	      = 600;
+  height      = 400;
+  background  = CSummerSky;
+  output = class png
   {
-    type        "png"
-    name        "circle.png"
-  }
-  renderer : class Raytracer {}
-}
+    name = "circle.png";
+  };
+  renderer = class Raytracer {};
+};

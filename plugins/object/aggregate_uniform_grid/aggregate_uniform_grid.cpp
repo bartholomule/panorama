@@ -18,6 +18,7 @@
 
 #include "llapi/warning_eliminator.h"
 #include "aggregate_uniform_grid.h"
+#include "llapi/attribute.h"
 
 DEFINE_PLUGIN ("AggregateUniformGrid", FX_OBJECT_CLASS, TAggregateUniformGrid);
 
@@ -73,8 +74,9 @@ bool TAggregateUniformGrid::initialize (void)
     ptUniformGrid->setVoxelSize (tVoxelSize);
   }
 
-  for (vector<TObject*>::iterator tIter2 = tObjectList.begin(); ( tIter2 != tObjectList.end() ) ;tIter2++)
+  for (TObjectList::iterator tIter2 = tObjectList.begin(); ( tIter2 != tObjectList.end() ) ;tIter2++)
   {
+#warning "FIXME! converting to non-reference counted object"
     ptUniformGrid->addObject (*tIter2);
   }
 
@@ -88,10 +90,18 @@ int TAggregateUniformGrid::setAttribute (const string& rktNAME, NAttribute nVALU
 
   if ( rktNAME == "voxel_size" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_REAL )
     {
       tVoxelSize = nVALUE.dValue;
     }
+#else
+    magic_pointer<TAttribReal> r = get_real(nVALUE);
+    if( !!r )
+    {
+      tVoxelSize = r->tValue;
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -128,20 +138,18 @@ bool TAggregateUniformGrid::findFirstIntersection (const TRay& rktRAY, TSurfaceD
 }  /* findFirstIntersection() */
 
 
-void TAggregateUniformGrid::printDebug (void) const
+void TAggregateUniformGrid::printDebug (const string& indent) const
 {
 
-  cerr << TDebug::_indent() << "[_" << className() << "_]" << endl;
+  cerr << indent << "[_" << className() << "_]" << endl;
 
-  TDebug::_push();
+  string new_indent = TDebug::Indent(indent);
 
-  cerr << TDebug::_indent() << "Bounding box = "; tBoundingBox.printDebug(); cerr << endl;
+  cerr << new_indent << "Bounding box = "; tBoundingBox.printDebug(new_indent); cerr << endl;
   
-  for (vector<TObject*>::const_iterator tIter = tObjectList.begin(); ( tIter != tObjectList.end() ) ;tIter++)
+  for (TObjectList::const_iterator tIter = tObjectList.begin(); ( tIter != tObjectList.end() ) ;tIter++)
   {
-    (*tIter)->printDebug();
+    (*tIter)->printDebug(new_indent);
   }
 
-  TDebug::_pop();
-  
 }  /* printDebug() */

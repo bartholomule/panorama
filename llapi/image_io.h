@@ -29,9 +29,12 @@ class TImageIO : public TProcedural
   protected:
 
     string   tFileName;
+    bool     bSilent;
     
   public:
 
+    TImageIO(): bSilent(false) { }
+  
     virtual bool initialize (void) { return TProcedural::initialize(); }
     
     int setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
@@ -40,7 +43,8 @@ class TImageIO : public TProcedural
 
     virtual int save (const TImage* pktIMAGE) = 0;
     virtual TImage* load (void) = 0;
-
+    void setSilent(bool b = true) { bSilent = b; }
+  
     EClass classType (void) const { return FX_IMAGE_IO_CLASS; }
     
 };  /* class TImageIO */

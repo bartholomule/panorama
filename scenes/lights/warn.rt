@@ -3,58 +3,59 @@
 */
 
 #include "materials.inc"
+#include "cameras.inc"
 
-define camera c
+define c Camera
 {
-  translate	<0, 0, 450>
-  look_at	<0, 0, 0>
-}
+  translate(<0, 0, 450>);
+  look_at = <0, 0, 0>;
+};
 
-define light l : class WarnLight
+define l class WarnLight
 {
-  translate	<200, 200, 200>
-  point_at	<0, 0, 0>
-  exponent      20
-  axis          <0, 0, 0>
-  angle_th      20
-  intensity     1
-}
+  translate(<200, 200, 200>);
+  point_at  = <0, 0, 0>;
+  exponent  = 20;
+  axis      = <0, 0, 0>;
+  angle_th  = 20;
+  intensity = 1;
+};
 
-sphere
+class Sphere
 {
-  translate     <0, -60, 0>
-  radius        40
-  material : extends MPlastic
+  translate(<0, -60, 0>);
+  radius = 40;
+  material = MPlastic
   {
-    color       CWhite
-  }
-}
+    color = CWhite;
+  };
+};
 
-plane
+class Plane
 {
-  translate	<0, -100, 0>
-  normal	<0, 1, 0>
-  material : extends MChecker
+  translate(<0, -100, 0>);
+  normal = <0, 1, 0>;
+  material = MChecker
   {
-    color : class PatternChecker
+    color = class PatternChecker
     {
-      color   CCyan
-      size    50
-    }
-  }
-}
+      color = CCyan;
+      size  = 50;
+    };
+  };
+};
 
-scene
+addObject(l);
+
+class Scene
 {
-  camera	c
-  light         l
-  width		400
-  height	400
-  background    CBlack
-  output
+  camera	= c;
+  width		= 400;
+  height	= 400;
+  background    = CBlack;
+  output = class png
   {
-    type        "png"
-    name	"warn.png"
-  }
-  renderer : class Raytracer {}
-}
+    name = "warn.png";
+  };
+  renderer = class Raytracer {};
+};

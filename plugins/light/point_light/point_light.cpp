@@ -18,6 +18,7 @@
 
 #include "llapi/warning_eliminator.h"
 #include "point_light.h"
+#include "llapi/attribute.h"
 
 DEFINE_PLUGIN ("PointLight", FX_LIGHT_CLASS, TPointLight);
 
@@ -26,6 +27,7 @@ bool TPointLight::visible (const TVector& rktPOINT) const
 
   TScalar   tDist;
   TVector   tPoint;
+  TVector   tLocation = location();
 
   if ( tDistanceThreshold > 0 )
   {
@@ -65,6 +67,8 @@ TColor TPointLight::scatteredLight (const TSurfaceData& rktDATA) const
 
   if ( tHaloSize != 0 )
   {
+    TVector tLocation = location();
+    
     // Calculate t0 for the point in ray closest to light.
     t0 = dotProduct ((tLocation - rktDATA.ray().location()), rktDATA.ray().direction());
 
@@ -85,10 +89,18 @@ int TPointLight::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttrib
 
   if ( rktNAME == "falloff" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_VECTOR )
     {
       setFalloff (*((TVector*) nVALUE.pvValue));
     }
+#else
+    magic_pointer<TAttribVector> vec = get_vector(nVALUE);
+    if( !!vec )
+    {
+      setFalloff (vec->tValue);
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -96,10 +108,18 @@ int TPointLight::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttrib
   }
   else if ( rktNAME == "axis" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_VECTOR )
     {
       setAxis (*((TVector*) nVALUE.pvValue));
     }
+#else
+    magic_pointer<TAttribVector> vec = get_vector(nVALUE);
+    if( !!vec )
+    {
+      setAxis (vec->tValue);
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -107,10 +127,18 @@ int TPointLight::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttrib
   }
   else if ( rktNAME == "angle_th" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_REAL )
     {
       setAngleThreshold (nVALUE.dValue);
     }
+#else
+    magic_pointer<TAttribReal> r = get_real(nVALUE);
+    if( !!r )
+    {
+      setAngleThreshold (r->tValue);
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -118,10 +146,18 @@ int TPointLight::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttrib
   }
   else if ( rktNAME == "distance_th" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_REAL )
     {
       setDistanceThreshold (nVALUE.dValue);
     }
+#else
+    magic_pointer<TAttribReal> r = get_real(nVALUE);
+    if( !!r )
+    {
+      setDistanceThreshold (r->tValue);
+    }    
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -129,10 +165,18 @@ int TPointLight::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttrib
   }
   else if ( rktNAME == "halo" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_REAL )
     {
       tHaloSize = nVALUE.dValue;
     }
+#else
+    magic_pointer<TAttribReal> r = get_real(nVALUE);
+    if( !!r )
+    {
+      tHaloSize = r->tValue;
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -151,6 +195,7 @@ int TPointLight::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttrib
 int TPointLight::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 {
 
+#if !defined(NEW_ATTRIBUTES)
   if ( rktNAME == "falloff" )
   {
     rnVALUE.pvValue = &tFalloff;
@@ -171,6 +216,28 @@ int TPointLight::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
   {
     rnVALUE.dValue = tHaloSize;
   }
+#else
+  if ( rktNAME == "falloff" )
+  {
+    rnVALUE = new TAttribVector (tFalloff);
+  }
+  else if ( rktNAME == "axis" )
+  {
+    rnVALUE = new TAttribVector (tConeAxis);
+  }
+  else if ( rktNAME == "angle_th" )
+  {
+    rnVALUE = new TAttribReal (tCosThreshold);
+  }
+  else if ( rktNAME == "distance_th" )
+  {
+    rnVALUE = new TAttribReal (tDistanceThreshold);
+  }
+  else if ( rktNAME == "halo" )
+  {
+    rnVALUE = new TAttribReal (tHaloSize);
+  }
+#endif
   else
   {
     return TLight::getAttribute (rktNAME, rnVALUE);
@@ -203,8 +270,9 @@ bool TPointLight::initialize (void)
   //
   // [_ERROR_] This will not work if initialized more than once.
   // (KH) I think that this MAY no longer be a problem.
+  // FIXME! Check this again.
   //
-  tConeAxis = (tConeAxis2 - tLocation);
+  tConeAxis = (tConeAxis2 - location());
 
   if ( tConeAxis != TVector (0, 0, 0) )
   {
@@ -215,20 +283,19 @@ bool TPointLight::initialize (void)
 }  /* initialize() */
 
 
-void TPointLight::printDebug (void) const
+void TPointLight::printDebug (const string& indent) const
 {
 
-  cerr << TDebug::_indent() << "[_" << className() << "_]" << endl;
+  cerr << indent << "[_" << className() << "_]" << endl;
 
-  TDebug::_push();
+  string new_indent = TDebug::Indent(indent);
 
-  cerr << TDebug::_indent() << "a (falloff)        : " << tFalloff [0] << endl;
-  cerr << TDebug::_indent() << "b (falloff)        : " << tFalloff [1] << endl;
-  cerr << TDebug::_indent() << "c (falloff)        : " << tFalloff [2] << endl;
-  cerr << TDebug::_indent() << "Distance threshold : " << tDistanceThreshold << endl;
-  cerr << TDebug::_indent() << "Cosine threshold   : " << tCosThreshold << endl;
-  cerr << TDebug::_indent() << "Cone axis          : "; tConeAxis.printDebug();
-
-  TDebug::_pop();
+  cerr << new_indent << "a (falloff)        : " << tFalloff [0] << endl;
+  cerr << new_indent << "b (falloff)        : " << tFalloff [1] << endl;
+  cerr << new_indent << "c (falloff)        : " << tFalloff [2] << endl;
+  cerr << new_indent << "Distance threshold : " << tDistanceThreshold << endl;
+  cerr << new_indent << "Cosine threshold   : " << tCosThreshold << endl;
+  cerr << new_indent << "Cone axis          : "; tConeAxis.printDebug(new_indent);
+  cerr << indent << "." << endl;
 
 }  /* printDebug() */

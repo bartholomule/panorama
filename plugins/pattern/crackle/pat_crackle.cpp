@@ -24,6 +24,8 @@
 #include <iostream>
 #include <time.h>
 #include "pat_crackle.h"
+#include "llapi/attribute.h"
+#include "llapi/extended_attribute.h"
 
 DEFINE_PLUGIN ("PatternCrackle", FX_PATTERN_CLASS, TPatternCrackle);
 
@@ -79,12 +81,12 @@ inline long TVoronoi::Random1()
 long TVoronoi::Random() const
 {
 
-  #ifdef USE_NEWRAND
+#ifdef USE_NEWRAND
   lRandomSeed = lRandomSeed * 17231723L + 2001L;
   return((lRandomSeed >> 16) & 0x7fff);
-  #else
+#else
   return rand();
-  #endif
+#endif
 
 }  /* Random() */
 
@@ -92,11 +94,11 @@ long TVoronoi::Random() const
 double TVoronoi::Drandom() const
 {
 
-  #ifdef USE_NEWRAND
+#ifdef USE_NEWRAND
   return (double) Random() / 0x7fff;
-  #else
+#else
   return (double) Random() / RAND_MAX;
-  #endif
+#endif
 
 }  /* Drandom() */
 
@@ -104,11 +106,11 @@ double TVoronoi::Drandom() const
 void TVoronoi::SeedRandom(long lSeed) const
 {
 
-  #ifdef USE_NEWRAND
+#ifdef USE_NEWRAND
   lRandomSeed = lSeed;
-  #else
+#else
   srand (lSeed);
-  #endif
+#endif
 
 }  /* SeedRandom() */
 
@@ -260,10 +262,18 @@ int TPatternCrackle::setAttribute (const string& rktNAME, NAttribute nVALUE, EAt
 
   if ( rktNAME == "color" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_COLOR )
     {
       setColor (*((TColor*) nVALUE.pvValue));
     }
+#else
+    magic_pointer<TAttribColor> col = get_color(nVALUE);
+    if( !!col )
+    {
+      setColor (col->tValue);
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -271,6 +281,7 @@ int TPatternCrackle::setAttribute (const string& rktNAME, NAttribute nVALUE, EAt
   }
   else if ( rktNAME == "base_color" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_COLOR )
     {
       setBaseColor (*((TColor*) nVALUE.pvValue));
@@ -279,6 +290,18 @@ int TPatternCrackle::setAttribute (const string& rktNAME, NAttribute nVALUE, EAt
     {
       bGradientLoaded = tGradient.loadGradient((char *) nVALUE.pvValue);
     }
+#else
+    magic_pointer<TAttribColor>  col = get_color(nVALUE);
+    magic_pointer<TAttribString> str = get_string(nVALUE);    
+    if( !!col )
+    {
+      setBaseColor (col->tValue);
+    }
+    else if( !!str )
+    {
+      bGradientLoaded = tGradient.loadGradient (str->tValue);
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -286,11 +309,19 @@ int TPatternCrackle::setAttribute (const string& rktNAME, NAttribute nVALUE, EAt
   }
   else if ( rktNAME == "zoom" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_VECTOR )
     {
       tZoom = *((TVector*) nVALUE.pvValue);
       tZoom.set (1.0 / tZoom.x(), 1.0 / tZoom.y(), 1.0 / tZoom.z());
     }
+#else
+    magic_pointer<TAttribVector> vec = get_vector(nVALUE);
+    if( !!vec )
+    {
+      tZoom.set ( 1.0 / vec->tValue.x(), 1.0 / vec->tValue.y(), 1.0 / vec->tValue.z() );
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -309,6 +340,7 @@ int TPatternCrackle::setAttribute (const string& rktNAME, NAttribute nVALUE, EAt
 int TPatternCrackle::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 {
 
+#if !defined(NEW_ATTRIBUTES)
   if ( rktNAME == "color" )
   {
     rnVALUE.pvValue = &tColor;
@@ -322,6 +354,21 @@ int TPatternCrackle::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
     // [_ERROR_] It should return the inverse of this vector.
     rnVALUE.pvValue = &tZoom;
   }
+#else
+  if ( rktNAME == "color" )
+  {
+    rnVALUE = new TAttribColor (tColor);
+  }
+  else if ( rktNAME == "base_color" )
+  {
+    rnVALUE = new TAttribColor (tBaseColor);
+  }
+  else if ( rktNAME == "zoom" )
+  {
+    TVector vec(1 / tZoom.x(), 1 / tZoom.y(), 1 / tZoom.z());
+    rnVALUE = new TAttribVector (vec);
+  }
+#endif
   else
   {
     return TPattern::getAttribute (rktNAME, rnVALUE);

@@ -18,7 +18,19 @@
 
 #include "llapi/warning_eliminator.h"
 #include "llapi/pattern.h"
+#include "llapi/object.h"
+#include "llapi/attribute.h"
+#include "llapi/user_functions.h"
+#include "llapi/object_required.h"
 
+static map<EWarps,const char*> warp_strings;
+
+static void set_warp_strings (void)
+{
+  warp_strings[FX_NO_WARP] = "none";    
+  warp_strings[FX_SPHERICAL_WARP] = "spherical";
+  warp_strings[FX_CYLINDRICAL_WARP] = "cylindrical";  
+}
 
 bool TPattern::initialize (void)
 {
@@ -257,12 +269,22 @@ int TPattern::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribTyp
 
   if ( rktNAME == "rotation" )
   {
+#if !defined(NEW_ATTRIBUTES)    
     if ( eTYPE == FX_VECTOR )
     {
       tRotation = *((TVector*) nVALUE.pvValue);      
 
       recalculateMatrix();
     }
+#else
+    magic_pointer<TAttribVector> vec = get_vector(nVALUE);
+    if( !!vec )
+    {
+      tRotation = vec->tValue;
+
+      recalculateMatrix();
+    }    
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -270,12 +292,22 @@ int TPattern::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribTyp
   }
   else if ( rktNAME == "scaling" )
   {
+#if !defined(NEW_ATTRIBUTES)    
     if ( eTYPE == FX_VECTOR )
     {
       tScaling = *((TVector*) nVALUE.pvValue);
 
       recalculateMatrix();
     }
+#else
+    magic_pointer<TAttribVector> vec = get_vector(nVALUE);
+    if( !!vec )
+    {
+      tScaling = vec->tValue;
+
+      recalculateMatrix();
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -283,12 +315,22 @@ int TPattern::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribTyp
   }
   else if ( rktNAME == "translation" )
   {
+#if !defined(NEW_ATTRIBUTES)    
     if ( eTYPE == FX_VECTOR )
     {
       tTranslation = *((TVector*) nVALUE.pvValue);
 
       recalculateMatrix();
     }
+#else
+    magic_pointer<TAttribVector> vec = get_vector(nVALUE);
+    if( !!vec )
+    {
+      tTranslation = vec->tValue;
+
+      recalculateMatrix();
+    }    
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -298,7 +340,16 @@ int TPattern::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribTyp
   {
     if ( eTYPE == FX_STRING )
     {
+#if !defined(NEW_ATTRIBUTES)
       string tWarp ((char *) nVALUE.pvValue);
+#else
+      magic_pointer<TAttribString> str = get_string(nVALUE);
+      if( !str )
+      {
+	return FX_ATTRIB_WRONG_TYPE;
+      }
+      string tWarp = str->tValue;
+#endif
 
       if ( tWarp == "spherical" )
       {
@@ -324,10 +375,18 @@ int TPattern::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribTyp
   }
   else if ( rktNAME == "rst_scaling" )
   {
+#if !defined(NEW_ATTRIBUTES)    
     if ( eTYPE == FX_VECTOR )
     {
       tRSTScaling = *((TVector*) nVALUE.pvValue);
     }
+#else
+    magic_pointer<TAttribVector> vec = get_vector(nVALUE);
+    if( !!vec )
+    {
+      tRSTScaling = vec->tValue;
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -345,7 +404,12 @@ int TPattern::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribTyp
 
 int TPattern::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 {
-
+  if( warp_strings.empty() )
+  {
+    set_warp_strings ();
+  }
+  
+#if !defined(NEW_ATTRIBUTES)    
   if ( rktNAME == "rotation" )
   {
     rnVALUE.pvValue = &tRotation;
@@ -360,24 +424,40 @@ int TPattern::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
   }
   else if ( rktNAME == "warp" )
   {
-    switch (eWarp) 
-    {
-      case (FX_SPHERICAL_WARP) :
-        rnVALUE.pvValue = (void *) "spherical";
-        break; 
-
-      case (FX_CYLINDRICAL_WARP) :
-        rnVALUE.pvValue = (void *) "cylindrical";
-        break;
- 
-      default:
-        rnVALUE.pvValue = (void *) "none";
-    }
+    const char* warp_name = warp_strings[eWarp];
+    rnVALUE.pvValue = (void *) warp_name;
   }
   else if ( rktNAME == "rst_scaling" )
   {
     rnVALUE.pvValue = &tRSTScaling;
   }
+#else
+  if ( rktNAME == "rotation" )
+  {
+    rnVALUE = new TAttribVector (tRotation);
+  }
+  else if ( rktNAME == "scaling" )
+  {
+    rnVALUE = new TAttribVector (tScaling);
+  }
+  else if ( rktNAME == "translation" )
+  {
+    rnVALUE = new TAttribVector (tTranslation);
+  }
+  else if ( rktNAME == "warp" )
+  {
+    const char* warp_name = warp_strings[eWarp];
+    vector<string> choices;
+    choices.push_back (warp_strings[FX_NO_WARP]);
+    choices.push_back (warp_strings[FX_SPHERICAL_WARP]);
+    choices.push_back (warp_strings[FX_CYLINDRICAL_WARP]);
+    rnVALUE = new TAttribStringList (choices, warp_name);
+  }
+  else if ( rktNAME == "rst_scaling" )
+  {
+    rnVALUE = new TAttribVector (tRSTScaling);
+  }  
+#endif
   else
   {
     return TProcedural::getAttribute (rktNAME, rnVALUE);
@@ -396,7 +476,26 @@ void TPattern::getAttributeList (TAttributeList& rtLIST) const
   rtLIST ["rotation"]    = FX_VECTOR;
   rtLIST ["scaling"]     = FX_VECTOR;
   rtLIST ["translation"] = FX_VECTOR;
+#if !defined(NEW_ATTRIBUTES)
   rtLIST ["warp"]        = FX_STRING;
+#else
+  rtLIST ["warp"]        = FX_STRING_LIST;  
+#endif
   rtLIST ["rst_scaling"] = FX_VECTOR;
 
 }  /* getAttributeList() */
+
+TUserFunctionMap TPattern::getUserFunctions()
+{
+  TUserFunctionMap ufm = TProcedural::getUserFunctions();
+
+  ufm["setColor"]  = create_user_function(this,&TPattern::setColor);
+  ufm["setScalar"] = create_user_function(this,&TPattern::setScalar);
+  ufm["warp"]      = create_user_function(this,&TPattern::warp);
+  ufm["unwarp"]    = create_user_function(this,&TPattern::antiWarp);
+  
+  return ufm;
+}
+
+
+

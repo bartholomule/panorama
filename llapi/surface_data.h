@@ -151,7 +151,7 @@ class TSurfaceData
     void* data (void) const { return pvData; }
     bool normalAssigned (void) const { return gNormalAssigned; }
 
-    void printDebug (void) const;
+    void printDebug (const string& indent) const;
   
 };  /* struct TSurfaceData */
 

@@ -21,6 +21,8 @@
 #include "llapi/object.h"
 #include "llapi/material.h"
 #include "bsdf_phong.h"
+#include "llapi/attribute.h"
+#include "llapi/extended_attribute.h"
 
 DEFINE_PLUGIN ("BsdfPhong", FX_BSDF_CLASS, TBsdfPhong);
 
@@ -39,9 +41,10 @@ int TBsdfPhong::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribT
 
   if ( rktNAME == "exponent" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_PATTERN )
     {
-      setPhongExp ((TPattern*) nVALUE.pvValue);
+      setPhongExp (((TPattern*) nVALUE.pvValue)->clone_new());
     }
     else if ( eTYPE == FX_REAL )
     {
@@ -51,6 +54,13 @@ int TBsdfPhong::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribT
     {
       setPhongExp (new TPattern (*((TColor*) nVALUE.pvValue)));
     }
+#else
+    magic_pointer<TAttribPattern> pat = get_pattern(nVALUE);
+    if( !!pat )
+    {
+      setPhongExp (pat->tValue);
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -58,9 +68,10 @@ int TBsdfPhong::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribT
   }
   else if ( rktNAME == "specular_color" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_PATTERN )
     {
-      setSpecularColor ((TPattern*) nVALUE.pvValue);
+      setSpecularColor (((TPattern*) nVALUE.pvValue)->clone_new());
     }
     else if ( eTYPE == FX_REAL )
     {
@@ -70,6 +81,13 @@ int TBsdfPhong::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribT
     {
       setSpecularColor (new TPattern (*((TColor*) nVALUE.pvValue)));
     }
+#else
+    magic_pointer<TAttribPattern> pat = get_pattern(nVALUE);
+    if( !!pat )
+    {
+      setSpecularColor (pat->tValue);
+    }
+#endif    
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -87,15 +105,25 @@ int TBsdfPhong::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribT
 
 int TBsdfPhong::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 {
-
+#if !defined(NEW_ATTRIBUTES)
   if ( rktNAME == "exponent" )
   {
-    rnVALUE.pvValue = ptPhongExp;
+    rnVALUE.pvValue = ptPhongExp.get_pointer();
   }
   else if ( rktNAME == "specular_color" )
   {
-    rnVALUE.pvValue = ptSpecularColor;
+    rnVALUE.pvValue = ptSpecularColor.get_pointer();
   }
+#else
+  if ( rktNAME == "exponent" )
+  {
+    rnVALUE = new TAttribPattern (ptPhongExp);
+  }
+  else if ( rktNAME == "specular_color" )
+  {
+    rnVALUE = new TAttribPattern (ptSpecularColor);    
+  }  
+#endif
   else
   {
     return TBsdf::getAttribute (rktNAME, rnVALUE);

@@ -22,6 +22,8 @@
 #include "llapi/file.h"
 #include "hlapi/image_manager.h"
 #include "height_field.h"
+#include "llapi/attribute.h"
+#include "llapi/extended_attribute.h"
 
 DEFINE_PLUGIN ("HeightField", FX_OBJECT_CLASS, THeightField);
 
@@ -298,9 +300,11 @@ bool THeightField::traverseGrid (const TRay& rktRAY, TSurfaceData& rtDATA) const
 bool THeightField::initialize (void)
 {
 
+  bool val = true;
+  
   TScalar   Y;
 
-  assert ( ptImage );
+  assert ( !!ptImage );
 
   tMaxY = -SCALAR_MAX;
   tMinY = SCALAR_MAX;
@@ -328,7 +332,7 @@ bool THeightField::initialize (void)
   tBoundingBox.set (TVector (-tHalfWidth, tMinY, -tHalfHeight), TVector (tHalfWidth, tMaxY, tHalfHeight));
   tBoundingBox.applyTransform (*ptMatrix);
 
-  return true;
+  return val;
 }  /* initialize() */
 
 
@@ -337,10 +341,11 @@ int THeightField::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttri
 
   if ( rktNAME == "image" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_STRING )
     {
       char*   pcName = (char*) nVALUE.pvValue;
-        
+
       ptImage = tImageManager.newImage (pcName, FileExtension (pcName));
       if ( !ptImage )
       {
@@ -348,6 +353,48 @@ int THeightField::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttri
         return FX_ATTRIB_USER_ERROR;
       }
     }
+    else if( eTYPE == FX_IMAGE )
+    {
+      TImage* given_image = (TImage*)nValue.pvValue;
+
+      if( given_image )
+      {
+	TImage* ptNewImage = new TImage(*given_image);
+
+	ptImage = ptNewImage;
+      }
+      else
+      {
+        TProcedural::_tUserErrorMessage = "given a NULL image";
+	return FX_ATTRIB_USER_ERROR;
+      }
+    }
+#else
+    magic_pointer<TAttribString> str = get_string(nVALUE);
+    if( !!str )
+    {
+      ptImage = tImageManager.newImage (str->tValue, FileExtension (str->tValue));
+      if( !ptImage )
+      {
+        TProcedural::_tUserErrorMessage = string ("could not open texture file ") + str->tValue;
+        return FX_ATTRIB_USER_ERROR;	
+      }
+    }
+    else if( eTYPE == FX_IMAGE )
+    {
+      magic_pointer<TAttribImage> tai = get_image(nVALUE);
+
+      if( !!tai )
+      {
+	ptImage = tai->tValue;
+      }
+      else
+      {
+        TProcedural::_tUserErrorMessage = "not given an image";
+	return FX_ATTRIB_USER_ERROR;	
+      }
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -368,7 +415,11 @@ int THeightField::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 
   if ( rktNAME == "image" )
   {
+#if !defined(NEW_ATTRIBUTES)
     rnVALUE.pvValue = ptImage;
+#else
+    rnVALUE = new TAttribImage(ptImage);
+#endif
   }
   else
   {

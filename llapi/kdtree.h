@@ -86,7 +86,7 @@ class TKDTree
       return getNode (zPOS);
     }
     
-    void printDebug (void) const;
+    void printDebug (const string& indent) const;
     
 };  /* class TKDTree */
 

@@ -84,11 +84,12 @@ class TPlane : public TObject
     }
 
     //
-    //  This method will be overriden in descendants (plane objects like poligons, circle, etc).
+    //  This method will be overriden in descendants (plane objects like
+    //  polygons, circle, etc).  
     //
     virtual bool inside (const TVector& rktPOINT) const { return true; }
 
-    void printDebug (void) const;
+    void printDebug (const string& indent) const;
     string className (void) const { return "Plane"; }
     
 };  /* class TPlane */

@@ -25,9 +25,17 @@ DEFINE_SCENE_IO_PLUGIN ("rt", TSceneRT);
 
 string    TSceneRT::_tInputFileName = "";
 DWord     TSceneRT::_dwLineNumber   = 1L;
-TScene*   TSceneRT::_ptParsedScene  = NULL;
+magic_pointer<TScene> TSceneRT::_ptParsedScene = NULL;
 
-TScene* TSceneRT::_load (const string& rktNAME)
+stack<TSceneRT::attrib_type> TSceneRT::_tDataStack;
+TUserFunctionMap TSceneRT::_global_functions;
+map<string, pair<string,TSceneRT::attrib_type> > TSceneRT::_tDataMap;
+TSceneRT::BASE_OBJECT_TYPE   TSceneRT::_ptData;
+TSceneRT::BASE_OBJECT_TYPE   TSceneRT::_ptParent;
+magic_pointer<TAggregate>    TSceneRT::_ptWorld;
+magic_pointer<TImageIO>      TSceneRT::_ptImageIO;  
+
+magic_pointer<TScene> TSceneRT::load (const string& rktNAME)
 {
 
   int   iResult;
@@ -56,7 +64,8 @@ TScene* TSceneRT::_load (const string& rktNAME)
   
   if ( iResult != 0 )
   {
-    delete _ptParsedScene;
+    _ptParsedScene = NULL;    
+    //    delete _ptParsedScene;
     return NULL;
   }
 
@@ -65,7 +74,7 @@ TScene* TSceneRT::_load (const string& rktNAME)
 }  /* _load() */
 
 
-int TSceneRT::_save (const string& rktNAME, const TScene* pktSCENE)
+int TSceneRT::save (const string& rktNAME, const TScene* pktSCENE)
 {
 
   return 0;

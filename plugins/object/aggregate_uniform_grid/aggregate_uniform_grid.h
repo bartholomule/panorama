@@ -51,7 +51,7 @@ class TAggregateUniformGrid : public TAggregate
 
     bool findFirstIntersection (const TRay& rktRAY, TSurfaceData& rtDATA) const;
 
-    void printDebug (void) const;
+    void printDebug (const string& indent) const;
 
     string className (void) const { return "AggregateUniformGrid"; }
 

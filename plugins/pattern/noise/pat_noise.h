@@ -80,6 +80,7 @@ class TPatternNoise : public TPattern
     }
 
     string className (void) const { return "PatternNoise"; }
+    TPatternNoise* clone_new() const { return new TPatternNoise(*this); }
 
 };  /* class TPatternNoise */
 

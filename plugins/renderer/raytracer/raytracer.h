@@ -100,8 +100,9 @@ class TRaytracer : public TRenderer
     TColor specularTransmittedLight (const TSurfaceData& rktDATA, Word wDEPTH, size_t* pzOBJ_CODE = NULL) const;
 
     string className (void) const { return "Raytracer"; }
-
-    void printDebug (void) const;
+    virtual TRaytracer* clone_new() const { return new TRaytracer(*this); }
+  
+    void printDebug (const string& indent) const;
     
 };  /* class TRaytracer */
 

@@ -26,11 +26,12 @@
 
 class TBsdfPhong : public TBsdf
 {
-
+  public:
+    typedef magic_pointer<TPattern> PTPattern;
   protected:
 
-    TPattern*   ptPhongExp;
-    TPattern*   ptSpecularColor;
+    PTPattern   ptPhongExp;
+    PTPattern   ptSpecularColor;
 
   public:
 
@@ -52,10 +53,11 @@ class TBsdfPhong : public TBsdf
     int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
     void getAttributeList (TAttributeList& rtLIST) const;
     
-    void setPhongExp (TPattern* ptEXP) { ptPhongExp = ptEXP; }
-    void setSpecularColor (TPattern* ptCOLOR) { ptSpecularColor = ptCOLOR; }
+    void setPhongExp (PTPattern ptEXP) { ptPhongExp = ptEXP; }
+    void setSpecularColor (PTPattern ptCOLOR) { ptSpecularColor = ptCOLOR; }
 
     string className (void) const { return "BsdfPhong"; }
+    virtual TBsdfPhong* clone_new() const { return new TBsdfPhong(*this); }  
 
 };  /* class TBsdfPhong */
 
@@ -66,7 +68,7 @@ inline TColor TBsdfPhong::evaluateReflection (const TSurfaceData& rktDATA, const
   
   TScalar      tCosNH;
   TVector      tHalfway   = rktLIGHT - rktDATA.ray().direction();
-  TMaterial*   ptMat      = rktDATA.object()->material();
+  magic_pointer<TMaterial> ptMat = rktDATA.object()->material();
   TColor       tColor     = ptMat->color (rktDATA);
   TColor       tSpecColor = ptSpecularColor->color (rktDATA);
   TScalar      kd         = ptMat->diffuseReflection (rktDATA);

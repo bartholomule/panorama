@@ -28,7 +28,8 @@ HLAPI_LIB = ${BUILD_TOP}/hlapi/libhlapi.so
 STATIC_LLAPI_LIB = ${BUILD_TOP}/llapi/libllapi.a
 STATIC_HLAPI_LIB = ${BUILD_TOP}/hlapi/libhlapi.a
 
-INCLUDE = -I${BUILD_TOP} -I${SRC_DIR}/${BUILD_TOP} -I${SRC_DIR}
+INCLUDE = -I${BUILD_TOP} -I${SRC_DIR}/${BUILD_TOP} -I${SRC_DIR} @extra_includes@
+LDFLAGS += @extra_libs@
 DEFS    = @DEFS@ \
           -DTOPDIR='"${TOPDIR}"' \
 	  -DSTATIC_LINK=@STATIC_LINK@
@@ -45,8 +46,7 @@ ifeq (@DEBUG_INFO@,1)
 OPT = -ggdb
 else
 OPT = -O
-# -O6 -fexpensive-optimizations
-# -fno-math-errno
+#-O6 -fexpensive-optimizations -fno-math-errno 
 endif
 
 ifeq (@STATIC_LINK@,1)

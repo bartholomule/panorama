@@ -46,7 +46,10 @@ void TTriangle::update (void)
   TVector   tVector1 = (atVertex[1] - atVertex[0]);
   TVector   tVector2 = (atVertex[2] - atVertex[0]);
 
-  tLocation = atVertex[0];
+  // FIXME!  Does this work at all now?  Re-adjust things so that tLocation is
+  // assumed to be at the origin, as setLocation does. 
+  setLocation(atVertex[0]);
+  //tLocation = atVertex[0];
   tNormal   = crossProduct (tVector1, tVector2);
   bDom      = Dominant (tNormal);
 
@@ -110,7 +113,6 @@ bool TTriangle::inside (const TVector& rktPOINT) const
 
 void TTriangle::setVertex (const TVector& rktVERTEX)
 {
-
   if ( bVertex <= 2 )
   {
     atVertex [bVertex++] = rktVERTEX;
@@ -119,7 +121,10 @@ void TTriangle::setVertex (const TVector& rktVERTEX)
       update();
     }
   }
-
+  else
+  {
+    cerr << "setVertex: Too many vertices (need exactly 3)" << endl;
+  }
 }  /* setVertex() */
 
 
@@ -144,18 +149,25 @@ TVector TTriangle::RandomPointOnSurface() const
 }
 
 
-void TTriangle::printDebug (void) const
+void TTriangle::printDebug (const string& indent) const
 {
 
-  cerr << TDebug::_indent() << "[_Triangle_]" << endl;
+  cerr << indent << "[_Triangle_]" << endl;
 
-  TDebug::_push();
+  string new_indent = TDebug::Indent(indent);
   
-  cerr << TDebug::_indent() << "Vertex 1 : "; atVertex[0].printDebug(); cerr << endl;
-  cerr << TDebug::_indent() << "Vertex 2 : "; atVertex[1].printDebug(); cerr << endl;
-  cerr << TDebug::_indent() << "Vertex 3 : "; atVertex[2].printDebug(); cerr << endl;
-  cerr << TDebug::_indent() << "Normal   : "; tNormal.printDebug(); cerr << endl;
+  cerr << new_indent << "Vertex 1 : "; atVertex[0].printDebug(new_indent); cerr << endl;
+  cerr << new_indent << "Vertex 2 : "; atVertex[1].printDebug(new_indent); cerr << endl;
+  cerr << new_indent << "Vertex 3 : "; atVertex[2].printDebug(new_indent); cerr << endl;
+  cerr << new_indent << "Normal   : ";     tNormal.printDebug(new_indent); cerr << endl;
 
-  TDebug::_pop();
-  
 }  /* printDebug() */
+
+TUserFunctionMap TTriangle::getUserFunctions()
+{
+  TUserFunctionMap ufm = TPlane::getUserFunctions();
+
+  ufm["addVertex"] = create_user_function(this,&TTriangle::setVertex);
+
+  return ufm;
+}

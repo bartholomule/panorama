@@ -4,7 +4,7 @@ BUILD_TOP = ../..
 DIRS = rt
 
 ifeq (1,@EXPERIMENTAL@)
-DIRS += psl
+#DIRS += psl
 endif
 
 include ${BUILD_TOP}/Makefile.targets

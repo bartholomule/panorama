@@ -1,94 +1,66 @@
 #include "materials.inc"
+#include "shapes.inc"
 
-define camera c
+define c class PinholeCamera
 {
-  translate <0,0,-30>
-  look_at   <0,0,0>
-}
+  translate ( <0,0,-30> );
+  look_at = <0,0,0>;
+};
 
-define material MyLambertian
+define MyLambertian material
 {
-  bsdf : class BsdfLambertian { }
-  diffuse 0.6
-  ambient 0
-}
+  bsdf    = class BsdfLambertian { };
+  diffuse = 0.6;
+  ambient = 0.0;
+};
 
 // An area light source.
-sphere 
+sphere
 {
-  translate <0,0,0>
-  radius 1
-  material : extends MyLambertian
+  translate(<0,0,0>);
+  radius = 1;
+  material = MyLambertian
   {
-    emission : class PatternMarble
+    emission = class PatternMarble
     {
-      color CRed
-      base_color CBlue
-    }
-  }
-}
+      color      = CRed;
+      base_color = CBlue;
+    };
+  };
+};
+
 
 // Junk to get in the way of the light...
-aggregate
+define junk aggregate
 {
-  sphere
-  {
-    translate <0,-4,0>
-    radius 2
-  }
-  sphere
-  {
-    translate <0,4,0>
-    radius 2
-  }
-  plane
-  {
-    translate <0,-10,0>
-    normal <0,1,0>
-  }
-  plane
-  {
-    translate <0,10,0>
-    normal <0,-1,0>
-  }
-  plane
-  {
-    translate <0,0,5>
-    normal <0,0,-1>
-  }
-  plane
-  {
-    translate <2.5,0,2.5>
-    normal <-.707,0,-.707>
-  }
-  plane
-  {
-    translate <-2.5,0,2.5>
-    normal <.707,0,-.707>
-  }      
-  material : extends MyLambertian
-  {
-    color CWhite
-  }
-  
-}
+   sphere { translate(< 0  , -4, 0  >); radius = 2; };
+   sphere { translate(< 0  ,  4, 0  >); radius = 2; };
+   plane  { translate(< 0  ,-10, 0  >); normal = <0, 1,0>; };
+   plane  { translate(< 0  , 10, 0  >); normal = <0,-1,0>; };
+   plane  { translate(< 0  ,  0, 5  >); normal = <0,0,-1>; };
+   plane  { translate(< 2.5,  0, 2.5>); normal = <-.707,0,-.707>; };
+   plane  { translate(<-2.5,  0, 2.5>); normal = < .707,0,-.707>; };
+   material = MyLambertian { color = CWhite; };
+};
 
+addObject(junk);
 
 scene
 {
-  camera	c
-  width		400
-  height	400
-  output
+  camera   = c;
+  width	   = 200;
+  height   = 200;
+  //  defaultmaterial = MyLambertian { color = CWhite; };
+
+  output   = class png { name = "area_light1.png"; };
+  renderer = class Raytracer 
   {
-    type        "png"
-    name        "area_light1.png"
-  }
-  renderer : class Raytracer 
-  {
-    sampling "stochastic"
-    aa_depth 8
-//    sampling "adaptive"
-//    max_diff 0.01
-  }
-}
+    sampling = "uniform";
+    aa_depth = 1;
+//    aa_depth = 2;
+//    sampling = "stochastic";
+//    aa_depth = 8;
+//    sampling = "adaptive";
+//    max_diff = 0.01;
+  };
+};

@@ -34,7 +34,7 @@ class TProjector : public TPointLight
     TVector   tUp;
     TVector   tPointAt;
     TVector   tDirection;
-    TImage*   ptImage;
+    magic_pointer<TImage> ptImage;
 
   public:
 
@@ -52,7 +52,9 @@ class TProjector : public TPointLight
 
     string className (void) const { return "Projector"; }
 
-    void printDebug (void) const;
+    void printDebug (const string& indent) const;
+
+    virtual TProjector* clone_new() const { return new TProjector(*this); }
     
 };  /* class TProjector */
 

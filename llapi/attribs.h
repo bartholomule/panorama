@@ -56,10 +56,46 @@ enum EAttribType
   FX_OBJECT,
   FX_AGGREGATE,
   FX_OBJECT_FILTER,
-  FX_IMAGE_FILTER
+  FX_IMAGE_FILTER,
+  FX_SCENE,
+  FX_IMAGE_IO
 
 };  /* enum EAttribType */
 
+#include <string>
+using std::string;
+
+#if defined(BROKEN_RETURN_SUBTYPES_ON_VIRTUAL)
+// The compiler is BROKEN!  It does not recognize that returning a pointer to a
+// subtype can be converted (virtually) to the base pointer (on singely
+// derived, public subclasses). 
+//
+#define TATTRIB_CLONE_NEW_DEF(name) virtual TAttribute* clone_new() const { return new name(*this); }
+#else
+// Do it the right way!
+#define TATTRIB_CLONE_NEW_DEF(name) virtual name* clone_new() const { return new name(*this); }
+#endif /* defined(BROKEN_RETURN_SUBTYPES_ON_VIRTUAL) */
+
+
+/*
+  A base class (struct) for attribute values.
+ */
+struct TAttribute
+{
+
+  EAttribType   eType;
+
+  TAttribute(): eType(FX_NONE) { }  
+  TAttribute(EAttribType type): eType(type) { }
+  virtual ~TAttribute() { }
+  virtual string AttributeName() const { return "NONE"; }
+  virtual string toString() const { return "NONE"; }
+
+  TATTRIB_CLONE_NEW_DEF(TAttribute);
+  
+};  /* struct TAttribute */
+
+#if !defined(NEW_ATTRIBUTES)
 union NAttribute
 {
 
@@ -69,5 +105,12 @@ union NAttribute
   void*    pvValue;
 
 };  /* union NAttribute */
+#else /* defined(NEW_ATTRIBUTES) */
+
+#include "generic/magic_pointer.h"
+typedef magic_pointer<TAttribute> NAttribute;
+
+#endif /* defined(NEW_ATTRIBUTES) */
+
 
 #endif  /* _ATTRIBUTES__ */

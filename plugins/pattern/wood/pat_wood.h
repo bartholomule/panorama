@@ -74,6 +74,7 @@ class TPatternWood : public TPattern
     }
 
     string className (void) const { return "PatternWood"; }
+    TPatternWood* clone_new() const { return new TPatternWood(*this); }
 
 };  /* class TPatternWood */
 

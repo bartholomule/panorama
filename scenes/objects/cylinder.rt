@@ -3,76 +3,79 @@
 */
 
 #include "materials.inc"
+#include "cameras.inc"
 
-define camera c
+define c Camera
 {
-  translate	<0, 300, 400>
-  look_at	<0, 100, 0>
-}
+  translate( <0, 300, 400> );
+  look_at =   <0, 100, 0>;
+};
 
-define light l
+define l class PointLight
 {
-  translate	<-500, 500, 500>
-  color		CWhite
-}
+  translate( <-500, 500, 500> );
+  color = CWhite;
+};
 
-define light l2
+define l2 class PointLight
 {
-  translate	<0, 1000, 0>
-  color		CWhite
-  shadow        off
-}
+  translate( <0, 1000, 0> );
+  color     = CWhite;
+  shadow    = off;
+};
 
-plane
-{
-  translate	<0, -100, 0>
-  normal	<0, 1, 0>
-  material : extends MChecker
+addObject(class Plane
   {
-    color : class PatternChecker
+    translate ( <0, -100, 0>);
+    normal   =  <0,    1, 0>;
+    material = MChecker
     {
-      color	  CBlue
-      base_color  CYellow
-      size        50
-    }
-    specular    0
+      color = class PatternChecker
+      {
+        color      = CBlue;
+        base_color = CYellow;
+        size       = 50;
+      };
+      specular = 0;
+    };
   }
-}
+);
 
-cylinder
-{
-  scale         <120, 40, 120>
-  translate	<0, 0, 0>
-  open          on
-  material : extends MPlastic
+addObject(class Cylinder
   {
-    color	CWhite
+    scale     ( <120, 40, 120> );
+    translate ( <  0,  0,   0> );
+    open      = on;
+    material  =  MPlastic
+    {
+      color = CWhite;
+    };
   }
-}
+);
 
-cylinder
-{
-  scale         <40, 80, 40>
-  translate	<0, 0, 0>
-  rotate        <20, 30, 40>
-  material : extends MPlastic
+addObject(class Cylinder
   {
-    color	CRed
+    scale(<40, 80, 40>);
+    translate(<0, 0, 0>);
+    rotate(<20, 30, 40>);
+    material  =  MPlastic
+    {
+      color = CRed;
+    };
   }
-}
+);
 
-scene
+class Scene
 {
-  camera	c
-  light		l
-  light		l2
-  width		400
-  height	400
-  background	CSummerSky
-  output
+  camera      = c;
+  light       = l;
+  light       = l2;
+  width       = 400;
+  height      = 400;
+  background  = CSummerSky;
+  output = class png
   {
-    type        "png"
-    name	"cylinder.png"
-  }
-  renderer : class Raytracer {}
-}
+    name = "cylinder.png";
+  };
+  renderer = class Raytracer {};
+};

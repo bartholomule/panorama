@@ -18,16 +18,26 @@
 
 #include "llapi/warning_eliminator.h"
 #include "llapi/image_io.h"
+#include "llapi/attribute.h"
 
 int TImageIO::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
 
+  cerr << __FUNCTION__ << "(" << rktNAME << ")" << endl;
   if ( rktNAME == "name" )
   {
+#if !defined(NEW_ATTRIBUTES)    
     if ( eTYPE == FX_STRING )
     {
       tFileName = (char*) nVALUE.pvValue;
     }
+#else
+    magic_pointer<TAttribString> s = get_string(nVALUE);
+    if( !!s )
+    {
+      tFileName = s->tValue;
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -48,7 +58,11 @@ int TImageIO::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 
   if ( rktNAME == "name" )
   {
+#if !defined(NEW_ATTRIBUTES)    
     rnVALUE.pvValue = (char*) tFileName.c_str();
+#else
+    rnVALUE = new TAttribString (tFileName);
+#endif
   }
   else
   {

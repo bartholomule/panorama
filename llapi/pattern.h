@@ -1,5 +1,5 @@
 /*
-*  Copyright (C) 2000 Jon Frydensbjerg
+*  Copyright (C) 2000-2001 Jon Frydensbjerg and Kevin Harris
 *
 *  This program is free software; you can redistribute it and/or modify
 *  it under the terms of the GNU General Public License as published by
@@ -21,7 +21,6 @@
 
 #include "llapi/procedural.h"
 #include "llapi/surface_data.h"
-#include "llapi/object.h"
 
 enum EWarps
 {
@@ -35,76 +34,80 @@ enum EWarps
 class TPattern : public TProcedural
 {
 
-  protected:
+protected:
 
-    TVector          tRotation;
-    TVector          tScaling;
-    TVector          tTranslation;
-    TVector          tRSTScaling;
-    EWarps           eWarp;
+  TVector          tRotation;
+  TVector          tScaling;
+  TVector          tTranslation;
+  TVector          tRSTScaling;
+  EWarps           eWarp;
 
-    mutable TColor   tColor;
+  mutable TColor   tColor;
 
-    TMatrix          tMatrix;
-    TMatrix          tInverseMatrix;
-    TMatrix          tMatrixRotation;
+  TMatrix          tMatrix;
+  TMatrix          tInverseMatrix;
+  TMatrix          tMatrixRotation;
 
-    bool             gTransformIdentity;
+  bool             gTransformIdentity;
 
-    void recalculateMatrix (void);
+  void recalculateMatrix (void);
 
-    void sphericalWarp (TVector& rtPOINT) const;
-    void cylindricalWarp (TVector& rtPOINT) const;
+  void sphericalWarp (TVector& rtPOINT) const;
+  void cylindricalWarp (TVector& rtPOINT) const;
 
-    void sphericalAntiWarp (TVector& rtPOINT) const;
-    void cylindricalAntiWarp (TVector& rtPOINT) const;
+  void sphericalAntiWarp (TVector& rtPOINT) const;
+  void cylindricalAntiWarp (TVector& rtPOINT) const;
 
-  public:
+public:
 
-    TPattern (void) 
-    {
-      initialize();
-    }
-    TPattern (const TColor& rktCOLOR) :
-      tColor (rktCOLOR) 
-    {
-      initialize();
-    }
-    TPattern (const TScalar& rktSCALAR) 
-    {
-      setScalar (rktSCALAR);
+  TPattern (void) 
+  {
+    initialize();
+  }
+  TPattern (const TColor& rktCOLOR) :
+    tColor (rktCOLOR) 
+  {
+    initialize();
+  }
+  TPattern (const TScalar& rktSCALAR) 
+  {
+    setScalar (rktSCALAR);
 
-      initialize();
-    }
+    initialize();
+  }
 
-    virtual TScalar scalar (const TSurfaceData& rktDATA) const { return color (rktDATA).average(); }
-    virtual TColor  color  (const TSurfaceData& rktDATA) const;
+  virtual TScalar scalar (const TSurfaceData& rktDATA) const { return color (rktDATA).average(); }
+  virtual TColor  color  (const TSurfaceData& rktDATA) const;
 
-    virtual TColor pattern (const TSurfaceData& rktDATA) const { return tColor; }
+  virtual TColor pattern (const TSurfaceData& rktDATA) const { return tColor; }
 
-    void setColor (const TColor& rktCOLOR) { tColor = rktCOLOR; }
-    void setScalar (const TScalar& rktSCALAR)
-    {
-      tColor.setRed (rktSCALAR);
-      tColor.setGreen (rktSCALAR);
-      tColor.setBlue (rktSCALAR);
-    }
+  virtual TPattern* clone_new() const { return new TPattern(*this); }
 
-    TVector warp (const TVector& rktPOINT) const;
-    TVector antiWarp (const TVector& rktPOINT) const;
+
+  void setColor (const TColor& rktCOLOR) { tColor = rktCOLOR; }
+  void setScalar (TScalar tSCALAR)
+  {
+    tColor.setRed (tSCALAR);
+    tColor.setGreen (tSCALAR);
+    tColor.setBlue (tSCALAR);
+  }
+
+  TVector warp (const TVector& rktPOINT) const;
+  TVector antiWarp (const TVector& rktPOINT) const;
     
-    TColor  lastColor  (void) const { return tColor; }
-    TScalar lastScalar (void) const { return tColor.average(); }
+  TColor  lastColor  (void) const { return tColor; }
+  TScalar lastScalar (void) const { return tColor.average(); }
 
-    int setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
-    int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
-    void getAttributeList (TAttributeList& rtLIST) const;
+  int setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
+  int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
+  void getAttributeList (TAttributeList& rtLIST) const;
 
-    EClass classType (void) const { return FX_PATTERN_CLASS; }
-    string className (void) const { return "Pattern"; }
+  EClass classType (void) const { return FX_PATTERN_CLASS; }
+  string className (void) const { return "Pattern"; }
 
-    virtual bool initialize (void);
+  virtual TUserFunctionMap getUserFunctions();
+  
+  virtual bool initialize (void);
 };  /* class TPattern */
 
 #endif  /* _PATTERN__ */
-

@@ -18,6 +18,8 @@
 
 #include "llapi/warning_eliminator.h"
 #include "hlapi/aggregate.h"
+#include "llapi/object_required.h"
+
 
 bool TAggregate::initialize (void)
 {
@@ -115,7 +117,7 @@ bool TAggregate::findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) co
 }  /* findAllIntersections() */
 
 
-void TAggregate::setMaterial (TMaterial* ptMATERIAL)
+void TAggregate::setMaterial (magic_pointer<TMaterial> ptMATERIAL)
 {
 
   for (TObjectList::iterator tIter = tObjectList.begin(); ( tIter != tObjectList.end() ) ;tIter++)
@@ -141,7 +143,7 @@ void TAggregate::setObjectCode (size_t zCODE)
 }  /* setObjectCode() */
 
 
-void TAggregate::addFilter (const TObjectFilter* pktFILTER)
+void TAggregate::addFilter (const magic_pointer<TObjectFilter> pktFILTER)
 {
 
   for (TObjectList::iterator tIter = tObjectList.begin(); ( tIter != tObjectList.end() ) ;tIter++)
@@ -172,7 +174,11 @@ int TAggregate::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 {
   if ( rktNAME == "containsobjects" )
   {
+#if !defined(NEW_ATTRIBUTES)
     rnVALUE.gValue = !tObjectList.empty();
+#else
+    rnVALUE = new TAttribBool(!tObjectList.empty());
+#endif
   }
   else
   {
@@ -190,25 +196,26 @@ void TAggregate::getAttributeList (TAttributeList& rtLIST) const
   
 } /* getAttributeList() */
 
-void TAggregate::printDebug (void) const
+void TAggregate::printDebug (const string& indent) const
 {
 
-  cerr << TDebug::_indent() << "[_" << className() << "_]" << endl;
+  cerr << indent << "[_" << className() << "_]" << endl;
 
-  TDebug::_push();
-
-  cerr << TDebug::_indent() << "Bounding box = "; tBoundingBox.printDebug(); cerr << endl;
+  string new_indent = TDebug::Indent(indent);
+  
+  cerr << new_indent << "Bounding box = ";
+  tBoundingBox.printDebug(new_indent);
+  cerr << endl;
   
   for (TObjectList::const_iterator tIter = tObjectList.begin(); ( tIter != tObjectList.end() ) ;tIter++)
   {
-    (*tIter)->printDebug();
+    (*tIter)->printDebug(new_indent);
   }
-
-  TDebug::_pop();
+  cerr << indent << "." << endl;
   
 }  /* printDebug() */
 
-bool TAggregate::containsObject (const TObject* pktObject)
+bool TAggregate::containsObject (const magic_pointer<TObject> pktObject)
 {
   for( TObjectList::const_iterator i = tObjectList.begin();
        i != tObjectList.end();
@@ -220,4 +227,17 @@ bool TAggregate::containsObject (const TObject* pktObject)
     }
   }
   return false;
+}
+
+TUserFunctionMap TAggregate::getUserFunctions()
+{
+  TUserFunctionMap ufm = TObject::getUserFunctions();
+
+  ufm["setMaterial"]     = create_user_function(this,&TAggregate::setMaterial);
+  ufm["addObject"]       = create_user_function(this,&TAggregate::add);
+  ufm["containsObjects"] = create_user_function(this,&TAggregate::containsObjects);
+  ufm["containsObject"]  = create_user_function(this,&TAggregate::containsObject);
+  ufm["getClassName"]    = create_user_function(this,&TAggregate::className);  
+  
+  return ufm;
 }

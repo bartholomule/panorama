@@ -38,11 +38,12 @@ enum EMappings
 
 class TPatternTexture : public TPattern
 {
-
+  public:
+    typedef magic_pointer<TImage> PTImage;
   protected:
 
     TColor      tColor;
-    TImage*     ptImage;
+    PTImage     ptImage;
     TVector2    tTiling;
     TVector2    tOffset;
     bool        gMirror;
@@ -76,6 +77,7 @@ class TPatternTexture : public TPattern
     void getAttributeList (TAttributeList& rtLIST) const;
 
     string className (void) const { return "PatternTexture"; }
+    TPatternTexture* clone_new() const { return new TPatternTexture(*this); }
 
 };  /* class TPatternTexture */
 

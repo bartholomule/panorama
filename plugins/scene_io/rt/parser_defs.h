@@ -37,9 +37,11 @@ extern int     rt_debug;
 //
 void rt_error (const char* pkcTEXT);
 void rt_error (const string& rksTEXT);
+void rt_warning (const string& pkcTEXT); 
 int rt_parse (void);
 int rt_lex (void);
 void RT_InitParser (void);
 void RT_CloseParser (void);
-
+void scanner_unput_string(const string& s);
+  
 #endif  /* _PARSER_DEFS__ */

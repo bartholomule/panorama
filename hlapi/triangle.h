@@ -61,9 +61,11 @@ class TTriangle : public TPlane
     
     TVector RandomPointOnSurface() const;
 
-    void printDebug (void) const;
+    void printDebug (const string& indent) const;
     string className (void) const { return "Triangle"; }
-    
+  
+    virtual TUserFunctionMap getUserFunctions();
+  
 };  /* class TTriangle */
 
 #endif  /* _TRIANGLE__ */

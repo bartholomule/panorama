@@ -21,6 +21,7 @@
 #include "image_callbacks.h"
 #include "message_dialog.h"
 #include "hlapi/plugin_manager.h"
+#include "llapi/attribute.h"
 
 void imageMenuCB (const char* s)
 {
@@ -43,9 +44,24 @@ void imageCloseCB (TImageWindow* ptWnd)
 void imageSaveCB (TImageWindow* ptWnd)
 {
 
+
   if ( ptWnd->gRenderingDone )
   {
-    ptWnd->ptScene->saveImage();
+  // Since each window now contains its own buffers (instead of being shared
+  // with the scene), we have to let the window save its image.
+    NAttribute nat;
+    if( ptWnd->ptScene->imageIO()->getAttribute("name",nat) == FX_ATTRIB_OK )
+    {
+#if !defined(NEW_ATTRIBUTES)
+      ptWnd->saveImage((char*)nat.pvValue);
+#else
+      magic_pointer<TAttribString> str = get_string(nat);
+      if( !!str )
+      {
+	ptWnd->saveImage(str->tValue);
+      }
+#endif
+    }
   }
   
 }  /* imageSaveCB() */
@@ -58,7 +74,7 @@ void imageSaveAsCB (TImageWindow* ptWnd)
   {
     ptWnd->ptFileSelection = new Gtk::FileSelection ("Select image file...");
 
-    ptWnd->ptFileSelection->get_ok_button()->clicked.connect(slot(ptWnd, &TImageWindow::saveImage));
+    ptWnd->ptFileSelection->get_ok_button()->clicked.connect(bind(slot(ptWnd, &TImageWindow::saveImage),string("")));
     ptWnd->ptFileSelection->get_cancel_button()->clicked.connect(bind(slot(imageCancelCB), ptWnd));
 
     ptWnd->ptFileSelection->show();

@@ -41,6 +41,8 @@ class TOF_ConvertToGrey : public TObjectFilter
 
     string className (void) const { return "OF_ConvertToGrey"; }
 
+    virtual TOF_ConvertToGrey* clone_new() const { return new TOF_ConvertToGrey(*this); }
+  
 };  /* class TOF_ConvertToGrey */
 
 #endif  /* _OF_CONVERT_TO_GREY__ */

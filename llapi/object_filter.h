@@ -31,6 +31,7 @@ class TObjectFilter : public TProcedural
     virtual TColor filterRadiance (TSurfaceData& rtDATA, const TColor& rktRAD) const = 0;
 
     EClass classType (void) const { return FX_OBJECT_FILTER_CLASS; }
+    virtual TObjectFilter* clone_new() const = 0;
       
 };  /* class TObjectFilter */
 

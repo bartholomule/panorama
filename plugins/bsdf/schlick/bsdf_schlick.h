@@ -33,12 +33,14 @@ class TBsdfSchlick : public TBsdf
 {
 
   friend class TBsdfSchlickDouble;
-
+  public:
+    typedef magic_pointer<TPattern> PTPattern;
+  
   protected:
 
-    TPattern*         ptRoughness;
-    TPattern*         ptIsotropy;
-    TPattern*         ptReflectance;
+    PTPattern         ptRoughness;
+    PTPattern         ptIsotropy;
+    PTPattern         ptReflectance;
 
     mutable TScalar   tRoughness;
     mutable TScalar   tIsotropy;
@@ -91,6 +93,8 @@ class TBsdfSchlick : public TBsdf
 
     string className (void) const { return "BsdfSchlick"; }
 
+    TBsdfSchlick* clone_new() const { return new TBsdfSchlick(*this); }
+  
 };  /* class TBsdfSchlick */
 
 
@@ -191,7 +195,7 @@ inline TColor TBsdfSchlick::evaluateReflection (const TSurfaceData& rktDATA, con
   TVector      tHalfway = rktLIGHT - rktDATA.ray().direction();
   TVector      tTangent;
   TVector      tHalfwayProj;
-  TMaterial*   ptMat    = rktDATA.object()->material();
+  magic_pointer<TMaterial> ptMat = rktDATA.object()->material();
   TScalar      k        = ptMat->diffuseReflection (rktDATA) + ptMat->specularReflection (rktDATA);
   TScalar      tGeometrical;
   TScalar      tDirectional;

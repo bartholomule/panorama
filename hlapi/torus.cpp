@@ -19,6 +19,7 @@
 #include "llapi/warning_eliminator.h"
 #include "hlapi/torus.h"
 #include "llapi/root_solver.h"
+#include "llapi/attribute.h"
 
 TVector TTorus::localNormal (const TVector& rktPOINT) const
 {
@@ -59,11 +60,20 @@ int TTorus::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType 
 
   if ( rktNAME == "radius_a" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_REAL )
     {
       tRadiusA  = nVALUE.dValue;
-      tRadiusA2 = nVALUE.dValue * nVALUE.dValue;
+      tRadiusA2 = tRadiusA * tRadiusA;
     }
+#else
+    magic_pointer<TAttribReal> r = get_real(nVALUE);
+    if( !!r )
+    {
+      tRadiusA = r->tValue;
+      tRadiusA2 = tRadiusA * tRadiusA;
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -71,10 +81,18 @@ int TTorus::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType 
   }
   else if ( rktNAME == "radius_b" )
   {
+#if !defined(NEW_ATTRIBUTES)    
     if ( eTYPE == FX_REAL )
     {
       tRadiusB2 = nVALUE.dValue * nVALUE.dValue;
     }
+#else
+    magic_pointer<TAttribReal> r = get_real(nVALUE);
+    if( !!r )
+    {
+      tRadiusB2 = r->tValue * r->tValue;
+    }
+#endif    
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -93,6 +111,7 @@ int TTorus::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType 
 int TTorus::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 {
 
+#if !defined(NEW_ATTRIBUTES)  
   if ( rktNAME == "radius_a" )
   {
     rnVALUE.dValue = tRadiusA;
@@ -101,6 +120,16 @@ int TTorus::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
   {
     rnVALUE.dValue = sqrt (tRadiusB2);
   }
+#else
+  if ( rktNAME == "radius_a" )
+  {
+    rnVALUE = new TAttribReal (tRadiusA);
+  }
+  else if ( rktNAME == "radius_b" )
+  {
+    rnVALUE = new TAttribReal (sqrt (tRadiusB2));
+  }
+#endif
   else
   {
     return TObject::getAttribute (rktNAME, rnVALUE);

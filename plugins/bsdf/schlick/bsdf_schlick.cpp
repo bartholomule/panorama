@@ -21,6 +21,8 @@
 #include "llapi/object.h"
 #include "llapi/material.h"
 #include "bsdf_schlick.h"
+#include "llapi/attribute.h"
+#include "llapi/extended_attribute.h"
 
 DEFINE_PLUGIN ("BsdfSchlick", FX_BSDF_CLASS, TBsdfSchlick);
 
@@ -40,9 +42,10 @@ int TBsdfSchlick::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttri
 
   if ( rktNAME == "roughness" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_PATTERN )
     {
-      ptRoughness = (TPattern*) nVALUE.pvValue;
+      ptRoughness = ((TPattern*) nVALUE.pvValue)->clone_new();
     }
     else if ( eTYPE == FX_REAL )
     {
@@ -52,6 +55,13 @@ int TBsdfSchlick::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttri
     {
       ptRoughness = new TPattern (*((TColor*) nVALUE.pvValue));
     }
+#else
+    magic_pointer<TAttribPattern> pat = get_pattern(nVALUE);
+    if( !!pat )
+    {
+      ptRoughness = pat->tValue;
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -59,9 +69,10 @@ int TBsdfSchlick::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttri
   }
   else if ( rktNAME == "reflection_color" )
   {
+#if !defined(NEW_ATTRIBUTES)    
     if ( eTYPE == FX_PATTERN )
     {
-      ptReflectance = (TPattern*) nVALUE.pvValue;
+      ptReflectance = ((TPattern*) nVALUE.pvValue)->clone_new();
     }
     else if ( eTYPE == FX_REAL )
     {
@@ -71,6 +82,13 @@ int TBsdfSchlick::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttri
     {
       ptReflectance = new TPattern (*((TColor*) nVALUE.pvValue));
     }
+#else
+    magic_pointer<TAttribPattern> pat = get_pattern(nVALUE);
+    if( !!pat )
+    {
+      ptReflectance = pat->tValue;
+    }
+#endif    
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -78,9 +96,10 @@ int TBsdfSchlick::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttri
   }
   else if ( rktNAME == "isotropy" )
   {
+#if !defined(NEW_ATTRIBUTES)    
     if ( eTYPE == FX_PATTERN )
     {
-      ptIsotropy = (TPattern*) nVALUE.pvValue;
+      ptIsotropy = ((TPattern*) nVALUE.pvValue)->clone_new();
     }
     else if ( eTYPE == FX_REAL )
     {
@@ -90,6 +109,13 @@ int TBsdfSchlick::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttri
     {
       ptIsotropy = new TPattern (*((TColor*) nVALUE.pvValue));
     }
+#else
+    magic_pointer<TAttribPattern> pat = get_pattern(nVALUE);
+    if( !!pat )
+    {
+      ptIsotropy = pat->tValue;
+    }
+#endif    
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -110,18 +136,33 @@ int TBsdfSchlick::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttri
 int TBsdfSchlick::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 {
 
+#if !defined(NEW_ATTRIBUTES)
   if ( rktNAME == "roughness" )
   {
-    rnVALUE.pvValue = ptRoughness;
+    rnVALUE.pvValue = ptRoughness.get_pointer();
   }
   else if ( rktNAME == "reflection_color" )
   {
-    rnVALUE.pvValue = ptReflectance;
+    rnVALUE.pvValue = ptReflectance.get_pointer();
   }
   else if ( rktNAME == "isotropy" )
   {
-    rnVALUE.pvValue = ptIsotropy;
+    rnVALUE.pvValue = ptIsotropy.get_pointer();
   }
+#else
+  if ( rktNAME == "roughness" )
+  {
+    rnVALUE= new TAttribPattern (ptRoughness);
+  }
+  else if ( rktNAME == "reflection_color" )
+  {
+    rnVALUE= new TAttribPattern (ptReflectance);
+  }
+  else if ( rktNAME == "isotropy" )
+  {
+    rnVALUE= new TAttribPattern (ptIsotropy);
+  }
+#endif  
   else
   {
     return TBsdf::getAttribute (rktNAME, rnVALUE);

@@ -20,6 +20,7 @@
 #include <cmath>
 #include <iostream>
 #include "hlapi/box.h"
+#include "llapi/attribute.h"
 
 TVector TBox::localNormal (const TVector& rktPOINT) const
 {
@@ -52,7 +53,7 @@ TVector TBox::localNormal (const TVector& rktPOINT) const
   }
   else
   {
-    rktPOINT.printDebug();
+    rktPOINT.printDebug("");
     assert ( false );
   }
 
@@ -358,16 +359,18 @@ int TBox::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eT
 {
   if ( rktNAME == "point1" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_VECTOR )
     {
       tP1 = *((TVector*) nVALUE.pvValue);
-      tXmin = min (tP1.x(), tP2.x());
-      tYmin = min (tP1.y(), tP2.y());
-      tZmin = min (tP1.z(), tP2.z());
-      tXmax = max (tP1.x(), tP2.x());
-      tYmax = max (tP1.y(), tP2.y());
-      tZmax = max (tP1.z(), tP2.z());
     }
+#else
+    magic_pointer<TAttribVector> vec = get_vector(nVALUE);
+    if( !!vec )
+    {
+      tP1 = vec->tValue;
+    }
+#endif    
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -375,16 +378,18 @@ int TBox::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eT
   }
   else if ( rktNAME == "point2" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_VECTOR )
     {
       tP2 = *((TVector*) nVALUE.pvValue);
-      tXmin = min (tP1.x(), tP2.x());
-      tYmin = min (tP1.y(), tP2.y());
-      tZmin = min (tP1.z(), tP2.z());
-      tXmax = max (tP1.x(), tP2.x());
-      tYmax = max (tP1.y(), tP2.y());
-      tZmax = max (tP1.z(), tP2.z());
     }
+#else
+    magic_pointer<TAttribVector> vec = get_vector(nVALUE);
+    if( !!vec )
+    {
+      tP2 = vec->tValue;
+    }
+#endif    
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -395,6 +400,13 @@ int TBox::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eT
     return TObject::setAttribute (rktNAME, nVALUE, eTYPE);
   }
 
+  tXmin = min (tP1.x(), tP2.x());
+  tYmin = min (tP1.y(), tP2.y());
+  tZmin = min (tP1.z(), tP2.z());
+  tXmax = max (tP1.x(), tP2.x());
+  tYmax = max (tP1.y(), tP2.y());
+  tZmax = max (tP1.z(), tP2.z());  
+  
   return FX_ATTRIB_OK;
 
 }  /* setAttribute() */
@@ -403,6 +415,7 @@ int TBox::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eT
 int TBox::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 {
 
+#if !defined(NEW_ATTRIBUTES)
   if ( rktNAME == "point1" )
   {
     rnVALUE.pvValue = &tP1;
@@ -411,6 +424,16 @@ int TBox::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
   {
     rnVALUE.pvValue = &tP2;
   }
+#else
+  if ( rktNAME == "point1" )
+  {
+    rnVALUE = new TAttribVector(tP1);
+  }
+  else if ( rktNAME == "point2" )
+  {
+    rnVALUE = new TAttribVector(tP2);
+  }
+#endif    
   else
   {
     return TObject::getAttribute (rktNAME, rnVALUE);

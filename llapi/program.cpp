@@ -20,6 +20,9 @@
 #include "llapi/debug.h"
 #include "llapi/program.h"
 
+#include <iostream>
+using std::cerr;
+
 int TProgram::addVariable (const string& rktNAME, TVarReference tREF)
 {
 
@@ -52,24 +55,20 @@ TEventCode* TProgram::getEventCode (const string& rktEVENT)
 }  /* getEventCode() */
 
 
-void TProgram::printDebug (void) const
+void TProgram::printDebug (const string& indent) const
 {
 
-  cerr << TDebug::_indent() << "[_Program_]" << endl;
+  cerr << indent << "[_Program_]" << endl;
 
-  TDebug::_push();
+  string new_indent = TDebug::Indent(indent);
   
-  cerr << TDebug::_indent() << "Variables : " << endl;
+  cerr << new_indent << "Variables : " << endl;
 
-  TDebug::_push();
+  new_indent = TDebug::Indent(new_indent);
 
   for (TVariableMap::const_iterator iter = tVarList.begin(); ( iter != tVarList.end() ) ;iter++)
   {
-    cerr << TDebug::_indent() << "Name : " << (*iter).first << ", type : " << (int) (*iter).second->tAttrib.eType << endl;
+    cerr << new_indent << "Name : " << (*iter).first << ", type : " << (int) (*iter).second->tAttrib.eType << endl;
   }
   
-  TDebug::_pop();
-
-  TDebug::_pop();
-
 }  /* printDebug() */

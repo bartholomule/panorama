@@ -91,7 +91,7 @@ class TRay
 
     TScalar applyTransform (const TMatrix* pktMATRIX);
 
-    void printDebug (void) const;
+    void printDebug (const string& indent) const;
 
 };  /* class TRay */
 

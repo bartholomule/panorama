@@ -32,6 +32,8 @@
 #include <gtk--/table.h>
 #include <gtk--/notebook.h>
 #include <gtk--/combo.h>
+#include "llapi/attribute.h"
+
 
 using SigC::slot;
 using SigC::bind;
@@ -48,13 +50,15 @@ static void attribute_copy(TProcedural* source, TProcedural* dest);
 
 struct property_callback_data
 {
+  TObjectPropertiesDialog* ptDlg;  
   string attributeName;
   EAttribType eType;
   void* dataContainer;
   TProcedural* destObject;
   int extraData; // Used to contain info such as the index into the vector...
 
-  property_callback_data(const string& aName,
+  property_callback_data(TObjectPropertiesDialog* dlg,
+			 const string& aName,
 			 EAttribType   eTYPE,
 			 void*         data,
 			 TProcedural*  dest,
@@ -66,9 +70,6 @@ struct property_callback_data
 };
 
 static void property_change_callback(property_callback_data tPCD);
-
-
-
                  
 Gtk::Widget*
 TObjectPropertiesDialog::createValueWidget (const string& name,
@@ -77,13 +78,13 @@ TObjectPropertiesDialog::createValueWidget (const string& name,
 {
   TVector             tVector;
   TVector2            tVector2;
-  Gtk::Adjustment*    ptAdjustment;
-  Gtk::HBox*          ptHBox;
-  Gtk::Frame*         ptFrame;
-  Gtk::ToggleButton*  ptToggleButton;
-  TColorPreview*      ptPreview;
+  Gtk::Adjustment*    ptAdjustment = NULL;
+  Gtk::HBox*          ptHBox = NULL;
+  Gtk::Frame*         ptFrame = NULL;  
+  Gtk::ToggleButton*  ptToggleButton = NULL;
+  TColorPreview*      ptPreview = NULL;
   Gtk::Widget*        ptWidget = NULL;
-  Gtk::SpinButton*    ptSB;
+  Gtk::SpinButton*    ptSB = NULL;
 
   if(ptObjectCopy == NULL)
   {
@@ -105,26 +106,73 @@ TObjectPropertiesDialog::createValueWidget (const string& name,
     {
       Gtk::Entry* entry = new Gtk::Entry;
       ptWidget = entry;
-      
+#if !defined(NEW_ATTRIBUTES)
       entry->set_text ((char*) nVALUE.pvValue);
+#else
+      entry->set_text (rcp_static_cast<TAttribString>(nVALUE)->tValue);
+#endif
       entry->changed.connect(bind(slot(&property_change_callback),
-				  property_callback_data(name,
+				  property_callback_data(this,
+							 name,
 							 eTYPE,
 							 (void*)entry,
 							 ptObjectCopy)));
 							 
     }
     break;
+#if defined(NEW_ATTRIBUTES)
+  case FX_STRING_LIST:
+    {
+      Gtk::Combo* selection = new Gtk::Combo;
+      magic_pointer<TAttribStringList> strlist = rcp_static_cast<TAttribStringList>(nVALUE);
+      selection->set_popdown_strings (strlist->choices);
+      selection->set_value_in_list (true, false);
+      selection->set_use_arrows (true);
+      selection->set_case_sensitive (true);
+      Gtk::Entry* entry = selection->get_entry();
+      entry->set_text(strlist->tValue);
+      entry->changed.connect(bind(slot(&property_change_callback),
+				  property_callback_data(this,
+							 name,
+							 FX_STRING,
+							 (void*)entry,
+							 ptObjectCopy)));
+      ptWidget = selection;
+    }
+    break;
+  case FX_INTEGER:
+    {
+      magic_pointer<TAttribInt> i = get_int(nVALUE);
+      ptAdjustment = new Gtk::Adjustment (i->tValue, INT_MIN, INT_MAX, 1, 10, 10);
+      ptWidget = ptSB = new Gtk::SpinButton (*ptAdjustment, 0.0, 0);
+
+      ptSB->set_update_policy (GTK_UPDATE_ALWAYS);
+      
+      ptSB->changed.connect(bind(slot(&property_change_callback),
+				 property_callback_data(this,
+							name,
+							eTYPE,
+							(void*)ptSB,
+							ptObjectCopy)));
+    }
+    break;
+#endif
 
   case FX_REAL:
     {
+#if !defined(NEW_ATTRIBUTES)
       ptAdjustment = new Gtk::Adjustment (nVALUE.dValue, -FLT_MAX, FLT_MAX, 1, 10, 10);
+#else
+      magic_pointer<TAttribReal> r = get_real(nVALUE);
+      ptAdjustment = new Gtk::Adjustment (r->tValue, -FLT_MAX, FLT_MAX, 1, 10, 10);      
+#endif
       ptWidget = ptSB = new Gtk::SpinButton (*ptAdjustment, 0.0, 3);
 
       ptSB->set_update_policy (GTK_UPDATE_ALWAYS);
 
       ptSB->changed.connect(bind(slot(&property_change_callback),
-				 property_callback_data(name,
+				 property_callback_data(this,
+							name,
 							eTYPE,
 							(void*)ptSB,
 							ptObjectCopy)));      
@@ -133,41 +181,47 @@ TObjectPropertiesDialog::createValueWidget (const string& name,
 
   case FX_COLOR:
     {
-      ptPreview = new TColorPreview (*((TColor*) nVALUE.pvValue));
-      ptPreview->show();
-
       ptFrame = new Gtk::Frame;
       ptFrame->show();
-
-      //      ptFrame->add (*ptPreview);
-      //      ptFrame->show();
-
-      Gtk::Window* tmp_wnd = manage(new Gtk::Window());
-      Gtk::VBox* tmp_box = manage(new Gtk::VBox());
-      Gtk::Label* tmp_label = manage(new Gtk::Label("BARF"));
-      Gtk::Frame* tmp_frame = manage(new Gtk::Frame);
-      tmp_frame->add(*ptPreview);
-      tmp_box->pack_start(*tmp_frame); //add(*ptPreview);
-      tmp_box->pack_start(*tmp_label);
-      tmp_wnd->add(*tmp_box);
-      tmp_label->show();
-      tmp_frame->show();
-      tmp_box->show();
-      tmp_wnd->show();
+      
+#if !defined(NEW_ATTRIBUTES)
+      ptPreview = new TColorPreview (*((TColor*) nVALUE.pvValue));
+#else
+      magic_pointer<TAttribColor> col = get_color(nVALUE);
+      ptPreview = new TColorPreview (col->tValue);
+#endif
+      ptPreview->set_expand (true);
+      ptPreview->show();
+      
+      ptFrame->add(*ptPreview);
 
       ptWidget = ptFrame;
+
+      ptPreview->color_changed.connect(bind(slot(&property_change_callback),
+					    property_callback_data(this,
+								   name,
+								   eTYPE,
+								   (void*)ptPreview,
+								   ptObjectCopy)));
     }
     break;
 
   case FX_BOOL:
     {
-      ptToggleButton = new Gtk::ToggleButton ("On");
+      //      ptToggleButton = new Gtk::ToggleButton ("On");
+      ptToggleButton = new Gtk::ToggleButton (name);      
+#if !defined(NEW_ATTRIBUTES)
       ptToggleButton->set_state ((GtkStateType&)nVALUE.gValue);
+#else
+      magic_pointer<TAttribBool> b = get_bool(nVALUE);
+      ptToggleButton->set_state ((GtkStateType&)b->tValue);
+#endif
       
       ptWidget = ptToggleButton;
 
       ptToggleButton->toggled.connect(bind(slot(&property_change_callback),
-					   property_callback_data(name,
+					   property_callback_data(this,
+								  name,
     								  eTYPE,
 								  (void*)ptToggleButton,
 								  ptObjectCopy)));
@@ -176,50 +230,56 @@ TObjectPropertiesDialog::createValueWidget (const string& name,
 
   case FX_CAMERA:
     {
-      ptWidget = new Gtk::Combo;
+      ptWidget = NULL;
     }
     break;
 
   case FX_RENDERER:
     {
-      ptWidget = new Gtk::Combo;
+      ptWidget = NULL;
     }
     break;
 
   case FX_BSDF:
     {
-      ptWidget = new Gtk::Combo;
+      ptWidget = new Gtk::Label("Cannot Change Now");
     }
     break;
 
   case FX_OBJECT_FILTER:
     {
-      ptWidget = new Gtk::Combo;
+      ptWidget = NULL;
     }
     break;
 
   case FX_MATERIAL:
     {
-      ptWidget = new Gtk::Combo;
+      ptWidget = new Gtk::Label("Cannot Change Now");
     }
     break;
 
   case FX_IMAGE:
     {
-      ptWidget = new Gtk::Combo;
+      ptWidget = new Gtk::Label("Cannot Change Now");
     }
     break;
 
   case FX_VECTOR:
     {
+#if !defined(NEW_ATTRIBUTES)      
       tVector = *((TVector*) nVALUE.pvValue);
+#else
+      magic_pointer<TAttribVector> vec = get_vector(nVALUE);
+      tVector = vec->tValue;
+#endif
       
       ptHBox = new Gtk::HBox;
 
       ptAdjustment = new Gtk::Adjustment (tVector.x(), -FLT_MAX, FLT_MAX, 1, 10, 10);
       ptWidget = ptSB = new Gtk::SpinButton (*ptAdjustment, (gfloat)0.0, 3);
       ptSB->changed.connect(bind(slot(&property_change_callback),
-				 property_callback_data(name,
+				 property_callback_data(this,
+							name,
 							eTYPE,
 							(void*)ptSB,
 							ptObjectCopy,
@@ -233,7 +293,8 @@ TObjectPropertiesDialog::createValueWidget (const string& name,
       ptAdjustment = new Gtk::Adjustment (tVector.y(), -FLT_MAX, FLT_MAX, 1, 10, 10);
       ptWidget = ptSB = new Gtk::SpinButton (*ptAdjustment, (gfloat)0.0, 3);
       ptSB->changed.connect(bind(slot(&property_change_callback),
-				 property_callback_data(name,
+				 property_callback_data(this,
+							name,
 							eTYPE,
 							(void*)ptSB,
 							ptObjectCopy,
@@ -247,7 +308,8 @@ TObjectPropertiesDialog::createValueWidget (const string& name,
       ptAdjustment = new Gtk::Adjustment (tVector.z(), -FLT_MAX, FLT_MAX, 1, 10, 10);
       ptWidget = ptSB = new Gtk::SpinButton (*ptAdjustment, (gfloat)0.0, 3);
       ptSB->changed.connect(bind(slot(&property_change_callback),
-				 property_callback_data(name,
+				 property_callback_data(this,
+							name,
 							eTYPE,
 							(void*)ptSB,
 							ptObjectCopy,
@@ -264,14 +326,20 @@ TObjectPropertiesDialog::createValueWidget (const string& name,
 
   case FX_VECTOR2:
     {
+#if !defined(NEW_ATTRIBUTES)
       tVector2 = *((TVector2*) nVALUE.pvValue);
+#else
+      magic_pointer<TAttribVector2> vec2 = get_vector2(nVALUE);
+      tVector2 = vec2->tValue;
+#endif
       
       ptHBox = new Gtk::HBox;
 
       ptAdjustment = new Gtk::Adjustment (tVector2.x(), -FLT_MAX, FLT_MAX, 1, 10, 10);
       ptWidget = ptSB = new Gtk::SpinButton (*ptAdjustment, (float)0.0, 3);
       ptSB->changed.connect(bind(slot(&property_change_callback),
-				 property_callback_data(name,
+				 property_callback_data(this,
+							name,
 							eTYPE,
 							(void*)ptSB,
 							ptObjectCopy,
@@ -285,7 +353,8 @@ TObjectPropertiesDialog::createValueWidget (const string& name,
       ptAdjustment = new Gtk::Adjustment (tVector2.y(), -FLT_MAX, FLT_MAX, 1, 10, 10);
       ptWidget = ptSB = new Gtk::SpinButton (*ptAdjustment, (gfloat)0.0, 3);
       ptSB->changed.connect(bind(slot(&property_change_callback),
-				 property_callback_data(name,
+				 property_callback_data(this,
+							name,
 							eTYPE,
 							(void*)ptSB,
 							ptObjectCopy,
@@ -393,8 +462,15 @@ Gtk::Widget* TObjectPropertiesDialog::createPropertiesWidget (void)
     if ( ptWidget )
     {
       ptWidget->show();
-    
+
+      // Cleanup for a boolean value.
+      if( tIter->second == FX_BOOL )
+      {
+	ptLabel->set_text("");
+      }
+      
       ptTable->attach (*ptWidget, 1, 2, zRow, zRow + 1, GTK_EXPAND | GTK_FILL | GTK_SHRINK, GTK_FILL);
+      
     }
     
     zRow++;
@@ -432,7 +508,8 @@ TObjectPropertiesDialog::TObjectPropertiesDialog (TProcedural* ptOBJECT)
 
   // Make a copy of the object so that it can be changed, and the values will
   // not be updated in the original until 'ok' is pressed...
-  ptObjectCopy = (TProcedural*)TClassManager::_newObject(ptOBJECT->className(),NULL);
+  ptObjectCopy = (TProcedural*)TClassManager::_newObject(ptOBJECT->className(),
+							 ptOBJECT);
   // Copy the attributes from the original to the working copy.
   attribute_copy(ptOBJECT, ptObjectCopy);  
 
@@ -495,6 +572,27 @@ void TObjectPropertiesDialog::accept_changes()
 {
   // Copy the attributes from the copy back over to the original.
   attribute_copy(ptObjectCopy, ptObject);
+  /*
+  NAttribute attrib;
+  TAttributeList tal;
+
+  ptObject->getAttributeList (tal);
+  
+  for(vector<string>::iterator i = modified_attributes.begin();
+      i != modified_attributes.end();
+      ++i)
+  {
+    cout << "Copying attribute " << *i << endl;
+    EAttribType type = tal[*i];
+    if( ( ptObjectCopy->getAttribute(*i, attrib) != FX_ATTRIB_OK ) || 
+	( ptObject->setAttribute(*i, attrib, type) != FX_ATTRIB_OK ) )
+    {
+      cerr << "Error: accept_changes: could not copy attribute "
+	   << "\"" << *i << "\""
+	   << endl;      
+    }
+  }
+  */
 }
 
 
@@ -534,8 +632,10 @@ static void attribute_copy(TProcedural* source, TProcedural* dest)
 
 static void property_change_callback(property_callback_data tPCD)
 {
+  cout << __FUNCTION__ << endl;
   NAttribute nValue;
   TProcedural* dest_object = tPCD.destObject;
+  bool changed = false;
   static const char* unsup_title = "Not yet supported";
   static const char* unsup_text  = "Changes to this type of data are not currently supported";  
   
@@ -547,31 +647,68 @@ static void property_change_callback(property_callback_data tPCD)
       MessageDialog(unsup_title, unsup_text);
     }
     break;
-    
+
+  case FX_STRING_LIST:    
   case FX_STRING:
     {
+      cout << "string" << endl;
+#if !defined(NEW_ATTRIBUTES)
       nValue.pvValue = (void*)((Gtk::Entry*)tPCD.dataContainer)->get_text().c_str();
+#else
+      nValue = new TAttribString (((Gtk::Entry*)tPCD.dataContainer)->get_text());
+#endif
       dest_object->setAttribute(tPCD.attributeName, nValue, tPCD.eType);
+      changed = true;
     }
     break;
 
   case FX_REAL:
     {
+      cout << "real" << endl;      
+#if !defined(NEW_ATTRIBUTES)
       nValue.dValue = ((Gtk::SpinButton*)tPCD.dataContainer)->get_value_as_float();
-      dest_object->setAttribute(tPCD.attributeName, nValue, tPCD.eType);      
+#else
+      nValue = new TAttribReal (((Gtk::SpinButton*)tPCD.dataContainer)->get_value_as_float());      
+#endif
+      cout << "Have value... Setting (" << tPCD.attributeName << ") ." << endl;
+      dest_object->setAttribute(tPCD.attributeName, nValue, tPCD.eType);
+      changed = true;      
     }
     break;
+#if defined(NEW_ATTRIBUTES)
+  case FX_INTEGER:
+    {
+      cout << "int" << endl;      
+      nValue = new TAttribInt (((Gtk::SpinButton*)tPCD.dataContainer)->get_value_as_int());
+      dest_object->setAttribute(tPCD.attributeName, nValue, tPCD.eType);
+      changed = true;      
+    }
+    break;
+#endif
 
   case FX_COLOR:
     {
-      MessageDialog(unsup_title, unsup_text);      
+      cout << "color" << endl;      
+#if !defined(NEW_ATTRIBUTES)	
+      MessageDialog(unsup_title, unsup_text);
+#else
+      nValue = new TAttribColor (((TColorPreview*)tPCD.dataContainer)->color());
+      dest_object->setAttribute(tPCD.attributeName, nValue, tPCD.eType);
+      changed = true;      
+#endif      
     }
     break;
 
   case FX_BOOL:
     {
+      cout << "bool" << endl;      
+#if !defined(NEW_ATTRIBUTES)
       nValue.gValue = ((Gtk::ToggleButton*)tPCD.dataContainer)->get_active();
+#else
+      nValue = new TAttribBool (((Gtk::ToggleButton*)tPCD.dataContainer)->get_active());
+#endif
       dest_object->setAttribute(tPCD.attributeName, nValue, tPCD.eType);
+      changed = true;      
     }
     break;
 
@@ -613,21 +750,43 @@ static void property_change_callback(property_callback_data tPCD)
 
   case FX_VECTOR:
     {
+      cout << "vector" << endl;      
       dest_object->getAttribute(tPCD.attributeName, nValue);
+#if !defined(NEW_ATTRIBUTES)
       TVector tmp_vector(*(TVector*)nValue.pvValue);
+#else
+      magic_pointer<TAttribVector> vec = get_vector(nValue);
+      TVector tmp_vector(vec->tValue);
+#endif
       tmp_vector[tPCD.extraData] = ((Gtk::SpinButton*)tPCD.dataContainer)->get_value_as_float();
+#if !defined(NEW_ATTRIBUTES)      
       nValue.pvValue = (void*)&tmp_vector;
-      dest_object->setAttribute(tPCD.attributeName, nValue, tPCD.eType);      
+#else
+      nValue = new TAttribVector(tmp_vector);
+#endif
+      dest_object->setAttribute(tPCD.attributeName, nValue, tPCD.eType);
+      changed = true;      
     }
     break;
 
   case FX_VECTOR2:
     {
+      cout << "vector2" << endl;      
       dest_object->getAttribute(tPCD.attributeName, nValue);
+#if !defined(NEW_ATTRIBUTES)
       TVector2 tmp_vector(*(TVector2*)nValue.pvValue);
+#else
+      magic_pointer<TAttribVector2> vec = get_vector2(nValue);
+      TVector2 tmp_vector(vec->tValue);
+#endif
       tmp_vector[tPCD.extraData] = ((Gtk::SpinButton*)tPCD.dataContainer)->get_value_as_float();
+#if !defined(NEW_ATTRIBUTES)
       nValue.pvValue = (void*)&tmp_vector;
-      dest_object->setAttribute(tPCD.attributeName, nValue, tPCD.eType);            
+#else
+      nValue = new TAttribVector2 (tmp_vector);
+#endif
+      dest_object->setAttribute(tPCD.attributeName, nValue, tPCD.eType);
+      changed = true;      
     }
     break;
   default:
@@ -636,4 +795,16 @@ static void property_change_callback(property_callback_data tPCD)
     }
     break;        
   }
+  /*
+  if( changed )
+  {
+    cout << "Changed!" << endl;
+    string name = tPCD.attributeName;
+    vector<string>& vec = tPCD.ptDlg->modified_attributes;
+
+    vec.push_back(name);
+  }
+  */
 }
+
+

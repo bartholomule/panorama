@@ -4,52 +4,53 @@
 
 #include "materials.inc"
 
-define camera c
+define c class PinholeCamera
 {
-  translate	<-400, 200, 500>
-  look_at	<0, 100, 0>
-}
+  translate ( <-400, 200, 500> );
+  look_at   = <0, 100, 0>;
+};
 
-define light l
+define l class PointLight
 {
-  translate	<-500, 300, 500>
-  color		CWhite
-}
+  translate ( <-500, 300, 500> );
+  color     = CWhite;
+};
 
-rectangle
-{
-  <-200, 0, -200>
-  < 200, 0, -200>
-  < 200, 0,  200>
-  <-200, 0,  200>
-  one_sided	off
-  material : extends MPlastic
+addObject( class Rectangle
   {
-    color	CGreen
+    addVertex(<-200, 0, -200>);
+    addVertex(< 200, 0, -200>);
+    addVertex(< 200, 0,  200>);
+    addVertex(<-200, 0,  200>);
+    one_sided = off;
+    material = MPlastic
+    {
+      color = CGreen;
+    };
   }
-}
+);
 
-sphere
-{
-  translate	<0, 50, 0>
-  radius	50
-  material : extends MPlastic
+addObject( class Sphere
   {
-    color	CWhite
+    translate ( <0, 50, 0> );
+    radius = 50;
+    material = MPlastic
+    {
+      color = CWhite;
+    };
   }
-}
+);
 
-scene
+class Scene
 {
-  camera	c
-  light		l
-  width		600
-  height	400
-  background	CSummerSky
-  output
+  camera     = c;
+  light      = l;
+  width      = 600;
+  height     = 400;
+  background = CSummerSky;
+  output = class png
   {
-    type        "png"
-    name	"rectangle.png"
-  }
-  renderer : class Raytracer {}
-}
+    name = "rectangle.png";
+  };
+  renderer = class Raytracer {};
+};

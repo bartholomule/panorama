@@ -69,7 +69,8 @@ class TPatternLeopard : public TPattern
     }
 
     string className (void) const { return "PatternLeopard"; }
-
+    TPatternLeopard* clone_new() const { return new TPatternLeopard(*this); }
+  
 };  /* class TPatternLeopard */
 
 

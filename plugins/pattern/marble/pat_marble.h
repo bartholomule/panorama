@@ -77,7 +77,8 @@ class TPatternMarble : public TPattern
     }
 
     string className (void) const { return "PatternMarble"; }
-
+    TPatternMarble* clone_new() const { return new TPatternMarble(*this); }
+  
 };  /* class TPatternMarble */
 
 

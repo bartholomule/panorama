@@ -20,6 +20,7 @@
 #include "llapi/scene.h"
 #include "llapi/gradient.h"
 #include "if_lens_flare.h"
+#include "llapi/attribute.h"
 #include "flare.h"
 #include "flare_std.h"
 #include "flare_hard.h"
@@ -312,6 +313,11 @@ void TIF_Lens_Flare::flaresByReflections (void)
     return;
   }
 
+  if( pfUserUpdate )
+  {
+    pfUserUpdate(0.0, pvUserData);
+  }
+  
   apgMarkedMap = (bool *) malloc (ptCurrentImage->width() * ptCurrentImage->height() * sizeof (bool));
 
   ptImageCopy  = new TImage (ptCurrentImage->width(), ptCurrentImage->height());
@@ -349,8 +355,18 @@ void TIF_Lens_Flare::flaresByReflections (void)
         setMapPixel (I, J, true);
       }
     }
+    if( pfUserUpdate )
+    {
+      if(!pfUserUpdate(I / double(ptCurrentImage->width()), pvUserData))
+      {
+	break;
+      }
+    }
   }
-  
+  if( pfUserUpdate )
+  {
+    pfUserUpdate(1.0, pvUserData);
+  }  
   delete ptImageCopy;
 
   free (apgMarkedMap);
@@ -361,7 +377,7 @@ void TIF_Lens_Flare::flaresByReflections (void)
 void TIF_Lens_Flare::flaresByLightsources (void)
 {
 
-  TCamera*       ptSceneCamera;
+  magic_pointer<TCamera> ptSceneCamera;
   const TLight*  ptLight;
   TVector2       tScreenPosition;
   TVector        tPosition;
@@ -482,10 +498,21 @@ int TIF_Lens_Flare::setAttribute (const string& rktNAME, NAttribute nVALUE, EAtt
 
   if ( rktNAME == "lf_type" )
   {
-    if ( eTYPE == FX_STRING )
+#if !defined(NEW_ATTRIBUTES)
+    bool val = (eTYPE == FX_STRING);
+#else
+    magic_pointer<TAttribString> str = get_string(nVALUE);
+    bool val = !!str;
+#endif
+      
+    if ( val )
     {
+#if !defined(NEW_ATTRIBUTES)
       string tType ((char *) nVALUE.pvValue);
-
+#else
+      string tType = str->tValue;
+#endif
+      
       if ( tType == "near" )
       {
         eType = FX_NEAR;
@@ -510,9 +537,19 @@ int TIF_Lens_Flare::setAttribute (const string& rktNAME, NAttribute nVALUE, EAtt
   }
   else if ( rktNAME == "lf_form" )
   {
-    if ( eTYPE == FX_STRING )
+#if !defined(NEW_ATTRIBUTES)
+    bool val = (eTYPE == FX_STRING);
+#else
+    magic_pointer<TAttribString> str = get_string(nVALUE);
+    bool val = !!str;
+#endif    
+    if ( val )
     {
+#if !defined(NEW_ATTRIBUTES)      
       string tForm ((char *) nVALUE.pvValue);
+#else
+      string tForm = str->tValue;
+#endif
 
       if ( tForm == "pentagons" )
       {
@@ -538,10 +575,18 @@ int TIF_Lens_Flare::setAttribute (const string& rktNAME, NAttribute nVALUE, EAtt
   }
   else if ( rktNAME == "lf_scale" )
   {
+#if !defined(NEW_ATTRIBUTES)    
     if ( eTYPE == FX_REAL )
     {
       fScale = nVALUE.dValue;
     }
+#else
+    magic_pointer<TAttribReal> r = get_real(nVALUE);
+    if( !!r )
+    {
+      fScale = r->tValue;
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -549,10 +594,18 @@ int TIF_Lens_Flare::setAttribute (const string& rktNAME, NAttribute nVALUE, EAtt
   }
   else if ( rktNAME == "threshold" )
   {
+#if !defined(NEW_ATTRIBUTES)    
     if ( eTYPE == FX_REAL )
     {
       fThreshold = nVALUE.dValue;
     }
+#else
+    magic_pointer<TAttribReal> r = get_real(nVALUE);
+    if( !!r )
+    {
+      fThreshold = r->tValue;
+    }
+#endif    
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -560,10 +613,18 @@ int TIF_Lens_Flare::setAttribute (const string& rktNAME, NAttribute nVALUE, EAtt
   }
   else if ( rktNAME == "intensity" )
   {
+#if !defined(NEW_ATTRIBUTES)    
     if ( eTYPE == FX_REAL )
     {
       fIntensity = nVALUE.dValue;
     }
+#else
+    magic_pointer<TAttribReal> r = get_real(nVALUE);
+    if( !!r )
+    {
+      fIntensity = r->tValue;
+    }
+#endif    
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -571,10 +632,18 @@ int TIF_Lens_Flare::setAttribute (const string& rktNAME, NAttribute nVALUE, EAtt
   }
   else if ( rktNAME == "influence" )
   {
+#if !defined(NEW_ATTRIBUTES)    
     if ( eTYPE == FX_REAL )
     {
       fInfluence = nVALUE.dValue;
     }
+#else
+    magic_pointer<TAttribReal> r = get_real(nVALUE);
+    if( !!r )
+    {
+      fInfluence = r->tValue;
+    }
+#endif    
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -582,10 +651,18 @@ int TIF_Lens_Flare::setAttribute (const string& rktNAME, NAttribute nVALUE, EAtt
   }
   else if ( rktNAME == "artefacts" )
   {
+#if !defined(NEW_ATTRIBUTES)    
     if ( eTYPE == FX_BOOL )
     {
       gArtefacts = nVALUE.gValue;
     }
+#else
+    magic_pointer<TAttribBool> b = get_bool(nVALUE);
+    if( !!b )
+    {
+      gArtefacts = b->tValue;
+    }
+#endif    
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -603,7 +680,7 @@ int TIF_Lens_Flare::setAttribute (const string& rktNAME, NAttribute nVALUE, EAtt
 
 int TIF_Lens_Flare::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 {
-
+#if !defined(NEW_ATTRIBUTES)
   if ( rktNAME == "lf_type" )
   {
     switch (eType) 
@@ -656,6 +733,61 @@ int TIF_Lens_Flare::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
   {
     rnVALUE.gValue = gArtefacts;
   }
+#else
+  if ( rktNAME == "lf_type" )
+  {
+    static map<ELFTypes,string> type_strings;
+    static vector<string> type_choices;
+    
+    if( type_strings.empty() )
+    {
+      type_strings[FX_NEAR] = "near";
+      type_strings[FX_FAR] = "far";
+      type_strings[FX_NORMAL] = "normal";
+      type_choices.erase(type_choices.begin(), type_choices.end());
+      type_choices.push_back (type_strings[FX_NORMAL]);
+      type_choices.push_back (type_strings[FX_NEAR]);
+      type_choices.push_back (type_strings[FX_FAR]);      
+    }
+    rnVALUE = new TAttribStringList (type_choices, type_strings[eType]);
+  }
+  else if ( rktNAME == "lf_form" )
+  {
+    static map<ELFForms,string> form_strings;
+    static vector<string> form_choices;
+    if( form_strings.empty() )
+    {
+      form_strings[FX_CIRCLE] = "circles";
+      form_strings[FX_HEXAGON] = "hexagons";
+      form_strings[FX_PENTAGON] = "pentagons";
+      form_choices.erase(form_choices.begin(), form_choices.end());      
+      form_choices.push_back (form_strings[FX_PENTAGON]);
+      form_choices.push_back (form_strings[FX_HEXAGON]);
+      form_choices.push_back (form_strings[FX_CIRCLE]);      
+    }    
+    rnVALUE = new TAttribStringList (form_choices, form_strings[eForm]);
+  }
+  else if ( rktNAME == "lf_scale" )
+  {
+    rnVALUE = new TAttribReal (fScale);
+  }
+  else if ( rktNAME == "threshold" )
+  {
+    rnVALUE = new TAttribReal (fThreshold);
+  }
+  else if ( rktNAME == "intensity" )
+  {
+    rnVALUE = new TAttribReal (fIntensity);
+  }
+  else if ( rktNAME == "influence" )
+  {
+    rnVALUE = new TAttribReal (fInfluence);
+  }
+  else if ( rktNAME == "artefacts" )
+  {
+    rnVALUE = new TAttribBool (gArtefacts);
+  }  
+#endif
   else
   {
     return TImageFilter::getAttribute (rktNAME, rnVALUE);
@@ -671,8 +803,13 @@ void TIF_Lens_Flare::getAttributeList (TAttributeList& rtLIST) const
 
   TImageFilter::getAttributeList (rtLIST);
 
+#if !defined(NEW_ATTRIBUTES)
   rtLIST ["lf_type"]   = FX_STRING;
   rtLIST ["lf_form"]   = FX_STRING;
+#else
+  rtLIST ["lf_type"]   = FX_STRING_LIST;
+  rtLIST ["lf_form"]   = FX_STRING_LIST;
+#endif
   rtLIST ["lf_scale"]  = FX_REAL;
   rtLIST ["threshold"] = FX_REAL;
   rtLIST ["intensity"] = FX_REAL;

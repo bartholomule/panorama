@@ -24,29 +24,31 @@
 // If the image needs to be almost identical to that of the pinhole camera,
 // when extending an image from this, reset the focal (in the usage, not in
 // here) length to 52.2mm (0.0522) 
-define camera pas_35mm : class ThinlensCamera
+define pas_35mm class ThinlensCamera
 {
-  focal_distance 2      // (2 meters) about 6 Feet -- Almost standard
-  focal_length   0.055  // 55mm lens
-  aperture       11     // F11
-  film_width     0.036  // 35mm film has dimensions of 36mm x 24mm
-  film_height    0.024  
-}
+  focal_distance = 2;      // (2 meters) about 6 Feet -- Almost standard
+  focal_length   = 0.055;  // 55mm lens
+  aperture       = 11;     // F11
+  film_width     = 0.036;  // 35mm film has dimensions of 36mm x 24mm
+  film_height    = 0.024;  
+};
 
-define camera standard : class PinholeCamera
+define standard class PinholeCamera
 {
-  angle 45  // This is given by default, if not provided (~= 52.2mm lens for
-            // 35mm cameras). 
-}
+  angle = 45;  // This is given by default, if not provided (~= 52.2mm lens for
+               // 35mm cameras). 
+};
+
+define Camera standard;
 
 
 /*
 // Example of use:
-define camera c : extends pas_35mm
+define c : extends pas_35mm
 {
-  translate <location>
-  look_at   <location>
-}
+  translate(<location>);
+  look_at=<location>;
+};
 */
 
 /*

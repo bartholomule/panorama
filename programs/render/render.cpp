@@ -190,10 +190,12 @@ void SetPaths (void)
 }  /* SetPaths() */
 
 
-void FinishedLine (size_t zLINE, void* pvDATA)
+bool FinishedLine (size_t zLINE, void* pvDATA)
 {
 
   cout << "[" << zLINE << "]\r" << flush;
+  
+  return true;
 
 }  /* FinishedLine() */
 
@@ -255,6 +257,7 @@ int main (int argc, char *argv[])
   
   cout << "Parsing..." << endl;
   ptScene = TSceneManager::_load (_tInputFileName, _tInputFileFormat);
+  cout << "Scene loaded..." << endl;
 
   if ( !ptScene )
   {
@@ -265,7 +268,7 @@ int main (int argc, char *argv[])
   //
   // Uncomment next line for debug information on the whole scene.
   //
-//  ptScene->printDebug();
+  ptScene->printDebug("");
 
   tBaseTime = time (NULL);
 
@@ -274,7 +277,8 @@ int main (int argc, char *argv[])
   {
     cerr << "Initialization failed!" << endl;
     exit (1);
-  }    
+  }
+  ptScene->printDebug("#");  
   tInitTime = time (NULL);
 
   cout << "Rendering..." << endl;

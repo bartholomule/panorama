@@ -19,18 +19,16 @@
 #include "llapi/warning_eliminator.h"
 #include "llapi/span_list.h"
 
-void TSpanList::printDebug (void) const
+void TSpanList::printDebug (const string& indent) const
 {
 
-  cerr << TDebug::_indent() << "[_SpanList_]" << endl;
+  cerr << indent << "[_SpanList_]" << endl;
 
-  TDebug::_push();
+  string new_indent = TDebug::Indent(indent);
 
   for (TSpanList::const_iterator tIter = begin(); ( tIter != end() ) ;tIter++)
   {
-    (*tIter).second.printDebug();
+    (*tIter).second.printDebug(new_indent);
   }
-
-  TDebug::_pop();
   
 }  /* printDebug() */

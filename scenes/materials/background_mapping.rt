@@ -37,7 +37,8 @@ scene
   height	400
   background : class PatternTexture
   {
-    texture     "supernova.tga"
+    texture     "background_mapping.png"
+//    texture     "supernova.tga"
     tiling      <4,4>
     mirror      on
     offset      <0.5, 0.5>

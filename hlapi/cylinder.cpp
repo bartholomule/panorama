@@ -18,6 +18,7 @@
 
 #include "llapi/warning_eliminator.h"
 #include "hlapi/cylinder.h"
+#include "llapi/attribute.h"
 
 TVector TCylinder::localNormal (const TVector& rktPOINT) const
 {
@@ -231,10 +232,18 @@ int TCylinder::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribTy
 {
   if ( rktNAME == "point1" )
   {
+#if !defined(NEW_ATTRIBUTES)    
     if ( eTYPE == FX_VECTOR )
     {
-     tTopPoint = *((TVector*) nVALUE.pvValue);
+      tTopPoint = *((TVector*) nVALUE.pvValue);
     }
+#else
+    magic_pointer<TAttribVector> vec = get_vector(nVALUE);
+    if( !!vec )
+    {
+      tTopPoint = vec->tValue;
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -242,10 +251,18 @@ int TCylinder::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribTy
   }
   else if ( rktNAME == "point2" )
   {
+#if !defined(NEW_ATTRIBUTES)    
     if ( eTYPE == FX_VECTOR )
     {
       tBottomPoint = *((TVector*) nVALUE.pvValue);
     }
+#else
+    magic_pointer<TAttribVector> vec = get_vector(nVALUE);
+    if( !!vec )
+    {
+      tBottomPoint = vec->tValue;
+    }
+#endif    
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -253,10 +270,18 @@ int TCylinder::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribTy
   }
   else if ( rktNAME == "open" )
   {
+#if !defined(NEW_ATTRIBUTES)    
     if ( eTYPE == FX_BOOL )
     {
       gOpen = nVALUE.gValue;
     }
+#else
+    magic_pointer<TAttribBool> b = get_bool(nVALUE);
+    if( !!b )
+    {
+      gOpen = b->tValue;
+    }
+#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -264,11 +289,20 @@ int TCylinder::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribTy
   }
   else if ( rktNAME == "radius" )
   {
+#if !defined(NEW_ATTRIBUTES)
     if ( eTYPE == FX_REAL )
     {
       tRadius  = nVALUE.dValue;
       tRadius2 = tRadius * tRadius;
     }
+#else
+    magic_pointer<TAttribReal> r = get_real(nVALUE);
+    if( !!r )
+    {
+      tRadius = r->tValue;
+      tRadius2 = tRadius * tRadius;      
+    }
+#endif    
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -287,6 +321,7 @@ int TCylinder::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribTy
 int TCylinder::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 {
 
+#if !defined(NEW_ATTRIBUTES)    
   if ( rktNAME == "point1" )
   {
     rnVALUE.pvValue = &tTopPoint;
@@ -303,6 +338,24 @@ int TCylinder::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
   {
     rnVALUE.dValue = tRadius;
   }
+#else
+  if ( rktNAME == "point1" )
+  {
+    rnVALUE = new TAttribVector(tTopPoint);
+  }
+  else if ( rktNAME == "point2" )
+  {
+    rnVALUE = new TAttribVector(tBottomPoint);
+  }
+  else if ( rktNAME == "open" )
+  {
+    rnVALUE = new TAttribBool(gOpen);
+  }
+  else if ( rktNAME == "radius" )
+  {
+    rnVALUE = new TAttribReal(tRadius);
+  }  
+#endif
   else
   {
     return TObject::getAttribute (rktNAME, rnVALUE);

@@ -1,3 +1,4 @@
 Makefile
 pluginrc
 config
+*.d

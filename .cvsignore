@@ -4,3 +4,4 @@ Makefile.vars
 config.cache
 config.log
 config.status
+*.d
