@@ -100,12 +100,12 @@ inline TScalar TMaterialMarble::evaluate (const TVector& rktPOINT, TVector* ptGR
   if ( tValue > tMax )
   {
     tMax = tValue;
-    cout << "\t" << tMax << " " << tMin << endl;
+//    cout << "\t" << tMax << " " << tMin << endl;
   }
   else if ( tValue < tMin )
   {
     tMin = tValue;
-    cout << "\t" << tMax << " " << tMin << endl;
+//    cout << "\t" << tMax << " " << tMin << endl;
   }
   
   if (ptGRADIENT)
