@@ -139,7 +139,7 @@ class TSurfaceData
     
     TVector localPoint (void) const;
     
-    TVector normal(void) const;
+    TVector normal (void) const;
     
     TVector point (void) const { return tPoint; }
     TScalar distance (void) const { return tDistance; }
