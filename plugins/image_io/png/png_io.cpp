@@ -20,20 +20,32 @@
 #include "hlapi/image_manager.h"
 #include "png_io.h"
 
+#if PNG_LIBPNG_VER < 90
+/* Compatibility defines for older library versions */
+#define png_get_valid(png, infop, var) (infop->valid & var)
+#define png_get_rowbytes(png, infop) infop->rowbytes
+#endif
+
 DEFINE_IMAGE_IO_PLUGIN ("png", TImagePng);
 
 extern "C" {
 #include <png.h>
   
-  void error_callback (png_structp ptPng, const char* kcpMsg)
+  void error_callback (png_structp ptPng, png_const_charp kcpMsg)
   {
 
     cerr << kcpMsg << endl;
 
   }  /* error_callback() */
 
+
+#if PNG_LIBPNG_VER > 89
   void user_read_data (png_structp ptPng, png_bytep bpData,
                        png_size_t zLength)
+#else
+  void user_read_data (png_structp ptPng, png_bytep bpData,
+                       png_uint_32 zLength)
+#endif
   {
 
     ifstream* ptInput = (ifstream *) png_get_io_ptr (ptPng);
@@ -41,8 +53,13 @@ extern "C" {
 
   }  /* user_read_data() */
 
+#if PNG_LIBPNG_VER > 89
   void user_write_data (png_structp ptPng, png_bytep bpData,
                         png_size_t zLength)
+#else
+  void user_write_data (png_structp ptPng, png_bytep bpData,
+                        png_uint_32 zLength)
+#endif
   {
 
     ofstream* ptOutput = (ofstream *) png_get_io_ptr (ptPng);
@@ -57,6 +74,7 @@ extern "C" {
     ptOutput->flush();
 
   }  /* user_flush_data() */
+
 }
 
 
@@ -106,9 +124,21 @@ int TImagePng::save (const TImage* pktIMAGE) {
   zWidth  = pktIMAGE->width();
   zHeight = pktIMAGE->height();
   
+#if PNG_LIBPNG_VER > 89
   png_set_IHDR (ptPng, ptInfo, zWidth, zHeight, 8, PNG_COLOR_TYPE_RGB,
                 PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_DEFAULT,
                 PNG_FILTER_TYPE_DEFAULT);
+#else
+  ptInfo->width       = zWidth;
+  ptInfo->height      = zHeight;
+  ptInfo->bit_depth   = 8;
+  ptInfo->color_type  = PNG_COLOR_TYPE_RGB;
+  ptInfo->compression_type = 0;
+  ptInfo->filter_type = 0;
+  ptInfo->interlace_type = 0;
+  ptInfo->channels = 3;
+  ptInfo->pixel_depth = (png_byte)(ptInfo->channels * ptInfo->bit_depth);
+#endif
 
   png_write_info (ptPng, ptInfo);
 
@@ -208,14 +238,37 @@ TImage* TImagePng::load (void)
     return NULL;
   }
 
+#if PNG_LIBPNG_VER > 89
   png_set_read_fn (ptPng, &tInput, user_read_data);
 
   png_set_sig_bytes (ptPng, 8);
-  
+#else
+  // We need to close the file and reopen so that the library is 
+  // at the beginning of the file.
+  tInput.close();
+  tInput.open(tFileName.c_str());
+  if ( ! tInput.good() )
+  {
+    cerr << "TImagePng::load : Error loading " << tFileName << endl;
+    return NULL;
+  }
+      
+  png_set_read_fn (ptPng, &tInput, user_read_data);
+#endif  
   png_read_info (ptPng, ptInfo);
   
+#if PNG_LIBPNG_VER > 89
   png_get_IHDR (ptPng, ptInfo, &dwWidth, &dwHeight, &iBitDepth, &iColorType,
                 &iInterlaceType, &iCompressionType, &iFilterType);
+#else
+  dwWidth    = ptInfo->width;
+  dwHeight   = ptInfo->height;
+  iBitDepth  = ptInfo->bit_depth;
+  iColorType = ptInfo->color_type;
+  iInterlaceType = ptInfo->interlace_type;
+  iCompressionType = ptInfo->compression_type;
+  iFilterType = ptInfo->filter_type;
+#endif
 
   ptImage = new TImage(dwWidth, dwHeight);
   
@@ -241,7 +294,15 @@ TImage* TImagePng::load (void)
 
   if (iColorType & PNG_COLOR_MASK_ALPHA)
   {
+#if PNG_LIBPNG_VER > 89
     png_set_strip_alpha (ptPng);
+#else
+    cerr << "TImagePng::load : Error loading " << tFileName << 
+      " alpha channel not supported" << endl;
+    png_destroy_read_struct (&ptPng, &ptInfo, (png_infopp) NULL);
+    tInput.close();
+    return NULL;
+#endif
   }
   
   png_set_packing (ptPng);
