@@ -145,21 +145,23 @@ void TABVH::insertObject (TObject* ptOBJ)
 }  /* insertObject() */
 
 
-void TABVH::initialize (void)
+bool TABVH::initialize (void)
 {
 
   size_t                  zPos;
   TObject*                ptObj;
   TObjectList::iterator   tIter;
+  bool val = true;
 
   if ( tObjectList.empty() )
   {
-    return;
+    return true;
   }
 
   for (tIter = tObjectList.begin(); ( tIter != tObjectList.end() ) ;tIter++)
   {
-    (*tIter)->initialize();
+    bool val2 = (*tIter)->initialize();
+    val = val && val2;
   }
 
   //
@@ -192,6 +194,8 @@ void TABVH::initialize (void)
   // Finally, clear the object list.
   //
   tObjectList.erase (tObjectList.begin(), tObjectList.end());
+
+  return val;
   
 }  /* initialize() */
 
