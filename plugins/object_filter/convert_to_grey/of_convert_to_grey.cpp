@@ -16,6 +16,7 @@
 *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "llapi/warning_eliminator.h"
 #include "of_convert_to_grey.h"
 
 DEFINE_PLUGIN ("OF_ConvertToGrey", FX_OBJECT_FILTER_CLASS, TOF_ConvertToGrey);

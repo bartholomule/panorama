@@ -16,6 +16,7 @@
 *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "llapi/warning_eliminator.h"
 #include "subdivvert.h"
 #include "subdivedge.h"
 #include "subdivface.h"
@@ -155,17 +156,17 @@ TSubdivVert* TSubdivVert::findPoint()
   }
 
   dwFaceCount = 0;
-  for (const_face_iterator tIter = beginFace(); ( tIter != endFace() ) ;tIter++)
+  for (const_face_iterator tIter1 = beginFace(); ( tIter1 != endFace() ) ;tIter1++)
   {
     dwFaceCount++;
-    tFacePoint += (*tIter)->findPoint()->tPosition;
+    tFacePoint += (*tIter1)->findPoint()->tPosition;
   }
 
   dwEdgeCount = 0;
-  for (const_edge_iterator tIter = beginEdge(); ( tIter != endEdge() ) ;tIter++)
+  for (const_edge_iterator tIter2 = beginEdge(); ( tIter2 != endEdge() ) ;tIter2++)
   {
-    TSubdivVert*   ptFirst = (*tIter)->ptFirstVert;
-    TSubdivVert*   ptSecond = (*tIter)->ptSecondVert;
+    TSubdivVert*   ptFirst = (*tIter2)->ptFirstVert;
+    TSubdivVert*   ptSecond = (*tIter2)->ptSecondVert;
 
     dwEdgeCount++;
     tEdgePoint += ptFirst->tPosition + ptSecond->tPosition;

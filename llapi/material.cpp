@@ -17,6 +17,7 @@
 *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "llapi/warning_eliminator.h"
 #include <cassert>
 #include "llapi/math_tools.h"
 #include "llapi/material.h"

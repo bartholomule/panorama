@@ -16,6 +16,7 @@
 *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "llapi/warning_eliminator.h"
 #include "point_light.h"
 
 DEFINE_PLUGIN ("PointLight", FX_LIGHT_CLASS, TPointLight);

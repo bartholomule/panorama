@@ -16,6 +16,7 @@
 *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "llapi/warning_eliminator.h"
 #include <stdlib.h>
 #include <iostream>
 #include <time.h>
@@ -25,11 +26,11 @@
 DEFINE_PLUGIN ("PerturbationBump", FX_PERTURBATION_CLASS, TPerturbationBump);
 
 TPerturbationBump::TPerturbationBump (void) :
-      TPerturbation(),
-      ptPattern (NULL),
-      tGradientDisplacement (1, 1),
-      tBumpFactor (1),
-      tSamples (2, 2) {}
+  TPerturbation(),
+  ptPattern (NULL),
+  tGradientDisplacement (1, 1),
+  tBumpFactor (1),
+  tSamples (2, 2) {}
 
 
 TVector TPerturbationBump::perturbNormal (const TSurfaceData& rktDATA) const
@@ -83,7 +84,7 @@ TVector TPerturbationBump::perturbNormal (const TSurfaceData& rktDATA) const
 	s = TVector(0.0, -1.0, 0.0);
       }
     }
-  
+
     r.normalize();
     t = crossProduct (r, s);
     t.normalize();
@@ -97,7 +98,7 @@ TVector TPerturbationBump::perturbNormal (const TSurfaceData& rktDATA) const
     tHeight = tColor.average();
 
     dx = ( tSamples.x() > 1 ) ? (2.0 / (tSamples.x() - 1.0)) : 0;
-    dy = ( tSamples.y() > 1 ) ? (2.0 / (tSamples.y() - 1.0)) : 0;    
+    dy = ( tSamples.y() > 1 ) ? (2.0 / (tSamples.y() - 1.0)) : 0; 
 
     tRTotal = 0;
     tTTotal = 0;
@@ -108,15 +109,15 @@ TVector TPerturbationBump::perturbNormal (const TSurfaceData& rktDATA) const
     y = -1.0;
 
     for (size_t iy = 0; ( iy < (size_t) tSamples.y() ); iy++)
-    {  
+    {
 
       tTDampingAbs = (1.0 - (y * y) * 0.8);
 
-      if ( tTDampingAbs > (1.0 - FX_EPSILON) ) 
+      if ( tTDampingAbs > (1.0 - FX_EPSILON) )
       {
         tTDampingAbs = 0;
       }
-	
+
       tTDamping = ( y > 0 ) ? tTDampingAbs : -tTDampingAbs;
 
       x = -1.0;
@@ -129,24 +130,24 @@ TVector TPerturbationBump::perturbNormal (const TSurfaceData& rktDATA) const
 
         tHeightDiff = tHeight - tColor.average();
 
-        tRDampingAbs = (1.0 - (x * x) * 0.8);	
+        tRDampingAbs = (1.0 - (x * x) * 0.8);
 
-	if ( tRDampingAbs > (1.0 - FX_EPSILON) ) 
-        {
+	if ( tRDampingAbs > (1.0 - FX_EPSILON) )
+	{
           tRDampingAbs = 0;
         }
-
+  
 	tRDamping = ( x > 0 ) ? tRDampingAbs : -tRDampingAbs;
 
 	tRDampingTotal += tRDampingAbs;
 	tTDampingTotal += tTDampingAbs;
-       
-        tRTotal += tHeightDiff * tRDamping;
-  	tTTotal += tHeightDiff * tTDamping;
+    
+	tRTotal += tHeightDiff * tRDamping;
+	tTTotal += tHeightDiff * tTDamping;
 
         x += dx;
       }
-	
+
       y += dy;
     }
 
@@ -156,9 +157,9 @@ TVector TPerturbationBump::perturbNormal (const TSurfaceData& rktDATA) const
     tNewNormal = s + (r + t) * tBumpFactor;
     tNewNormal.normalize();
   }
-  
+
   return tNewNormal;
-  
+
 }  /* perturbNormal() */
 
 

@@ -1,3 +1,21 @@
+/*
+*  Copyright (C) 1999-2002 Kevin Harris
+*
+*  This program is free software; you can redistribute it and/or modify
+*  it under the terms of the GNU General Public License as published by
+*  the Free Software Foundation; either version 2 of the License, or
+*  (at your option) any later version.
+*
+*  This program is distributed in the hope that it will be useful, but
+*  WITHOUT ANY WARRANTY; without even the implied warranty of
+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+*  General Public License for more details.
+*
+*  You should have received a copy of the GNU General Public License
+*  along with this program; if not, write to the Free Software
+*  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+*/
+
 #if       !defined(KH_QUATERNION_H)
 #define            KH_QUATERNION_H
 
@@ -10,9 +28,9 @@
 // translates). 
 //
 //
-//-------------------------------------------------------------------------------
+//---------------------------------------------------------------------------
 //                       Basic info about quaternions:
-//-------------------------------------------------------------------------------
+//---------------------------------------------------------------------------
 // It is composed of 1 real (r) and 3 'imaginary' (vec imag) parts.
 // r    = cos(theta/2)
 // imag = sin(theta/2) * k, where k is the vector to rotate about.
@@ -57,9 +75,9 @@
 // This may be done much faster than multiplying a sequence of matrices out,
 // although it does not perform scaling and translation at the same time.
 //
-//-------------------------------------------------------------------------------
+//---------------------------------------------------------------------------
 //                       How to easily use this class
-//-------------------------------------------------------------------------------
+//---------------------------------------------------------------------------
 // A quaternion can be created in one of 3 ways:
 // 1. Knowing the real and imaginary parts (the real will be 0 for a pure vector).
 // 2. A call to 'makeQuaternion', with the angle (degrees), and the vector to
@@ -84,9 +102,9 @@
 // applying the rotate at one time.
 //
 //
-//-------------------------------------------------------------------------------
+//---------------------------------------------------------------------------
 //                      Functions that this file offers
-//-------------------------------------------------------------------------------
+//---------------------------------------------------------------------------
 // quat = quat
 // quat + quat, quat += quat
 // quat - quat, quat -= quat

@@ -16,6 +16,7 @@
 *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "llapi/warning_eliminator.h"
 #include "hlapi/mesh_object.h"
 
 bool TMeshObject::findFirstIntersection (const TRay& rktRAY, TSurfaceData& rtDATA) const

@@ -97,7 +97,7 @@ class TProcedural : public TBaseClass
     {
       assert ( bPOS < 32 );
       
-      return ( dwFlags & (1 << bPOS) );
+      return !!( dwFlags & (1 << bPOS) );
     }
     
     // User data map management

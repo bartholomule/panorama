@@ -1,0 +1,53 @@
+/*
+* Text plugin test
+*/
+
+#include "materials.inc"
+
+define camera c
+{
+  translate	<0, 0, 1>
+}
+
+scene
+{
+  camera	c
+  width         640
+  height        480
+  background    CBlack
+  output
+  {
+    type        "png"
+    name	"text2.png"
+  }
+  renderer : class Raytracer {}
+  filter : class IF_Text {
+    color	CWhite
+    size	50
+    text	"Panorama's text plugin"
+    xlate	<0,240>
+    
+    // Remember that you can setup the local path to True Type Fonts by editing
+    // your 'config'-file, and adding a 'FontPath=foo/bar/...' entry.
+    fontfile    "times.ttf"
+  }
+  filter : class IF_Text {
+    color	CBlue
+    size	50
+    text	"More text here!"
+    xlate	<0,290>
+    
+    fontfile    "cour.ttf"
+  }
+  filter : class IF_Text {
+    color	CRed
+    size	50
+    text	"ABCDEFGHIJKLMNOP!"
+    xlate	<0,190>
+    
+    fontfile    "wingding.ttf"
+  }
+}
+
+
+

@@ -37,7 +37,7 @@ class TSubdivEdge
 
     struct TVertPairCompare : public binary_function<TVertPair, TVertPair, bool>
     {
-      bool operator() (const TVertPair& rktFIRST, const TVertPair& rktSECOND);
+      bool operator() (const TVertPair& rktFIRST, const TVertPair& rktSECOND) const;
     };
 
     static map<TVertPair, TSubdivEdge*, TVertPairCompare>   _tEdgeMap;

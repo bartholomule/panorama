@@ -80,7 +80,7 @@ static Byte               _bIncludeLevel = 0;
 alpha			[a-zA-Z]
 digit			[0-9]
 identifier		[a-zA-Z_][a-zA-Z0-9_]*
-horizontal_space	[ \t]
+horizontal_space	[ \t\r]
 quoted_string		\"[^\"]*\"
 line_comment		"//".*\n
 natural			{digit}+
@@ -305,24 +305,31 @@ bool IncludeFile (void)
     _atIncludeStack [_bIncludeLevel++] = _tIncludeFileData;
   }
 
-  yyin = fopen (_tIncludeFileName.c_str(), "r");
+  string name = FilenameConvert(_tIncludeFileName);
+  // cout << "Attempting to open \"" + name + "\" for include" << endl;
+
+  yyin = fopen (name.c_str(), "r");
 
   if ( !yyin )
   {
-    if ( _tIncludeFileName[0] != '/' )
+    if ( FilenameConvert(_tIncludeFileName)[0] != FilenameConvert("/")[0] )
     {
       multimap<string, string>::const_iterator   iter;
 
       iter = tConfigData.find ("IncludePath");
       while ( ( iter != tConfigData.end() ) && ( (*iter).first == "IncludePath" ) )
       {
-        string   tAux = (*iter).second + "/" + _tIncludeFileName;
+	    string   tAux = FilenameConvert((*iter).second + "/" + _tIncludeFileName);
         
         if ( FileExists (tAux) )
         {
           yyin = fopen (tAux.c_str(), "r");
           break;
         }
+		else
+		{
+		  rt_error("Include file \"" + tAux + "\" could not be opened!");
+		}
         iter++;
       }
     }

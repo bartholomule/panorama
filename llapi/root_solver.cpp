@@ -34,6 +34,7 @@
 */
 
 #include <cmath>
+#include <string>
 #include "llapi/machine.h"
 #include "llapi/root_solver.h"
 

@@ -16,6 +16,7 @@
 *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "llapi/warning_eliminator.h"
 #include "pat_cylgrad.h"
 
 DEFINE_PLUGIN ("PatternCylGrad", FX_PATTERN_CLASS, TPatternCylGrad);

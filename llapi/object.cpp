@@ -16,6 +16,7 @@
 *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include <string>
 #include "llapi/debug.h"
 #include "llapi/object.h"
 #include "llapi/material.h"

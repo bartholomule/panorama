@@ -16,6 +16,7 @@
 *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "llapi/warning_eliminator.h"
 #include "llapi/image_io.h"
 
 int TImageIO::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)

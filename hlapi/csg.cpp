@@ -16,6 +16,7 @@
 *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "llapi/warning_eliminator.h"
 #include "hlapi/csg.h"
 
 void TCsg::mergeUnion (TSpanList& rtLIST1, const TSpanList& rktLIST2, const TVector& rktRAY_DIR) const

@@ -16,6 +16,7 @@
 *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "llapi/warning_eliminator.h"
 #include <ctime>
 #include <iostream>
 #include "llapi/file.h"
@@ -24,6 +25,7 @@
 #include "hlapi/plugin_manager.h"
 #include "hlapi/image_manager.h"
 #include "hlapi/scene_manager.h"
+#include "llapi/file.h"
 
 multimap<string, string>   tConfigData;
 
@@ -116,6 +118,11 @@ bool ProcessConfigFile (const string& rktCONFIG, multimap<string, string>& rtMAP
       }
     }
 
+    if( tOptionValue[0] != '/' )
+    {
+      tOptionValue = _tLocalPath + tOptionValue;
+    }
+
     // Inserts a new option entry in the map
     rtMAP.insert (pair<const string, string> (tOptionName, tOptionValue));
   }
@@ -157,27 +164,27 @@ void SetPaths (void)
 
   if ( pcEnv )
   {
-    _tTopDir = pcEnv;
+    _tTopDir = FilenameConvert(pcEnv);
   }
   else
   {
-    _tTopDir = TOPDIR;
+    _tTopDir = FilenameConvert(TOPDIR);
   }
 
   if ( (pcEnv = getenv ("HOME")) != NULL )
   {
-    _tLocalPath = string (pcEnv) + "/.panorama/";
+    _tLocalPath = FilenameConvert(string (pcEnv) + "/.panorama/");
     if ( !FileExists (_tLocalPath + "config") )
     {
-      _tLocalPath = _tTopDir + "/etc/";
+      _tLocalPath = FilenameConvert(_tTopDir + "/etc/");
     }
   }
   else
   {
-    _tLocalPath = _tTopDir + "/etc/";
+    _tLocalPath = FilenameConvert(_tTopDir + "/etc/");
   }
 
-  _tLogFileName = _tLocalPath + "panorama.log";
+  _tLogFileName = FilenameConvert(_tLocalPath + "panorama.log");
   _gKeepLog     = true;
 
 }  /* SetPaths() */

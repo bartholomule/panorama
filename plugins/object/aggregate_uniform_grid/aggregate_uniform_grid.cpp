@@ -16,6 +16,7 @@
 *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "llapi/warning_eliminator.h"
 #include "aggregate_uniform_grid.h"
 
 DEFINE_PLUGIN ("AggregateUniformGrid", FX_OBJECT_CLASS, TAggregateUniformGrid);

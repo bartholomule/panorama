@@ -34,12 +34,11 @@ inline int sign (double dNUMBER)
 
 }  /* sign() */
 
-
 template <class TItem>
 inline const TItem& min3 (const TItem& tITEM1, const TItem& tITEM2, const TItem& tITEM3)
 {
 
-  return min (min (tITEM1, tITEM2), tITEM3);
+  return CPPMIN (CPPMIN (tITEM1, tITEM2), tITEM3);
 
 }  /* min3() */
 
@@ -48,7 +47,7 @@ template <class TItem>
 inline const TItem& max3 (const TItem& tITEM1, const TItem& tITEM2, const TItem& tITEM3)
 {
 
-  return max (max (tITEM1, tITEM2), tITEM3);
+  return CPPMAX (CPPMAX (tITEM1, tITEM2), tITEM3);
 
 }  /* max3() */
 

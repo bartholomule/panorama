@@ -1,16 +1,16 @@
 
 %.o: %.cpp
 		@echo Compiling $<...
-		@${CXX} -c ${CXXFLAGS} $< -o $@
+		${CXX} -c ${CXXFLAGS} $< -o $@
 
 %.cpp: %.l
 		@echo Generating scanner...
-		@${LEX} ${LEXFLAGS} $< > $@
+		${LEX} ${LEXFLAGS} $< > $@
 
 %.cpp: %.y
 		@echo Generating parser...
-		@${YACC} ${BISONFLAGS} -do $(basename $@).c $<
-		@mv $(basename $@).c $@
+		${YACC} ${BISONFLAGS} -do $(basename $@).c $<
+		mv $(basename $@).c $@
 
 # Rules for generating dependency files
 %.d: %.cpp
@@ -18,5 +18,4 @@
         $(CXX) -c $(CXXFLAGS) -MMD $(FLAGS) -E $(@:%.d=%.cpp) -o $@ > /dev/null ;\
         cat $@ | sed -e 's/:/ $(@:%.d=%.o) $@:/g' > tmp$$                               ;\
         mv -f tmp$$ $@  
-
 

@@ -16,6 +16,7 @@
 *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "llapi/warning_eliminator.h"
 #include "llapi/llapi_defs.h"
 #include "bezier.h"
 #include "beziersub.h"

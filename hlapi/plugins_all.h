@@ -52,6 +52,7 @@
 #include "plugins/perturbation/leopard/per_leopard.h"
 #include "plugins/perturbation/marble/per_marble.h"
 #include "plugins/perturbation/noise/per_noise.h"
+#include "plugins/perturbation/wave/per_wave.h"
 #include "plugins/perturbation/worley/per_worley.h"
 #include "plugins/object/aggregate_uniform_grid/aggregate_uniform_grid.h"
 #include "plugins/object/bezier/bezier.h"

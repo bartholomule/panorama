@@ -1,3 +1,7 @@
+ - Windows (MSVC++6) project files added, for a statically linked 'render'
+   executable (done by Kevin Harris).
+
+ - Fixed some problems with the RT SDL, and added some new features to it.
 
  - Fixed problem with static linking and profile info.
 

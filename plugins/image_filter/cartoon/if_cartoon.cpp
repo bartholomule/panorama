@@ -16,6 +16,7 @@
 *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "llapi/warning_eliminator.h"
 #include <cmath>
 #include "llapi/scene.h"
 #include "if_cartoon.h"
@@ -27,8 +28,8 @@ DEFINE_PLUGIN ("IF_Cartoon", FX_IMAGE_FILTER_CLASS, TIF_Cartoon);
 TIF_Cartoon::TIF_Cartoon (void) :
   TImageFilter(),
   bColorLevels (2),
-  fNThreshold (0.6),
-  fZThreshold (50.0),
+  fNThreshold (0.6f),
+  fZThreshold (50.0f),
   tOutlineColor (TColor::_black())
 {
 

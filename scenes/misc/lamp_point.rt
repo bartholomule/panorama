@@ -662,8 +662,8 @@ define color my_sky
 scene
 {
   camera	c
-  width		400
-  height	400
+  width		200
+  height	200
 
   background    my_sky
   output

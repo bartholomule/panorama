@@ -19,6 +19,7 @@
 *  CompuServe 71201,1326, aka mcelhiney@acm.org
 */
 
+#include "llapi/warning_eliminator.h"
 #include <stdlib.h>
 #include <iostream>
 #include <time.h>

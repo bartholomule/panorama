@@ -1,5 +1,5 @@
 /*
-*  Copyright (C) 2000 Jon Frydensbjerg
+*  Copyright (C) 2001 Kevin Harris
 *
 *  This program is free software; you can redistribute it and/or modify
 *  it under the terms of the GNU General Public License as published by
@@ -16,6 +16,7 @@
 *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "llapi/warning_eliminator.h"
 #include <stdlib.h>
 #include <iostream>
 #include "per_wave.h"
@@ -55,7 +56,12 @@ TVector TPerturbationWave::perturbNormal (const TSurfaceData& rktDATA) const
 
 int TPerturbationWave::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
+#if defined(__FUNCTION__)
   cout << __FUNCTION__ << "(" << rktNAME << ") called." << endl;
+#elif defined(__FUNCTION)
+  cout << __FUNCTION << "(" << rktNAME << ") called." << endl;
+#endif
+
   if ( rktNAME == "sources" )
   {
     if ( eTYPE == FX_REAL )
@@ -129,7 +135,11 @@ int TPerturbationWave::setAttribute (const string& rktNAME, NAttribute nVALUE, E
 
 int TPerturbationWave::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 {
-  cout << __FUNCTION__ << "(" << rktNAME << ") called." << endl;  
+#if defined(__FUNCTION__)
+  cout << __FUNCTION__ << "(" << rktNAME << ") called." << endl;
+#elif defined(__FUNCTION)
+  cout << __FUNCTION << "(" << rktNAME << ") called." << endl;
+#endif
   if ( rktNAME == "sources" )
   {
     rnVALUE.dValue = int(all_wave_sources.size());
@@ -162,7 +172,11 @@ int TPerturbationWave::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 
 void TPerturbationWave::getAttributeList (TAttributeList& rtLIST) const
 {
+#if defined(__FUNCTION__)
   cout << __FUNCTION__ << " called." << endl;
+#elif defined(__FUNCTION)
+  cout << __FUNCTION << " called." << endl;
+#endif
   
   TPerturbation::getAttributeList (rtLIST);
 
@@ -204,7 +218,12 @@ TVector TPerturbationWave::wave_contribution(const TVector& location, const TWav
 bool TPerturbationWave::initialize(void)
 {
   bool val = true;
+#if defined(__FUNCTION__)
   cout << __FUNCTION__ << " called." << endl;  
+#elif defined(__FUNCTION)
+  cout << __FUNCTION << " called." << endl;  
+#endif
+
   // Create a random group of wave sources...
 
   // frand()...

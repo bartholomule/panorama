@@ -1,0 +1,73 @@
+/*
+*  Box2 test
+*/
+
+#include "materials.inc"
+
+define camera c
+{
+  translate	<0, 200, 500>
+  look_at	<0, 100, 0>
+}
+
+define light l
+{
+  translate	<-500, 300, 500>
+  color		CWhite
+}
+
+define light l2
+{
+  translate	<0, 1000, 0>
+  color		CWhite
+}
+
+plane
+{
+  translate	<0, 0, 0>
+  normal	<0, 1, 0>
+  material : extends MPlastic
+  {
+    color CBlue
+    specular    0
+    perturb_func : class PerturbationWave
+    {
+      sources 100
+      min_freq 0.1
+      max_freq 1
+      min_coord <-500,-500,-500>
+      max_coord < 500, 500, 500>
+    }
+  }
+}
+
+box
+{
+  scale         <100, 100, 100>
+  translate	<0, 50, 0>
+  rotate        <0, 20, 0>
+  material : extends MPlastic
+  {
+    color	CRed
+  }
+}
+
+scene
+{
+  camera	c
+  light		l
+  light		l2
+  width		400
+  height	400
+  background	CSummerSky
+  output
+  {
+    type        "png"
+    name	"box2.png"
+    compression on
+  }
+  renderer : class Raytracer 
+  {
+//    sampling "adaptive"    
+  }
+}

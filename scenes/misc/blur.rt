@@ -19,7 +19,9 @@ extends pas_35mm
                   // wide-angle lenses.  
   focal_distance 10 // Focus at something 10 units (meters) away.
 
-    attribute_list()
+  name "Point-and-shoot"
+
+  attribute_list()
 }
 
 define light l

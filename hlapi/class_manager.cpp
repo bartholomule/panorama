@@ -17,6 +17,7 @@
 *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "llapi/warning_eliminator.h"
 #include "llapi/llapi_all.h"
 #include "hlapi/hlapi_all.h"
 #include "hlapi/plugins_all.h"
@@ -33,7 +34,6 @@
     } \
     return ptChild; \
   }
-
 
 TBaseClass* TClassManager::_newObject (const string& rktCLASS, const TBaseClass* pktPARENT)
 {
@@ -79,6 +79,7 @@ TBaseClass* TClassManager::_newObject (const string& rktCLASS, const TBaseClass*
   STATIC_CLASS (TPatternAmplifier, "PatternAmplifier");
   STATIC_CLASS (TPatternBrick, "PatternBrick");
   STATIC_CLASS (TPatternChecker, "PatternChecker");
+  STATIC_CLASS (TPatternComposite, "PatternComposite");
   STATIC_CLASS (TPatternCrackle, "PatternCrackle");
   STATIC_CLASS (TPatternCylGrad, "PatternCylGrad");
   STATIC_CLASS (TPatternLeopard, "PatternLeopard");
@@ -94,6 +95,7 @@ TBaseClass* TClassManager::_newObject (const string& rktCLASS, const TBaseClass*
   STATIC_CLASS (TPerturbationLeopard, "PerturbationLeopard");
   STATIC_CLASS (TPerturbationMarble, "PerturbationMarble");
   STATIC_CLASS (TPerturbationNoise, "PerturbationNoise");
+  STATIC_CLASS (TPerturbationWave, "PerturbationWave");
   STATIC_CLASS (TPerturbationWorley, "PerturbationWorley");
   STATIC_CLASS (TAggregateUniformGrid, "AggregateUniformGrid");
   STATIC_CLASS (TBezierSurface, "BezierSurface");

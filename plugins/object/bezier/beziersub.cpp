@@ -16,6 +16,7 @@
 *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "llapi/warning_eliminator.h"
 #include "bezier.h"
 #include "beziersub.h"
 
@@ -27,7 +28,7 @@ bool TBezierSubsurface::_findTriangleIntersection (const TRay& rktRAY,
                                                    const TVector& rktVECC,
                                                    TScalar& T,
                                                    TScalar& U,
-						   TScalar& V)
+               TScalar& V)
 {
 
   TScalar   IX, IY, IZ;
@@ -384,7 +385,7 @@ void TBezierSubsurface::findBoundingBox (void)
       }
 
       if ( atControlPoints[N][M][1] < tMin[1] )
-      {	
+      {  
         tMin[1] = atControlPoints[N][M][1];
       }
       if ( atControlPoints[N][M][1] > tMax[1] )
@@ -443,7 +444,7 @@ void TBezierSubsurface::subdivide (void)
                             atControlPoints[0][3], atControlPoints[1][3],
                             atControlPoints[2][3], atControlPoints[3][3],
 
-                            bEdgeSubdivisionDepth[0], bEdgeSubdivisionDepth[3]);
+                            !!bEdgeSubdivisionDepth[0], !!bEdgeSubdivisionDepth[3]);
 
   if ( bPatchSubdivisionDepth ) 
   {
@@ -477,7 +478,7 @@ void TBezierSubsurface::subdivide (void)
                             atControlPoints[0][0], atControlPoints[0][1],
                             atControlPoints[0][2], atControlPoints[0][3],
 
-                            bEdgeSubdivisionDepth[1], bEdgeSubdivisionDepth[0]);
+                            !!bEdgeSubdivisionDepth[1], !!bEdgeSubdivisionDepth[0]);
 
   aptChildren[1]->bPatchSubdivisionDepth = aptChildren[0]->bPatchSubdivisionDepth;
   if ( bEdgeSubdivisionDepth[1] )
@@ -508,7 +509,7 @@ void TBezierSubsurface::subdivide (void)
                             atControlPoints[3][0], atControlPoints[2][0],
                             atControlPoints[1][0], atControlPoints[0][0],
 
-                            bEdgeSubdivisionDepth[2], bEdgeSubdivisionDepth[1]);
+                            !!bEdgeSubdivisionDepth[2], !!bEdgeSubdivisionDepth[1]);
 
   aptChildren[2]->bPatchSubdivisionDepth = aptChildren[0]->bPatchSubdivisionDepth;
   if ( bEdgeSubdivisionDepth[2] )
@@ -539,7 +540,7 @@ void TBezierSubsurface::subdivide (void)
                             atControlPoints[3][3], atControlPoints[3][2],
                             atControlPoints[3][1], atControlPoints[3][0],
 
-                            bEdgeSubdivisionDepth[3], bEdgeSubdivisionDepth[2]);
+                            !!bEdgeSubdivisionDepth[3], !!bEdgeSubdivisionDepth[2]);
 
   aptChildren[3]->bPatchSubdivisionDepth = aptChildren[0]->bPatchSubdivisionDepth;
   if ( bEdgeSubdivisionDepth[3] )
@@ -750,11 +751,11 @@ bool TBezierSubsurface::findFlatIntersection (const TRay& rktRAY,
 bool TBezierSubsurface::findFlatIntersection (const TRay& rktRAY,
                                               const TScalar& rktSCALE,
                                               const TRay& rktORIG_RAY,
-					      TSpanList& rtLIST)
+                                              TSpanList& rtLIST)
 {
   if ( findFlatIntersection (rktRAY, rktSCALE, rktORIG_RAY, rtLIST, 
 			     atControlPoints[0][0],
-			     TVector2 (0.0, 0.0),
+                             TVector2 (0.0, 0.0),
 			     atControlPoints[3][0],
 			     TVector2 (1.0, 0.0),
 			     atControlPoints[0][3],

@@ -44,7 +44,9 @@ ARCH_PROG_SETLIBPATH  = @ARCH_PROG_SETLIBPATH@
 ifeq (@DEBUG_INFO@,1)
 OPT = -ggdb
 else
-OPT = -O6 -fexpensive-optimizations -fno-math-errno
+OPT = -O
+# -O6 -fexpensive-optimizations
+# -fno-math-errno
 endif
 
 ifeq (@STATIC_LINK@,1)

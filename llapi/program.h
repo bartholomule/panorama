@@ -47,8 +47,8 @@ struct TInstruction
   
 };  /* struct TInstruction */
 
-typedef list<TInstruction>                       TEventCode;
-typedef map<string, TEventCode, less<string> >   TEventList;
+typedef std::list<TInstruction>                           TEventCode;
+typedef std::map<string, TEventCode, std::less<string> >  TEventList;
 
 class TProgram
 {

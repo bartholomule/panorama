@@ -16,6 +16,7 @@
 *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "llapi/warning_eliminator.h"
 #include "hlapi/cylinder.h"
 
 TVector TCylinder::localNormal (const TVector& rktPOINT) const

@@ -26,6 +26,9 @@
 #define FX_LITTLE_ENDIAN         (0)
 #define FX_BIG_ENDIAN            (1)
 
+// Convert from the default naming convention (unix) to whatever naming convention is required.
+string FilenameConvert(const string& rktNAME);
+
 bool FileExists (const string& rktNAME);
 string FileExtension (const string& rktNAME);
 

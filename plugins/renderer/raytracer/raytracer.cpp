@@ -16,6 +16,7 @@
 *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "llapi/warning_eliminator.h"
 #include <cassert>
 #include <cstdlib>
 #include <iostream>
@@ -294,12 +295,12 @@ TColor TRaytracer::shadePrimaryRay (TScalar I, TScalar J, TSurfaceData& rtDATA)
 
   TColor primary_radiance =  getRadiance (rtDATA, wMaxDepth);
 
-    /*
+  /*
 
-  // If it hit an object, and that object was emissive... Send another ray to
-  // it to allow it to be visible with a primary ray.
-  if( (rtDATA.object()) && (rtDATA.object()->material()->emission()) )
-  {
+    // If it hit an object, and that object was emissive... Send another ray to
+    // it to allow it to be visible with a primary ray.
+    if( (rtDATA.object()) && (rtDATA.object()->material()->emission()) )
+    {
     TColor primary_emission(0,0,0);
     TSurfaceData tsd;
     tsd.setPoint(tRay.location());
@@ -309,10 +310,10 @@ TColor TRaytracer::shadePrimaryRay (TScalar I, TScalar J, TSurfaceData& rtDATA)
 
     if( traceShadowRay (tRay, *rtDATA.object(), point, primary_emission) )
     {
-      return primary_radiance + primary_emission;  
+    return primary_radiance + primary_emission;  
     }
-  }
-    */
+    }
+  */
   return primary_radiance;
 }  /* shadePrimaryRay() */
 
@@ -584,13 +585,13 @@ void TRaytracer::sampleFalseColor (TScalar I, TScalar J, SBuffers& rsBUFFERS)
   }
 
   /*
-  if ( ( atSurfaceData[4].zTransmission != atSurfaceData[0].zTransmission ) ||
-       ( atSurfaceData[4].zTransmission != atSurfaceData[1].zTransmission ) ||
-       ( atSurfaceData[4].zTransmission != atSurfaceData[2].zTransmission ) ||
-       ( atSurfaceData[4].zTransmission != atSurfaceData[3].zTransmission )  )
-  {
+    if ( ( atSurfaceData[4].zTransmission != atSurfaceData[0].zTransmission ) ||
+    ( atSurfaceData[4].zTransmission != atSurfaceData[1].zTransmission ) ||
+    ( atSurfaceData[4].zTransmission != atSurfaceData[2].zTransmission ) ||
+    ( atSurfaceData[4].zTransmission != atSurfaceData[3].zTransmission )  )
+    {
     tRadiance += TColor (0, 0, 1);
-  }
+    }
   */
   
   if ( ( MaxColorDiff (atSurfaceData[4].tLightRadiance, atSurfaceData[0].tLightRadiance) > tMaxColorDiff ) ||
@@ -762,15 +763,15 @@ void TRaytracer::render (SBuffers& rsBUFFERS)
     {
       switch ( eSamplingMethod )
       {
-        case FX_SINGLE      : singleSample (I, J, rsBUFFERS); break;
+      case FX_SINGLE      : singleSample (I, J, rsBUFFERS); break;
         
-        case FX_UNIFORM     : superSampleUniform (I, J, rsBUFFERS); break;
+      case FX_UNIFORM     : superSampleUniform (I, J, rsBUFFERS); break;
 
-        case FX_STOCHASTIC  : superSampleStochastic (I, J, rsBUFFERS); break;
+      case FX_STOCHASTIC  : superSampleStochastic (I, J, rsBUFFERS); break;
         
-        case FX_ADAPTIVE    : superSampleAdaptive (I, J, rsBUFFERS); break;
+      case FX_ADAPTIVE    : superSampleAdaptive (I, J, rsBUFFERS); break;
         
-        case FX_FALSE_COLOR : sampleFalseColor (I, J, rsBUFFERS); break;
+      case FX_FALSE_COLOR : sampleFalseColor (I, J, rsBUFFERS); break;
       }
     }
     
@@ -830,15 +831,15 @@ TColor TRaytracer::directLight (const TSurfaceData& rktDATA) const
   const TLight*   ptLight;
   TColor    tTotalRadiance;
     
-  for (vector<TLight*>::const_iterator tIter = ptScene->lightList().begin(); ( tIter != ptScene->lightList().end() ) ;tIter++)
+  for (vector<TLight*>::const_iterator tIter1 = ptScene->lightList().begin(); ( tIter1 != ptScene->lightList().end() ) ;tIter1++)
   {
-    ptLight         = *tIter;
+    ptLight         = *tIter1;
     tTotalRadiance += directLight (rktDATA, ptLight);
   }
   const vector<TObject*>& alv = ptScene->areaLightList();
-  for (vector<TObject*>::const_iterator tIter = alv.begin(); ( tIter != alv.end() ) ;tIter++)
+  for (vector<TObject*>::const_iterator tIter2 = alv.begin(); ( tIter2 != alv.end() ) ;tIter2++)
   {
-    tTotalRadiance += directLight (rktDATA, *tIter);
+    tTotalRadiance += directLight (rktDATA, *tIter2);
   }  
 
   return tTotalRadiance;

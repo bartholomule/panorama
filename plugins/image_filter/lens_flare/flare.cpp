@@ -16,6 +16,7 @@
 *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "llapi/warning_eliminator.h"
 #include <stdio.h>
 #include "flare.h"
 
@@ -137,7 +138,7 @@ void TFlare::calculateCorrectedXY (float& rfDX, float& rfDY)
 
   if ( fAngle < 0.0f )
   {
-    fAngle += PI * 2.0f;
+    fAngle += (float)PI * 2.0f;
   }
 
   fFraction  = fmod (fAngle, fArcLength);
@@ -181,11 +182,11 @@ void TFlare::generate (void)
   int    M, N;
   Word*  apwHitGrid;
 
-  for (int I = 0; ( I < iFlWidth ) ;I++) 
+  for (int I1 = 0; ( I1 < iFlWidth ) ;I1++) 
   {
     for (int J = 0; ( J < iFlHeight ) ;J++) 
     {
-      ptFlareImage->setPixel (I, J, TColor::_black());
+      ptFlareImage->setPixel (I1, J, TColor::_black());
     }
   }
 
@@ -200,7 +201,7 @@ void TFlare::generate (void)
 
   X = 0.0f;
 
-  for (int I = 0; ( I < (2 * iFlWidth) ) ;I++) 
+  for (int I2 = 0; ( I2 < (2 * iFlWidth) ) ;I2++) 
   {
     DX = (X - fFlMidX);
 
@@ -219,7 +220,7 @@ void TFlare::generate (void)
 
       if ( eForm == FX_CIRCLE )
       {
-        M = (I / 2);	
+        M = (I2 / 2);	
         N = (J / 2);
       }
       else 
@@ -242,15 +243,15 @@ void TFlare::generate (void)
     X += fIncX;
   }
 
-  for (int I = 0; ( I < iFlWidth ) ;I++) 
+  for (int I3 = 0; ( I3 < iFlWidth ) ;I3++) 
   {
     for (int J = 0; ( J < iFlHeight ) ;J++) 
     {
-      fRecip = (float) apwHitGrid [(J * iFlWidth) + I];
+      fRecip = (float) apwHitGrid [(J * iFlWidth) + I3];
 
       if ( fRecip != 0.0f )
       {
-        ptFlareImage->setPixel (I, J, ptFlareImage->getPixel (I, J) / fRecip);
+        ptFlareImage->setPixel (I3, J, ptFlareImage->getPixel (I3, J) / fRecip);
       }      
     }
   }

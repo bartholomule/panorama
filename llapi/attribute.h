@@ -23,6 +23,16 @@
 #include "llapi/attribs.h"
 #include "llapi/llapi_defs.h"
 
+#if defined(BROKEN_RETURN_SUBTYPES_ON_VIRTUAL)
+// The compiler is BROKEN!  It does not recognize that returning a pointer to a subtype 
+// can be converted (virtually) to the base pointer (on singly derived, public subclasses).
+//
+#define TATTRIB_CLONE_NEW_DEF(name) virtual TAttribute* clone_new() const { return new name(*this); }
+#else
+// Do it the right way!
+#define TATTRIB_CLONE_NEW_DEF(name) virtual name* clone_new() const { return new name(*this); }
+#endif /* defined(BROKEN_RETURN_SUBTYPES_ON_VIRTUAL) */
+
 /*
   A base class (struct) for attribute values.
  */
@@ -33,7 +43,7 @@ struct TAttribute
 
   virtual ~TAttribute() { }
   virtual string AttributeName() const { return "NONE"; }
-  virtual TAttribute* clone_new() const { return new TAttribute(*this); }
+  TATTRIB_CLONE_NEW_DEF(TAttribute);
   
 };  /* struct TAttribute */
 
@@ -49,7 +59,7 @@ struct TAttribReal : public TAttribute
   }
 
   virtual string AttributeName() const { return "real"; }
-  virtual TAttribReal* clone_new() const { return new TAttribReal(*this); }  
+  TATTRIB_CLONE_NEW_DEF(TAttribReal);
   
 };  /* struct TAttribReal */
 
@@ -64,8 +74,8 @@ struct TAttribBool : public TAttribute
     eType = FX_BOOL;
   }
   virtual string AttributeName() const { return "bool"; }
-  virtual TAttribBool* clone_new() const { return new TAttribBool(*this); }    
-  
+  TATTRIB_CLONE_NEW_DEF(TAttribBool);
+    
 };  /* struct TAttribBool */
 
 
@@ -80,7 +90,7 @@ struct TAttribString : public TAttribute
   }
 
   virtual string AttributeName() const { return "string"; }
-  virtual TAttribString* clone_new() const { return new TAttribString(*this); }
+  TATTRIB_CLONE_NEW_DEF(TAttribString);
   
 };  /* struct TAttribString */
 
@@ -95,8 +105,8 @@ struct TAttribColor : public TAttribute
     eType = FX_COLOR;
   }
   virtual string AttributeName() const { return "color"; }
-  virtual TAttribColor* clone_new() const { return new TAttribColor(*this); }
-  
+  TATTRIB_CLONE_NEW_DEF(TAttribColor);
+    
 };  /* struct TAttribColor */
 
 
@@ -110,8 +120,8 @@ struct TAttribVector : public TAttribute
     eType = FX_VECTOR;
   }
   virtual string AttributeName() const { return "vector"; }
-  virtual TAttribVector* clone_new() const { return new TAttribVector(*this); }  
-  
+  TATTRIB_CLONE_NEW_DEF(TAttribVector);
+    
 };  /* struct TAttribVector */
 
 
@@ -126,8 +136,8 @@ struct TAttribVector2 : public TAttribute
   }
   
   virtual string AttributeName() const { return "vector2"; }
-  virtual TAttribVector2* clone_new() const { return new TAttribVector2(*this); }  
-  
+  TATTRIB_CLONE_NEW_DEF(TAttribVector2);
+    
 };  /* struct TAttribVector2 */
 
 /* A generic attribute type which can be used where any of the TAttribute
@@ -194,7 +204,8 @@ struct TAttribOther : public TAttribute
   }
 
   virtual string AttributeName() const { return "other"; }
-  virtual TAttribOther* clone_new() const { return new TAttribOther(*this); }  
+  TATTRIB_CLONE_NEW_DEF(TAttribOther);
+
 };
 
 template <class T>

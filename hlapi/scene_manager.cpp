@@ -17,6 +17,7 @@
 *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "llapi/warning_eliminator.h"
 #include "hlapi/scene_manager.h"
 #include "plugins/scene_io/rt/rt_io.h"
 #include "plugins/scene_io/psl/psl_io.h"

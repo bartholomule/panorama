@@ -19,6 +19,7 @@
 #ifndef _OBJECT_FILTER__
 #define _OBJECT_FILTER__
 
+#include "llapi/warning_eliminator.h"
 #include "llapi/procedural.h"
 #include "llapi/surface_data.h"
 

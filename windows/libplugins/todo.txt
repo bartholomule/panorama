@@ -1,0 +1,9 @@
+Find out how to get the other image io plugins working:
+  png
+  tiff
+  gif
+  jpeg
+
+Find out how to get the following plugins working:
+  image_filter/text/if_text
+

@@ -19,6 +19,7 @@
 #ifndef _IMAGE_MANAGER__
 #define _IMAGE_MANAGER__
 
+#include "llapi/warning_eliminator.h"
 #include <map>
 #include "llapi/image.h"
 #include "llapi/image_io.h"

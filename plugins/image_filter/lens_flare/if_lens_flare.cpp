@@ -16,6 +16,7 @@
 *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "llapi/warning_eliminator.h"
 #include "llapi/scene.h"
 #include "llapi/gradient.h"
 #include "if_lens_flare.h"
@@ -33,10 +34,10 @@ TIF_Lens_Flare::TIF_Lens_Flare (void) :
   TImageFilter(),
   eType (FX_NORMAL),
   eForm (FX_CIRCLE),
-  fScale (0.65),
-  fThreshold (0.8),
-  fIntensity (1.6),
-  fInfluence (2.2),
+  fScale (0.65f),
+  fThreshold (0.8f),
+  fIntensity (1.6f),
+  fInfluence (2.2f),
   gArtefacts (true)
 {
 
@@ -77,13 +78,13 @@ void TIF_Lens_Flare::generateNearFlares (void)
   aptArtefactTable [ iNoArtefacts++ ] = new TFlare_Hard       (TColor(0.471f, 0.471f, 0.667f), eForm, fScale * 0.010f,  1.080f, ptCurrentImage);
   aptArtefactTable [ iNoArtefacts++ ] = new TFlare_Decreasing (TColor(0.027f, 0.027f, 0.000f), eForm, fScale * 0.043f,  1.095f, 0.045f, ptCurrentImage);
 
-  fPosition = 1.24;
+  fPosition = 1.24f;
 
   for (size_t I = 0; ( I < 3 ) ;I++)
   {
     aptArtefactTable [ iNoArtefacts++ ] = new TFlare_Hard       (TColor(0.067f, 0.173f, 0.215f), eForm, fScale * 0.012f, fPosition, ptCurrentImage);
 
-    fPosition += 0.034;
+    fPosition += 0.034f;
   }
 
   aptArtefactTable [ iNoArtefacts++ ] = new TFlare_Hard       (TColor(0.008f, 0.000f, 0.275f), eForm, fScale * 0.026f,  1.276f, ptCurrentImage);
@@ -150,22 +151,22 @@ void TIF_Lens_Flare::generateFarFlares (void)
   aptHotspotTable  [ iNoHotspots++ ]  = new TFlare_Std  (TColor(0.27f, 0.23f, 0.25f), eForm, fScale * 0.606f, -1.000f, ptCurrentImage);
   aptHotspotTable  [ iNoHotspots++ ]  = new TFlare_Halo (TColor(0.31f, 0.06f, 0.02f), eForm, fScale * 0.084f, -1.000f, 0.07f, ptCurrentImage);
 
-  fPosition = -1.65;
+  fPosition = -1.65f;
 
   for (I = 0; ( I < 6 ) ;I++)
   {
     aptArtefactTable [ iNoArtefacts++ ] = new TFlare_Decreasing (TColor(0.000f, 0.025f, 0.029f), eForm, fScale * 0.034f, fPosition, 0.07f, ptCurrentImage);
 
-    fPosition -= 0.022;
+    fPosition -= 0.022f;
   }
 
-  fPosition = -1.42;
+  fPosition = -1.42f;
 
   for (I = 0; ( I < 4 ) ;I++)
   {
     aptArtefactTable [ iNoArtefacts++ ] = new TFlare_Hard       (TColor(0.000f, 0.125f, 0.121f), eForm, fScale * 0.020f, fPosition, ptCurrentImage);
 
-    fPosition -= 0.024;
+    fPosition -= 0.024f;
   }
 
   aptArtefactTable [ iNoArtefacts++ ] = new TFlare_Decreasing (TColor(0.035f, 0.031f, 0.082f), eForm, fScale * 0.031f, -0.45f, 0.070f, ptCurrentImage);
@@ -177,13 +178,13 @@ void TIF_Lens_Flare::generateFarFlares (void)
   aptArtefactTable [ iNoArtefacts++ ] = new TFlare_Halo       (TColor(0.039f, 0.008f, 0.004f), eForm, fScale * 0.150f,  0.69f, 0.075f, ptCurrentImage);
   aptArtefactTable [ iNoArtefacts++ ] = new TFlare_Hard       (TColor(0.039f, 0.024f, 0.000f), eForm, fScale * 0.125f,  0.69f, ptCurrentImage);
 
-  fPosition = 0.69;
+  fPosition = 0.69f;
 
   for (I = 0; ( I < 5 ) ;I++)
   {
     aptArtefactTable [ iNoArtefacts++ ] = new TFlare_Std        (TColor(0.035f, 0.020f, 0.000f), eForm, fScale * 0.075f, fPosition, ptCurrentImage);
 
-    fPosition += 0.025;
+    fPosition += 0.025f;
   }
 
   aptArtefactTable [ iNoArtefacts++ ] = new TFlare_Streaks    (TColor(0.210f, 0.210f, 0.210f), fScale * 0.350f, -1.000f, 40, 0.030f, 0.02f, 0.6f, 0.55f, ptCurrentImage);

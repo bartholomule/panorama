@@ -18,6 +18,28 @@
 
 #include "llapi/file.h"
 
+string FilenameConvert(const string& rktNAME)
+{
+#if defined(_MSC_VER)
+  string converted_string = rktNAME;
+
+  for(int i = 0; i < converted_string.size(); ++i)
+  {
+    if(converted_string[i] == '/')
+    {
+      static const string slash = "\\";
+      converted_string.erase(converted_string.begin() + i);
+      converted_string.insert(converted_string.begin() + i, slash.begin(), slash.end());
+      i += slash.size() - 1;;
+    }
+  }
+  return converted_string;
+#else
+  // Nothing to convert (at this time)
+  return rktNAME;
+#endif
+}
+
 bool FileExists (const string& rktNAME)
 {
 

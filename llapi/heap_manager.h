@@ -38,7 +38,7 @@ struct TVariable
 
 };  /* struct TVariable */
 
-typedef list<TVariable>           TVariableList;
+typedef std::list<TVariable>      TVariableList;
 typedef TVariableList::iterator   TVarReference;
 
 class THeapManager

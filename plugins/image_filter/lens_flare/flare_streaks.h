@@ -67,7 +67,7 @@ class TFlare_Streaks : public TFlare
         if ( ( _tCurStreak.fEndAngle >= (PI * 2.0f) ) &&
              (               _fAngle <  (PI / 2.0f) ) )
 	{
-	  _fAngle += 2.0f * PI;
+	  _fAngle += 2.0f * (float)PI;
 	}
 
         if ( ( _fAngle >= _tCurStreak.fStartAngle ) &&

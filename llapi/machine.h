@@ -42,4 +42,39 @@ typedef unsigned char        Byte;
 typedef unsigned short int   Word;
 typedef unsigned long int    DWord;
 
+
+//
+// Remove stupid warnings (that show the limits of the compiler) from the compilation 
+// on some compilers (MSVC++ for example).
+//
+#include "llapi/warning_eliminator.h"
+
+
+
+#if defined(_MSC_VER)
+//
+// MSVC++ does not properly allow the min and max templated functions to work. As a 
+// workaround, use CPPMIN and CPPMAX instead (YUCK!).
+//
+#define CPPMIN _cpp_min
+#define CPPMAX _cpp_max
+
+#if !defined(min)
+#define min _cpp_min
+#endif
+
+#if !defined(max)
+#define max _cpp_max
+#endif
+
+#else /* not MSVC++ */
+
+//
+// Use the C++ standard names for min and max.
+//
+#define CPPMIN min
+#define CPPMAX max
+
+#endif
+
 #endif  /* _MACHINE__ */

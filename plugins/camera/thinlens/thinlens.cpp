@@ -17,6 +17,7 @@
 *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "llapi/warning_eliminator.h"
 #include "thinlens.h"
 
 DEFINE_PLUGIN ("ThinlensCamera", FX_CAMERA_CLASS, TThinlensCamera);

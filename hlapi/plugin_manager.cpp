@@ -16,8 +16,11 @@
 *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "llapi/warning_eliminator.h"
+#ifdef STATIC_LINK
 #if ( STATIC_LINK == 0 )
 #include <dlfcn.h>
+#endif
 #endif
 
 #include <fstream>
@@ -125,7 +128,12 @@ int TPluginManager::loadPlugin (const string& rktNAME)
 
 bool TPluginManager::initialize (const string& rktCONFIG_FILE, DWord dwVERSION)
 {
+#if defined(__PRETTY_FUNCTION__)
   cout << __PRETTY_FUNCTION__ << endl;
+#elif defined(__FUNCTION__)
+  cout << __FUNCTION__ << endl;
+#elif defined(__FUNCTION)
+#endif
   bool val = true;
 #if ( STATIC_LINK == 0 )
 

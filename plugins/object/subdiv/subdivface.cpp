@@ -16,6 +16,7 @@
 *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "llapi/warning_eliminator.h"
 #include <map>
 #include "subdivvert.h"
 #include "subdivedge.h"
@@ -36,7 +37,7 @@ void TSubdivFace::_addToBox(TVector& rtMIN, TVector& rtMAX,
   }
 
   if ( rktVEC[1] < rtMIN[1] )
-  {	
+  {
     rtMIN[1] = rktVEC[1];
   }
   if ( rktVEC[1] > rtMAX[1] )
@@ -51,7 +52,7 @@ void TSubdivFace::_addToBox(TVector& rtMIN, TVector& rtMAX,
   if ( rktVEC[2] > rtMAX[2] )
   {
     rtMAX[2] = rktVEC[2];
-  }        
+  }      
 }  /* _addToBox() */
 
 
@@ -116,7 +117,7 @@ bool TSubdivFace::_findTriangleIntersection (const TRay& rktRAY,
     return false;
   }
 
-  tDet = 1.0 / tDet;  
+  tDet = 1.0 / tDet;
 
   T *= tDet;
   U *= tDet;
@@ -141,7 +142,7 @@ bool TSubdivFace::determineFinality() const
       return false;
     }
   }
-  
+
   return true;
 
 }  /* determineFinality() */
@@ -220,7 +221,7 @@ void TSubdivFace::findBoundingBoxFromPoints()
       }
     }
   }
-  
+
   tBoundingBox.set (tMin, tMax);
 
 }  /* findBoundingBoxFromPoints() */
@@ -256,7 +257,7 @@ void TSubdivFace::generateFace (TSubdivVert* ptVERT)
 
   tEdgeBefore = edgeBefore (ptVERT);
   tEdgeAfter = edgeAfter (ptVERT);
-      
+    
   tVertList.push_back (ptVERT->findPoint());
   tVertList.push_back (tEdgeAfter->findPoint());
   tVertList.push_back (findPoint());
@@ -275,7 +276,7 @@ void TSubdivFace::generateFace (TSubdivVert* ptVERT)
 //  makes up this face.  For each of those verts, we need to consider all
 //  of the faces that vert is connected to.  For each of those faces, we 
 //  will create a new subface quad which connect the vertex point, the
-//  face point and the two edge points.  
+//  face point and the two edge points.
 //
 void TSubdivFace::subdivide()
 {
@@ -345,7 +346,7 @@ bool TSubdivFace::findLocalIntersections (const TSubdiv& rktSUBDIV,
       if ( ( T > FX_EPSILON ) && ( T < rktRAY.limit() ) )
       {
         gFoundIntersection = true;
-  
+
         tData.setup (&rktSUBDIV, rktORIGRAY);
         tData.setPoint (T * rktSCALE);
 
@@ -360,14 +361,14 @@ bool TSubdivFace::findLocalIntersections (const TSubdiv& rktSUBDIV,
         }
         else 
         {
-          tData.setNormal (tNormal);   
+          tData.setNormal (tNormal); 
         }
 
         rtLIST.add (tData);
       }
     }
 
-    ptLast = ptCurrent;  
+    ptLast = ptCurrent;
   }
 
   return gFoundIntersection;
@@ -483,7 +484,7 @@ TSubdivVert* TSubdivFace::findPoint()
   ptFacePoint = new TSubdivVert ("", tTotal);
   ptFacePoint->bRemainingDepth = dwDepthSum / dwCount;
 
-  return ptFacePoint;  
+  return ptFacePoint;
 
 }  /* findPoint() */
 
@@ -492,7 +493,7 @@ TSubdivEdge* TSubdivFace::edgeBefore (TSubdivVert* ptVERT) const
 {
   TSubdivVert*                           ptLast;
   vector<TSubdivVert*>::const_iterator   tIter;
-  
+
   tIter = tVerts.begin();
   ptLast = *tIter;
   tIter++;
@@ -513,7 +514,7 @@ TSubdivEdge* TSubdivFace::edgeBefore (TSubdivVert* ptVERT) const
   {
     return TSubdivEdge::_findEdge (*tIter, ptLast);
   }
-  
+
   return NULL;
 
 }  /* edgeBefore() */
@@ -544,7 +545,7 @@ TSubdivEdge* TSubdivFace::edgeAfter (TSubdivVert* ptVERT) const
   tIter = tVerts.begin();
   if ( gFound )
   {
-    return TSubdivEdge::_findEdge (ptVERT, *tIter);    
+    return TSubdivEdge::_findEdge (ptVERT, *tIter);  
   }
 
   return NULL;

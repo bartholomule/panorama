@@ -16,6 +16,7 @@
 *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "llapi/warning_eliminator.h"
 #include "warn_light.h"
 
 DEFINE_PLUGIN ("WarnLight", FX_LIGHT_CLASS, TWarnLight);

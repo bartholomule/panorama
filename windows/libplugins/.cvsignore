@@ -1,0 +1,7 @@
+*.dsw
+*.plg
+*.pch
+*.obj
+Lib
+Release
+Debug

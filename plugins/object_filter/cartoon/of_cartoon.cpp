@@ -16,6 +16,7 @@
 *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "llapi/warning_eliminator.h"
 #include "of_cartoon.h"
 
 DEFINE_PLUGIN ("OF_Cartoon", FX_OBJECT_FILTER_CLASS, TOF_Cartoon);

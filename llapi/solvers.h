@@ -124,6 +124,7 @@
  */
 
 #include <vector>
+using std::vector;
 #if       defined(USELESS_DEBUG)
 #include <stdio.h>
 #endif /* defined(USELESS_DEBUG) */
@@ -179,13 +180,12 @@ inline base_type secant_next_guess(base_type x, base_type prev_x,
   return x - val_x * (x - prev_x) / (val_x - val_prev_x);
 } /* secant_next_guess() */
 
-
 template <class base_type, class data_fn, class guess_fn>
 vector<base_type> simple_roots(base_type min, base_type max, data_fn dat,
 			       base_type value,
 			       guess_fn get_next_guess,
-			       base_type epsilon = base_type(double(1e-13)),
-			       vector<base_type> guesses = vector<base_type>(),
+             vector<base_type> guesses,
+			       base_type epsilon = base_type(double(1e-13)),			       
 			       int est_roots = 5,
 			       int max_iterations = 100,			       
 			       bool sort_roots = true)
@@ -318,9 +318,9 @@ vector<base_type> simple_roots(base_type min, base_type max, data_fn dat,
 template <class base_type, class data_fn>
 vector<base_type> solve(base_type min, base_type max, data_fn dat,
 			base_type value,
-			int num_roots = 5,			
-			base_type epsilon = base_type(double(1e-13)),
-			const vector<base_type>& guesses = vector<base_type>())  
+			int num_roots,			
+      const vector<base_type>& guesses,
+			base_type epsilon = base_type(double(1e-13)))  
 {
   return simple_roots<base_type,data_fn>(min, max, dat, value,
 #if       defined(KH_SECANT_SOLVER)					 
@@ -329,8 +329,21 @@ vector<base_type> solve(base_type min, base_type max, data_fn dat,
 					 &newton_next_guess<base_type,data_fn>,
 #endif /* defined(KH_SECANT_SOLVER) */
 
-					 epsilon, guesses, num_roots);
+					 guesses, epsilon, num_roots);
 } /* solve() */
+
+// This function does a workaround of broken compilers with default parameters created from constructors of 
+// vectors (ie. msvc++6).  The above solve function had previously created its own guesses through a default
+// parameter, but a broken compiler forced me to write a workaround, by NOT defaulting it.  This required a
+// reordering of the parameters in the previous function.  Hopefully, this will not affect anyone.
+template <class base_type, class data_fn>
+vector<base_type> solve(base_type min, base_type max, data_fn dat, base_type value, int num_roots = 5, 
+                        base_type epsilon = base_type(double(1e-13)))
+{
+  vector<base_type> guesses;
+  return solve(min, max, dat, value, num_roots, guesses, epsilon);
+}
+
 #else
 //
 // Given the desired interval, attempt to find roots (x) within that interval

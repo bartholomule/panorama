@@ -16,6 +16,7 @@
 *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "llapi/warning_eliminator.h"
 #include "pat_parquet.h"
 
 DEFINE_PLUGIN ("PatternParquet", FX_PATTERN_CLASS, TPatternParquet);

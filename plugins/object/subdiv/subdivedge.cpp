@@ -16,6 +16,7 @@
 *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "llapi/warning_eliminator.h"
 #include "subdivvert.h"
 #include "subdivedge.h"
 #include "subdivface.h"
@@ -23,7 +24,7 @@
 map<TSubdivEdge::TVertPair, TSubdivEdge*, TSubdivEdge::TVertPairCompare>   TSubdivEdge::_tEdgeMap;
 
 bool TSubdivEdge::TVertPairCompare::operator() (const TVertPair& rktFIRST, 
-                                                const TVertPair& rktSECOND)
+                                                const TVertPair& rktSECOND) const
 {
   if ( rktFIRST.ptFirst < rktSECOND.ptFirst )
   {
