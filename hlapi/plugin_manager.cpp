@@ -67,35 +67,38 @@ int TPluginManager::loadPlugin (const string& rktNAME)
   {
     cerr << "Cannot open plugin " << rktNAME << endl;
     cerr << dlerror() << endl;
-    exit (1);
   }
-
-  pfRegister = (TRegisterFunction*) dlsym (pvHandle, FX_REGISTER_PLUGIN);
-
-  pkcError = dlerror();
-  if ( pkcError )
+  else
   {
-    cerr << "ERROR: " << pkcError << endl;
-    dlclose (pvHandle);
-    exit (1);
-  }
-
-  ptPluginData = new TPluginData();
+    pfRegister = (TRegisterFunction*) dlsym (pvHandle, FX_REGISTER_PLUGIN);
   
-  iError = (*pfRegister) (dwVersion, ptPluginData);
-
-  if ( iError )
-  {
-    cerr << "Error registering plugin" << endl;
-    dlclose (pvHandle);
-    exit (1);
+    pkcError = dlerror();
+    if ( pkcError )
+    {
+      cerr << "ERROR: " << pkcError << endl;
+      dlclose (pvHandle);
+    }
+    else
+    {
+      ptPluginData = new TPluginData();
+    
+      iError = (*pfRegister) (dwVersion, ptPluginData);
+    
+      if ( iError )
+      {
+        cerr << "Error registering plugin" << endl;
+        dlclose (pvHandle);
+      }
+      else
+      {
+        if ( ptPluginData->tPluginName != "" )
+        {
+          registerPlugin (ptPluginData);
+        }
+      }
+    }
   }
-
-  if ( ptPluginData->tPluginName != "" )
-  {
-    registerPlugin (ptPluginData);
-  }
-
+  
   return 0;
 
 }  /* loadPlugin() */
