@@ -1,0 +1,55 @@
+functionlist();
+
+halt();
+
+/*
+*  Triangle test
+*/
+/*
+#include "materials.inc"
+#include "cameras.inc"
+
+define c Camera
+{
+  translate(<0, 100, 600>);
+  look_at = <0, 100, 0>;
+};
+
+define l class PointLight
+{
+  translate(<500, 1000, 500>);
+  color	= CWhite;
+};
+
+define p class Plane
+{
+  translate(<0, -10, 0>);
+  normal = <0, 1, 0>;
+  material = MLambertian { color = CWhite; };
+};
+
+define t class Triangle
+{
+  setvertex(<  0,100,-50>);
+  setvertex(< 50, 50, 50>);
+  setvertex(<-50, 50, 50>);
+  one_sided = off;
+  setMaterial(MPlastic { color = CBlue; });
+};
+
+define r class Raytracer { };
+
+define o class png 
+{
+  name = "barf.png";  
+};
+
+addObject(p);
+addObject(t);
+addObject(l);
+setCamera(c);
+setWidth(400);
+setHeight(400);
+setRenderer(r);
+setImageIO(o);
+*/

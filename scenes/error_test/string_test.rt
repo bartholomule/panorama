@@ -1,0 +1,41 @@
+// This file is to test string conversion, addition, etc.
+
+print("This is a string test");
+define foo "foo";
+define bar "bar";
+print(foo);
+print(bar);
+print(foo + bar);
+print("the above line should say 'foobar'");
+
+print("---------------------------------------------------------------------------");
+
+define a "1";
+define b "2";
+
+print(a);
+print(b);
+print(a + b);
+print("the above line should say 12");
+
+print(int(a));
+print(int(b));
+print(int(a) + int(b));
+print("the above line should say 3");
+
+
+print("---------------------------------------------------------------------------");
+define t "true";
+define f "false";
+
+print(t);
+print(f);
+print(bool(t));
+print("the above line should say 'true'");
+print(bool(f));
+print("the above line should say 'false'");
+
+halt();
+
+
+

@@ -1,0 +1,13 @@
+define a 1;
+print(a);
+define a a+a;
+print(a);
+define a a+a;
+print(a);
+define a a+a;
+print(a);
+define a a+a;
+print(a);
+define a a+a;
+print(a);
+halt();
