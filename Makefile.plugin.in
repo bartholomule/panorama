@@ -25,7 +25,7 @@ ${PLUGIN}:	${OBJ}
 else
 ${PLUGIN}:	${OBJ}
 		@echo Making plugin ${PLUGIN_NAME}...
-		@${CXX} -fPIC -shared -o ${PLUGIN} ${OBJ} ${LIB}
+		@${CXX} -fPIC -shared -o ${PLUGIN} ${OBJ} ${LIB} ${ARCH_MAKE_SHARED_OPTS}
 endif
 
 clean: 

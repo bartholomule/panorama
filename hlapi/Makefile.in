@@ -31,11 +31,13 @@ all:		${HLAPI_LIB} ${STATIC_HLAPI_LIB}
 
 install:        all
 		@echo Installing hlapi lib...
-		@@INSTALL@ ${HLAPI_LIB} ${LIB_DIR}
+		@@INSTALL@ ${HLAPI_LIB} ${LIB_DIR}/${LIBNAME}
+		@rm -f ${LIB_DIR}/libhlapi.so
+		@ln -s ${LIBNAME} ${LIB_DIR}/libhlapi.so
                 
 ${HLAPI_LIB}:	${OBJ}
 		@echo Making library ${HLAPI_LIB}...
-		@${CXX} -fPIC -shared ${CXXFLAGS} -Wl,-soname,${LIBNAME} -o ${HLAPI_LIB} ${OBJ}
+		@${CXX} -fPIC -shared ${CXXFLAGS} -Wl,-soname,${LIBNAME} -o ${HLAPI_LIB} ${OBJ} ${ARCH_MAKE_SHARED_OPTS}
 
 ${STATIC_HLAPI_LIB}:    ${OBJ}
 		@echo Making static library ${STATIC_HLAPI_LIB}...

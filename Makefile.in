@@ -30,6 +30,7 @@ clean:
 		@for i in $(DIRS); do \
                   $(MAKE) -C $$i clean; \
                 done
+		rm -f so_locations
 
 distclean:
 		@set -e
@@ -44,3 +45,12 @@ installdirs:
 		@${BUILD_TOP}/mkinstalldirs ${TOP_DIR} ${BIN_DIR} ${LIB_DIR} ${DOC_DIR} \
                 			    ${CONFIG_DIR} ${INCLUDE_DIR} ${PLUGIN_DIR}  \
                                             ${TEXTURE_DIR} ${SCENE_DIR} ${GRADIENT_DIR}
+
+Makefile:	config.status ${SRC_DIR}/Makefile.in
+		$(SHELL) config.status
+
+config.status:	${SRC_DIR}/configure
+		$(SHELL) config.status --recheck
+
+${SRC_DIR}/configure:	${SRC_DIR}/configure.in
+			cd ${SRC_DIR} && autoconf

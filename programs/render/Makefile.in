@@ -12,7 +12,7 @@ VPATH = ${SRC_DIR}
 ifeq (1,@STATIC_LINK@)
 LDFLAGS += @LIBS@
 else
-LDFLAGS += -L${BUILD_TOP}/llapi -L${BUILD_TOP}/hlapi -lllapi -lhlapi @LIBS@
+LDFLAGS += -L${BUILD_TOP}/llapi -L${BUILD_TOP}/hlapi -lllapi -lhlapi @LIBS@ ${ARCH_PROG_SETLIBPATH}
 endif
 
 EXE = render

@@ -4,6 +4,9 @@ AC_INIT(llapi/base_class.h)
 
 AC_PREFIX_DEFAULT(/opt/panorama)
 
+dnl Gets the host type
+AC_CANONICAL_HOST
+
 dnl Checks for programs.
 AC_PROG_CXX
 AC_PROG_INSTALL
@@ -64,6 +67,40 @@ fi
 AC_SUBST(EXPERIMENTAL)
 AC_MSG_RESULT($EXPER_VAL)
 
+dnl This is the machine specific logic which can set some features depending
+dnl on the platform.
+dnl XXX Check we are really gcc
+
+dnl The following variables may be set
+dnl ARCH_MAKE_SHARED_OPTS flags tacked onto the end of building a shared
+dnl     library or plugin
+dnl
+dnl have_so_reg flags if so_locations is used by the machine.
+dnl
+dnl ARCH_PROG_SETLIBPATH flags to set the library path in executables
+dnl      convenient so one does not need to set LD_LIBRARY_PATH
+case $host in
+
+alpha-dec-osf*)
+	echo "Adding shared library rules for DEC Alpha system"
+	ARCH_MAKE_SHARED_OPTS="-Wl,-expect_unresolved,\*"
+	ARCH_PROG_SETLIBPATH="-Wl,-rpath,\${LIB_DIR}"
+	have_so_reg=yes
+	;;
+*)
+	ARCH_MAKE_SHARED_OPTS=""
+	ARCH_PROG_SETLIBPATH=""
+	have_so_reg=no
+	;;
+esac
+
+if test $have_so_reg = "yes"; then
+  ARCH_MAKE_SHARED_OPTS="$ARCH_MAKE_SHARED_OPTS -Wl,-update_registry,\${BUILD_TOP}/so_locations"
+fi
+
+AC_SUBST(ARCH_MAKE_SHARED_OPTS)
+AC_SUBST(ARCH_PROG_SETLIBPATH)
+  
 AC_OUTPUT(\
 	Makefile \
 	Makefile.vars \
