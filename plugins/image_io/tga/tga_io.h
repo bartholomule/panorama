@@ -38,7 +38,7 @@ class TImageTga : public TImageIO
 
   protected:
 
-    void grabRGB (Byte bPixelSize, ifstream &sTGAStream, Byte& bRed, Byte& bGreen, Byte& bBlue); 
+    inline void grabRGB (Byte bPixelSize, ifstream &sTGAStream, Byte& bRed, Byte& bGreen, Byte& bBlue); 
     
 };  /* class TImageTga */
 

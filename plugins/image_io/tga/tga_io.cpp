@@ -1,6 +1,6 @@
 /*
 *  Copyright (C) 1998 Angel Jimenez Jimenez and Carlos Jimenez Moreno
-*  Copyright (C) 1999 Jon Frydensbjerg
+*  Copyright (C) 1999-2000 Jon Frydensbjerg
 *
 *  This program is free software; you can redistribute it and/or modify
 *  it under the terms of the GNU General Public License as published by
@@ -97,7 +97,7 @@ TImage* TImageTga::load (void)
 
   sFile.open (tFileName.c_str(), ios::in | ios::nocreate | ios::bin);
 
-  if ( ! sFile )
+  if ( !sFile )
   {
     return NULL;
   }
@@ -162,7 +162,7 @@ TImage* TImageTga::load (void)
     sFile.seekg (sFile.tellg() + (bSizeofMapEntry / 8) * zCountColors);
   }
 
-  if ( ( bAttributes & 0x20 ) )                   // Check origin (upper or lower left)
+  if ( bAttributes & 0x20 )                       // Check origin (upper or lower left)
   {
     iStart = 0;
     iStop  = zHeight;
@@ -170,7 +170,7 @@ TImage* TImageTga::load (void)
   }
   else 
   {
-    iStart = (zHeight - 1); 
+    iStart = zHeight - 1; 
     iStop  = -1; 
     iAdd   = -1;
   } 
@@ -183,7 +183,7 @@ TImage* TImageTga::load (void)
 
   if ( bImageType == 2 )                          // Uncompressed      
   {
-    for (int J = iStart; ( J != iStop ) ; (J += iAdd) )
+    for (int J = iStart; ( J != iStop ) ;(J += iAdd))
     {
       for (size_t I = 0; ( I < zWidth ) ;I++)
       {
@@ -197,7 +197,7 @@ TImage* TImageTga::load (void)
   }
   else                                            // Runlength encoded
   {
-    zTotalNoPixels = ( zWidth * zHeight );
+    zTotalNoPixels = zWidth * zHeight;
  
     int    J = iStart;
     size_t I = 0;
@@ -208,7 +208,7 @@ TImage* TImageTga::load (void)
     {
       bAux = sFile.get();
 
-      N = ( (bAux & 0x7f) + 1 );
+      N = ((bAux & 0x7f) + 1);
 
       if ( bAux & 0x80 )
       {
@@ -261,26 +261,26 @@ TImage* TImageTga::load (void)
 }  /* load() */
 
 
-void TImageTga::grabRGB (Byte bPixelSize, ifstream &sTGAStream, Byte& bRed, Byte& bGreen, Byte& bBlue) 
+inline void TImageTga::grabRGB (Byte bPixelSize, ifstream &sTGAStream, Byte& bRed, Byte& bGreen, Byte& bBlue) 
 {
   Byte bAux;
  
   switch ( bPixelSize ) {
-    case ( 16 ) : 
+    case 16: 
       bAux    = sTGAStream.get();
       bBlue   = bAux & 0x1f;
       bGreen  = bAux >> 5;
 
       bAux    = sTGAStream.get();
-      bGreen |= ( bAux & 0x3  ) << 3;
-      bRed    = ( bAux & 0x7c ) >> 2;
+      bGreen |= (bAux & 0x3 ) << 3;
+      bRed    = (bAux & 0x7c) >> 2;
  
       bBlue   = (bBlue  * 255) / 31;
       bGreen  = (bGreen * 255) / 31;
       bRed    = (bRed   * 255) / 31;
       break;
 
-    case ( 32 ) :  
+    case 32:  
       bBlue   = sTGAStream.get();
       bGreen  = sTGAStream.get();
       bRed    = sTGAStream.get();
