@@ -31,15 +31,7 @@ STATIC_HLAPI_LIB = ${BUILD_TOP}/hlapi/libhlapi.a
 INCLUDE = -I${BUILD_TOP} -I${SRC_DIR}/${BUILD_TOP} -I${SRC_DIR}
 DEFS    = @DEFS@ \
           -DTOPDIR='"${TOPDIR}"' \
-          -DBIN_DIR='"${BIN_DIR}"' \
-          -DINCLUDE_DIR='"${INCLUDE_DIR}"' \
-          -DLIB_DIR='"${LIB_DIR}"' \
-          -DDOC_DIR='"${DOC_DIR}"' \
-          -DPLUGIN_DIR='"${PLUGIN_DIR}"' \
-          -DTEXTURE_DIR='"${TEXTURE_DIR}"' \
-          -DGRADIENT_DIR='"${GRADIENT_DIR}"' \
-          -DSCENE_DIR='"${SCENE_DIR}"' \
-          -DSTATIC_LINK=@STATIC_LINK@
+	  -DSTATIC_LINK=@STATIC_LINK@
 
 CXX      = @CXX@
 LEX      = @LEX@
@@ -56,7 +48,16 @@ OPT = -O6
 endif
 
 ifeq (@STATIC_LINK@,1)
-CXXFLAGS = ${OPT} -pg -ansi -pedantic -fno-exceptions -fno-rtti -Wall -Wstrict-prototypes ${DEFS} ${INCLUDE}
+STAT =
 else
-CXXFLAGS = ${OPT} -ansi -pedantic -fno-exceptions -fno-rtti -fomit-frame-pointer -Wall -Wstrict-prototypes ${DEFS} ${INCLUDE}
+STAT =
 endif
+
+ifeq (@PROFILE@,1)
+PROF = -pg
+else
+PROF = -fomit-frame-pointer
+endif
+
+CXXFLAGS = ${OPT} ${STAT} ${PROF} -ansi -pedantic -fno-exceptions -fno-rtti \
+	   -Wall -Wstrict-prototypes ${DEFS} ${INCLUDE}
