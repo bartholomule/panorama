@@ -76,10 +76,13 @@ Panorama README
 
    http://www.gnu.org/software/panorama/panorama.html
 
-  For ideas or bug reports you have a mailing list, bug-panorama@gnu.org. To
- subscribe, send an email to bug-panorama-request@gnu.org with the word
- 'subscribe' in the subject.
+  For bug reports you have a mailing list, bug-panorama@gnu.org. To subscribe,
+ send an email to bug-panorama-request@gnu.org with the word 'subscribe' in the
+ subject.
 
+  There are two other mailing lists, help-panorama@gnu.org for questions about
+ the use of this package, and devel-panorama@gnu.org, for developers.
+  
   For other questions you can email ajimenez@vnet.es
 
 ===
