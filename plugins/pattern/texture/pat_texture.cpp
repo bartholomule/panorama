@@ -73,13 +73,13 @@ TColor TPatternTexture::lerpTexel (const TVector2& rktUVCOORD) const
 
   if ( gMirror )
   {
-    if ( ((int) u) & 1 )
+    if ( ((int) floor (u)) & 1 )
     {
       iu = -iu;
       fu = 1.0 - fu;
     }
 
-    if ( ((int) v) & 1 )
+    if ( ((int) floor (v)) & 1 )
     {
       iv = -iv;
       fv = 1.0 - fv;
@@ -169,7 +169,6 @@ void TPatternTexture::cylindricalMap (const TVector& rktPOINT, TVector2& rtUVCOO
   TScalar   rtTheta;
 
   tVector = rktPOINT;
-  //tVector.normalize();
 
   x = tVector.x();
   y = tVector.y();
@@ -219,7 +218,6 @@ void TPatternTexture::planarMap (const TVector& rktPOINT, TVector2& rtUVCOORD) c
   TScalar   x, y;
 
   tVector = rktPOINT;
-  //tVector.normalize();
 
   x = tVector.x();
   y = tVector.y();
