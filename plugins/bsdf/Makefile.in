@@ -1,7 +1,11 @@
 
 BUILD_TOP = ../..
 
-DIRS = lambertian \
-       phong
+DIRS = cook_torrance \
+       lambertian \
+       phong \
+       schlick \
+       schlick_double \
+       ward
 
 include ${BUILD_TOP}/Makefile.targets
