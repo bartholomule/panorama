@@ -72,7 +72,7 @@ class TZBufferRenderer : public TRaytracer
       gBackfaceCulling (true),
       eShading (FX_PHONG) {}
 
-    void initialize (TScene& rtSCENE);
+    bool initialize (TScene& rtSCENE);
     void finalize (void);
 
     void render (SBuffers& rsBUFFERS);

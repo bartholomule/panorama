@@ -43,7 +43,7 @@ class TABVH : public TAggregate
 
     static TBaseClass* _create (const TBaseClass* pktPARENT);
 
-    void initialize (void);
+    bool initialize (void);
 
     bool findFirstIntersection (const TRay& rktRAY, TSurfaceData& rtDATA) const;
     bool findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) const;

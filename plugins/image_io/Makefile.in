@@ -4,6 +4,7 @@ BUILD_TOP = ../..
 DIRS = @GIF_FILTER@ \
        @JPEG_FILTER@ \
        @PNG_FILTER@ \
+       @TIFF_FILTER@ \
        tga
 
 include ${BUILD_TOP}/Makefile.targets

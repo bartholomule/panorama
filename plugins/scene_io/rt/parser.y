@@ -114,6 +114,7 @@ static string EAttribType_to_str (EAttribType eat);
 
 %token <gValue> T_BOOL
 %token <dValue> T_REAL
+%token <iValue> T_INTEGER
 %token <acIdent> T_IDENTIFIER
 %token <acIdent> T_QUOTED_STRING
 

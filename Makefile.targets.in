@@ -6,6 +6,16 @@ all:
                   $(MAKE) -C $$i all; \
                 done
 
+.PHONY: dep deps
+
+dep: deps
+
+deps:
+		@set -e; \
+		for i in $(DIRS); do \
+                  $(MAKE) -C $$i deps; \
+                done
+
 install:
 		@set -e; \
 		for i in $(DIRS); do \
@@ -24,3 +34,4 @@ distclean:
                   $(MAKE) -C $$i distclean; \
                 done
 		@rm -f Makefile
+

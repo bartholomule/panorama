@@ -16,6 +16,8 @@ FILES = area_light1.rt \
 
 all:
 
+deps:
+
 install:
 		@echo "Installing scenes (lights)..."
 		@${SRC_DIR}/${BUILD_TOP}/mkinstalldirs ${SCENE_DIR}/lights

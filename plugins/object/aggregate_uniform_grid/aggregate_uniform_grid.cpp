@@ -36,13 +36,13 @@ void TAggregateUniformGrid::add (TObject* ptOBJ)
 }  /* add() */
 
 
-void TAggregateUniformGrid::initialize (void)
+bool TAggregateUniformGrid::initialize (void)
 {
 
   TObject*   ptObj;
   TMatrix*   ptMat;
   
-  TAggregate::initialize();
+  bool val = TAggregate::initialize();
 
   for (TObjectList::iterator tIter = tObjectList2.begin(); ( tIter != tObjectList2.end() ) ;tIter++)
   {
@@ -60,7 +60,7 @@ void TAggregateUniformGrid::initialize (void)
       ptObj->setInverseTransformMatrix ((*ptMat) * (*ptInverseMatrix));
     }
 
-    ptObj->initialize();
+    val = val && ptObj->initialize();
   }
   
   if ( fabs (tVoxelSize) < FX_EPSILON )
@@ -77,7 +77,7 @@ void TAggregateUniformGrid::initialize (void)
     ptUniformGrid->addObject (*tIter2);
   }
 
-  ptUniformGrid->initialize();
+  return val && ptUniformGrid->initialize();
 
 }  /* initialize() */
 

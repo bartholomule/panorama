@@ -46,7 +46,7 @@ class TProjector : public TPointLight
     int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
     void getAttributeList (TAttributeList& rtLIST) const;
     
-    void initialize (void);
+    bool initialize (void);
     
     TColor color (const TVector& rktPOS) const;
 

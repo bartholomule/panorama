@@ -32,6 +32,7 @@ class TPointLight : public TLight
     TScalar   tHaloSize;
     TVector   tFalloff;
     TVector   tConeAxis;
+    TVector   tConeAxis2;  
 
     virtual bool visible (const TVector& rktPOINT) const;
     virtual TScalar attenuation (const TVector& rktPOINT) const
@@ -52,7 +53,7 @@ class TPointLight : public TLight
       tCosThreshold (0),
       tHaloSize (0) {}
     
-    void initialize (void);
+    bool initialize (void);
 
     int setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
     int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
@@ -64,7 +65,7 @@ class TPointLight : public TLight
     }
     void setAxis (const TVector& rktAXIS)
     {
-      tConeAxis = rktAXIS;
+      tConeAxis2 = rktAXIS;
     }
     void setAngleThreshold (TScalar tANGLE)
     {

@@ -27,6 +27,7 @@ if_lens_flare.plg
 
 # Image input/output formats
 tga_io.plg
+tiff_io.plg
 @PLUGIN_PNG@
 @PLUGIN_JPEG@
 @PLUGIN_GIF@
@@ -58,6 +59,7 @@ per_crackle.plg
 per_leopard.plg
 per_marble.plg
 per_noise.plg
+per_wave.plg
 per_worley.plg
 
 # Objects

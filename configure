@@ -3172,7 +3172,111 @@ else
 echo "$as_me: WARNING: UNGIF library not available so gif filter not compiled" >&2;}
 fi
 
-echo "$as_me:3175: checking for $CC option to accept ANSI C" >&5
+tiff_val=no
+echo "$as_me:3176: checking for tiffio.h" >&5
+echo $ECHO_N "checking for tiffio.h... $ECHO_C" >&6
+if test "${ac_cv_header_tiffio_h+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  cat >conftest.$ac_ext <<_ACEOF
+#line 3182 "configure"
+#include "confdefs.h"
+#include <tiffio.h>
+_ACEOF
+if { (eval echo "$as_me:3186: \"$ac_cpp conftest.$ac_ext\"") >&5
+  (eval $ac_cpp conftest.$ac_ext) 2>conftest.er1
+  ac_status=$?
+  egrep -v '^ *\+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  echo "$as_me:3192: \$? = $ac_status" >&5
+  (exit $ac_status); } >/dev/null; then
+  if test -s conftest.err; then
+    ac_cpp_err=$ac_c_preproc_warn_flag
+  else
+    ac_cpp_err=
+  fi
+else
+  ac_cpp_err=yes
+fi
+if test -z "$ac_cpp_err"; then
+  ac_cv_header_tiffio_h=yes
+else
+  echo "$as_me: failed program was:" >&5
+  cat conftest.$ac_ext >&5
+  ac_cv_header_tiffio_h=no
+fi
+rm -f conftest.err conftest.$ac_ext
+fi
+echo "$as_me:3211: result: $ac_cv_header_tiffio_h" >&5
+echo "${ECHO_T}$ac_cv_header_tiffio_h" >&6
+if test $ac_cv_header_tiffio_h = yes; then
+  echo "$as_me:3214: checking for TIFFGetVersion in -ltiff" >&5
+echo $ECHO_N "checking for TIFFGetVersion in -ltiff... $ECHO_C" >&6
+if test "${ac_cv_lib_tiff_TIFFGetVersion+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-ltiff  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+#line 3222 "configure"
+#include "confdefs.h"
+
+/* Override any gcc2 internal prototype to avoid an error.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+/* We use char because int might match the return type of a gcc2
+   builtin and then its argument prototype would still apply.  */
+char TIFFGetVersion ();
+int
+main ()
+{
+TIFFGetVersion ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (eval echo "$as_me:3241: \"$ac_link\"") >&5
+  (eval $ac_link) 2>&5
+  ac_status=$?
+  echo "$as_me:3244: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+         { ac_try='test -s conftest$ac_exeext'
+  { (eval echo "$as_me:3247: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:3250: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  ac_cv_lib_tiff_TIFFGetVersion=yes
+else
+  echo "$as_me: failed program was:" >&5
+cat conftest.$ac_ext >&5
+ac_cv_lib_tiff_TIFFGetVersion=no
+fi
+rm -f conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+echo "$as_me:3261: result: $ac_cv_lib_tiff_TIFFGetVersion" >&5
+echo "${ECHO_T}$ac_cv_lib_tiff_TIFFGetVersion" >&6
+if test $ac_cv_lib_tiff_TIFFGetVersion = yes; then
+  tiff_val=yes
+fi
+
+fi
+
+if test $tiff_val = "yes"; then
+	TIFF_FILTER="tiff"
+	PLUGIN_TIFF="tiff_io.plg"
+else
+	TIFF_FILTER=""
+	PLUGIN_TIFF=""
+	{ echo "$as_me:3275: WARNING: LIBTIFF library not available so tiff filter not compiled" >&5
+echo "$as_me: WARNING: LIBTIFF library not available so tiff filter not compiled" >&2;}
+fi
+
+echo "$as_me:3279: checking for $CC option to accept ANSI C" >&5
 echo $ECHO_N "checking for $CC option to accept ANSI C... $ECHO_C" >&6
 if test "${ac_cv_prog_cc_stdc+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
@@ -3180,7 +3284,7 @@ else
   ac_cv_prog_cc_stdc=no
 ac_save_CC=$CC
 cat >conftest.$ac_ext <<_ACEOF
-#line 3183 "configure"
+#line 3287 "configure"
 #include "confdefs.h"
 #include <stdarg.h>
 #include <stdio.h>
@@ -3229,16 +3333,16 @@ for ac_arg in "" -qlanglvl=ansi -std1 -Ae "-Aa -D_HPUX_SOURCE" "-Xc -D__EXTENSIO
 do
   CC="$ac_save_CC $ac_arg"
   rm -f conftest.$ac_objext
-if { (eval echo "$as_me:3232: \"$ac_compile\"") >&5
+if { (eval echo "$as_me:3336: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
-  echo "$as_me:3235: \$? = $ac_status" >&5
+  echo "$as_me:3339: \$? = $ac_status" >&5
   (exit $ac_status); } &&
          { ac_try='test -s conftest.$ac_objext'
-  { (eval echo "$as_me:3238: \"$ac_try\"") >&5
+  { (eval echo "$as_me:3342: \"$ac_try\"") >&5
   (eval $ac_try) 2>&5
   ac_status=$?
-  echo "$as_me:3241: \$? = $ac_status" >&5
+  echo "$as_me:3345: \$? = $ac_status" >&5
   (exit $ac_status); }; }; then
   ac_cv_prog_cc_stdc=$ac_arg
 break
@@ -3255,21 +3359,21 @@ fi
 
 case "x$ac_cv_prog_cc_stdc" in
   x|xno)
-    echo "$as_me:3258: result: none needed" >&5
+    echo "$as_me:3362: result: none needed" >&5
 echo "${ECHO_T}none needed" >&6 ;;
   *)
-    echo "$as_me:3261: result: $ac_cv_prog_cc_stdc" >&5
+    echo "$as_me:3365: result: $ac_cv_prog_cc_stdc" >&5
 echo "${ECHO_T}$ac_cv_prog_cc_stdc" >&6
     CC="$CC $ac_cv_prog_cc_stdc" ;;
 esac
 
-echo "$as_me:3266: checking for an ANSI C-conforming const" >&5
+echo "$as_me:3370: checking for an ANSI C-conforming const" >&5
 echo $ECHO_N "checking for an ANSI C-conforming const... $ECHO_C" >&6
 if test "${ac_cv_c_const+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
   cat >conftest.$ac_ext <<_ACEOF
-#line 3272 "configure"
+#line 3376 "configure"
 #include "confdefs.h"
 
 int
@@ -3327,16 +3431,16 @@ main ()
 }
 _ACEOF
 rm -f conftest.$ac_objext
-if { (eval echo "$as_me:3330: \"$ac_compile\"") >&5
+if { (eval echo "$as_me:3434: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
-  echo "$as_me:3333: \$? = $ac_status" >&5
+  echo "$as_me:3437: \$? = $ac_status" >&5
   (exit $ac_status); } &&
          { ac_try='test -s conftest.$ac_objext'
-  { (eval echo "$as_me:3336: \"$ac_try\"") >&5
+  { (eval echo "$as_me:3440: \"$ac_try\"") >&5
   (eval $ac_try) 2>&5
   ac_status=$?
-  echo "$as_me:3339: \$? = $ac_status" >&5
+  echo "$as_me:3443: \$? = $ac_status" >&5
   (exit $ac_status); }; }; then
   ac_cv_c_const=yes
 else
@@ -3346,7 +3450,7 @@ ac_cv_c_const=no
 fi
 rm -f conftest.$ac_objext conftest.$ac_ext
 fi
-echo "$as_me:3349: result: $ac_cv_c_const" >&5
+echo "$as_me:3453: result: $ac_cv_c_const" >&5
 echo "${ECHO_T}$ac_cv_c_const" >&6
 if test $ac_cv_c_const = no; then
 
@@ -3356,7 +3460,7 @@ EOF
 
 fi
 
-echo "$as_me:3359: checking whether byte ordering is bigendian" >&5
+echo "$as_me:3463: checking whether byte ordering is bigendian" >&5
 echo $ECHO_N "checking whether byte ordering is bigendian... $ECHO_C" >&6
 if test "${ac_cv_c_bigendian+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
@@ -3364,7 +3468,7 @@ else
   ac_cv_c_bigendian=unknown
 # See if sys/param.h defines the BYTE_ORDER macro.
 cat >conftest.$ac_ext <<_ACEOF
-#line 3367 "configure"
+#line 3471 "configure"
 #include "confdefs.h"
 #include <sys/types.h>
 #include <sys/param.h>
@@ -3381,20 +3485,20 @@ main ()
 }
 _ACEOF
 rm -f conftest.$ac_objext
-if { (eval echo "$as_me:3384: \"$ac_compile\"") >&5
+if { (eval echo "$as_me:3488: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
-  echo "$as_me:3387: \$? = $ac_status" >&5
+  echo "$as_me:3491: \$? = $ac_status" >&5
   (exit $ac_status); } &&
          { ac_try='test -s conftest.$ac_objext'
-  { (eval echo "$as_me:3390: \"$ac_try\"") >&5
+  { (eval echo "$as_me:3494: \"$ac_try\"") >&5
   (eval $ac_try) 2>&5
   ac_status=$?
-  echo "$as_me:3393: \$? = $ac_status" >&5
+  echo "$as_me:3497: \$? = $ac_status" >&5
   (exit $ac_status); }; }; then
   # It does; now see whether it defined to BIG_ENDIAN or not.
 cat >conftest.$ac_ext <<_ACEOF
-#line 3397 "configure"
+#line 3501 "configure"
 #include "confdefs.h"
 #include <sys/types.h>
 #include <sys/param.h>
@@ -3411,16 +3515,16 @@ main ()
 }
 _ACEOF
 rm -f conftest.$ac_objext
-if { (eval echo "$as_me:3414: \"$ac_compile\"") >&5
+if { (eval echo "$as_me:3518: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
-  echo "$as_me:3417: \$? = $ac_status" >&5
+  echo "$as_me:3521: \$? = $ac_status" >&5
   (exit $ac_status); } &&
          { ac_try='test -s conftest.$ac_objext'
-  { (eval echo "$as_me:3420: \"$ac_try\"") >&5
+  { (eval echo "$as_me:3524: \"$ac_try\"") >&5
   (eval $ac_try) 2>&5
   ac_status=$?
-  echo "$as_me:3423: \$? = $ac_status" >&5
+  echo "$as_me:3527: \$? = $ac_status" >&5
   (exit $ac_status); }; }; then
   ac_cv_c_bigendian=yes
 else
@@ -3436,12 +3540,12 @@ fi
 rm -f conftest.$ac_objext conftest.$ac_ext
 if test $ac_cv_c_bigendian = unknown; then
 if test "$cross_compiling" = yes; then
-  { { echo "$as_me:3439: error: cannot run test program while cross compiling" >&5
+  { { echo "$as_me:3543: error: cannot run test program while cross compiling" >&5
 echo "$as_me: error: cannot run test program while cross compiling" >&2;}
    { (exit 1); exit 1; }; }
 else
   cat >conftest.$ac_ext <<_ACEOF
-#line 3444 "configure"
+#line 3548 "configure"
 #include "confdefs.h"
 int
 main ()
@@ -3457,15 +3561,15 @@ main ()
 }
 _ACEOF
 rm -f conftest$ac_exeext
-if { (eval echo "$as_me:3460: \"$ac_link\"") >&5
+if { (eval echo "$as_me:3564: \"$ac_link\"") >&5
   (eval $ac_link) 2>&5
   ac_status=$?
-  echo "$as_me:3463: \$? = $ac_status" >&5
+  echo "$as_me:3567: \$? = $ac_status" >&5
   (exit $ac_status); } && { ac_try='./conftest$ac_exeext'
-  { (eval echo "$as_me:3465: \"$ac_try\"") >&5
+  { (eval echo "$as_me:3569: \"$ac_try\"") >&5
   (eval $ac_try) 2>&5
   ac_status=$?
-  echo "$as_me:3468: \$? = $ac_status" >&5
+  echo "$as_me:3572: \$? = $ac_status" >&5
   (exit $ac_status); }; }; then
   ac_cv_c_bigendian=no
 else
@@ -3478,7 +3582,7 @@ rm -f core core.* *.core conftest$ac_exeext conftest.$ac_ext
 fi
 fi
 fi
-echo "$as_me:3481: result: $ac_cv_c_bigendian" >&5
+echo "$as_me:3585: result: $ac_cv_c_bigendian" >&5
 echo "${ECHO_T}$ac_cv_c_bigendian" >&6
 if test $ac_cv_c_bigendian = yes; then
 
@@ -3491,23 +3595,23 @@ fi
 for ac_header in stdlib.h string.h memory.h strings.h inttypes.h unistd.h
 do
 ac_ac_Header=`echo "ac_cv_header_$ac_header" | $ac_tr_sh`
-echo "$as_me:3494: checking for $ac_header" >&5
+echo "$as_me:3598: checking for $ac_header" >&5
 echo $ECHO_N "checking for $ac_header... $ECHO_C" >&6
 if eval "test \"\${$ac_ac_Header+set}\" = set"; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
   cat >conftest.$ac_ext <<_ACEOF
-#line 3500 "configure"
+#line 3604 "configure"
 #include "confdefs.h"
 #include <$ac_header>
 _ACEOF
-if { (eval echo "$as_me:3504: \"$ac_cpp conftest.$ac_ext\"") >&5
+if { (eval echo "$as_me:3608: \"$ac_cpp conftest.$ac_ext\"") >&5
   (eval $ac_cpp conftest.$ac_ext) 2>conftest.er1
   ac_status=$?
   egrep -v '^ *\+' conftest.er1 >conftest.err
   rm -f conftest.er1
   cat conftest.err >&5
-  echo "$as_me:3510: \$? = $ac_status" >&5
+  echo "$as_me:3614: \$? = $ac_status" >&5
   (exit $ac_status); } >/dev/null; then
   if test -s conftest.err; then
     ac_cpp_err=$ac_c_preproc_warn_flag
@@ -3526,7 +3630,7 @@ else
 fi
 rm -f conftest.err conftest.$ac_ext
 fi
-echo "$as_me:3529: result: `eval echo '${'$ac_ac_Header'}'`" >&5
+echo "$as_me:3633: result: `eval echo '${'$ac_ac_Header'}'`" >&5
 echo "${ECHO_T}`eval echo '${'$ac_ac_Header'}'`" >&6
 if test `eval echo '${'$ac_ac_Header'}'` = yes; then
   cat >>confdefs.h <<EOF
@@ -3536,13 +3640,13 @@ EOF
 fi
 done
 
-echo "$as_me:3539: checking for size_t" >&5
+echo "$as_me:3643: checking for size_t" >&5
 echo $ECHO_N "checking for size_t... $ECHO_C" >&6
 if test "${ac_cv_type_size_t+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
   cat >conftest.$ac_ext <<_ACEOF
-#line 3545 "configure"
+#line 3649 "configure"
 #include "confdefs.h"
 $ac_includes_default
 int
@@ -3557,16 +3661,16 @@ if (sizeof (size_t))
 }
 _ACEOF
 rm -f conftest.$ac_objext
-if { (eval echo "$as_me:3560: \"$ac_compile\"") >&5
+if { (eval echo "$as_me:3664: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
-  echo "$as_me:3563: \$? = $ac_status" >&5
+  echo "$as_me:3667: \$? = $ac_status" >&5
   (exit $ac_status); } &&
          { ac_try='test -s conftest.$ac_objext'
-  { (eval echo "$as_me:3566: \"$ac_try\"") >&5
+  { (eval echo "$as_me:3670: \"$ac_try\"") >&5
   (eval $ac_try) 2>&5
   ac_status=$?
-  echo "$as_me:3569: \$? = $ac_status" >&5
+  echo "$as_me:3673: \$? = $ac_status" >&5
   (exit $ac_status); }; }; then
   ac_cv_type_size_t=yes
 else
@@ -3576,7 +3680,7 @@ ac_cv_type_size_t=no
 fi
 rm -f conftest.$ac_objext conftest.$ac_ext
 fi
-echo "$as_me:3579: result: $ac_cv_type_size_t" >&5
+echo "$as_me:3683: result: $ac_cv_type_size_t" >&5
 echo "${ECHO_T}$ac_cv_type_size_t" >&6
 if test $ac_cv_type_size_t = yes; then
   :
@@ -3588,13 +3692,13 @@ EOF
 
 fi
 
-echo "$as_me:3591: checking for fileno being properly defined with C++" >&5
+echo "$as_me:3695: checking for fileno being properly defined with C++" >&5
 echo $ECHO_N "checking for fileno being properly defined with C++... $ECHO_C" >&6
 if test "${ac_cv_fileno_ok+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
   cat >conftest.$ac_ext <<_ACEOF
-#line 3597 "configure"
+#line 3701 "configure"
 #include "confdefs.h"
 #include <stdio.h>
 
@@ -3607,16 +3711,16 @@ int s = fileno(STDOUT)
 }
 _ACEOF
 rm -f conftest.$ac_objext
-if { (eval echo "$as_me:3610: \"$ac_compile\"") >&5
+if { (eval echo "$as_me:3714: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
-  echo "$as_me:3613: \$? = $ac_status" >&5
+  echo "$as_me:3717: \$? = $ac_status" >&5
   (exit $ac_status); } &&
          { ac_try='test -s conftest.$ac_objext'
-  { (eval echo "$as_me:3616: \"$ac_try\"") >&5
+  { (eval echo "$as_me:3720: \"$ac_try\"") >&5
   (eval $ac_try) 2>&5
   ac_status=$?
-  echo "$as_me:3619: \$? = $ac_status" >&5
+  echo "$as_me:3723: \$? = $ac_status" >&5
   (exit $ac_status); }; }; then
   ac_cv_fileno_ok=yes
 else
@@ -3626,7 +3730,7 @@ ac_cv_fileno_ok=no
 fi
 rm -f conftest.$ac_objext conftest.$ac_ext
 fi
-echo "$as_me:3629: result: $ac_cv_fileno_ok" >&5
+echo "$as_me:3733: result: $ac_cv_fileno_ok" >&5
 echo "${ECHO_T}$ac_cv_fileno_ok" >&6
 if test $ac_cv_fileno_ok = no; then
   cat >>confdefs.h <<\EOF
@@ -3635,7 +3739,7 @@ EOF
 
 fi
 
-echo "$as_me:3638: checking whether to link statically or not" >&5
+echo "$as_me:3742: checking whether to link statically or not" >&5
 echo $ECHO_N "checking whether to link statically or not... $ECHO_C" >&6
 # Check whether --enable-static-link or --disable-static-link was given.
 if test "${enable_static_link+set}" = set; then
@@ -3651,10 +3755,10 @@ else
   STATIC_LINK=0
 fi
 
-echo "$as_me:3654: result: $STATIC_VAL" >&5
+echo "$as_me:3758: result: $STATIC_VAL" >&5
 echo "${ECHO_T}$STATIC_VAL" >&6
 
-echo "$as_me:3657: checking whether to add profiling information or not" >&5
+echo "$as_me:3761: checking whether to add profiling information or not" >&5
 echo $ECHO_N "checking whether to add profiling information or not... $ECHO_C" >&6
 # Check whether --enable-profile or --disable-profile was given.
 if test "${enable_profile+set}" = set; then
@@ -3670,10 +3774,10 @@ else
   PROFILE=0
 fi
 
-echo "$as_me:3673: result: $PROFILE_VAL" >&5
+echo "$as_me:3777: result: $PROFILE_VAL" >&5
 echo "${ECHO_T}$PROFILE_VAL" >&6
 
-echo "$as_me:3676: checking whether to enable debug info or not" >&5
+echo "$as_me:3780: checking whether to enable debug info or not" >&5
 echo $ECHO_N "checking whether to enable debug info or not... $ECHO_C" >&6
 # Check whether --enable-debug or --disable-debug was given.
 if test "${enable_debug+set}" = set; then
@@ -3689,10 +3793,10 @@ else
   DEBUG_INFO=0
 fi
 
-echo "$as_me:3692: result: $DEBUG_VAL" >&5
+echo "$as_me:3796: result: $DEBUG_VAL" >&5
 echo "${ECHO_T}$DEBUG_VAL" >&6
 
-echo "$as_me:3695: checking whether to enable experimental code or not" >&5
+echo "$as_me:3799: checking whether to enable experimental code or not" >&5
 echo $ECHO_N "checking whether to enable experimental code or not... $ECHO_C" >&6
 # Check whether --enable-experimental or --disable-experimental was given.
 if test "${enable_experimental+set}" = set; then
@@ -3703,12 +3807,16 @@ else
 fi;
 if test $EXPER_VAL = "yes"; then
   EXPERIMENTAL=1
+  cat >>confdefs.h <<\EOF
+#define USE_EXPERIMENTAL 1
+EOF
+
 else
   EXPER_VAL="no";
   EXPERIMENTAL=0
 fi
 
-echo "$as_me:3711: result: $EXPER_VAL" >&5
+echo "$as_me:3819: result: $EXPER_VAL" >&5
 echo "${ECHO_T}$EXPER_VAL" >&6
 
 case $host in
@@ -3737,7 +3845,7 @@ if test $have_so_reg = "yes"; then
   ARCH_MAKE_SHARED_OPTS="$ARCH_MAKE_SHARED_OPTS -Wl,-update_registry,\${BUILD_TOP}/so_locations"
 fi
 
-ac_config_files="$ac_config_files Makefile Makefile.vars Makefile.targets data/Makefile data/gradient/Makefile data/include/Makefile data/texture/Makefile doc/Makefile doc/config doc/pluginrc doc/developers/Makefile doc/users/Makefile doc/api/Makefile doc/api/Doxyfile llapi/Makefile hlapi/Makefile plugins/Makefile plugins/atm_object/Makefile plugins/atm_object/atm_const/Makefile:Makefile.plugin.in plugins/bsdf/Makefile plugins/bsdf/cook_torrance/Makefile:Makefile.plugin.in plugins/bsdf/lambertian/Makefile:Makefile.plugin.in plugins/bsdf/phong/Makefile:Makefile.plugin.in plugins/bsdf/schlick/Makefile:Makefile.plugin.in plugins/bsdf/schlick_double/Makefile:Makefile.plugin.in plugins/bsdf/ward/Makefile:Makefile.plugin.in plugins/camera/Makefile plugins/camera/parallel/Makefile:Makefile.plugin.in plugins/camera/pinhole/Makefile:Makefile.plugin.in plugins/camera/thinlens/Makefile:Makefile.plugin.in plugins/image_filter/Makefile plugins/image_filter/cartoon/Makefile:Makefile.plugin.in plugins/image_filter/convert_to_grey/Makefile:Makefile.plugin.in plugins/image_filter/fog/Makefile:Makefile.plugin.in plugins/image_filter/lens_flare/Makefile:Makefile.plugin.in plugins/image_filter/text/Makefile:Makefile.plugin.in plugins/image_io/Makefile plugins/image_io/gif/Makefile:Makefile.plugin.in plugins/image_io/jpeg/Makefile:Makefile.plugin.in plugins/image_io/png/Makefile:Makefile.plugin.in plugins/image_io/tga/Makefile:Makefile.plugin.in plugins/light/Makefile plugins/light/point_light/Makefile:Makefile.plugin.in plugins/light/projector/Makefile:Makefile.plugin.in plugins/light/warn_light/Makefile:Makefile.plugin.in plugins/pattern/Makefile plugins/pattern/amplifier/Makefile:Makefile.plugin.in plugins/pattern/brick/Makefile:Makefile.plugin.in plugins/pattern/checker/Makefile:Makefile.plugin.in plugins/pattern/composite/Makefile:Makefile.plugin.in plugins/pattern/crackle/Makefile:Makefile.plugin.in plugins/pattern/cylgrad/Makefile:Makefile.plugin.in plugins/pattern/leopard/Makefile:Makefile.plugin.in plugins/pattern/marble/Makefile:Makefile.plugin.in plugins/pattern/noise/Makefile:Makefile.plugin.in plugins/pattern/parquet/Makefile:Makefile.plugin.in plugins/pattern/texture/Makefile:Makefile.plugin.in plugins/pattern/wood/Makefile:Makefile.plugin.in plugins/pattern/worley/Makefile:Makefile.plugin.in plugins/perturbation/Makefile plugins/perturbation/brick/Makefile:Makefile.plugin.in plugins/perturbation/bump/Makefile:Makefile.plugin.in plugins/perturbation/crackle/Makefile:Makefile.plugin.in plugins/perturbation/leopard/Makefile:Makefile.plugin.in plugins/perturbation/marble/Makefile:Makefile.plugin.in plugins/perturbation/noise/Makefile:Makefile.plugin.in plugins/perturbation/worley/Makefile:Makefile.plugin.in plugins/object/Makefile plugins/object/abvh/Makefile:Makefile.plugin.in plugins/object/aggregate_uniform_grid/Makefile:Makefile.plugin.in plugins/object/bezier/Makefile:Makefile.plugin.in plugins/object/subdiv/Makefile:Makefile.plugin.in plugins/object/height_field/Makefile:Makefile.plugin.in plugins/object/lwo/Makefile:Makefile.plugin.in plugins/object/polyhedron/Makefile:Makefile.plugin.in plugins/object/metaball/Makefile plugins/object/metaball/base/Makefile:Makefile.plugin.in plugins/object/metaball/pov_blob/Makefile:Makefile.plugin.in plugins/object_filter/Makefile plugins/object_filter/cartoon/Makefile:Makefile.plugin.in plugins/object_filter/convert_to_grey/Makefile:Makefile.plugin.in plugins/renderer/Makefile plugins/renderer/raytracer/Makefile:Makefile.plugin.in plugins/renderer/zbuffer/Makefile:Makefile.plugin.in plugins/scene_io/Makefile plugins/scene_io/rt/Makefile:Makefile.plugin.in plugins/scene_io/psl/Makefile:Makefile.plugin.in programs/Makefile programs/render/Makefile programs/gui/Makefile scenes/Makefile scenes/atmospheric/Makefile scenes/lights/Makefile scenes/materials/Makefile scenes/misc/Makefile scenes/objects/Makefile"
+ac_config_files="$ac_config_files Makefile Makefile.vars Makefile.targets data/Makefile data/gradient/Makefile data/include/Makefile data/texture/Makefile doc/Makefile doc/config doc/pluginrc doc/developers/Makefile doc/users/Makefile doc/api/Makefile doc/api/Doxyfile llapi/Makefile hlapi/Makefile plugins/Makefile plugins/atm_object/Makefile plugins/atm_object/atm_const/Makefile:Makefile.plugin.in plugins/bsdf/Makefile plugins/bsdf/cook_torrance/Makefile:Makefile.plugin.in plugins/bsdf/lambertian/Makefile:Makefile.plugin.in plugins/bsdf/phong/Makefile:Makefile.plugin.in plugins/bsdf/schlick/Makefile:Makefile.plugin.in plugins/bsdf/schlick_double/Makefile:Makefile.plugin.in plugins/bsdf/ward/Makefile:Makefile.plugin.in plugins/camera/Makefile plugins/camera/parallel/Makefile:Makefile.plugin.in plugins/camera/pinhole/Makefile:Makefile.plugin.in plugins/camera/thinlens/Makefile:Makefile.plugin.in plugins/image_filter/Makefile plugins/image_filter/cartoon/Makefile:Makefile.plugin.in plugins/image_filter/convert_to_grey/Makefile:Makefile.plugin.in plugins/image_filter/fog/Makefile:Makefile.plugin.in plugins/image_filter/lens_flare/Makefile:Makefile.plugin.in plugins/image_filter/text/Makefile:Makefile.plugin.in plugins/image_io/Makefile plugins/image_io/gif/Makefile:Makefile.plugin.in plugins/image_io/jpeg/Makefile:Makefile.plugin.in plugins/image_io/png/Makefile:Makefile.plugin.in plugins/image_io/tga/Makefile:Makefile.plugin.in plugins/image_io/tiff/Makefile:Makefile.plugin.in plugins/light/Makefile plugins/light/point_light/Makefile:Makefile.plugin.in plugins/light/projector/Makefile:Makefile.plugin.in plugins/light/warn_light/Makefile:Makefile.plugin.in plugins/pattern/Makefile plugins/pattern/amplifier/Makefile:Makefile.plugin.in plugins/pattern/brick/Makefile:Makefile.plugin.in plugins/pattern/checker/Makefile:Makefile.plugin.in plugins/pattern/composite/Makefile:Makefile.plugin.in plugins/pattern/crackle/Makefile:Makefile.plugin.in plugins/pattern/cylgrad/Makefile:Makefile.plugin.in plugins/pattern/leopard/Makefile:Makefile.plugin.in plugins/pattern/marble/Makefile:Makefile.plugin.in plugins/pattern/noise/Makefile:Makefile.plugin.in plugins/pattern/parquet/Makefile:Makefile.plugin.in plugins/pattern/texture/Makefile:Makefile.plugin.in plugins/pattern/wood/Makefile:Makefile.plugin.in plugins/pattern/worley/Makefile:Makefile.plugin.in plugins/perturbation/Makefile plugins/perturbation/brick/Makefile:Makefile.plugin.in plugins/perturbation/bump/Makefile:Makefile.plugin.in plugins/perturbation/crackle/Makefile:Makefile.plugin.in plugins/perturbation/leopard/Makefile:Makefile.plugin.in plugins/perturbation/marble/Makefile:Makefile.plugin.in plugins/perturbation/noise/Makefile:Makefile.plugin.in plugins/perturbation/wave/Makefile:Makefile.plugin.in plugins/perturbation/worley/Makefile:Makefile.plugin.in plugins/object/Makefile plugins/object/abvh/Makefile:Makefile.plugin.in plugins/object/aggregate_uniform_grid/Makefile:Makefile.plugin.in plugins/object/bezier/Makefile:Makefile.plugin.in plugins/object/subdiv/Makefile:Makefile.plugin.in plugins/object/height_field/Makefile:Makefile.plugin.in plugins/object/lwo/Makefile:Makefile.plugin.in plugins/object/polyhedron/Makefile:Makefile.plugin.in plugins/object_filter/Makefile plugins/object_filter/cartoon/Makefile:Makefile.plugin.in plugins/object_filter/convert_to_grey/Makefile:Makefile.plugin.in plugins/renderer/Makefile plugins/renderer/raytracer/Makefile:Makefile.plugin.in plugins/renderer/zbuffer/Makefile:Makefile.plugin.in plugins/scene_io/Makefile plugins/scene_io/rt/Makefile:Makefile.plugin.in plugins/scene_io/psl/Makefile:Makefile.plugin.in programs/Makefile programs/render/Makefile programs/gui/Makefile scenes/Makefile scenes/atmospheric/Makefile scenes/lights/Makefile scenes/materials/Makefile scenes/misc/Makefile scenes/objects/Makefile"
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
 # tests run on this system so they can be shared between configure
@@ -3847,7 +3955,7 @@ rm -f confdef2opt.sed
 : ${CONFIG_STATUS=./config.status}
 ac_clean_files_save=$ac_clean_files
 ac_clean_files="$ac_clean_files $CONFIG_STATUS"
-{ echo "$as_me:3850: creating $CONFIG_STATUS" >&5
+{ echo "$as_me:3958: creating $CONFIG_STATUS" >&5
 echo "$as_me: creating $CONFIG_STATUS" >&6;}
 cat >$CONFIG_STATUS <<_ACEOF
 #! $SHELL
@@ -4015,7 +4123,7 @@ cat >>$CONFIG_STATUS <<\EOF
     echo "$ac_cs_version"; exit 0 ;;
   --he | --h)
     # Conflict between --help and --header
-    { { echo "$as_me:4018: error: ambiguous option: $1
+    { { echo "$as_me:4126: error: ambiguous option: $1
 Try \`$0 --help' for more information." >&5
 echo "$as_me: error: ambiguous option: $1
 Try \`$0 --help' for more information." >&2;}
@@ -4075,6 +4183,7 @@ Try \`$0 --help' for more information." >&2;}
   'plugins/image_io/jpeg/Makefile' ) CONFIG_FILES="$CONFIG_FILES plugins/image_io/jpeg/Makefile:Makefile.plugin.in" ;;
   'plugins/image_io/png/Makefile' ) CONFIG_FILES="$CONFIG_FILES plugins/image_io/png/Makefile:Makefile.plugin.in" ;;
   'plugins/image_io/tga/Makefile' ) CONFIG_FILES="$CONFIG_FILES plugins/image_io/tga/Makefile:Makefile.plugin.in" ;;
+  'plugins/image_io/tiff/Makefile' ) CONFIG_FILES="$CONFIG_FILES plugins/image_io/tiff/Makefile:Makefile.plugin.in" ;;
   'plugins/light/Makefile' ) CONFIG_FILES="$CONFIG_FILES plugins/light/Makefile" ;;
   'plugins/light/point_light/Makefile' ) CONFIG_FILES="$CONFIG_FILES plugins/light/point_light/Makefile:Makefile.plugin.in" ;;
   'plugins/light/projector/Makefile' ) CONFIG_FILES="$CONFIG_FILES plugins/light/projector/Makefile:Makefile.plugin.in" ;;
@@ -4100,6 +4209,7 @@ Try \`$0 --help' for more information." >&2;}
   'plugins/perturbation/leopard/Makefile' ) CONFIG_FILES="$CONFIG_FILES plugins/perturbation/leopard/Makefile:Makefile.plugin.in" ;;
   'plugins/perturbation/marble/Makefile' ) CONFIG_FILES="$CONFIG_FILES plugins/perturbation/marble/Makefile:Makefile.plugin.in" ;;
   'plugins/perturbation/noise/Makefile' ) CONFIG_FILES="$CONFIG_FILES plugins/perturbation/noise/Makefile:Makefile.plugin.in" ;;
+  'plugins/perturbation/wave/Makefile' ) CONFIG_FILES="$CONFIG_FILES plugins/perturbation/wave/Makefile:Makefile.plugin.in" ;;
   'plugins/perturbation/worley/Makefile' ) CONFIG_FILES="$CONFIG_FILES plugins/perturbation/worley/Makefile:Makefile.plugin.in" ;;
   'plugins/object/Makefile' ) CONFIG_FILES="$CONFIG_FILES plugins/object/Makefile" ;;
   'plugins/object/abvh/Makefile' ) CONFIG_FILES="$CONFIG_FILES plugins/object/abvh/Makefile:Makefile.plugin.in" ;;
@@ -4109,9 +4219,6 @@ Try \`$0 --help' for more information." >&2;}
   'plugins/object/height_field/Makefile' ) CONFIG_FILES="$CONFIG_FILES plugins/object/height_field/Makefile:Makefile.plugin.in" ;;
   'plugins/object/lwo/Makefile' ) CONFIG_FILES="$CONFIG_FILES plugins/object/lwo/Makefile:Makefile.plugin.in" ;;
   'plugins/object/polyhedron/Makefile' ) CONFIG_FILES="$CONFIG_FILES plugins/object/polyhedron/Makefile:Makefile.plugin.in" ;;
-  'plugins/object/metaball/Makefile' ) CONFIG_FILES="$CONFIG_FILES plugins/object/metaball/Makefile" ;;
-  'plugins/object/metaball/base/Makefile' ) CONFIG_FILES="$CONFIG_FILES plugins/object/metaball/base/Makefile:Makefile.plugin.in" ;;
-  'plugins/object/metaball/pov_blob/Makefile' ) CONFIG_FILES="$CONFIG_FILES plugins/object/metaball/pov_blob/Makefile:Makefile.plugin.in" ;;
   'plugins/object_filter/Makefile' ) CONFIG_FILES="$CONFIG_FILES plugins/object_filter/Makefile" ;;
   'plugins/object_filter/cartoon/Makefile' ) CONFIG_FILES="$CONFIG_FILES plugins/object_filter/cartoon/Makefile:Makefile.plugin.in" ;;
   'plugins/object_filter/convert_to_grey/Makefile' ) CONFIG_FILES="$CONFIG_FILES plugins/object_filter/convert_to_grey/Makefile:Makefile.plugin.in" ;;
@@ -4132,12 +4239,12 @@ Try \`$0 --help' for more information." >&2;}
   'scenes/objects/Makefile' ) CONFIG_FILES="$CONFIG_FILES scenes/objects/Makefile" ;;
 
   # This is an error.
-  -*) { { echo "$as_me:4135: error: unrecognized option: $1
+  -*) { { echo "$as_me:4242: error: unrecognized option: $1
 Try \`$0 --help' for more information." >&5
 echo "$as_me: error: unrecognized option: $1
 Try \`$0 --help' for more information." >&2;}
    { (exit 1); exit 1; }; } ;;
-  *) { { echo "$as_me:4140: error: invalid argument: $1" >&5
+  *) { { echo "$as_me:4247: error: invalid argument: $1" >&5
 echo "$as_me: error: invalid argument: $1" >&2;}
    { (exit 1); exit 1; }; };;
   esac
@@ -4266,6 +4373,8 @@ s,@PNG_FILTER@,$PNG_FILTER,;t t
 s,@PLUGIN_PNG@,$PLUGIN_PNG,;t t
 s,@GIF_FILTER@,$GIF_FILTER,;t t
 s,@PLUGIN_GIF@,$PLUGIN_GIF,;t t
+s,@TIFF_FILTER@,$TIFF_FILTER,;t t
+s,@PLUGIN_TIFF@,$PLUGIN_TIFF,;t t
 s,@STATIC_LINK@,$STATIC_LINK,;t t
 s,@PROFILE@,$PROFILE,;t t
 s,@DEBUG_INFO@,$DEBUG_INFO,;t t
@@ -4386,7 +4495,7 @@ done; }
   esac
 
   if test x"$ac_file" != x-; then
-    { echo "$as_me:4389: creating $ac_file" >&5
+    { echo "$as_me:4498: creating $ac_file" >&5
 echo "$as_me: creating $ac_file" >&6;}
     rm -f "$ac_file"
   fi
@@ -4404,7 +4513,7 @@ echo "$as_me: creating $ac_file" >&6;}
       -) echo $tmp/stdin ;;
       [\\/$]*)
          # Absolute (can't be DOS-style, as IFS=:)
-         test -f "$f" || { { echo "$as_me:4407: error: cannot find input file: $f" >&5
+         test -f "$f" || { { echo "$as_me:4516: error: cannot find input file: $f" >&5
 echo "$as_me: error: cannot find input file: $f" >&2;}
    { (exit 1); exit 1; }; }
          echo $f;;
@@ -4417,7 +4526,7 @@ echo "$as_me: error: cannot find input file: $f" >&2;}
            echo $srcdir/$f
          else
            # /dev/null tree
-           { { echo "$as_me:4420: error: cannot find input file: $f" >&5
+           { { echo "$as_me:4529: error: cannot find input file: $f" >&5
 echo "$as_me: error: cannot find input file: $f" >&2;}
    { (exit 1); exit 1; }; }
          fi;;

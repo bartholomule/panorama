@@ -28,6 +28,7 @@ class TWarnLight : public TPointLight
   protected:
 
     TVector   tLightAxis;
+    TVector   tLightPoint;
     TScalar   tExponent;
 
     TScalar attenuation (const TVector& rktPOS) const;
@@ -43,10 +44,10 @@ class TWarnLight : public TPointLight
     int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
     void getAttributeList (TAttributeList& rtLIST) const;
 
-    void pointAt (const TVector& rktPOINT) { tLightAxis = rktPOINT; }
+    void pointAt (const TVector& rktPOINT) { tLightPoint = rktPOINT; }
     void setExponent (TScalar tEXP) { tExponent = tEXP; }
 
-    void initialize (void);
+    bool initialize (void);
     
     string className (void) const { return "WarnLight"; }
 

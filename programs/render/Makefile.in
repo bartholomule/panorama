@@ -17,6 +17,7 @@ endif
 
 EXE = render
 OBJ = render.o
+ALL_FILES = $(strip $(wildcard $(OBJ:%.o=%.cpp)))
 
 all:		${EXE}
 
@@ -40,3 +41,5 @@ clean:
 
 distclean:      clean
 		@rm -f Makefile
+
+include ${BUILD_TOP}/Makefile.deps

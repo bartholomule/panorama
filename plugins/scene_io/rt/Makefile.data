@@ -2,3 +2,4 @@ PLUGIN_NAME = rt_io
 OBJ         = parser.o scanner.o rt_io.o
 BISONFLAGS  = --name-prefix=rt_
 LEXFLAGS   += -Prt_
+CXXFLAGS   += -O0

@@ -126,7 +126,7 @@ class TUniformGrid
       }
     }
 
-    void initialize (void);
+    bool initialize (void);
     
     TVector boundingBoxPoint1 (void) const { return tBoundingBoxPoint1; }
     TVector boundingBoxPoint2 (void) const { return tBoundingBoxPoint2; }

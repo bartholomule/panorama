@@ -27,6 +27,8 @@ all:
                   $(MAKE) -C $$i all; \
                 done
 
+deps:
+
 install:        all
 		@set -e; \
 		for i in $(FILES); do \

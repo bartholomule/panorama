@@ -38,8 +38,18 @@ bool TSceneTree::setCamera (Gtk::Tree* ptTREE)
   if ( ptCamera )
   {
     ptSubtree = new Gtk::Tree;
+
+    string entry_name;
+    if(!ptCamera->identifier().empty())
+    {
+      entry_name = ptCamera->identifier() + " [" + ptCamera->className() + ']';
+    }
+    else
+    {
+      entry_name = ptCamera->className();
+    }
     
-    ptItem = new Gtk::TreeItem (ptCamera->className().c_str());
+    ptItem = new Gtk::TreeItem (entry_name);
     ptItem->show();
     ptSubtree->append (*ptItem);
 
@@ -74,8 +84,14 @@ bool TSceneTree::setLights (Gtk::Tree* ptTREE)
     for (vector<TLight*>::const_iterator tIter = tLightList.begin(); ( tIter != tLightList.end() ) ;tIter++)
     {
       ptLight = *tIter;
+
+      string entry_name = ptLight->className();
+      if(!ptLight->identifier().empty())
+      {
+	entry_name = ptLight->identifier() + " [" + entry_name + ']';
+      }      
       
-      ptItem = new Gtk::TreeItem (ptLight->className().c_str());
+      ptItem = new Gtk::TreeItem (entry_name);
       ptItem->show();
       ptSubtree->append (*ptItem);
 
@@ -116,7 +132,13 @@ bool TSceneTree::recSetObjects (Gtk::Tree* ptTREE, TObject* ptOBJ)
       gSubtree |= recSetObjects (ptSubtree, *tIter);
     }
 
-    ptItem = new Gtk::TreeItem (ptOBJ->className().c_str());
+    string entry_name = ptOBJ->className();
+    if(!ptOBJ->identifier().empty())
+    {
+      entry_name = ptOBJ->identifier() + " [" + entry_name + ']';
+    }
+    
+    ptItem = new Gtk::TreeItem (entry_name);
     ptItem->show();
     ptTREE->append (*ptItem);
 
@@ -135,7 +157,13 @@ bool TSceneTree::recSetObjects (Gtk::Tree* ptTREE, TObject* ptOBJ)
   }
   else
   {
-    ptItem = new Gtk::TreeItem (ptOBJ->className().c_str());
+    string entry_name = ptOBJ->className();
+    if(!ptOBJ->identifier().empty())
+    {
+      entry_name = ptOBJ->identifier() + " [" + entry_name + ']';
+    }
+    
+    ptItem = new Gtk::TreeItem (entry_name);
     ptItem->show();
     ptTREE->append (*ptItem);
 

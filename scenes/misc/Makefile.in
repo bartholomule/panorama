@@ -18,6 +18,8 @@ FILES = cornell_box.rt \
 
 all:
 
+deps:
+
 install:
 		@echo "Installing scenes (misc)..."
 		@${SRC_DIR}/${BUILD_TOP}/mkinstalldirs ${SCENE_DIR}/misc

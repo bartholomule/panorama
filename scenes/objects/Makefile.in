@@ -21,6 +21,8 @@ FILES = aggregate.rt \
 
 all:
 
+deps:
+
 install:
 		@echo "Installing scenes (objects)..."
 		@${SRC_DIR}/${BUILD_TOP}/mkinstalldirs ${SCENE_DIR}/objects

@@ -129,11 +129,12 @@ void TAtmConst::getAttributeList (TAttributeList& rtLIST) const
 }  /* getAttributeList() */
 
 
-void TAtmConst::initialize (TScene* ptSCENE)
+bool TAtmConst::initialize (TScene* ptSCENE)
 {
 
-  TAtmosphericObject::initialize (ptSCENE);
+  bool val = TAtmosphericObject::initialize (ptSCENE);
 
   tBoundingBox.set (tBBFrom, tBBTo);
 
+  return val;
 }  /* initialize() */

@@ -45,7 +45,7 @@ class TAggregateUniformGrid : public TAggregate
 
     void add (TObject* ptOBJ);
       
-    void initialize (void);
+    bool initialize (void);
 
     int setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
 

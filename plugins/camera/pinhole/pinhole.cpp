@@ -71,8 +71,9 @@ void TPinholeCamera::getAttributeList (TAttributeList& rtLIST) const
 }  /* getAttributeList() */
 
 
-void TPinholeCamera::initialize (void)
+bool TPinholeCamera::initialize (void)
 {
+  bool val = true;
 
   tDirection = (tLookAt - tLocation);
   tDirection.normalize();
@@ -80,7 +81,7 @@ void TPinholeCamera::initialize (void)
   if ( fabs (dotProduct (tDirection, tUp)) == 1 )
   {
     cout << "Error: Camera direction and up vectors cannot be parallel" << endl;
-    exit (1);
+    val = false;
   }
   
   I = crossProduct (tDirection, tUp);
@@ -92,7 +93,8 @@ void TPinholeCamera::initialize (void)
 
   I *= tPixelSize;
   J *= tPixelSize;
-  
+
+  return val && TCamera::initialize();
 }  /* initialize() */
 
 

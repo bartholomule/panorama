@@ -2080,9 +2080,10 @@ void TUniformGrid::add (TUGLatticeCoord tI, TUGLatticeCoord tJ, TUGLatticeCoord 
 }  /* add() */
 
 
-void TUniformGrid::initialize (void)
+bool TUniformGrid::initialize (void)
 {
-
+  bool val = true;
+  
   list<TUGVoxel>*   ptBucket;
 
   tMinX = ktLatticeCoordMax;
@@ -2113,6 +2114,8 @@ void TUniformGrid::initialize (void)
   tBoundingBoxPoint1.set (((TScalar) tMinX) * tVoxelSize, ((TScalar) tMinY) * tVoxelSize, ((TScalar) tMinZ) * tVoxelSize);
   tBoundingBoxPoint2.set (((TScalar) tMaxX) * tVoxelSize, ((TScalar) tMaxY) * tVoxelSize, ((TScalar) tMaxZ) * tVoxelSize);
 
+  return val;
+  
 }  /* initialize() */
 
 

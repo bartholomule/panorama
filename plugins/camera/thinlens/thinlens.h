@@ -58,7 +58,7 @@ public:
     adjAngle();             // Set the angle in the base class.
   }
   
-  void initialize (void);
+  bool initialize (void);
   
   int setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
   int getAttribute (const string& rktNAME, NAttribute& rnVALUE);

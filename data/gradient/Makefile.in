@@ -16,8 +16,10 @@ FILES = crackle1 \
 	wood3 \
 	wood4 \
 	wood5
-        
+
 all:
+
+deps:
 
 install:
 		@echo Installing gradient files...

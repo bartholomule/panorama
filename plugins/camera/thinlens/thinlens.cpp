@@ -114,9 +114,9 @@ void TThinlensCamera::getAttributeList (TAttributeList& rtLIST) const
 }  /* getAttributeList() */
 
 
-void TThinlensCamera::initialize (void)
+bool TThinlensCamera::initialize (void)
 {
-  TPinholeCamera::initialize ();
+  return TPinholeCamera::initialize ();
 }  /* initialize() */
 
 

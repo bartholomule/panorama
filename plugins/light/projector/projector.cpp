@@ -136,10 +136,10 @@ void TProjector::getAttributeList (TAttributeList& rtLIST) const
 }  /* getAttributeList() */
 
 
-void TProjector::initialize (void)
+bool TProjector::initialize (void)
 {
 
-  TPointLight::initialize();
+  bool val = TPointLight::initialize();
   
   if ( ptImage )
   {
@@ -154,6 +154,8 @@ void TProjector::initialize (void)
     tPixelSize =  ptImage->width() / tan (tAngle);
   }
 
+  return val;
+  
 }  /* initialize() */
 
 

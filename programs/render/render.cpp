@@ -263,7 +263,11 @@ int main (int argc, char *argv[])
   tBaseTime = time (NULL);
 
   cout << "Initializing..." << endl;
-  ptScene->initialize();
+  if(!ptScene->initialize())
+  {
+    cerr << "Initialization failed!" << endl;
+    exit (1);
+  }    
   tInitTime = time (NULL);
 
   cout << "Rendering..." << endl;

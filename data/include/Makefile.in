@@ -12,6 +12,8 @@ FILES = colors.inc \
 
 all:
 
+deps:
+
 install:
 		@echo Installing include files...
 		@set -e; \

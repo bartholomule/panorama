@@ -79,7 +79,7 @@ int TWarnLight::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 
   if ( rktNAME == "point_at" )
   {
-    rnVALUE.pvValue = &tLightAxis;
+    rnVALUE.pvValue = &tLightPoint;
   }
   else if ( rktNAME == "exponent" )
   {
@@ -106,17 +106,19 @@ void TWarnLight::getAttributeList (TAttributeList& rtLIST) const
 }  /* getAttributeList() */
 
 
-void TWarnLight::initialize (void)
+bool TWarnLight::initialize (void)
 {
 
-  TPointLight::initialize();
+  bool val = TPointLight::initialize();
   
   //
   // [_ERROR_] This will not work if called more than once.
+  // (KH) I think this is no longer a problem.
   //
-  tLightAxis = (tLightAxis - tLocation);
+  tLightAxis = (tLightPoint - tLocation);
   tLightAxis.normalize();
-  
+
+  return val;
 }  /* initialize() */
 
 

@@ -51,7 +51,7 @@ class TAtmConst : public TAtmosphericObject
       return exp (-tSampleData.tExtinction * Distance (rktPOINT1, rktPOINT2));
     }
 
-    void initialize (TScene* ptSCENE);
+    bool initialize (TScene* ptSCENE);
     
     string className (void) const { return "AtmConst"; }
 

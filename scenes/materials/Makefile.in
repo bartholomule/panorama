@@ -36,6 +36,8 @@ FILES = amplifier.rt \
 
 all:
 
+deps:
+
 install:
 		@echo "Installing scenes (materials)..."
 		@${SRC_DIR}/${BUILD_TOP}/mkinstalldirs ${SCENE_DIR}/materials

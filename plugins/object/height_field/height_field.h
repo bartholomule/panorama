@@ -51,7 +51,7 @@ class THeightField : public TObject
       delete ptImage;
     }
     
-    void initialize (void);
+    bool initialize (void);
     
     int setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
     int getAttribute (const string& rktNAME, NAttribute& rnVALUE);

@@ -8,8 +8,10 @@ SRC_DIR = @srcdir@
 
 FILES = f16.tga \
 	supernova.tga
-        
+
 all:
+
+deps:
 
 install:
 		@echo Installing texture files...

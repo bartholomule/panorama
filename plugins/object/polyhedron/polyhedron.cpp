@@ -38,7 +38,7 @@ void TPolyhedron::_initializeClass (void)
 }  /* _initializeClass() */
 
 
-void TPolyhedron::initialize (void)
+bool TPolyhedron::initialize (void)
 {
 
   if ( !_gClassInitialized )
@@ -48,7 +48,7 @@ void TPolyhedron::initialize (void)
 
 //  tBoundingBox.set (TVector (-ab, -b, -ab), TVector (ab, b, ab));
 //  tBoundingBox.applyTransform (*ptMatrix);
-
+  return true;
 }  /* initialize() */
 
 

@@ -11,3 +11,12 @@
 		@echo Generating parser...
 		@${YACC} ${BISONFLAGS} -do $(basename $@).c $<
 		@mv $(basename $@).c $@
+
+# Rules for generating dependency files
+%.d: %.cpp
+	@echo "Making dependency file for $<"                              ;\
+        $(CXX) -c $(CXXFLAGS) -MMD $(FLAGS) -E $(@:%.d=%.cpp) -o $@ > /dev/null ;\
+        cat $@ | sed -e 's/:/ $(@:%.d=%.o) $@:/g' > tmp$$                               ;\
+        mv -f tmp$$ $@  
+
+

@@ -87,8 +87,9 @@ void TParallelCamera::getAttributeList (TAttributeList& rtLIST) const
 }  /* getAttributeList() */
 
 
-void TParallelCamera::initialize (void)
+bool TParallelCamera::initialize (void)
 {
+  bool val = true;
 
   tDirection = (tLookAt - tLocation);
   tDirection.normalize();
@@ -96,7 +97,7 @@ void TParallelCamera::initialize (void)
   if ( fabs (dotProduct (tDirection, tUp)) == 1 )
   {
     cout << "Error: Camera direction and up vectors cannot be parallel" << endl;
-    exit (1);
+    val = false;
   }
   
   I = crossProduct (tDirection, tUp);
@@ -110,6 +111,8 @@ void TParallelCamera::initialize (void)
 
   I *= tPixelSizeX;
   J *= tPixelSizeY;
+
+  return val && TCamera::initialize();
   
 }  /* initialize() */
 

@@ -194,21 +194,23 @@ void TPointLight::getAttributeList (TAttributeList& rtLIST) const
 }  /* getAttributeList() */
 
 
-void TPointLight::initialize (void)
+bool TPointLight::initialize (void)
 {
 
-  TLight::initialize();
+  bool val = TLight::initialize();
   
   //
   // [_ERROR_] This will not work if initialized more than once.
+  // (KH) I think that this MAY no longer be a problem.
   //
-  tConeAxis = (tConeAxis - tLocation);
+  tConeAxis = (tConeAxis2 - tLocation);
 
   if ( tConeAxis != TVector (0, 0, 0) )
   {
     tConeAxis.normalize();
   }
-  
+
+  return val;
 }  /* initialize() */
 
 

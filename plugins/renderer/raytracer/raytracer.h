@@ -77,9 +77,11 @@ class TRaytracer : public TRenderer
 
     void render (SBuffers& rsBUFFERS);
 
-    void initialize (TScene& rtSCENE)
+    bool initialize (TScene& rtSCENE)
     {
       ptScene = &rtSCENE;
+
+      return (ptScene != NULL) && TRenderer::initialize(rtSCENE);
     }
 
     int setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);

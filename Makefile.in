@@ -19,6 +19,17 @@ all:
                   $(MAKE) -C $$i all; \
                 done
 
+.PHONY: dep deps
+
+dep: deps
+
+deps:
+		@set -e; \
+		for i in $(DIRS); do \
+                  $(MAKE) -C $$i deps; \
+                done
+
+
 install:        all installdirs
 		@set -e; \
 		for i in $(DIRS); do \
@@ -43,8 +54,8 @@ distclean:
 installdirs:
 		@echo Creating directories...
 		@${SRC_DIR}/mkinstalldirs ${TOP_DIR} ${BIN_DIR} ${LIB_DIR} ${DOC_DIR} \
-                			    ${CONFIG_DIR} ${INCLUDE_DIR} ${PLUGIN_DIR}  \
-                                            ${TEXTURE_DIR} ${SCENE_DIR} ${GRADIENT_DIR}
+					  ${CONFIG_DIR} ${INCLUDE_DIR} ${PLUGIN_DIR}  \
+                                          ${TEXTURE_DIR} ${SCENE_DIR} ${GRADIENT_DIR}
 
 Makefile:	config.status ${SRC_DIR}/Makefile.in
 		$(SHELL) config.status

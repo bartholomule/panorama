@@ -40,7 +40,7 @@ class TPinholeCamera : public TCamera
       TCamera(),
       tHalfAngle (degreeToRadian (45) / 2) {}
 
-    void initialize (void);
+    bool initialize (void);
     
     int setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
     int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
