@@ -25,6 +25,7 @@
 #include "llapi/gradient.h"
 #include "hlapi/plugin_manager.h"
 
+static const TScalar  _ktMAX_NO_ITERATIONS = 10;
 
 class TPerturbationBump : public TPerturbation
 {
@@ -36,12 +37,7 @@ class TPerturbationBump : public TPerturbation
     TScalar     tBumpFactor;
     TVector2    tSamples;
 
-    TScalar     tTotalNoSamples;
-
-    void calcTotalNoSamples (void)
-    { 
-      tTotalNoSamples = 1.0 / (tSamples.x() * tSamples.y());
-    }  
+    TScalar sign (TScalar i) const { return ( i < 0 ) ? -1 : 1; }
 
   public:
 

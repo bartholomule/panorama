@@ -22,6 +22,7 @@
 #include <stdlib.h>
 #include <iostream>
 #include <time.h>
+#include "llapi/mat_utils.h"
 #include "per_bump.h"
 
 DEFINE_PLUGIN ("PerturbationBump", FX_PERTURBATION_CLASS, TPerturbationBump);
@@ -30,12 +31,8 @@ TPerturbationBump::TPerturbationBump (void) :
       TPerturbation(),
       ptPattern (NULL),
       tBumpFactor (1),
-      tSamples (2, 2)
-{
+      tSamples (2, 2) {}
 
-  calcTotalNoSamples();
-
-}  /* TPerturbationBump() */
 
 TVector TPerturbationBump::perturbNormal (const TSurfaceData& rktDATA) const
 {
@@ -46,18 +43,26 @@ TVector TPerturbationBump::perturbNormal (const TSurfaceData& rktDATA) const
   {
     TSurfaceData   tData;
     TColor         tColor;
+    TColor         tBasisColor;
     TVector        tGradientU;
     TVector        tGradientV;
     TVector        r, s, t;
     TVector        tTemp;
     TScalar        tHeight;
     TScalar        tHeightDiff;
+    TScalar        tOldHeightDiff;
+    TScalar        tSign;
+    TScalar        tOldSign;
     TScalar        dx, dy;
     TScalar        x, y;
     TScalar        tRDamping;
     TScalar        tTDamping;
+    TScalar        tRDampingTotal;
+    TScalar        tTDampingTotal;
     TScalar        tRTotal;
     TScalar        tTTotal;
+    bool           gFinished;
+    TScalar        tIteration = 0;
 
     if ( !ptPattern )
     {
@@ -82,9 +87,9 @@ TVector TPerturbationBump::perturbNormal (const TSurfaceData& rktDATA) const
 	s = TVector(0.0, -1.0, 0.0);
       }
     }
-
-    s.normalize();
-    t = crossProduct (s, r);
+  
+    r.normalize();
+    t = crossProduct (r, s);
     t.normalize();
 
     tGradientU = r * tGradientDisplacement.x();
@@ -98,50 +103,90 @@ TVector TPerturbationBump::perturbNormal (const TSurfaceData& rktDATA) const
     dx = ( tSamples.x() > 1 ) ? (2.0 / (tSamples.x() - 1.0)) : 0;
     dy = ( tSamples.y() > 1 ) ? (2.0 / (tSamples.y() - 1.0)) : 0;    
 
-    tRTotal = 0;
-    tTTotal = 0;
+    gFinished = false;
 
-    y = -1.0;
+    do
+    {
+      y = -1.0;
 
-    for (size_t iy = 0; ( iy < (size_t) tSamples.y() ); iy++)
-    {  
-      x = -1.0;
+      gFinished = true;
+      tIteration++;
 
-      tTDamping = ( y == 0 ) ? 0 : (1.0 - (y * y) * 0.5);
+      tRTotal = 0;
+      tTTotal = 0;
 
-      if ( y < 0 )
-      {
-        tTDamping = -tTDamping;  
-      }
+      tRDampingTotal = 0;
+      tTDampingTotal = 0;
 
-      for (size_t ix = 0; ( ix < (size_t) tSamples.x() ); ix++)
-      {
-	tTemp = rktDATA.point() + (tGradientU * x) + (tGradientV * y);
-	tData.setPoint (tTemp);
-	tColor = ptPattern->color (tData);
+      tSign    = 0;
+      tOldSign = 0;
 
-	tHeightDiff = tColor.average() - tHeight;
+      tOldHeightDiff = 0;
+
+      for (size_t iy = 0; ( iy < (size_t) tSamples.y() ); iy++)
+      {  
+        x = -1.0;
+
+        tTDamping = ( y == 0 ) ? 0 : (1.0 - (y * y) * 0.8);
 	
-	tRDamping = ( x == 0 ) ? 0 : (1.0 - (x * x) * 0.5);	
+        if ( y < 0 )
+        {
+          tTDamping = -tTDamping;  
+        }
 
-	if ( x < 0 )
-	{
-	  tRDamping = -tRDamping;  
-	}
+        for (size_t ix = 0; ( ix < (size_t) tSamples.x() ); ix++)
+        {
+          tTemp = rktDATA.localPoint() + (tGradientU * x) + (tGradientV * y);
+          tData.setPoint (tTemp);
+          tColor = ptPattern->color (tData);
+
+          tHeightDiff = tColor.average() - tHeight;
+
+	  if ( ix > 0 )
+	  {
+	    tSign = sign (tOldHeightDiff - tHeightDiff);
+	  }
+
+          if ( ( ix > 1 ) && ( tSign != tOldSign ) ) 
+	  {
+            tGradientU *= 0.2;    
+            tGradientV *= 0.2;
+
+	    gFinished = false;
+
+	    break;
+	  }
+
+          tRDamping = ( x == 0 ) ? 0 : (1.0 - (x * x) * 0.8);	
+
+	  tRDampingTotal += tRDamping;
+	  tTDampingTotal += fabs (tTDamping);
+
+          if ( x < 0 )
+	  {
+	    tRDamping = -tRDamping;  
+          }
+       
+          tRTotal += tHeightDiff * tRDamping;
+  	  tTTotal += tHeightDiff * tTDamping;
+
+          tOldHeightDiff = tHeightDiff;
+	  tOldSign = tSign;
+
+	  x += dx;
+        }
+
+	if ( !gFinished ) break;
 	
-	tRTotal += tHeightDiff * tRDamping;
-	tTTotal += tHeightDiff * tTDamping;
-
-	x += dx;
+        y += dy;
       }
-
-      y += dy;
     }
+    while ( ( !gFinished ) && ( tIteration < _ktMAX_NO_ITERATIONS ) );
 
-    r *= tRTotal;
-    t *= tTTotal;
+    r *= tRTotal / tRDampingTotal;
+    t *= tTTotal / tTDampingTotal;
 
-    tNewNormal = rktDATA.normal() + (r + t) * tBumpFactor * tTotalNoSamples;
+    tNewNormal = s + (r + t) * ((tBumpFactor * pow (5.0, tIteration - 1.0)));
     tNewNormal.normalize();
   }
   
@@ -191,8 +236,6 @@ int TPerturbationBump::setAttribute (const string& rktNAME, NAttribute nVALUE, E
     if ( eTYPE == FX_VECTOR2 )
     {
       tSamples = (*((TVector2*) nVALUE.pvValue));
-
-      calcTotalNoSamples();
     }
     else
     {
