@@ -2,7 +2,6 @@
  OBJECTS
  
  - Transformations should be working, both with and without aggregates.
- - Raytracing acceleration system.
 
  MATERIALS
  
