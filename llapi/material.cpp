@@ -75,7 +75,10 @@ TScalar TMaterial::transparency (const TSpanList& rktLIST) const
   TSurfaceData   tData1, tData2;
   TScalar        tTransparency = 0;
 
-  if ( rktLIST.empty() ) return 0;
+  if ( rktLIST.empty() )
+  {
+    return 0;
+  }
 
   //
   //  By default, it takes first and last points, and consider the material continuous
