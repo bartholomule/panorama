@@ -18,6 +18,10 @@
 
 #include "image_window.h"
 #include "render_dialog.h"
+#include <gtk--/frame.h>
+#include <gtk--/radiobutton.h>
+#include <gtk--/table.h>
+#include <gtk--/label.h>
 
 void TRenderDialog::toggleZBuffer (Gtk::CheckButton* ptBUTTON)
 {

@@ -22,6 +22,16 @@
 #include "object_properties_dialog.h"
 #include "color_preview.h"
 #include "message_dialog.h"
+#include <gtk--/frame.h>
+#include <gtk--/togglebutton.h>
+#include <gtk--/spinbutton.h>
+#include <gtk--/entry.h>
+#include <gtk--/adjustment.h>
+#include <gtk--/label.h>
+#include <gtk--/box.h>
+#include <gtk--/table.h>
+#include <gtk--/notebook.h>
+#include <gtk--/combo.h>
 
 using SigC::slot;
 using SigC::bind;
@@ -607,8 +617,6 @@ static void property_change_callback(property_callback_data tPCD)
       TVector tmp_vector(*(TVector*)nValue.pvValue);
       tmp_vector[tPCD.extraData] = ((Gtk::SpinButton*)tPCD.dataContainer)->get_value_as_float();
       nValue.pvValue = (void*)&tmp_vector;
-      cerr << "Setting vector value to ";
-      ((TVector*)nValue.pvValue)->printDebug();
       dest_object->setAttribute(tPCD.attributeName, nValue, tPCD.eType);      
     }
     break;
@@ -619,8 +627,6 @@ static void property_change_callback(property_callback_data tPCD)
       TVector2 tmp_vector(*(TVector2*)nValue.pvValue);
       tmp_vector[tPCD.extraData] = ((Gtk::SpinButton*)tPCD.dataContainer)->get_value_as_float();
       nValue.pvValue = (void*)&tmp_vector;
-      cerr << "Setting vector value to ";
-      ((TVector2*)nValue.pvValue)->printDebug();      
       dest_object->setAttribute(tPCD.attributeName, nValue, tPCD.eType);            
     }
     break;

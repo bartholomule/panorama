@@ -22,7 +22,11 @@
 #include "llapi/scene.h"
 #include "scene_tree.h"
 #include <string>
-#include <gtk--.h>
+#include <gtk--/window.h>
+#include <gtk--/scrolledwindow.h>
+#include <gtk--/menubar.h>
+#include <gtk--/main.h>
+#include <gtk--/fileselection.h>
 
 class TSceneWindow : public Gtk::Window
 {
@@ -31,8 +35,6 @@ protected:
 
   Gtk::ScrolledWindow* ptSWnd;
   Gtk::MenuBar*        ptMenuBar;
-  //  Gtk::MenuFactory*   ptMenuFactory;
-  //  Gtk::MenuFactory*   ptSubfactory;
   TSceneTree*        ptTree;
   string             tSceneName;
   TScene*            ptScene;

@@ -20,8 +20,9 @@
 #define _RENDER_DIALOG__
 
 #include <string>
-#include <gtk--.h>
 #include "llapi/scene.h"
+#include <gtk--/dialog.h>
+#include <gtk--/checkbutton.h>
 
 class TRenderDialog : public Gtk::Dialog
 {

@@ -21,7 +21,8 @@
 
 #include "llapi/scene.h"
 #include <string>
-#include <gtk--.h>
+#include <gtk--/tree.h>
+#include <gtk--/button.h>
 
 class TSceneTree : public Gtk::Tree
 {

@@ -19,7 +19,9 @@
 #ifndef _OBJECT_PROPERTIES_DIALOG__
 #define _OBJECT_PROPERTIES_DIALOG__
 
-#include <gtk--.h>
+#include <gtk--/button.h>
+#include <gtk--/widget.h>
+#include <gtk--/dialog.h>
 #include "llapi/procedural.h"
 
 class TObjectPropertiesDialog : public Gtk::Dialog

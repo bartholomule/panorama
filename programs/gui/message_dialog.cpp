@@ -17,6 +17,9 @@
 */
 
 #include "message_dialog.h"
+#include <gtk--/button.h>
+#include <gtk--/label.h>
+
 
 void MessageDialog (const string& rktTITLE, const string& rktTEXT)
 {

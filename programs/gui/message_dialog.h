@@ -20,7 +20,7 @@
 #define _MESSAGE_DIALOG__
 
 #include <string>
-#include <gtk--.h>
+#include <gtk--/dialog.h>
 
 void MessageDialog (const string& rktTITLE, const string& rktTEXT);
 

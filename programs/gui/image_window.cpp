@@ -20,61 +20,11 @@
 #include "hlapi/plugin_manager.h"
 #include "image_callbacks.h"
 #include "image_window.h"
+#include "common.h"
+#include <gtk--/main.h>
 
 using SigC::slot;
 using SigC::bind;
-
-Gtk::Menu* TImageWindow::createFilterMenu (void)
-{
-  using namespace Gtk::Menu_Helpers;
-  MenuList* menu_list;
-  Gtk::Menu* filter_menu = new Gtk::Menu();
-  menu_list = &filter_menu->items();
-  
-  string                        tMenuOption;
-  const TPluginList*            ptPluginList;
-  TPluginList::const_iterator   tIter;
-  TImageFilterCallbackData*     ptData;
-  size_t                        J             = 0;
-  GtkMenuEntry*                 ptMenuEntries = NULL;
-
-  ptPluginList = tPluginManager.pluginList();
-  assert ( ptPluginList );
-
-  tIter = ptPluginList->find (FX_IMAGE_FILTER_CLASS);
-  if ( tIter != ptPluginList->end() )
-  {
-    if ( !tIter->second.empty() )
-    {
-      ptMenuEntries = new GtkMenuEntry [tIter->second.size()];
-        
-      for (list<string>::const_iterator tIter2 = tIter->second.begin();
-	   tIter2 != tIter->second.end();
-	   ++tIter2)
-      {
-	menu_list->push_back(MenuElem(*tIter2,
-				      bind(slot(imageFilterCB),this,tIter2->c_str())));
-      }
-
-      delete ptMenuEntries;
-    }
-    else
-    {
-#if DEBUG_IT
-      cout << "Plugin list is empty" << endl;
-#endif
-    }
-  }
-  else
-  {
-#if DEBUG_IT
-    cout << "No image filters found" << endl;
-#endif
-  }
-
-  return filter_menu;
-}  /* setFilterMenu() */
-
 
 TImageWindow::TImageWindow (TScene* ptSCENE):
   ptProgress(NULL)
@@ -109,7 +59,10 @@ TImageWindow::TImageWindow (TScene* ptSCENE):
   // Add them to the bar...
   menu_list = &ptMenuBar->items();
   menu_list->push_back(MenuElem("_Image",*image_menu));
-  menu_list->push_back(MenuElem("_Filter",*manage(createFilterMenu())));
+  menu_list->push_back(MenuElem("_Filter",
+				*manage(createPluginMenu(FX_IMAGE_FILTER_CLASS,
+							 imageFilterCB,
+							 this))));
   menu_list->push_back(MenuElem("_Help",*help_menu));      
 
   ptMenuBar->show_all();
@@ -226,9 +179,9 @@ void FinishedRenderLine (size_t zROW, void* pvDATA)
 
   TImageWindow*   ptWnd = (TImageWindow*) pvDATA;
 
-  while ( gtk_events_pending() )
+  while ( Gtk::Main::events_pending() )
   {
-    gtk_main_iteration();
+    Gtk::Main::iteration();
   }
 
   ptWnd->drawRow (zROW);

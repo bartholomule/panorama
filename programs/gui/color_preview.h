@@ -20,7 +20,9 @@
 #define _COLOR_PREVIEW__
 
 #include "llapi/color.h"
-#include <gtk--.h>
+#include <gtk--/preview.h>
+#include <gtk--/button.h>
+#include <gtk--/colorselection.h>
 
 class TColorPreview : public Gtk::Preview
 {

@@ -19,7 +19,8 @@
 #ifndef _MATERIAL_GRAPH__
 #define _MATERIAL_GRAPH__
 
-#include <gtk--.h>
+#include <gtk--/fixed.h>
+#include <gtk--/button.h>
 
 class TMaterialGraph : public Gtk::Fixed
 {

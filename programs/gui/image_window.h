@@ -20,9 +20,15 @@
 #define _IMAGE_WINDOW__
 
 #include "llapi/scene.h"
-#include <gtk--.h>
 #include "object_properties_dialog.h"
 #include "message_dialog.h"
+#include <gtk--/box.h>
+#include <gtk--/menubar.h>
+#include <gtk--/preview.h>
+#include <gtk--/fileselection.h>
+#include <gtk--/progressbar.h>
+#include <gtk--/window.h>
+
 
 void FinishedRenderLine (size_t zROW, void* pvDATA);
 
@@ -47,8 +53,6 @@ protected:
   Gtk::Preview*       ptPreview;
   TImage*             ptImage;
 
-  Gtk::Menu* createFilterMenu (void);
-                        
 public:
 
   Gtk::FileSelection*      ptFileSelection;

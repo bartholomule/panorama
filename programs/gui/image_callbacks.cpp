@@ -80,7 +80,7 @@ void imageFilterCB2(cb2_item cb_data, TImageFilter* ptFilter)
   ptWnd->filterImage(ptFilter);     
 }
 
-void imageFilterCB (TImageWindow* ptWND, const char* filter_name)
+void imageFilterCB (TImageWindow* ptWND, string filter_name)
 {
 
   TImageFilter* ptFilter = (TImageFilter*)tPluginManager.newObject(filter_name);

@@ -24,6 +24,7 @@
 #include "message_dialog.h"
 #include "render_dialog.h"
 #include "scene_callbacks.h"
+#include <gtk--/fileselection.h>
 
 void sceneQuitCB ()
 {
@@ -131,3 +132,12 @@ void sceneCancelCB (TSceneWindow* ptWND)
 
 }  /* sceneCancelCB() */
 
+void sceneCameraCB (TSceneWindow* ptWND, string plugin_name)
+{
+  sceneMenuCB(string("set camera :" + plugin_name).c_str());
+}
+
+void sceneLightCB (TSceneWindow* ptWND, string plugin_name)
+{
+  sceneMenuCB(string("add light :" + plugin_name).c_str());  
+}

@@ -18,6 +18,8 @@
 
 #include "hlapi/plugin_manager.h"
 #include "plugin_window.h"
+#include <gtk--/scrolledwindow.h>
+#include <gtk--/tree.h>
 
 TPluginWindow::TPluginWindow (void)
 {

@@ -140,7 +140,6 @@ int main (int argc, char *argv[])
 {
 
   Gtk::Main      tMainApp (&argc, &argv);
-  TSceneWindow   tMainWindow (&tMainApp);
   string         appname = string ("Panorama");
   string         appid = string ("0.0.5");
 
@@ -176,6 +175,7 @@ int main (int argc, char *argv[])
   TSceneManager::_initialize();
   tImageManager.initialize();
 
+  TSceneWindow   tMainWindow (&tMainApp);
   tMainWindow.show();
   
   tMainApp.run();

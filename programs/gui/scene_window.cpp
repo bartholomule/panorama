@@ -22,29 +22,13 @@
 #include "scene_callbacks.h"
 #include "scene_window.h"
 #include "message_dialog.h"
+#include <gtk--/fileselection.h>
+#include <gtk--/box.h>
+#include <gtk--/menu.h>
+#include "common.h"
 
 using SigC::slot;
 using SigC::bind;
-
-/*
-static GtkMenuEntry _atMenuItems[] =
-{
-  {"<Main>/Scene/Open/New window", 0, sceneNewCB, 0},
-  {"<Main>/Scene/Open/Replace this scene", 0, sceneReplaceCB, 0},
-  {"<Main>/Scene/Save", 0, sceneMenuCB, 0},
-  {"<Main>/Scene/Save as", 0, sceneMenuCB, 0},
-  {"<Main>/Scene/Close", 0, sceneCloseCB, 0},
-  {"<Main>/Scene/<separator>", 0, sceneMenuCB, 0},
-  {"<Main>/Scene/Exit", 0, sceneQuitCB, 0},
-  {"<Main>/Render/Render", 0, sceneRenderCB, 0},
-  {"<Main>/Objects/Camera", 0, sceneMenuCB, 0},
-  {"<Main>/Objects/Light", 0, sceneMenuCB, 0},
-  {"<Main>/Windows/Material editor", 0, sceneMaterialWindowCB, 0},
-  {"<Main>/Windows/Plugin list", 0, scenePluginWindowCB, 0},
-  {"<Main>/Help/About", 0, sceneMenuCB, 0}
-};
-static size_t _zMenuItems = sizeof (_atMenuItems) / sizeof (_atMenuItems[0]);
-*/
 
 size_t TSceneWindow::_zWindows = 0;
 
@@ -82,8 +66,10 @@ TSceneWindow::TSceneWindow (Gtk::Main* ptMAIN)
   menu_list->push_back(MenuElem("_Render",ALT|'r',bind(slot(sceneRenderCB),this)));
 
   menu_list = &objects_menu->items();
-  menu_list->push_back(MenuElem("_Camera",bind(slot(sceneMenuCB),"camera")));
-  menu_list->push_back(MenuElem("_Light",bind(slot(sceneMenuCB),"light")));  
+  Gtk::Menu* tmp_menu = createPluginMenu(FX_CAMERA_CLASS,sceneCameraCB,this);
+  menu_list->push_back(MenuElem("_Camera",*manage(tmp_menu)));
+  tmp_menu = createPluginMenu(FX_LIGHT_CLASS,sceneLightCB,this);  
+  menu_list->push_back(MenuElem("_Light",*manage(tmp_menu)));
 
   menu_list = &windows_menu->items();
   menu_list->push_back(MenuElem("_Material editor",ALT|'m',slot(sceneMaterialWindowCB)));

@@ -20,6 +20,10 @@
 #include "hlapi/plugin_manager.h"
 #include "hlapi/sphere.h"
 #include "material_window.h"
+#include <gtk--/button.h>
+#include <gtk--/table.h>
+#include <gtk--/frame.h>
+#include <gtk--/scrolledwindow.h>
 
 void TMaterialWindow::setupScene (void)
 {

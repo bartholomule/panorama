@@ -19,9 +19,12 @@
 #ifndef _MATERIAL_WINDOW__
 #define _MATERIAL_WINDOW__
 
-#include <gtk--.h>
 #include "llapi/scene.h"
 #include "material_graph.h"
+#include <gtk--/preview.h>
+#include <gtk--/notebook.h>
+#include <gtk--/window.h>
+
 
 #define FX_PREVIEW_WIDTH    120
 #define FX_PREVIEW_HEIGHT   120

@@ -19,8 +19,6 @@
 #ifndef _SCENE_CALLBACKS__
 #define _SCENE_CALLBACKS__
 
-#include <gtk--.h>
-
 class TSceneWindow;
 
 void sceneMenuCB (const char* s);
@@ -33,5 +31,7 @@ void scenePluginWindowCB ();
 void sceneMaterialWindowCB ();
 
 void sceneCancelCB (TSceneWindow* ptWND);
+void sceneCameraCB (TSceneWindow* ptWND, string plugin_name);
+void sceneLightCB  (TSceneWindow* ptWND, string plugin_name);
     
 #endif  /* _SCENE_CALLBACKS__ */
