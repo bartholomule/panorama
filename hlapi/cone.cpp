@@ -328,6 +328,8 @@ void TCone::initialize (void)
     tBoundingBox.applyTransform (*ptMatrix);
   }
 
+  TObject::initialize();
+  
 }  /* initialize() */
 
 

@@ -66,6 +66,8 @@ void TBox::initialize (void)
   tBoundingBox.set (TVector (-0.5, -0.5, -0.5), TVector (0.5, 0.5, 0.5));
   tBoundingBox.applyTransform (*ptMatrix);
 
+  TObject::initialize();
+
 }  /* initialize() */
 
 

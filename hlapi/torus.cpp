@@ -47,6 +47,8 @@ void TTorus::initialize (void)
   tBoundingBox.set (TVector (-ab, -b, -ab), TVector (ab, b, ab));
   tBoundingBox.applyTransform (*ptMatrix);
 
+  TObject::initialize();
+  
 }  /* initialize() */
 
 

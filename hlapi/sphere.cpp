@@ -26,6 +26,8 @@ void TSphere::initialize (void)
   tBoundingBox.set (TVector (tLocation.x() - tRadius, tLocation.y() - tRadius, tLocation.z() - tRadius),
                     TVector (tLocation.x() + tRadius, tLocation.y() + tRadius, tLocation.z() + tRadius));
 
+  TObject::initialize();
+  
 }  /* initialize() */
 
 

@@ -33,6 +33,8 @@ void TTriangle::initialize (void)
 
   tBoundingBox.set (tMin, tMax);
 
+  TPlane::initialize();
+  
 }  /* initialize() */
 
 

@@ -41,6 +41,8 @@ void TCylinder::initialize (void)
   tBoundingBox.set (TVector (-1, 0, -1), TVector (1, 1, 1));
   tBoundingBox.applyTransform (*ptMatrix);
 
+  TObject::initialize();
+  
 }  /* initialize() */
 
 
