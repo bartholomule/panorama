@@ -6,11 +6,12 @@ include ${BUILD_TOP}/Makefile.vars
 INSTALL = @INSTALL@
 SRC_DIR = @srcdir@
 
-FILES = bump \
+FILES = bump.rt \
         cornell_box.rt \
 	lens_flare.rt \
 	plastic_cornell_box.rt \
         projector_cartoon.rt \
+        text.rt \
         train.rt \
         xmas-tree.rt
 
