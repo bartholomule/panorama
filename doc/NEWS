@@ -1,4 +1,12 @@
 
+ - Added object identifier in TProcedural.
+ 
+ - Added user data map in TProcedural.
+ 
+ - Added flags in TProcedural.
+
+ - Added support for overriding build time prefix with PANORAMA variable.
+
  - Added runlength decoding and support for bpp other than 24 to TGA format
    (done by Jon Frydensbjerg).
 
