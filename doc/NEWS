@@ -1,8 +1,10 @@
 
+ - Added GIF image I/O plugin (done by Jon Frydensbjerg).
+
  - Added finalize() method to objects.
 
  - Added check for required libraries. Building and loading of some plugins are
-   now conditional on the existance of these libraries.
+   now conditional on the existance of these libraries (done by Ezra Peisach).
 
  - Failing to load a plugin does not stop execution anymore.
 
