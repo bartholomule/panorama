@@ -1,0 +1,6 @@
+Makefile
+Makefile.targets
+Makefile.vars
+config.cache
+config.log
+config.status
