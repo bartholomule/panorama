@@ -10,7 +10,7 @@ define material Marble : class MaterialMarble
 {
   bsdf : class BsdfPhong
   {
-    exponent 50 
+    exponent 5 
   }
   ambient  0.2
   diffuse  0.6
@@ -32,11 +32,8 @@ define light l_ambient
 
 define light l //: class WarnLight
 {
-  translate	<-40, 500, 1000>
-  //point_at	<0, 0, 0>
-  //exponent      20
-  //axis          <0, 0, 0>
-  //angle_th      15
+  //translate	<-400, 500, 1000>
+  translate	<-4000, 500, 0>
   intensity     1.0
 }
 
@@ -90,40 +87,64 @@ define aggregate column
   material : extends Marble
   {
     color       CWhite
-    base_color  CBlack
+    base_color  "marble1"
     zoom        <5, 5, 5>
     bump        0
   }
-  // this has no effect
-  // translate <-50, 0, 200>
 }
 
 aggregate : extends column 
 { 
-  //translate <-50, 0,   0>
+  translate <-50, 0, 50>
 }
 
-// this doesn't work for some reason
-// aggregate : extends column
-// { 
-//   translate <-50, 0, -50>
-// }
+aggregate : extends column 
+{ 
+  translate <-50, 0, -150>
+}
+
+aggregate : extends column 
+{ 
+  translate <-50, 0, -350>
+}
+
+aggregate : extends column 
+{ 
+  translate <-50, 0, -550>
+}
+
+aggregate : extends column 
+{ 
+  translate <-50, 0, -750>
+}
+
+aggregate : extends column 
+{ 
+  translate <-50, 0, -950>
+}
+
+aggregate : extends column 
+{ 
+  translate <-50, 0, -1150>
+}
 
 sphere
 {
   translate <1000, 2000,-9000>
-  radius    1000
+  radius     1200
   material : extends Marble
   {
     color       CLightGrey
     base_color  CWhite
-    zoom        <200, 200, 200>
-    ambient     0.2
-    diffuse     0.5
-    specular    0.1
-    bump       -0.3
-    start_freq  0.6
-    octaves     3
+    zoom        <300, 300, 300>
+    ambient     0.8
+    diffuse     0.2
+    specular    0.0
+    bump        0.8 //0.3
+    lacunarity  2.17
+    octaves     4
+    offset      0.250
+    multiplier  0.50
   }
 }
 
@@ -133,14 +154,16 @@ sphere
   radius        10000
   material : extends Marble
   {
-    color       CBlack
-    base_color  CWhite
+    color       CWhite
+    base_color  CBlack
     zoom        <10, 10, 10>
     ambient     1
     diffuse     0
     specular    0
-    start_freq  0.1
+    lacunarity  4.37
     octaves     3
+    offset      1.5
+    multiplier  1
   }
 }
 
@@ -149,8 +172,8 @@ scene
   camera	c
   light		l
   light		l_ambient
-  width		300
-  height	300
+  width		400
+  height	400
   background	CSummerSky
   output
   {
