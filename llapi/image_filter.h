@@ -1,5 +1,6 @@
 /*
 *  Copyright (C) 1998, 1999 Angel Jimenez Jimenez and Carlos Jimenez Moreno
+*  Copyright (C) 1999 Jon Frydensbjerg
 *
 *  This program is free software; you can redistribute it and/or modify
 *  it under the terms of the GNU General Public License as published by
@@ -24,13 +25,16 @@
 
 struct SBuffers;
 
+class TScene;
+
 class TImageFilter : public TProcedural
 {
 
   protected:
 
-    Word   wNeededBuffers;
-
+    Word      wNeededBuffers;
+    TScene*   ptScene;
+ 
   public:
 
     TImageFilter (void) :
@@ -40,8 +44,17 @@ class TImageFilter : public TProcedural
 
     Word neededBuffers (void) { return wNeededBuffers; }
 
+    void setScene (TScene* ptSCENE)
+    {
+      ptScene = ptSCENE;
+    }
+
     EClass classType (void) const { return FX_IMAGE_FILTER_CLASS; }
     
 };  /* class TImageFilter */
 
 #endif  /* _IMAGE_FILTER__ */
+
+
+
+
