@@ -33,7 +33,7 @@ int TLightWaveObject::parseObject (void)
   char             acTag [5]   = "    ";
   bool             gPointsRead = false;
 
-  sFile.open (tFileName.c_str(), ios::in | ios::nocreate | ios::bin);
+  sFile.open (tFileName.c_str(), ios::in | ios::binary);
 
   if ( !sFile )
   {
