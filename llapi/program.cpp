@@ -19,17 +19,14 @@
 #include "llapi/debug.h"
 #include "llapi/program.h"
 
-int TProgram::addVariable (const string& rktNAME, EAttribType eTYPE, NAttribute nVALUE)
+int TProgram::addVariable (const string& rktNAME, TVarReference tREF)
 {
 
-  TVariableData        tVarData;
-  TVarList::iterator   tIter = tVarList.find (rktNAME);
+  TVariableMap::iterator   tIter = tVarList.find (rktNAME);
 
   if ( tIter == tVarList.end() )
   {
-    tVarData.eType     = eTYPE;
-    tVarData.nValue    = nVALUE;
-    tVarList [rktNAME] = tVarData;
+    tVarList [rktNAME] = tREF;
 
     return 0;
   }
@@ -65,9 +62,9 @@ void TProgram::printDebug (void) const
 
   TDebug::_push();
 
-  for (TVarList::const_iterator iter = tVarList.begin(); ( iter != tVarList.end() ) ;iter++)
+  for (TVariableMap::const_iterator iter = tVarList.begin(); ( iter != tVarList.end() ) ;iter++)
   {
-    cerr << TDebug::_indent() << "Name : " << (*iter).first << ", type : " << (*iter).second.eType << endl;
+    cerr << TDebug::_indent() << "Name : " << (*iter).first << ", type : " << (int) (*iter).second->tAttrib.eType << endl;
   }
   
   TDebug::_pop();

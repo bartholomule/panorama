@@ -23,16 +23,9 @@
 #include <list>
 #include <map>
 #include "llapi/attribs.h"
+#include "llapi/heap_manager.h"
 
-struct TVariableData
-{
-
-  EAttribType   eType;
-  NAttribute    nValue;
-  
-};  /* struct TVariableData */
-
-typedef map<string, TVariableData, less<string> >   TVarList;
+typedef map<string, TVarReference, less<string> >   TVariableMap;
 
 enum EInstructionCode
 {
@@ -60,12 +53,12 @@ class TProgram
 
   protected:
 
-    TVarList     tVarList;
-    TEventList   tEventList;
+    TVariableMap   tVarList;
+    TEventList     tEventList;
   
   public:
 
-    int addVariable (const string& rktNAME, EAttribType eTYPE, NAttribute nVALUE);
+    int addVariable (const string& rktNAME, TVarReference tREF);
 
     TEventCode* getEventCode (const string& rktNAME);
 

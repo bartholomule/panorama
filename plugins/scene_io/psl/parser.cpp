@@ -1,6 +1,6 @@
 
 /*  A Bison parser, made from parser.y
- by  GNU Bison version 1.25
+ by  GNU Bison version 1.27
   */
 
 #define YYBISON 1  /* Identify Bison output.  */
@@ -12,47 +12,47 @@
 #define yychar psl_char
 #define yydebug psl_debug
 #define yynerrs psl_nerrs
-#define	T_REAL	258
-#define	T_BOOL	259
-#define	T_COMPLEX_TYPE	260
-#define	T_IDENTIFIER	261
-#define	T_QUOTED_STRING	262
-#define	T_DEFINE	263
-#define	T_CLASS	264
-#define	T_EXTENDS	265
-#define	T_NEW	266
-#define	T_BOX	267
-#define	T_CIRCLE	268
-#define	T_CONE	269
-#define	T_CYLINDER	270
-#define	T_DIFFERENCE	271
-#define	T_FILTER	272
-#define	T_INTERSECTION	273
-#define	T_MESH	274
-#define	T_PHONG_TRIANGLE	275
-#define	T_PLANE	276
-#define	T_RECTANGLE	277
-#define	T_SPHERE	278
-#define	T_TRIANGLE	279
-#define	T_UNION	280
-#define	T_TYPE_REAL	281
-#define	T_TYPE_BOOL	282
-#define	T_TYPE_STRING	283
-#define	T_TYPE_COLOR	284
-#define	T_TYPE_VECTOR	285
-#define	T_TYPE_VECTOR2	286
-#define	T_TYPE_IMAGE	287
-#define	T_TYPE_SCENE	288
-#define	T_TYPE_BSDF	289
-#define	T_TYPE_CAMERA	290
-#define	T_TYPE_LIGHT	291
-#define	T_TYPE_MATERIAL	292
-#define	T_TYPE_RENDERER	293
-#define	T_TYPE_OBJECT	294
-#define	T_TYPE_AGGREGATE	295
-#define	T_TYPE_OBJECT_FILTER	296
-#define	T_TYPE_IMAGE_FILTER	297
-#define	UNARY_MINUS	298
+#define	T_REAL	257
+#define	T_BOOL	258
+#define	T_COMPLEX_TYPE	259
+#define	T_IDENTIFIER	260
+#define	T_QUOTED_STRING	261
+#define	T_DEFINE	262
+#define	T_CLASS	263
+#define	T_EXTENDS	264
+#define	T_NEW	265
+#define	T_BOX	266
+#define	T_CIRCLE	267
+#define	T_CONE	268
+#define	T_CYLINDER	269
+#define	T_DIFFERENCE	270
+#define	T_FILTER	271
+#define	T_INTERSECTION	272
+#define	T_MESH	273
+#define	T_PHONG_TRIANGLE	274
+#define	T_PLANE	275
+#define	T_RECTANGLE	276
+#define	T_SPHERE	277
+#define	T_TRIANGLE	278
+#define	T_UNION	279
+#define	T_TYPE_REAL	280
+#define	T_TYPE_BOOL	281
+#define	T_TYPE_STRING	282
+#define	T_TYPE_COLOR	283
+#define	T_TYPE_VECTOR	284
+#define	T_TYPE_VECTOR2	285
+#define	T_TYPE_IMAGE	286
+#define	T_TYPE_SCENE	287
+#define	T_TYPE_BSDF	288
+#define	T_TYPE_CAMERA	289
+#define	T_TYPE_LIGHT	290
+#define	T_TYPE_MATERIAL	291
+#define	T_TYPE_RENDERER	292
+#define	T_TYPE_OBJECT	293
+#define	T_TYPE_AGGREGATE	294
+#define	T_TYPE_OBJECT_FILTER	295
+#define	T_TYPE_IMAGE_FILTER	296
+#define	UNARY_MINUS	297
 
 #line 19 "parser.y"
 
@@ -131,93 +131,93 @@ typedef union {
 #define	YYFLAG		-32768
 #define	YYNTBASE	57
 
-#define YYTRANSLATE(x) ((unsigned)(x) <= 298 ? yytranslate[x] : 103)
+#define YYTRANSLATE(x) ((unsigned)(x) <= 297 ? yytranslate[x] : 103)
 
 static const char yytranslate[] = {     0,
      2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
      2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
      2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-     2,     2,     2,     2,     2,     2,     2,     2,     2,    48,
-    50,    45,    43,    49,    44,    53,    46,     2,     2,     2,
-     2,     2,     2,     2,     2,     2,     2,    56,    51,     2,
-    52,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+     2,     2,     2,     2,     2,     2,     2,     2,     2,    51,
+    53,    45,    43,    52,    44,    56,    46,     2,     2,     2,
+     2,     2,     2,     2,     2,     2,     2,    48,    54,     2,
+    55,     2,     2,     2,     2,     2,     2,     2,     2,     2,
      2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
      2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
      2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
      2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
      2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-     2,     2,    54,     2,    55,     2,     2,     2,     2,     2,
-     2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-     2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-     2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-     2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-     2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-     2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+     2,     2,    49,     2,    50,     2,     2,     2,     2,     2,
      2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
      2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
      2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
      2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
      2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
      2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-     2,     2,     2,     2,     2,     1,     2,     3,     4,     5,
-     6,     7,     8,     9,    10,    11,    12,    13,    14,    15,
-    16,    17,    18,    19,    20,    21,    22,    23,    24,    25,
-    26,    27,    28,    29,    30,    31,    32,    33,    34,    35,
-    36,    37,    38,    39,    40,    41,    42,    47
+     2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+     2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+     2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+     2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+     2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+     2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+     2,     2,     2,     2,     2,     1,     3,     4,     5,     6,
+     7,     8,     9,    10,    11,    12,    13,    14,    15,    16,
+    17,    18,    19,    20,    21,    22,    23,    24,    25,    26,
+    27,    28,    29,    30,    31,    32,    33,    34,    35,    36,
+    37,    38,    39,    40,    41,    42,    47
 };
 
 #if YYDEBUG != 0
 static const short yyprhs[] = {     0,
-     0,     2,     4,    13,    22,    29,    31,    33,    35,    37,
-    39,    41,    43,    45,    48,    50,    55,    56,    58,    60,
-    64,    66,    67,    70,    71,    76,    77,    82,    83,    88,
-    89,    94,    95,   100,   101,   106,   107,   112,   113,   118,
-   119,   124,   126,   130,   132,   136,   138,   141,   144,   147,
-   151,   153,   157,   158,   161,   163,   166,   167,   176,   179,
-   180,   183,   186,   189,   191,   193,   196,   199,   201,   202,
-   206,   210,   211,   219,   220,   227,   228,   235,   236
+     0,     1,     4,     7,    10,    12,    14,    17,    20,    22,
+    23,    27,    31,    32,    40,    41,    48,    49,    56,    57,
+    65,    67,    69,    78,    87,    94,    96,    98,   100,   102,
+   104,   106,   108,   110,   113,   115,   120,   121,   123,   125,
+   129,   131,   132,   135,   136,   141,   142,   147,   148,   153,
+   154,   159,   160,   165,   166,   171,   172,   177,   178,   183,
+   184,   189,   191,   195,   197,   201,   203,   206,   209,   212,
+   216,   218,   222,   223,   226,   228,   231,   232,   241
 };
 
-static const short yyrhs[] = {     3,
-     0,     4,     0,    29,    48,    63,    49,    63,    49,    63,
-    50,     0,    30,    48,    63,    49,    63,    49,    63,    50,
-     0,    31,    48,    63,    49,    63,    50,     0,     7,     0,
-    57,     0,    58,     0,    59,     0,    60,     0,    61,     0,
-    62,     0,     6,     0,    11,     6,     0,    64,     0,     6,
-    48,    65,    50,     0,     0,    66,     0,    67,     0,    65,
-    49,    67,     0,    63,     0,     0,    68,    69,     0,     0,
-    26,    70,    79,    51,     0,     0,    27,    71,    79,    51,
-     0,     0,    28,    72,    79,    51,     0,     0,    29,    73,
-    79,    51,     0,     0,    30,    74,    79,    51,     0,     0,
-    31,    75,    79,    51,     0,     0,    32,    76,    79,    51,
-     0,     0,     5,    77,    79,    51,     0,     0,     6,    78,
-    79,    51,     0,    80,     0,    79,    49,    80,     0,     6,
-     0,     6,    52,    63,     0,    82,     0,    81,    82,     0,
-    83,    51,     0,    64,    51,     0,    84,    52,    63,     0,
-     6,     0,    84,    53,     6,     0,     0,    68,    86,     0,
-    87,     0,    86,    87,     0,     0,     6,    48,    65,    50,
-    54,    88,    89,    55,     0,    68,    81,     0,     0,    90,
-    69,     0,    90,    91,     0,    90,    92,     0,    97,     0,
-    99,     0,     8,   101,     0,     8,    95,     0,     6,     0,
-     0,    56,    10,     6,     0,    56,     9,     6,     0,     0,
-    33,    93,    94,    54,    96,    85,    55,     0,     0,    33,
-    94,    54,    98,    85,    55,     0,     0,     5,    94,    54,
-   100,    85,    55,     0,     0,     5,    93,    94,    54,   102,
-    85,    55,     0
+static const short yyrhs[] = {    -1,
+    57,    82,     0,    57,    58,     0,    57,    59,     0,    64,
+     0,    66,     0,     8,    68,     0,     8,    62,     0,     6,
+     0,     0,    48,    10,     6,     0,    48,     9,     6,     0,
+     0,    33,    60,    61,    49,    63,    98,    50,     0,     0,
+    33,    61,    49,    65,    98,    50,     0,     0,     5,    61,
+    49,    67,    98,    50,     0,     0,     5,    60,    61,    49,
+    69,    98,    50,     0,     3,     0,     4,     0,    29,    51,
+    76,    52,    76,    52,    76,    53,     0,    30,    51,    76,
+    52,    76,    52,    76,    53,     0,    31,    51,    76,    52,
+    76,    53,     0,     7,     0,    70,     0,    71,     0,    72,
+     0,    73,     0,    74,     0,    75,     0,     6,     0,    11,
+     6,     0,    77,     0,     6,    51,    78,    53,     0,     0,
+    79,     0,    80,     0,    78,    52,    80,     0,    76,     0,
+     0,    81,    82,     0,     0,    26,    83,    92,    54,     0,
+     0,    27,    84,    92,    54,     0,     0,    28,    85,    92,
+    54,     0,     0,    29,    86,    92,    54,     0,     0,    30,
+    87,    92,    54,     0,     0,    31,    88,    92,    54,     0,
+     0,    32,    89,    92,    54,     0,     0,     5,    90,    92,
+    54,     0,     0,     6,    91,    92,    54,     0,    93,     0,
+    92,    52,    93,     0,     6,     0,     6,    55,    76,     0,
+    95,     0,    94,    95,     0,    96,    54,     0,    77,    54,
+     0,    97,    55,    76,     0,     6,     0,    97,    56,     6,
+     0,     0,    81,    99,     0,   100,     0,    99,   100,     0,
+     0,     6,    51,    78,    53,    49,   101,   102,    50,     0,
+    81,    94,     0
 };
 
 #endif
 
 #if YYDEBUG != 0
 static const short yyrline[] = { 0,
-   151,   158,   165,   176,   187,   198,   204,   208,   212,   216,
-   220,   224,   228,   230,   234,   238,   242,   243,   247,   249,
-   253,   261,   263,   267,   271,   272,   276,   277,   281,   282,
-   286,   287,   291,   292,   296,   297,   301,   302,   311,   312,
-   317,   320,   322,   326,   330,   346,   348,   352,   354,   358,
-   370,   374,   384,   385,   389,   391,   395,   400,   404,   412,
-   413,   415,   417,   421,   423,   427,   429,   433,   439,   443,
-   453,   460,   465,   472,   478,   488,   498,   508,   513
+   151,   152,   154,   156,   160,   162,   166,   168,   172,   178,
+   182,   192,   199,   204,   211,   217,   227,   237,   247,   252,
+   263,   270,   277,   288,   299,   310,   316,   320,   324,   328,
+   332,   336,   340,   342,   346,   350,   354,   355,   359,   361,
+   365,   373,   375,   379,   383,   384,   388,   389,   393,   394,
+   398,   399,   403,   404,   408,   409,   413,   414,   423,   424,
+   429,   432,   434,   438,   442,   458,   460,   464,   466,   470,
+   482,   486,   496,   497,   501,   503,   507,   512,   516
 };
 #endif
 
@@ -232,132 +232,133 @@ static const char * const yytname[] = {   "$","error","$undefined.","T_REAL",
 "T_TYPE_COLOR","T_TYPE_VECTOR","T_TYPE_VECTOR2","T_TYPE_IMAGE","T_TYPE_SCENE",
 "T_TYPE_BSDF","T_TYPE_CAMERA","T_TYPE_LIGHT","T_TYPE_MATERIAL","T_TYPE_RENDERER",
 "T_TYPE_OBJECT","T_TYPE_AGGREGATE","T_TYPE_OBJECT_FILTER","T_TYPE_IMAGE_FILTER",
-"'+'","'-'","'*'","'/'","UNARY_MINUS","'('","','","')'","';'","'='","'.'","'{'",
-"'}'","':'","real_expression","bool_expression","color_expression","vector_expression",
-"vector2_expression","string_expression","expression","function_call","function_params",
-"function_params1","function_param","variables","variable","@1","@2","@3","@4",
-"@5","@6","@7","@8","@9","var_list","var","sentences","sentence","assignment",
-"lvalue","program","event_list","event","@10","code","everything","instance",
-"definition","name","class","scene_def","@11","scene_instance","@12","object_instance",
-"@13","any_def","@14", NULL
+"'+'","'-'","'*'","'/'","UNARY_MINUS","':'","'{'","'}'","'('","','","')'","';'",
+"'='","'.'","everything","instance","definition","name","class","scene_def",
+"@1","scene_instance","@2","object_instance","@3","any_def","@4","real_expression",
+"bool_expression","color_expression","vector_expression","vector2_expression",
+"string_expression","expression","function_call","function_params","function_params1",
+"function_param","variables","variable","@5","@6","@7","@8","@9","@10","@11",
+"@12","@13","var_list","var","sentences","sentence","assignment","lvalue","program",
+"event_list","event","@14","code", NULL
 };
 #endif
 
 static const short yyr1[] = {     0,
-    57,    58,    59,    60,    61,    62,    63,    63,    63,    63,
-    63,    63,    63,    63,    63,    64,    65,    65,    66,    66,
-    67,    68,    68,    70,    69,    71,    69,    72,    69,    73,
-    69,    74,    69,    75,    69,    76,    69,    77,    69,    78,
-    69,    79,    79,    80,    80,    81,    81,    82,    82,    83,
-    84,    84,    85,    85,    86,    86,    88,    87,    89,    90,
-    90,    90,    90,    91,    91,    92,    92,    93,    94,    94,
-    94,    96,    95,    98,    97,   100,    99,   102,   101
+    57,    57,    57,    57,    58,    58,    59,    59,    60,    61,
+    61,    61,    63,    62,    65,    64,    67,    66,    69,    68,
+    70,    71,    72,    73,    74,    75,    76,    76,    76,    76,
+    76,    76,    76,    76,    76,    77,    78,    78,    79,    79,
+    80,    81,    81,    83,    82,    84,    82,    85,    82,    86,
+    82,    87,    82,    88,    82,    89,    82,    90,    82,    91,
+    82,    92,    92,    93,    93,    94,    94,    95,    95,    96,
+    97,    97,    98,    98,    99,    99,   101,   100,   102
 };
 
 static const short yyr2[] = {     0,
+     0,     2,     2,     2,     1,     1,     2,     2,     1,     0,
+     3,     3,     0,     7,     0,     6,     0,     6,     0,     7,
      1,     1,     8,     8,     6,     1,     1,     1,     1,     1,
      1,     1,     1,     2,     1,     4,     0,     1,     1,     3,
      1,     0,     2,     0,     4,     0,     4,     0,     4,     0,
      4,     0,     4,     0,     4,     0,     4,     0,     4,     0,
      4,     1,     3,     1,     3,     1,     2,     2,     2,     3,
-     1,     3,     0,     2,     1,     2,     0,     8,     2,     0,
-     2,     2,     2,     1,     1,     2,     2,     1,     0,     3,
-     3,     0,     7,     0,     6,     0,     6,     0,     7
+     1,     3,     0,     2,     1,     2,     0,     8,     2
 };
 
-static const short yydefact[] = {    60,
-     0,    38,    40,     0,    24,    26,    28,    30,    32,    34,
-    36,    69,    61,    62,    63,    64,    65,     0,     0,     0,
-     0,     0,     0,    67,    66,     0,     0,     0,     0,     0,
-     0,     0,     0,     0,     0,    44,     0,    42,    76,     0,
-    68,    69,    69,     0,     0,     0,     0,     0,     0,     0,
-    74,    71,    70,     0,     0,    39,    22,    41,     0,     0,
-    25,    27,    29,    31,    33,    35,    37,    22,     1,     2,
-    13,     6,     0,     0,     0,     0,     7,     8,     9,    10,
-    11,    12,    45,    15,    43,     0,     0,    78,    72,     0,
-    17,    14,     0,     0,     0,    38,    40,    23,    54,    55,
-    77,    22,    22,    75,    21,     0,    18,    19,     0,     0,
-     0,    17,     0,    56,     0,     0,     0,    16,     0,     0,
-     0,     0,    79,    73,    20,     0,     0,     0,     0,     0,
-     0,     5,    57,     0,     0,    22,     3,     4,     0,     0,
-    51,     0,    59,    46,     0,     0,    58,    49,    51,    47,
-    48,     0,     0,    50,    52,     0,     0
+static const short yydefact[] = {     1,
+     0,    10,    60,     0,    44,    46,    48,    50,    52,    54,
+    56,    10,     3,     4,     5,     6,     2,     0,     0,     0,
+     0,     0,     0,     8,     7,     0,     0,     0,     0,     0,
+     0,     0,     0,     0,     0,    17,    64,     0,    62,     0,
+     9,    10,    10,     0,     0,     0,     0,     0,     0,     0,
+    15,    12,    11,    42,     0,     0,    59,    61,     0,     0,
+    45,    47,    49,    51,    53,    55,    57,    42,     0,     0,
+    21,    22,    33,    26,     0,     0,     0,     0,    27,    28,
+    29,    30,    31,    32,    65,    35,    63,    19,    13,     0,
+    58,    60,    43,    74,    75,    18,    37,    34,     0,     0,
+     0,    42,    42,    16,    37,     0,    76,    41,     0,    38,
+    39,     0,     0,     0,     0,     0,     0,     0,    36,     0,
+     0,     0,    20,    14,     0,    40,     0,     0,     0,    77,
+     0,     0,    25,    42,     0,     0,     0,     0,    23,    24,
+    71,     0,    79,    66,     0,     0,    78,    69,    71,    67,
+    68,     0,     0,    70,    72,     0,     0
 };
 
-static const short yydefgoto[] = {    77,
-    78,    79,    80,    81,    82,   105,    84,   106,   107,   108,
-    86,    98,    26,    27,    28,    29,    30,    31,    32,    19,
-    21,    37,    38,   143,   144,   145,   146,    87,    99,   100,
-   136,   140,     1,    14,    15,    42,    20,    24,   103,    16,
-    68,    17,    57,    25,   102
+static const short yydefgoto[] = {     1,
+    13,    14,    42,    19,    24,   103,    15,    68,    16,    54,
+    25,   102,    79,    80,    81,    82,    83,    84,   108,    86,
+   109,   110,   111,    69,    93,    26,    27,    28,    29,    30,
+    31,    32,    20,    21,    38,    39,   143,   144,   145,   146,
+    70,    94,    95,   134,   138
 };
 
 static const short yypact[] = {-32768,
-    18,   -40,-32768,     5,-32768,-32768,-32768,-32768,-32768,-32768,
--32768,   -50,-32768,-32768,-32768,-32768,-32768,    19,    29,   -43,
-    29,    36,    36,-32768,-32768,    29,    29,    29,    29,    29,
-    29,    29,     2,    65,    69,    35,   -34,-32768,-32768,   -30,
--32768,   -50,   -50,   -29,   -24,     3,     4,    10,    11,    21,
--32768,-32768,-32768,     1,    29,-32768,    42,-32768,    34,    45,
--32768,-32768,-32768,-32768,-32768,-32768,-32768,    42,-32768,-32768,
-    60,-32768,    94,    61,    62,    64,-32768,-32768,-32768,-32768,
--32768,-32768,-32768,-32768,-32768,    52,    56,-32768,-32768,    58,
-     1,-32768,     1,     1,     1,-32768,    66,-32768,   109,-32768,
--32768,    42,    42,-32768,-32768,    14,-32768,-32768,    67,    68,
-    70,     1,    66,-32768,    71,    72,     1,-32768,     1,     1,
-     1,    24,-32768,-32768,-32768,    73,    74,    78,    76,     1,
-     1,-32768,-32768,    79,    81,-32768,-32768,-32768,    63,    77,
-    -5,    82,   112,-32768,    83,    33,-32768,-32768,    60,-32768,
--32768,     1,   114,-32768,-32768,   121,-32768
+    22,    -5,-32768,     6,-32768,-32768,-32768,-32768,-32768,-32768,
+-32768,   -41,-32768,-32768,-32768,-32768,-32768,    54,   -24,    30,
+    30,    35,    35,-32768,-32768,    30,    30,    30,    30,    30,
+    30,    30,    25,    50,    69,-32768,    41,   -40,-32768,   -28,
+-32768,   -41,   -41,   -12,     7,     8,    18,    19,    33,    34,
+-32768,-32768,-32768,    55,     2,    30,-32768,-32768,    57,    58,
+-32768,-32768,-32768,-32768,-32768,-32768,-32768,    55,    52,    59,
+-32768,-32768,    53,-32768,   102,    60,    61,    62,-32768,-32768,
+-32768,-32768,-32768,-32768,-32768,-32768,-32768,-32768,-32768,    64,
+-32768,    65,-32768,   104,-32768,-32768,     2,-32768,     2,     2,
+     2,    55,    55,-32768,     2,    65,-32768,-32768,    46,-32768,
+-32768,    66,    67,    68,    71,    72,    48,     2,-32768,     2,
+     2,     2,-32768,-32768,    74,-32768,    73,    75,    76,-32768,
+     2,     2,-32768,-32768,    77,    78,    63,    82,-32768,-32768,
+    -4,    70,   109,-32768,    79,    47,-32768,-32768,    53,-32768,
+-32768,     2,   111,-32768,-32768,   126,-32768
 };
 
 static const short yypgoto[] = {-32768,
--32768,-32768,-32768,-32768,-32768,   -54,  -130,    12,-32768,     8,
-    -1,   135,-32768,-32768,-32768,-32768,-32768,-32768,-32768,-32768,
--32768,    75,    84,-32768,    -6,-32768,-32768,   -66,-32768,    39,
--32768,-32768,-32768,-32768,-32768,   117,    -9,-32768,-32768,-32768,
--32768,-32768,-32768,-32768,-32768
+-32768,-32768,   105,    -8,-32768,-32768,-32768,-32768,-32768,-32768,
+-32768,-32768,-32768,-32768,-32768,-32768,-32768,-32768,   -55,  -114,
+    29,-32768,    17,     3,   135,-32768,-32768,-32768,-32768,-32768,
+-32768,-32768,-32768,-32768,   -11,    83,-32768,    -3,-32768,-32768,
+   -65,-32768,    44,-32768,-32768
 };
 
 
 #define	YYLAST		140
 
 
-static const short yytable[] = {    83,
-   -40,    90,    33,    69,    70,    18,    71,    72,   142,    22,
-    39,    73,   142,   -69,    55,    18,    56,   156,    55,    55,
-    58,    61,     2,     3,    55,     4,    62,    34,    35,    74,
-    75,    76,    59,    60,    36,   115,   116,    23,   109,   110,
-   111,    41,    91,     5,     6,     7,     8,     9,    10,    11,
-    12,    55,    55,    63,    64,    51,    96,    97,    55,    55,
-    65,    66,   117,   118,   126,   127,   128,    96,   141,    55,
-    52,    67,   117,   129,    53,   134,   135,     5,     6,     7,
-     8,     9,    10,    11,   152,   153,    54,    88,     5,     6,
-     7,     8,     9,    10,    11,    40,   -53,   154,    89,    92,
-    44,    45,    46,    47,    48,    49,    50,    91,    93,    94,
-   101,    95,   104,   112,   113,   119,   120,   149,   121,   155,
-   157,   130,   131,   122,   125,   123,   124,   132,   137,   133,
-   138,   147,   148,   151,   139,    13,   150,   114,    85,    43
+static const short yytable[] = {    85,
+   -58,   -60,    90,    33,    71,    72,    18,    73,    74,    40,
+    22,    56,    75,    57,    44,    45,    46,    47,    48,    49,
+    50,   156,   142,    56,    36,    58,     2,     3,   142,     4,
+    76,    77,    78,    59,    60,    37,   115,   116,    23,    56,
+    41,    61,    18,   112,   113,   114,    97,     5,     6,     7,
+     8,     9,    10,    11,    12,    52,    91,    92,    56,    56,
+    62,    63,    34,    35,   127,   128,   129,    91,   141,    56,
+    56,    64,    65,    51,    53,   135,   136,     5,     6,     7,
+     8,     9,    10,    11,    56,    56,    66,    67,     5,     6,
+     7,     8,     9,    10,    11,    55,   154,   118,   119,   118,
+   125,   152,   153,    97,   -73,    88,    89,    98,    96,   106,
+    99,   100,   101,   104,   149,   105,   155,   120,   121,   122,
+   123,   124,   130,   148,   131,   157,   132,    43,   133,   139,
+   140,   147,   151,   117,   126,    17,   137,   107,    87,   150
 };
 
-static const short yycheck[] = {    54,
-     6,    68,    12,     3,     4,    56,     6,     7,   139,     5,
-    54,    11,   143,    54,    49,    56,    51,     0,    49,    49,
-    51,    51,     5,     6,    49,     8,    51,     9,    10,    29,
-    30,    31,    42,    43,     6,   102,   103,    33,    93,    94,
-    95,     6,    48,    26,    27,    28,    29,    30,    31,    32,
-    33,    49,    49,    51,    51,    54,     5,     6,    49,    49,
-    51,    51,    49,    50,   119,   120,   121,     5,     6,    49,
-     6,    51,    49,    50,     6,   130,   131,    26,    27,    28,
-    29,    30,    31,    32,    52,    53,    52,    54,    26,    27,
-    28,    29,    30,    31,    32,    21,    55,   152,    54,     6,
-    26,    27,    28,    29,    30,    31,    32,    48,    48,    48,
-    55,    48,    55,    48,     6,    49,    49,     6,    49,     6,
-     0,    49,    49,   112,   117,    55,    55,    50,    50,    54,
-    50,    55,    51,    51,   136,     1,   143,    99,    55,    23
+static const short yycheck[] = {    55,
+     6,     6,    68,    12,     3,     4,    48,     6,     7,    21,
+     5,    52,    11,    54,    26,    27,    28,    29,    30,    31,
+    32,     0,   137,    52,    49,    54,     5,     6,   143,     8,
+    29,    30,    31,    42,    43,     6,   102,   103,    33,    52,
+     6,    54,    48,    99,   100,   101,    51,    26,    27,    28,
+    29,    30,    31,    32,    33,     6,     5,     6,    52,    52,
+    54,    54,     9,    10,   120,   121,   122,     5,     6,    52,
+    52,    54,    54,    49,     6,   131,   132,    26,    27,    28,
+    29,    30,    31,    32,    52,    52,    54,    54,    26,    27,
+    28,    29,    30,    31,    32,    55,   152,    52,    53,    52,
+    53,    55,    56,    51,    50,    49,    49,     6,    50,     6,
+    51,    51,    51,    50,     6,    51,     6,    52,    52,    52,
+    50,    50,    49,    54,    52,     0,    52,    23,    53,    53,
+    53,    50,    54,   105,   118,     1,   134,    94,    56,   143
 };
 /* -*-C-*-  Note some compilers choke on comments on `#line' lines.  */
 #line 3 "/usr/lib/bison.simple"
+/* This file comes from bison-1.27.  */
 
 /* Skeleton output parser for bison,
    Copyright (C) 1984, 1989, 1990 Free Software Foundation, Inc.
@@ -374,46 +375,66 @@ static const short yycheck[] = {    54,
 
    You should have received a copy of the GNU General Public License
    along with this program; if not, write to the Free Software
-   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.  */
+   Foundation, Inc., 59 Temple Place - Suite 330,
+   Boston, MA 02111-1307, USA.  */
 
 /* As a special exception, when this file is copied by Bison into a
    Bison output file, you may use that output file without restriction.
    This special exception was added by the Free Software Foundation
    in version 1.24 of Bison.  */
 
-#ifndef alloca
-#ifdef __GNUC__
-#define alloca __builtin_alloca
-#else /* not GNU C.  */
-#if (!defined (__STDC__) && defined (sparc)) || defined (__sparc__) || defined (__sparc) || defined (__sgi)
-#include <alloca.h>
-#else /* not sparc */
-#if defined (MSDOS) && !defined (__TURBOC__)
-#include <malloc.h>
-#else /* not MSDOS, or __TURBOC__ */
-#if defined(_AIX)
-#include <malloc.h>
- #pragma alloca
-#else /* not MSDOS, __TURBOC__, or _AIX */
-#ifdef __hpux
-#ifdef __cplusplus
-extern "C" {
-void *alloca (unsigned int);
-};
-#else /* not __cplusplus */
-void *alloca ();
-#endif /* not __cplusplus */
-#endif /* __hpux */
-#endif /* not _AIX */
-#endif /* not MSDOS, or __TURBOC__ */
-#endif /* not sparc.  */
-#endif /* not GNU C.  */
-#endif /* alloca not defined.  */
-
 /* This is the parser code that is written into each bison parser
   when the %semantic_parser declaration is not specified in the grammar.
   It was written by Richard Stallman by simplifying the hairy parser
   used when %semantic_parser is specified.  */
+
+#ifndef YYSTACK_USE_ALLOCA
+#ifdef alloca
+#define YYSTACK_USE_ALLOCA
+#else /* alloca not defined */
+#ifdef __GNUC__
+#define YYSTACK_USE_ALLOCA
+#define alloca __builtin_alloca
+#else /* not GNU C.  */
+#if (!defined (__STDC__) && defined (sparc)) || defined (__sparc__) || defined (__sparc) || defined (__sgi) || (defined (__sun) && defined (__i386))
+#define YYSTACK_USE_ALLOCA
+#include <alloca.h>
+#else /* not sparc */
+/* We think this test detects Watcom and Microsoft C.  */
+/* This used to test MSDOS, but that is a bad idea
+   since that symbol is in the user namespace.  */
+#if (defined (_MSDOS) || defined (_MSDOS_)) && !defined (__TURBOC__)
+#if 0 /* No need for malloc.h, which pollutes the namespace;
+	 instead, just don't use alloca.  */
+#include <malloc.h>
+#endif
+#else /* not MSDOS, or __TURBOC__ */
+#if defined(_AIX)
+/* I don't know what this was needed for, but it pollutes the namespace.
+   So I turned it off.   rms, 2 May 1997.  */
+/* #include <malloc.h>  */
+ #pragma alloca
+#define YYSTACK_USE_ALLOCA
+#else /* not MSDOS, or __TURBOC__, or _AIX */
+#if 0
+#ifdef __hpux /* haible@ilog.fr says this works for HPUX 9.05 and up,
+		 and on HPUX 10.  Eventually we can turn this on.  */
+#define YYSTACK_USE_ALLOCA
+#define alloca __builtin_alloca
+#endif /* __hpux */
+#endif
+#endif /* not _AIX */
+#endif /* not MSDOS, or __TURBOC__ */
+#endif /* not sparc */
+#endif /* not GNU C */
+#endif /* alloca not defined */
+#endif /* YYSTACK_USE_ALLOCA not defined */
+
+#ifdef YYSTACK_USE_ALLOCA
+#define YYSTACK_ALLOC alloca
+#else
+#define YYSTACK_ALLOC malloc
+#endif
 
 /* Note: there must be only one dollar sign in this file.
    It is replaced by the list of actions, each action
@@ -423,8 +444,8 @@ void *alloca ();
 #define yyclearin	(yychar = YYEMPTY)
 #define YYEMPTY		-2
 #define YYEOF		0
-#define YYACCEPT	return(0)
-#define YYABORT 	return(1)
+#define YYACCEPT	goto yyacceptlab
+#define YYABORT 	goto yyabortlab
 #define YYERROR		goto yyerrlab1
 /* Like YYERROR except do call yyerror.
    This remains here temporarily to ease the
@@ -505,12 +526,12 @@ int yydebug;			/*  nonzero means print parse trace	*/
 #ifndef YYMAXDEPTH
 #define YYMAXDEPTH 10000
 #endif
-
-/* Prevent warning if -Wstrict-prototypes.  */
-#ifdef __GNUC__
-int yyparse (void);
-#endif
 
+/* Define __yy_memcpy.  Note that the size argument
+   should be passed with type unsigned int, because that is what the non-GCC
+   definitions require.  With GCC, __builtin_memcpy takes an arg
+   of type size_t, but it can handle unsigned int.  */
+
 #if __GNUC__ > 1		/* GNU C and GNU C++ define this.  */
 #define __yy_memcpy(TO,FROM,COUNT)	__builtin_memcpy(TO,FROM,COUNT)
 #else				/* not GNU C or C++ */
@@ -522,7 +543,7 @@ static void
 __yy_memcpy (to, from, count)
      char *to;
      char *from;
-     int count;
+     unsigned int count;
 {
   register char *f = from;
   register char *t = to;
@@ -537,10 +558,10 @@ __yy_memcpy (to, from, count)
 /* This is the most reliable way to avoid incompatibilities
    in available built-in functions on various systems.  */
 static void
-__yy_memcpy (char *to, char *from, int count)
+__yy_memcpy (char *to, char *from, unsigned int count)
 {
-  register char *f = from;
   register char *t = to;
+  register char *f = from;
   register int i = count;
 
   while (i-- > 0)
@@ -550,7 +571,7 @@ __yy_memcpy (char *to, char *from, int count)
 #endif
 #endif
 
-#line 196 "/usr/lib/bison.simple"
+#line 216 "/usr/lib/bison.simple"
 
 /* The user can define YYPARSE_PARAM as the name of an argument to be passed
    into yyparse.  The argument should have type void *.
@@ -570,6 +591,15 @@ __yy_memcpy (char *to, char *from, int count)
 #define YYPARSE_PARAM_ARG
 #define YYPARSE_PARAM_DECL
 #endif /* not YYPARSE_PARAM */
+
+/* Prevent warning if -Wstrict-prototypes.  */
+#ifdef __GNUC__
+#ifdef YYPARSE_PARAM
+int yyparse (void *);
+#else
+int yyparse (void);
+#endif
+#endif
 
 int
 yyparse(YYPARSE_PARAM_ARG)
@@ -599,6 +629,7 @@ yyparse(YYPARSE_PARAM_ARG)
 #endif
 
   int yystacksize = YYINITDEPTH;
+  int yyfree_stacks = 0;
 
 #ifdef YYPURE
   int yychar;
@@ -683,18 +714,32 @@ yynewstate:
       if (yystacksize >= YYMAXDEPTH)
 	{
 	  yyerror("parser stack overflow");
+	  if (yyfree_stacks)
+	    {
+	      free (yyss);
+	      free (yyvs);
+#ifdef YYLSP_NEEDED
+	      free (yyls);
+#endif
+	    }
 	  return 2;
 	}
       yystacksize *= 2;
       if (yystacksize > YYMAXDEPTH)
 	yystacksize = YYMAXDEPTH;
-      yyss = (short *) alloca (yystacksize * sizeof (*yyssp));
-      __yy_memcpy ((char *)yyss, (char *)yyss1, size * sizeof (*yyssp));
-      yyvs = (YYSTYPE *) alloca (yystacksize * sizeof (*yyvsp));
-      __yy_memcpy ((char *)yyvs, (char *)yyvs1, size * sizeof (*yyvsp));
+#ifndef YYSTACK_USE_ALLOCA
+      yyfree_stacks = 1;
+#endif
+      yyss = (short *) YYSTACK_ALLOC (yystacksize * sizeof (*yyssp));
+      __yy_memcpy ((char *)yyss, (char *)yyss1,
+		   size * (unsigned int) sizeof (*yyssp));
+      yyvs = (YYSTYPE *) YYSTACK_ALLOC (yystacksize * sizeof (*yyvsp));
+      __yy_memcpy ((char *)yyvs, (char *)yyvs1,
+		   size * (unsigned int) sizeof (*yyvsp));
 #ifdef YYLSP_NEEDED
-      yyls = (YYLTYPE *) alloca (yystacksize * sizeof (*yylsp));
-      __yy_memcpy ((char *)yyls, (char *)yyls1, size * sizeof (*yylsp));
+      yyls = (YYLTYPE *) YYSTACK_ALLOC (yystacksize * sizeof (*yylsp));
+      __yy_memcpy ((char *)yyls, (char *)yyls1,
+		   size * (unsigned int) sizeof (*yylsp));
 #endif
 #endif /* no yyoverflow */
 
@@ -854,332 +899,48 @@ yyreduce:
 
   switch (yyn) {
 
-case 1:
-#line 152 "parser.y"
-{
-                            yyval.tExpressionData.eType         = FX_REAL;
-                            yyval.tExpressionData.nValue.dValue = yyvsp[0].dValue;
-                          ;
-    break;}
 case 2:
-#line 159 "parser.y"
-{
-                            yyval.tExpressionData.eType         = FX_BOOL;
-                            yyval.tExpressionData.nValue.gValue = yyvsp[0].gValue;
-                          ;
+#line 153 "parser.y"
+{;
     break;}
 case 3:
-#line 166 "parser.y"
-{
-                            if ( ( yyvsp[-5].tExpressionData.eType != FX_REAL ) || ( yyvsp[-3].tExpressionData.eType != FX_REAL ) || ( yyvsp[-1].tExpressionData.eType != FX_REAL ) )
-                            {
-                              psl_error ("wrong type for parameter (real expected).");
-                              exit (1);
-                            }
-                            yyval.tExpressionData.eType          = FX_COLOR;
-                          ;
+#line 155 "parser.y"
+{;
     break;}
 case 4:
-#line 177 "parser.y"
-{
-                            if ( ( yyvsp[-5].tExpressionData.eType != FX_REAL ) || ( yyvsp[-3].tExpressionData.eType != FX_REAL ) || ( yyvsp[-1].tExpressionData.eType != FX_REAL ) )
-                            {
-                              psl_error ("wrong type for parameter (real expected).");
-                              exit (1);
-                            }
-                            yyval.tExpressionData.eType         = FX_VECTOR;
-                          ;
+#line 157 "parser.y"
+{;
     break;}
 case 5:
-#line 188 "parser.y"
-{
-                            if ( ( yyvsp[-3].tExpressionData.eType != FX_REAL ) || ( yyvsp[-1].tExpressionData.eType != FX_REAL ) )
-                            {
-                              psl_error ("wrong type for parameter (real expected).");
-                              exit (1);
-                            }
-                            yyval.tExpressionData.eType         = FX_VECTOR2;
-                          ;
+#line 161 "parser.y"
+{;
     break;}
 case 6:
-#line 199 "parser.y"
-{
-                            yyval.tExpressionData.eType         = FX_STRING;
-                          ;
+#line 163 "parser.y"
+{;
     break;}
 case 7:
-#line 205 "parser.y"
-{
-                            yyval.tExpressionData = yyvsp[0].tExpressionData;
-                          ;
+#line 167 "parser.y"
+{;
     break;}
 case 8:
-#line 209 "parser.y"
-{
-                            yyval.tExpressionData = yyvsp[0].tExpressionData;
-                          ;
+#line 169 "parser.y"
+{;
     break;}
 case 9:
-#line 213 "parser.y"
-{
-                            yyval.tExpressionData = yyvsp[0].tExpressionData;
-                          ;
-    break;}
-case 10:
-#line 217 "parser.y"
-{
-                            yyval.tExpressionData = yyvsp[0].tExpressionData;
-                          ;
-    break;}
-case 11:
-#line 221 "parser.y"
-{
-                            yyval.tExpressionData = yyvsp[0].tExpressionData;
-                          ;
-    break;}
-case 12:
-#line 225 "parser.y"
-{
-                            yyval.tExpressionData = yyvsp[0].tExpressionData;
-                          ;
-    break;}
-case 13:
-#line 229 "parser.y"
-{;
-    break;}
-case 14:
-#line 231 "parser.y"
-{
-                            yyval.tExpressionData.eType = GetTypeCode (yyvsp[0].acString);
-                          ;
-    break;}
-case 15:
-#line 235 "parser.y"
-{;
-    break;}
-case 16:
-#line 239 "parser.y"
-{;
-    break;}
-case 18:
-#line 244 "parser.y"
-{;
-    break;}
-case 19:
-#line 248 "parser.y"
-{;
-    break;}
-case 20:
-#line 250 "parser.y"
-{;
-    break;}
-case 21:
-#line 254 "parser.y"
-{;
-    break;}
-case 22:
-#line 262 "parser.y"
-{;
-    break;}
-case 23:
-#line 264 "parser.y"
-{;
-    break;}
-case 24:
-#line 268 "parser.y"
-{
-                            _eVarType = FX_REAL;
-                          ;
-    break;}
-case 26:
-#line 273 "parser.y"
-{
-                            _eVarType = FX_BOOL;
-                          ;
-    break;}
-case 28:
-#line 278 "parser.y"
-{
-                            _eVarType = FX_STRING;
-                          ;
-    break;}
-case 30:
-#line 283 "parser.y"
-{
-                            _eVarType = FX_COLOR;
-                          ;
-    break;}
-case 32:
-#line 288 "parser.y"
-{
-                            _eVarType = FX_VECTOR;
-                          ;
-    break;}
-case 34:
-#line 293 "parser.y"
-{
-                            _eVarType = FX_VECTOR2;
-                          ;
-    break;}
-case 36:
-#line 298 "parser.y"
-{
-                            _eVarType = FX_IMAGE;
-                          ;
-    break;}
-case 38:
-#line 303 "parser.y"
-{
-                            if ( _eVarScope == FX_GLOBAL_SCOPE )
-                            {
-                              psl_error ("cannot use a complex type for a global variable");
-                              exit (1);
-                            }
-                            _eVarType = GetTypeCode (yyvsp[0].acString);
-                          ;
-    break;}
-case 40:
-#line 313 "parser.y"
-{
-                            psl_error ("unknown type");
-                            exit (1);
-                          ;
-    break;}
-case 42:
-#line 321 "parser.y"
-{;
-    break;}
-case 43:
-#line 323 "parser.y"
-{;
-    break;}
-case 44:
-#line 327 "parser.y"
-{
-                            AddVariable (yyvsp[0].acString);
-                          ;
-    break;}
-case 45:
-#line 331 "parser.y"
-{
-                            if ( _eVarType != yyvsp[0].tExpressionData.eType )
-                            {
-                              psl_error ("wrong type in assignment");
-                              cout << "left = " << _eVarType << ", right = " << yyvsp[0].tExpressionData.eType << endl;
-                              exit (1);
-                            }
-                            AddVariable (yyvsp[-2].acString);
-                          ;
-    break;}
-case 46:
-#line 347 "parser.y"
-{;
-    break;}
-case 47:
-#line 349 "parser.y"
-{;
-    break;}
-case 48:
-#line 353 "parser.y"
-{;
-    break;}
-case 49:
-#line 355 "parser.y"
-{;
-    break;}
-case 50:
-#line 359 "parser.y"
-{
-                            /*
-                            if ( $1 != $3.eType )
-                            {
-                              psl_error ("wrong type in assignment");
-                              exit (1);
-                            }
-                            */
-                          ;
-    break;}
-case 51:
-#line 371 "parser.y"
-{
-                            yyval.eType = FX_NONE;
-                          ;
-    break;}
-case 52:
-#line 375 "parser.y"
-{
-                            yyval.eType = FX_NONE;
-                          ;
-    break;}
-case 54:
-#line 386 "parser.y"
-{;
-    break;}
-case 55:
-#line 390 "parser.y"
-{;
-    break;}
-case 56:
-#line 392 "parser.y"
-{;
-    break;}
-case 57:
-#line 396 "parser.y"
-{
-                            _eVarScope      = FX_EVENT_SCOPE;
-                            _ptCurrentEvent = _tDataStack.top()->program()->getEventCode (yyvsp[-4].acString);
-                          ;
-    break;}
-case 58:
-#line 401 "parser.y"
-{;
-    break;}
-case 59:
-#line 405 "parser.y"
-{;
-    break;}
-case 61:
-#line 414 "parser.y"
-{;
-    break;}
-case 62:
-#line 416 "parser.y"
-{;
-    break;}
-case 63:
-#line 418 "parser.y"
-{;
-    break;}
-case 64:
-#line 422 "parser.y"
-{;
-    break;}
-case 65:
-#line 424 "parser.y"
-{;
-    break;}
-case 66:
-#line 428 "parser.y"
-{;
-    break;}
-case 67:
-#line 430 "parser.y"
-{;
-    break;}
-case 68:
-#line 434 "parser.y"
+#line 173 "parser.y"
 {
 			    strcpy (yyval.acString, yyvsp[0].acString);
 			  ;
     break;}
-case 69:
-#line 440 "parser.y"
+case 10:
+#line 179 "parser.y"
 {
                             strcpy (yyval.acString, "");
                           ;
     break;}
-case 70:
-#line 444 "parser.y"
+case 11:
+#line 183 "parser.y"
 {
                             if ( _tObjectMap.find (yyvsp[0].acString) == _tObjectMap.end() )
                             {
@@ -1190,47 +951,47 @@ case 70:
 			    strcpy (yyval.acString, _ptParent->className().c_str());
 			  ;
     break;}
-case 71:
-#line 454 "parser.y"
+case 12:
+#line 193 "parser.y"
 {
 			    _ptParent = NULL;
 			    strcpy (yyval.acString, yyvsp[0].acString);
 			  ;
     break;}
-case 72:
-#line 461 "parser.y"
+case 13:
+#line 200 "parser.y"
 {
 			    DefineObject (yyvsp[-2].acString, yyvsp[-1].acString, "Scene");
                             _eVarScope = FX_OBJECT_SCOPE;
 			  ;
     break;}
-case 73:
-#line 466 "parser.y"
+case 14:
+#line 205 "parser.y"
 {
 			    UpdateObject (yyvsp[-5].acString);
                             _eVarScope = FX_GLOBAL_SCOPE;
 			  ;
     break;}
-case 74:
-#line 473 "parser.y"
+case 15:
+#line 212 "parser.y"
 {
 			    _ptData = TScenePsl::_ptParsedScene;
 			    _tDataStack.push (_ptData);
                             _eVarScope = FX_OBJECT_SCOPE;
 			  ;
     break;}
-case 75:
-#line 479 "parser.y"
+case 16:
+#line 218 "parser.y"
 {
 			    _tDataStack.pop();
                             TScenePsl::_ptParsedScene->sendEvent ("init");
                             _eVarScope = FX_GLOBAL_SCOPE;
 
-//                            TScenePsl::_ptParsedScene->globalData()->printDebug();
+                            TScenePsl::_ptParsedScene->globalData()->printDebug();
 			  ;
     break;}
-case 76:
-#line 489 "parser.y"
+case 17:
+#line 228 "parser.y"
 {
                             if ( strcmp (yyvsp[-2].acString, "Object") && strcmp (yyvsp[-2].acString, "Aggregate") )
                             {
@@ -1241,8 +1002,8 @@ case 76:
                             _eVarScope = FX_OBJECT_SCOPE;
 			  ;
     break;}
-case 77:
-#line 499 "parser.y"
+case 18:
+#line 238 "parser.y"
 {
                             _tDataStack.top()->sendEvent ("init");
                             _eVarScope = FX_GLOBAL_SCOPE;
@@ -1251,23 +1012,307 @@ case 77:
 			    _tDataStack.pop();
 			  ;
     break;}
-case 78:
-#line 509 "parser.y"
+case 19:
+#line 248 "parser.y"
 {
 			    DefineObject (yyvsp[-2].acString, yyvsp[-1].acString, DefaultClass (yyvsp[-3].acString));
                             _eVarScope = FX_OBJECT_SCOPE;
 			  ;
     break;}
-case 79:
-#line 514 "parser.y"
+case 20:
+#line 253 "parser.y"
 {
 			    UpdateObject (yyvsp[-5].acString);
                             _eVarScope = FX_GLOBAL_SCOPE;
 			  ;
     break;}
+case 21:
+#line 264 "parser.y"
+{
+                            yyval.tExpressionData.eType         = FX_REAL;
+                            yyval.tExpressionData.nValue.dValue = yyvsp[0].dValue;
+                          ;
+    break;}
+case 22:
+#line 271 "parser.y"
+{
+                            yyval.tExpressionData.eType         = FX_BOOL;
+                            yyval.tExpressionData.nValue.gValue = yyvsp[0].gValue;
+                          ;
+    break;}
+case 23:
+#line 278 "parser.y"
+{
+                            if ( ( yyvsp[-5].tExpressionData.eType != FX_REAL ) || ( yyvsp[-3].tExpressionData.eType != FX_REAL ) || ( yyvsp[-1].tExpressionData.eType != FX_REAL ) )
+                            {
+                              psl_error ("wrong type for parameter (real expected).");
+                              exit (1);
+                            }
+                            yyval.tExpressionData.eType = FX_COLOR;
+                          ;
+    break;}
+case 24:
+#line 289 "parser.y"
+{
+                            if ( ( yyvsp[-5].tExpressionData.eType != FX_REAL ) || ( yyvsp[-3].tExpressionData.eType != FX_REAL ) || ( yyvsp[-1].tExpressionData.eType != FX_REAL ) )
+                            {
+                              psl_error ("wrong type for parameter (real expected).");
+                              exit (1);
+                            }
+                            yyval.tExpressionData.eType = FX_VECTOR;
+                          ;
+    break;}
+case 25:
+#line 300 "parser.y"
+{
+                            if ( ( yyvsp[-3].tExpressionData.eType != FX_REAL ) || ( yyvsp[-1].tExpressionData.eType != FX_REAL ) )
+                            {
+                              psl_error ("wrong type for parameter (real expected).");
+                              exit (1);
+                            }
+                            yyval.tExpressionData.eType = FX_VECTOR2;
+                          ;
+    break;}
+case 26:
+#line 311 "parser.y"
+{
+                            yyval.tExpressionData.eType = FX_STRING;
+                          ;
+    break;}
+case 27:
+#line 317 "parser.y"
+{
+                            yyval.tExpressionData = yyvsp[0].tExpressionData;
+                          ;
+    break;}
+case 28:
+#line 321 "parser.y"
+{
+                            yyval.tExpressionData = yyvsp[0].tExpressionData;
+                          ;
+    break;}
+case 29:
+#line 325 "parser.y"
+{
+                            yyval.tExpressionData = yyvsp[0].tExpressionData;
+                          ;
+    break;}
+case 30:
+#line 329 "parser.y"
+{
+                            yyval.tExpressionData = yyvsp[0].tExpressionData;
+                          ;
+    break;}
+case 31:
+#line 333 "parser.y"
+{
+                            yyval.tExpressionData = yyvsp[0].tExpressionData;
+                          ;
+    break;}
+case 32:
+#line 337 "parser.y"
+{
+                            yyval.tExpressionData = yyvsp[0].tExpressionData;
+                          ;
+    break;}
+case 33:
+#line 341 "parser.y"
+{;
+    break;}
+case 34:
+#line 343 "parser.y"
+{
+                            yyval.tExpressionData.eType = GetTypeCode (yyvsp[0].acString);
+                          ;
+    break;}
+case 35:
+#line 347 "parser.y"
+{;
+    break;}
+case 36:
+#line 351 "parser.y"
+{;
+    break;}
+case 38:
+#line 356 "parser.y"
+{;
+    break;}
+case 39:
+#line 360 "parser.y"
+{;
+    break;}
+case 40:
+#line 362 "parser.y"
+{;
+    break;}
+case 41:
+#line 366 "parser.y"
+{;
+    break;}
+case 42:
+#line 374 "parser.y"
+{;
+    break;}
+case 43:
+#line 376 "parser.y"
+{;
+    break;}
+case 44:
+#line 380 "parser.y"
+{
+                            _eVarType = FX_REAL;
+                          ;
+    break;}
+case 46:
+#line 385 "parser.y"
+{
+                            _eVarType = FX_BOOL;
+                          ;
+    break;}
+case 48:
+#line 390 "parser.y"
+{
+                            _eVarType = FX_STRING;
+                          ;
+    break;}
+case 50:
+#line 395 "parser.y"
+{
+                            _eVarType = FX_COLOR;
+                          ;
+    break;}
+case 52:
+#line 400 "parser.y"
+{
+                            _eVarType = FX_VECTOR;
+                          ;
+    break;}
+case 54:
+#line 405 "parser.y"
+{
+                            _eVarType = FX_VECTOR2;
+                          ;
+    break;}
+case 56:
+#line 410 "parser.y"
+{
+                            _eVarType = FX_IMAGE;
+                          ;
+    break;}
+case 58:
+#line 415 "parser.y"
+{
+                            if ( _eVarScope == FX_GLOBAL_SCOPE )
+                            {
+                              psl_error ("cannot use a complex type for a global variable");
+                              exit (1);
+                            }
+                            _eVarType = GetTypeCode (yyvsp[0].acString);
+                          ;
+    break;}
+case 60:
+#line 425 "parser.y"
+{
+                            psl_error ("unknown type");
+                            exit (1);
+                          ;
+    break;}
+case 62:
+#line 433 "parser.y"
+{;
+    break;}
+case 63:
+#line 435 "parser.y"
+{;
+    break;}
+case 64:
+#line 439 "parser.y"
+{
+                            AddVariable (yyvsp[0].acString);
+                          ;
+    break;}
+case 65:
+#line 443 "parser.y"
+{
+                            if ( _eVarType != yyvsp[0].tExpressionData.eType )
+                            {
+                              psl_error ("wrong type in assignment");
+                              cout << "left = " << (int) _eVarType << ", right = " << (int) yyvsp[0].tExpressionData.eType << endl;
+                              exit (1);
+                            }
+                            AddVariable (yyvsp[-2].acString);
+                          ;
+    break;}
+case 66:
+#line 459 "parser.y"
+{;
+    break;}
+case 67:
+#line 461 "parser.y"
+{;
+    break;}
+case 68:
+#line 465 "parser.y"
+{;
+    break;}
+case 69:
+#line 467 "parser.y"
+{;
+    break;}
+case 70:
+#line 471 "parser.y"
+{
+                            /*
+                            if ( $1 != $3.eType )
+                            {
+                              psl_error ("wrong type in assignment");
+                              exit (1);
+                            }
+                            */
+                          ;
+    break;}
+case 71:
+#line 483 "parser.y"
+{
+                            yyval.eType = FX_NONE;
+                          ;
+    break;}
+case 72:
+#line 487 "parser.y"
+{
+                            yyval.eType = FX_NONE;
+                          ;
+    break;}
+case 74:
+#line 498 "parser.y"
+{;
+    break;}
+case 75:
+#line 502 "parser.y"
+{;
+    break;}
+case 76:
+#line 504 "parser.y"
+{;
+    break;}
+case 77:
+#line 508 "parser.y"
+{
+                            _eVarScope      = FX_EVENT_SCOPE;
+                            _ptCurrentEvent = _tDataStack.top()->program()->getEventCode (yyvsp[-4].acString);
+                          ;
+    break;}
+case 78:
+#line 513 "parser.y"
+{;
+    break;}
+case 79:
+#line 517 "parser.y"
+{;
+    break;}
 }
    /* the action file gets copied in in place of this dollarsign */
-#line 498 "/usr/lib/bison.simple"
+#line 542 "/usr/lib/bison.simple"
 
   yyvsp -= yylen;
   yyssp -= yylen;
@@ -1462,6 +1507,30 @@ yyerrhandle:
 
   yystate = yyn;
   goto yynewstate;
+
+ yyacceptlab:
+  /* YYACCEPT comes here.  */
+  if (yyfree_stacks)
+    {
+      free (yyss);
+      free (yyvs);
+#ifdef YYLSP_NEEDED
+      free (yyls);
+#endif
+    }
+  return 0;
+
+ yyabortlab:
+  /* YYABORT comes here.  */
+  if (yyfree_stacks)
+    {
+      free (yyss);
+      free (yyvs);
+#ifdef YYLSP_NEEDED
+      free (yyls);
+#endif
+    }
+  return 1;
 }
 #line 520 "parser.y"
 
@@ -1502,11 +1571,13 @@ void InitObjects (void)
 void AddVariable (const string& rktNAME)
 {
 
-  NAttribute   nAttrib;
+  TVarReference   tRef;
 
   if ( _eVarScope == FX_GLOBAL_SCOPE )
   {
-    TScenePsl::_ptParsedScene->globalData()->addVariable (rktNAME, _eVarType, nAttrib);
+    tRef = tHeapManager.addVariable (_eVarType);
+    
+    TScenePsl::_ptParsedScene->globalData()->addVariable (rktNAME, tRef);
   }
   else if ( _eVarScope == FX_OBJECT_SCOPE )
   {

@@ -145,6 +145,118 @@ static void AddInstruction (EInstructionCode eCODE, EAttribType eTYPE, NAttribut
 %%
 
 /*
+*  Main structure
+*/
+
+everything		: /* Nothing */
+                        | everything variable
+                          {}
+			| everything instance
+                          {}
+			| everything definition
+                          {}
+			;
+
+instance		: scene_instance
+                          {}
+			| object_instance
+                          {}
+			;
+
+definition		: T_DEFINE any_def
+                          {}
+			| T_DEFINE scene_def
+			  {}
+			;
+
+name			: T_IDENTIFIER
+			  {
+			    strcpy ($$, $1);
+			  }
+			;
+
+class			: /* Nothing */
+                          {
+                            strcpy ($$, "");
+                          }
+			| ':' T_EXTENDS T_IDENTIFIER
+			  {
+                            if ( _tObjectMap.find ($3) == _tObjectMap.end() )
+                            {
+			      psl_error ("trying to extend from non existing object");
+			      exit (1);
+                            }
+                            _ptParent = _tObjectMap [$3];
+			    strcpy ($$, _ptParent->className().c_str());
+			  }
+			| ':' T_CLASS T_IDENTIFIER
+			  {
+			    _ptParent = NULL;
+			    strcpy ($$, $3);
+			  }
+			;
+
+scene_def		: T_TYPE_SCENE name class '{'
+			  {
+			    DefineObject ($2, $3, "Scene");
+                            _eVarScope = FX_OBJECT_SCOPE;
+			  }
+			  program '}'
+			  {
+			    UpdateObject ($2);
+                            _eVarScope = FX_GLOBAL_SCOPE;
+			  }
+			;
+
+scene_instance		: T_TYPE_SCENE class '{'
+			  {
+			    _ptData = TScenePsl::_ptParsedScene;
+			    _tDataStack.push (_ptData);
+                            _eVarScope = FX_OBJECT_SCOPE;
+			  }
+			  program '}'
+			  {
+			    _tDataStack.pop();
+                            TScenePsl::_ptParsedScene->sendEvent ("init");
+                            _eVarScope = FX_GLOBAL_SCOPE;
+
+                            TScenePsl::_ptParsedScene->globalData()->printDebug();
+			  }
+			;
+
+object_instance		: T_COMPLEX_TYPE class '{'
+			  {
+                            if ( strcmp ($1, "Object") && strcmp ($1, "Aggregate") )
+                            {
+                              psl_error ("only objects and scene can be instanced");
+                              exit (1);
+                            }
+			    CreateObject ($2, "");
+                            _eVarScope = FX_OBJECT_SCOPE;
+			  }
+			  program '}'
+			  {
+                            _tDataStack.top()->sendEvent ("init");
+                            _eVarScope = FX_GLOBAL_SCOPE;
+
+//                            _tDataStack.top()->program()->printDebug();
+			    _tDataStack.pop();
+			  }
+			;
+
+any_def			: T_COMPLEX_TYPE name class '{'
+			  {
+			    DefineObject ($2, $3, DefaultClass ($1));
+                            _eVarScope = FX_OBJECT_SCOPE;
+			  }
+			  program '}'
+			  {
+			    UpdateObject ($2);
+                            _eVarScope = FX_GLOBAL_SCOPE;
+			  }
+			;
+
+/*
 *  Expressions
 */
 
@@ -169,7 +281,7 @@ color_expression        : T_TYPE_COLOR '(' expression ',' expression ',' express
                               psl_error ("wrong type for parameter (real expected).");
                               exit (1);
                             }
-                            $$.eType          = FX_COLOR;
+                            $$.eType = FX_COLOR;
                           }
                         ;
 
@@ -180,7 +292,7 @@ vector_expression       : T_TYPE_VECTOR '(' expression ',' expression ',' expres
                               psl_error ("wrong type for parameter (real expected).");
                               exit (1);
                             }
-                            $$.eType         = FX_VECTOR;
+                            $$.eType = FX_VECTOR;
                           }
                         ;
 
@@ -191,13 +303,13 @@ vector2_expression      : T_TYPE_VECTOR2 '(' expression ',' expression ')'
                               psl_error ("wrong type for parameter (real expected).");
                               exit (1);
                             }
-                            $$.eType         = FX_VECTOR2;
+                            $$.eType = FX_VECTOR2;
                           }
                         ;
 
 string_expression       : T_QUOTED_STRING
                           {
-                            $$.eType         = FX_STRING;
+                            $$.eType = FX_STRING;
                           }
                         ;
 
@@ -332,7 +444,7 @@ var                     : T_IDENTIFIER
                             if ( _eVarType != $3.eType )
                             {
                               psl_error ("wrong type in assignment");
-                              cout << "left = " << _eVarType << ", right = " << $3.eType << endl;
+                              cout << "left = " << (int) _eVarType << ", right = " << (int) $3.eType << endl;
                               exit (1);
                             }
                             AddVariable ($1);
@@ -405,118 +517,6 @@ code                    : variables sentences
                           {}
                         ;
 
-/*
-*  Main structure
-*/
-
-everything		: /* Nothing */
-                        | everything variable
-                          {}
-			| everything instance
-                          {}
-			| everything definition
-                          {}
-			;
-
-instance		: scene_instance
-                          {}
-			| object_instance
-                          {}
-			;
-
-definition		: T_DEFINE any_def
-                          {}
-			| T_DEFINE scene_def
-			  {}
-			;
-
-name			: T_IDENTIFIER
-			  {
-			    strcpy ($$, $1);
-			  }
-			;
-
-class			: /* Nothing */
-                          {
-                            strcpy ($$, "");
-                          }
-			| ':' T_EXTENDS T_IDENTIFIER
-			  {
-                            if ( _tObjectMap.find ($3) == _tObjectMap.end() )
-                            {
-			      psl_error ("trying to extend from non existing object");
-			      exit (1);
-                            }
-                            _ptParent = _tObjectMap [$3];
-			    strcpy ($$, _ptParent->className().c_str());
-			  }
-			| ':' T_CLASS T_IDENTIFIER
-			  {
-			    _ptParent = NULL;
-			    strcpy ($$, $3);
-			  }
-			;
-
-scene_def		: T_TYPE_SCENE name class '{'
-			  {
-			    DefineObject ($2, $3, "Scene");
-                            _eVarScope = FX_OBJECT_SCOPE;
-			  }
-			  program '}'
-			  {
-			    UpdateObject ($2);
-                            _eVarScope = FX_GLOBAL_SCOPE;
-			  }
-			;
-
-scene_instance		: T_TYPE_SCENE class '{'
-			  {
-			    _ptData = TScenePsl::_ptParsedScene;
-			    _tDataStack.push (_ptData);
-                            _eVarScope = FX_OBJECT_SCOPE;
-			  }
-			  program '}'
-			  {
-			    _tDataStack.pop();
-                            TScenePsl::_ptParsedScene->sendEvent ("init");
-                            _eVarScope = FX_GLOBAL_SCOPE;
-
-//                            TScenePsl::_ptParsedScene->globalData()->printDebug();
-			  }
-			;
-
-object_instance		: T_COMPLEX_TYPE class '{'
-			  {
-                            if ( strcmp ($1, "Object") && strcmp ($1, "Aggregate") )
-                            {
-                              psl_error ("only objects and scene can be instanced");
-                              exit (1);
-                            }
-			    CreateObject ($2, "");
-                            _eVarScope = FX_OBJECT_SCOPE;
-			  }
-			  program '}'
-			  {
-                            _tDataStack.top()->sendEvent ("init");
-                            _eVarScope = FX_GLOBAL_SCOPE;
-
-//                            _tDataStack.top()->program()->printDebug();
-			    _tDataStack.pop();
-			  }
-			;
-
-any_def			: T_COMPLEX_TYPE name class '{'
-			  {
-			    DefineObject ($2, $3, DefaultClass ($1));
-                            _eVarScope = FX_OBJECT_SCOPE;
-			  }
-			  program '}'
-			  {
-			    UpdateObject ($2);
-                            _eVarScope = FX_GLOBAL_SCOPE;
-			  }
-			;
-
 %%
 
 void psl_error (const char* pkcTEXT)
@@ -555,11 +555,13 @@ void InitObjects (void)
 void AddVariable (const string& rktNAME)
 {
 
-  NAttribute   nAttrib;
+  TVarReference   tRef;
 
   if ( _eVarScope == FX_GLOBAL_SCOPE )
   {
-    TScenePsl::_ptParsedScene->globalData()->addVariable (rktNAME, _eVarType, nAttrib);
+    tRef = tHeapManager.addVariable (_eVarType);
+    
+    TScenePsl::_ptParsedScene->globalData()->addVariable (rktNAME, tRef);
   }
   else if ( _eVarScope == FX_OBJECT_SCOPE )
   {
