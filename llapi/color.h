@@ -223,7 +223,7 @@ inline TColor TColor::convertToGrey (void) const
 inline float TColor::average (void) const
 {
 
-  return (fRed + fGreen + fBlue) / 3.0;
+  return (fRed + fGreen + fBlue) * (1.0 / 3.0);
 
 }  /* average() */
 
