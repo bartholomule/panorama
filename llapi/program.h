@@ -25,6 +25,8 @@
 #include "llapi/attribs.h"
 #include "llapi/heap_manager.h"
 
+#define EVENT_INIT_VARIABLES    "var_init"
+
 typedef map<string, TVarReference, less<string> >   TVariableMap;
 
 enum EInstructionCode
