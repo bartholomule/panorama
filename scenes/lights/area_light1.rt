@@ -1,0 +1,94 @@
+#include "materials.inc"
+
+define camera c
+{
+  translate <0,0,-30>
+  look_at   <0,0,0>
+}
+
+define material MyLambertian
+{
+  bsdf : class BsdfLambertian { }
+  diffuse 0.6
+  ambient 0
+}
+
+// An area light source.
+sphere 
+{
+  translate <0,0,0>
+  radius 1
+  material : extends MyLambertian
+  {
+    emission : class PatternMarble
+    {
+      color CRed
+      base_color CBlue
+    }
+  }
+}
+
+// Junk to get in the way of the light...
+aggregate
+{
+  sphere
+  {
+    translate <0,-4,0>
+    radius 2
+  }
+  sphere
+  {
+    translate <0,4,0>
+    radius 2
+  }
+  plane
+  {
+    translate <0,-10,0>
+    normal <0,1,0>
+  }
+  plane
+  {
+    translate <0,10,0>
+    normal <0,-1,0>
+  }
+  plane
+  {
+    translate <0,0,5>
+    normal <0,0,-1>
+  }
+  plane
+  {
+    translate <2.5,0,2.5>
+    normal <-.707,0,-.707>
+  }
+  plane
+  {
+    translate <-2.5,0,2.5>
+    normal <.707,0,-.707>
+  }      
+  material : extends MyLambertian
+  {
+    color CWhite
+  }
+  
+}
+
+
+scene
+{
+  camera	c
+  width		400
+  height	400
+  output
+  {
+    type        "png"
+    name        "area_light1.png"
+  }
+  renderer : class Raytracer 
+  {
+    sampling "stochastic"
+    aa_depth 8
+//    sampling "adaptive"
+//    max_diff 0.01
+  }
+}
