@@ -29,8 +29,19 @@
 #undef yywrap
 
 #if BROKEN_FILENO_INCLUDE
-/* Under IRIX 6.5, fileno does not get defined using g++ */
+/* Under IRIX 6.5, fileno does not get defined using g++, which does not
+   provide a C library; it assumes one will be provided by the OS, 
+   or some 3rd party. 
+ */
 extern "C" {
+   /* The C89, C99, and C++98 standards allow any standard C function to be
+    * masked by a macro.
+    * The Freebsd libc is one of many which define such a macro.
+    * The right fix would be to make autoconf detect the lack of a fileno
+    * declaration.
+    * [LLeweLLyn Reese 20Nov2002]
+    */
+#undef fileno  
   extern int fileno(FILE *);
 }
 #endif
