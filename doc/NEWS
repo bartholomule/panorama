@@ -1,4 +1,7 @@
 
+ - Added runlength decoding and support for bpp other than 24 to TGA format
+   (done by Jon Frydensbjerg).
+
  - Added GIF image I/O plugin (done by Jon Frydensbjerg).
 
  - Added finalize() method to objects.
