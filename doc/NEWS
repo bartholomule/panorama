@@ -1,4 +1,6 @@
 
+ - Fixed bug in gradients.
+
  - Fixed scene plugins so that many of them can be loaded at the same time.
 
 >> Version 0.11.2 released
