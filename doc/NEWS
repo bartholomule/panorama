@@ -1,4 +1,16 @@
 
+ - Added automatic documentation generation (using Doxygen).
+
+ - Minor changes in pluginrc file format.
+ 
+ - Added configuration file.
+
+ - Separated profiling from static linking in configure.
+
+ - Added 'text' image filter (done by Ken Geis).
+
+ - Fixed bug in dynamic libs and plugins compilation.
+ 
  - Fixed bug in box intersection code.
 
  - Fixes for out of tree builds.
