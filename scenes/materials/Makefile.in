@@ -9,8 +9,10 @@ SRC_DIR = @srcdir@
 FILES = anisotropic.rt \
 	anisotropic2.rt \
         brick.rt \
+        bump.rt \
 	checker.rt \
 	checker45.rt \
+        composite.rt \
         cook.rt \
         crackle.rt \
         crystal.rt \
@@ -22,6 +24,7 @@ FILES = anisotropic.rt \
         painted_crystal.rt \
         schlick.rt \
         schlick_double.rt \
+        texture.rt \
         ward.rt \
         water.rt \
         wood.rt \
