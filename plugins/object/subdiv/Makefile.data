@@ -1,0 +1,8 @@
+PLUGIN_NAME = subdiv
+OBJ         = subdiv.o subdivvert.o subdivedge.o subdivface.o
+
+subdiv.o subdivface.o: subdiv.h
+subdiv.o subdivvert.o subdivedge.o subdivface.o: subdivvert.h
+subdiv.o subdivvert.o subdivedge.o subdivface.o: subdivedge.h
+subdiv.o subdivvert.o subdivedge.o subdivface.o: subdivface.h
+
