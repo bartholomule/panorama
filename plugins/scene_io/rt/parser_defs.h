@@ -36,6 +36,7 @@ extern int     rt_debug;
 //  Prototypes
 //
 void rt_error (const char* pkcTEXT);
+void rt_error (const string& rksTEXT);
 int rt_parse (void);
 int rt_lex (void);
 void RT_InitParser (void);

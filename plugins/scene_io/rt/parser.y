@@ -256,7 +256,19 @@ instance		: T_SCENE scene_instance
                           }
 			| object
                           {
-                            _ptWorld->add ($1);
+			    // Sanity check to avoid adding an object more than
+			    // once. 
+			    if( !_ptWorld->containsObject( $1 ) )
+			    {
+			      _ptWorld->add ($1);
+			    }
+			    else
+			    {
+			      // Somehow, the object was added more than
+			      // once... 
+			      string s = "This object is already in the scene: ";
+			      rt_error(s + $1->className());
+			    }
                           }
 			;
                         
@@ -324,6 +336,10 @@ object                  : T_OBJECT object_instance
                           {
                             $$ = $2;
                           }
+			| T_LIGHT light_instance
+			  {
+                            $$ = $2;
+			  } 
 			| T_PLANE plane_instance
 			  {
                             $$ = $2;
@@ -828,7 +844,26 @@ scene_params		: /* Nothing */
 
 scene_param		: T_LIGHT light_instance
 			  {
-			    SCENE->addLight ($2);
+			    // This is no longer needed, as there are speial
+			    // cases for this in the light_instance rule.
+			    if( $2 )
+			    {
+			      static bool gave_warning = false;
+
+			      if(!gave_warning)
+			      {
+                                cerr << "Note for light instance on line "
+				     << TSceneRT::_dwLineNumber
+				     << endl;
+				cerr << "  Usage of lights in the 'scene' section is no longer required" << endl;
+				cerr << "  They may now be added to aggregates, csg, etc., or used "
+				     << endl
+				     << "  external to the scene section (same syntax)." 
+				     << endl;
+				gave_warning = true;
+			      }
+			      SCENE->addLight ($2);
+			    }
 			  }
 			| T_FILTER ifilter_instance
 			  {
@@ -862,6 +897,7 @@ light_instance		: name
 			  '{' entity_params '}'
 			  {
 			    $$ = (TLight*) _tDataStack.POP();
+			    // This one is passed back to the scene instance...
 			  }
 			;
 
@@ -1572,6 +1608,13 @@ void rt_error (const char* pkcTEXT)
 {
 
   cerr << endl << TSceneRT::_tInputFileName << "(" << TSceneRT::_dwLineNumber << ") Error: " << pkcTEXT << endl;
+
+}  /* rt_error() */
+
+void rt_error (const string& rksTEXT)
+{
+
+  cerr << endl << TSceneRT::_tInputFileName << "(" << TSceneRT::_dwLineNumber << ") Error: " << rksTEXT << endl;
 
 }  /* rt_error() */
 
