@@ -55,6 +55,7 @@ class TPatternBrick : public TPattern
       tMortarThickness(0.1) {}
     
     TScalar step( TScalar a, TScalar x) const;
+    TScalar mod( TScalar a, TScalar x) const;
     TScalar smoothstep( TScalar a, TScalar b, TScalar x) const;
     TScalar smoothstepdiff( TScalar a, TScalar b, TScalar x) const;
       
@@ -90,6 +91,19 @@ inline TScalar TPatternBrick::step (TScalar a, TScalar x) const
   return (TScalar) ( x >= a );
 
 }  /* step() */
+
+
+inline TScalar TPatternBrick::mod (TScalar a, TScalar x) const
+{
+  int n = (int) (a / x);
+  a -= n * x;
+  if( a < 0 )
+  {
+    a += x;
+  }
+
+  return a;
+}  /* mod() */
 
 
 inline TScalar TPatternBrick::smoothstep (TScalar a, TScalar b, TScalar x) const

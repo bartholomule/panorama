@@ -38,6 +38,7 @@ TScalar TPatternBrick::evaluate (const TVector& rktPOINT, TVector* ptGRADIENT) c
   tZ = rktPOINT.z() / tTotalWidth;
   
   // Offset x and z for alternate layers of bricks
+
   if ( mod (tY * 0.5, 1.0) < 0.5 )
   {
     tX += 0.5;
