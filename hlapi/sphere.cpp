@@ -23,9 +23,11 @@
 void TSphere::initialize (void)
 {
 
-  tBoundingBox.set (TVector (tLocation.x() - tRadius, tLocation.y() - tRadius, tLocation.z() - tRadius),
-                    TVector (tLocation.x() + tRadius, tLocation.y() + tRadius, tLocation.z() + tRadius));
+  tBoundingBox.set (TVector (-tRadius, -tRadius, -tRadius),
+                    TVector (tRadius, tRadius, tRadius));
 
+  tBoundingBox.applyTransform (*ptMatrix);
+  
   TObject::initialize();
   
 }  /* initialize() */
@@ -98,9 +100,22 @@ bool TSphere::findFirstIntersection (const TRay& rktRAY, TSurfaceData& rtDATA) c
   TScalar   tIntersection2;
   TScalar   s1;
   TScalar   s2;
-  TVector   tCenter       = (tLocation - rktRAY.location());
-  TScalar   tDistance2    = dotProduct (tCenter, tCenter);
-  TScalar   tProjection   = dotProduct (tCenter, rktRAY.direction());
+  TVector   tCenter;
+  TScalar   tDistance2;
+  TScalar   tProjection;
+  TScalar   tFactor;
+  TRay      tRayIT = rktRAY;
+
+  tFactor = tRayIT.applyTransform (ptInverseMatrix);
+
+  if ( rktRAY.limit() < SCALAR_MAX )
+  {
+    tRayIT.setLimit (rktRAY.limit() / tFactor);
+  }
+
+  tCenter       = (-tRayIT.location());
+  tDistance2    = dotProduct (tCenter, tCenter);
+  tProjection   = dotProduct (tCenter, tRayIT.direction());
 
   if ( tDistance2 < tRadius2 )
   {
@@ -110,10 +125,10 @@ bool TSphere::findFirstIntersection (const TRay& rktRAY, TSurfaceData& rtDATA) c
 
     s1 = tProjection + sqrt (tIntersection2);
 
-    if ( ( s1 >= FX_EPSILON ) && ( s1 <= rktRAY.limit() ) )
+    if ( ( s1 >= FX_EPSILON ) && ( s1 <= tRayIT.limit() ) )
     {
       rtDATA.setup (this, rktRAY);
-      rtDATA.setPoint (s1);
+      rtDATA.setPoint (tFactor * s1);
 
       return true;
     }
@@ -140,18 +155,18 @@ bool TSphere::findFirstIntersection (const TRay& rktRAY, TSurfaceData& rtDATA) c
     s1 = tProjection - sqrt (tIntersection2);
     s2 = tProjection + sqrt (tIntersection2);
 
-    if ( ( s1 >= FX_EPSILON ) && ( s1 <= rktRAY.limit() ) )
+    if ( ( s1 >= FX_EPSILON ) && ( s1 <= tRayIT.limit() ) )
     {
       rtDATA.setup (this, rktRAY);
-      rtDATA.setPoint (s1);
+      rtDATA.setPoint (tFactor * s1);
 
       return true;
     }
 
-    if ( ( s2 >= FX_EPSILON ) && ( s2 <= rktRAY.limit() ) )
+    if ( ( s2 >= FX_EPSILON ) && ( s2 <= tRayIT.limit() ) )
     {
       rtDATA.setup (this, rktRAY);
-      rtDATA.setPoint (s2);
+      rtDATA.setPoint (tFactor * s2);
 
       return true;
     }
@@ -168,12 +183,25 @@ bool TSphere::findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) const
   TSurfaceData   tSurfaceData;
   TScalar        tClosestApp2;
   TScalar        tIntersection2;
+  TVector        tCenter;
+  TScalar        tDistance2;
+  TScalar        tProjection;
+  TScalar        tFactor;
   TScalar        s1            = 0;
   TScalar        s2            = 0;
   bool           gIntersection = false;
-  TVector        tCenter       = (tLocation - rktRAY.location());
-  TScalar        tDistance2    = dotProduct (tCenter, tCenter);
-  TScalar        tProjection   = dotProduct (tCenter, rktRAY.direction());
+  TRay           tRayIT        = rktRAY;
+
+  tFactor = tRayIT.applyTransform (ptInverseMatrix);
+
+  if ( rktRAY.limit() < SCALAR_MAX )
+  {
+    tRayIT.setLimit (rktRAY.limit() / tFactor);
+  }
+
+  tCenter       = (-tRayIT.location());
+  tDistance2    = dotProduct (tCenter, tCenter);
+  tProjection   = dotProduct (tCenter, tRayIT.direction());
 
   if ( tDistance2 < tRadius2 )
   {
@@ -208,18 +236,18 @@ bool TSphere::findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) const
 
   tSurfaceData.setup (this, rktRAY);
 
-  if ( ( s1 >= FX_EPSILON ) && ( s1 <= rktRAY.limit() ) )
+  if ( ( s1 >= FX_EPSILON ) && ( s1 <= tRayIT.limit() ) )
   {
-    if ( tSurfaceData.setPoint (s1) )
+    if ( tSurfaceData.setPoint (tFactor * s1) )
     {
       rtLIST.add (tSurfaceData);
       gIntersection = true;
     }
   }
 
-  if ( ( s2 >= FX_EPSILON ) && ( s2 <= rktRAY.limit() ) )
+  if ( ( s2 >= FX_EPSILON ) && ( s2 <= tRayIT.limit() ) )
   {
-    if ( tSurfaceData.setPoint (s2) )
+    if ( tSurfaceData.setPoint (tFactor * s2) )
     {
       rtLIST.add (tSurfaceData);
       gIntersection = true;

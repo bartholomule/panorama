@@ -29,11 +29,18 @@ class TSphere : public TObject
     TScalar   tRadius;
     TScalar   tRadius2;
 
+    TVector localNormal (const TVector& rktPOINT) const
+    {
+      return (rktPOINT) / tRadius;
+    }
+
   public:
 
     TSphere (void) :
       TObject()
     {
+      tRadius  = 1;
+      tRadius2 = 1;
       sCapabilities.gInfinite = false;
     }
       
@@ -47,11 +54,6 @@ class TSphere : public TObject
 
     bool findFirstIntersection (const TRay& rktRAY, TSurfaceData& rtDATA) const;
     bool findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) const;
-
-    TVector normal (const TSurfaceData& rktDATA) const
-    {
-      return (rktDATA.point() - tLocation) / tRadius;
-    }
 
     void printDebug (void) const;
     string className (void) const { return "Sphere"; }
