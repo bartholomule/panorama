@@ -12,6 +12,7 @@ warn_light.plg
 mat_checker.plg
 mat_noise.plg
 mat_worley.plg
+bezier.plg
 of_cartoon.plg
 raytracer.plg
 rt_io.plg

@@ -1,0 +1,4 @@
+
+DIRS = ./bezier
+
+include @top_srcdir@/Makefile.targets

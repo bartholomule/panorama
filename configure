@@ -1478,6 +1478,8 @@ trap 'rm -fr `echo "\
         plugins/material/checker/Makefile:Makefile.plugin.in \
         plugins/material/noise/Makefile:Makefile.plugin.in \
         plugins/material/worley/Makefile:Makefile.plugin.in \
+        plugins/object/Makefile \
+        plugins/object/bezier/Makefile:Makefile.plugin.in \
         plugins/object_filter/Makefile \
         plugins/object_filter/cartoon/Makefile:Makefile.plugin.in \
         plugins/renderer/Makefile \
@@ -1608,6 +1610,8 @@ CONFIG_FILES=\${CONFIG_FILES-"\
         plugins/material/checker/Makefile:Makefile.plugin.in \
         plugins/material/noise/Makefile:Makefile.plugin.in \
         plugins/material/worley/Makefile:Makefile.plugin.in \
+        plugins/object/Makefile \
+        plugins/object/bezier/Makefile:Makefile.plugin.in \
         plugins/object_filter/Makefile \
         plugins/object_filter/cartoon/Makefile:Makefile.plugin.in \
         plugins/renderer/Makefile \
