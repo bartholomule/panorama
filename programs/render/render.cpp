@@ -20,6 +20,7 @@
 #include <iostream>
 #include "llapi/file.h"
 #include "llapi/scene.h"
+#include "llapi/gradient.h"
 #include "hlapi/plugin_manager.h"
 #include "hlapi/image_manager.h"
 #include "hlapi/scene_manager.h"
@@ -30,6 +31,7 @@ static string   _tProgramName;
 static string   _tTopDir;
 static string   _tPluginPath;
 static string   _tTexturePath;
+static string   _tGradientPath;
 static string   _tLogFileName;
 static string   _tLocalPath;
 static bool     _gKeepLog = false;
@@ -67,9 +69,10 @@ void SetPaths (void)
   
   char*   pcEnv;
 
-  _tTopDir      = TOPDIR;
-  _tPluginPath  = PLUGIN_DIR;
-  _tTexturePath = TEXTURE_DIR;
+  _tTopDir       = TOPDIR;
+  _tPluginPath   = PLUGIN_DIR;
+  _tTexturePath  = TEXTURE_DIR;
+  _tGradientPath = GRADIENT_DIR;
 
   TScene::_tIncludePath = INCLUDE_DIR;
   
@@ -123,6 +126,7 @@ int main (int argc, char *argv[])
   cout << "Loading plugins..." << endl;
   tPluginManager.initialize (_tLocalPath + "pluginrc", _tPluginPath, 0);
 
+  TGradient::_initialize (_tGradientPath);
   TImageManager::_initialize();
   TSceneManager::_initialize();
   tImageManager.initialize (_tTexturePath);
