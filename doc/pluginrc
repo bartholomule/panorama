@@ -1,16 +1,34 @@
+#
+# Panorama plugin list
+#
+
+# Atmospheric objects
 atm_const.plg
+
+# BSDF
 bsdf_lambertian.plg
 bsdf_phong.plg
+
+# Cameras
 pinhole.plg
+
+# Image filters
 if_cartoon.plg
 if_convert_to_grey.plg
 if_fog.plg
+if_text.plg
+
+# Image input/output formats
 tga_io.plg
 png_io.plg
 jpeg_io.plg
+
+# Lights
 point_light.plg
 projector.plg
 warn_light.plg
+
+# Materials
 mat_brick.plg
 mat_checker.plg
 mat_crackle.plg
@@ -20,7 +38,15 @@ mat_noise.plg
 mat_parquet.plg
 mat_wood.plg
 mat_worley.plg
+
+# Objects
 bezier.plg
+
+# Object filters
 of_cartoon.plg
+
+# Renderers
 raytracer.plg
+
+# Scene input/output formats
 rt_io.plg
