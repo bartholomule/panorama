@@ -39,7 +39,7 @@ class TObject : public TVolume
     TMatrix*                     ptMatrix;
     TMatrix*                     ptInverseMatrix;
 
-    struct
+    struct TCapabilities
     {
       
       unsigned   gInfinite : 1;
@@ -131,7 +131,8 @@ class TObject : public TVolume
     TMaterial* material (void) const { return ptMaterial; }
     size_t objectCode (void) const { return zObjectCode; }
     const list<const TObjectFilter*>& filterList (void) const { return tObjectFilterList; }
-
+    const TCapabilities& capabilities (void) const { return sCapabilities; }
+    
     virtual void setMaterial (TMaterial* ptMAT) { ptMaterial = ptMAT; }
     virtual void setObjectCode (size_t zCODE) { zObjectCode = zCODE; }
 
