@@ -78,6 +78,21 @@ class TVector3D
       vz = Z;
     }
 
+    void setX (TItem X = 0)
+    {
+      vx = X;
+    }
+
+    void setY (TItem Y = 0)
+    {
+      vy = Y;
+    }
+
+    void setZ (TItem Z = 0)
+    {
+      vz = Z;
+    }
+
     TVector3D<TItem>& operator += (const TVector3D<TItem>& rktVECTOR);
     TVector3D<TItem>& operator -= (const TVector3D<TItem>& rktVECTOR);
     TVector3D<TItem>& operator *= (const TVector3D<TItem>& rktVECTOR);
