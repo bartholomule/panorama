@@ -20,6 +20,13 @@
 #include "object_properties_dialog.h"
 #include "scene_tree.h"
 
+static void accept_properties(TObjectPropertiesDialog* tOPD)
+{
+  tOPD->accept_changes();
+  tOPD->hide();
+  delete tOPD;
+}
+
 bool TSceneTree::setCamera (Gtk::Tree* ptTREE)
 {
   
@@ -223,6 +230,8 @@ gint TSceneTree::manageButtonPress (GdkEventButton* ptEVENT, TProcedural* ptOBJE
   if ( ( ptEVENT->type == GDK_2BUTTON_PRESS ) && ( ptEVENT->button == 1 ) )
   {
     ptDlg = new TObjectPropertiesDialog (ptOBJECT);
+    cout << "Setting up the Ok button..." << endl;
+    ptDlg->getOk().clicked.connect(bind(slot(&accept_properties), ptDlg));
     ptDlg->show();
   }
 

@@ -66,11 +66,19 @@ void imageSaveAsCB (TImageWindow* ptWnd)
   
 }  /* imageSaveAsCB() */
 
+#include <pair.h>
+using std::pair;
+typedef pair<TImageWindow*,TObjectPropertiesDialog*> cb2_item;
 
-void imageFilterCB2(TImageWindow* ptWND, TImageFilter* ptFilter)
+void imageFilterCB2(cb2_item cb_data, TImageFilter* ptFilter)
 {
-  //  delete ptWND->dialog;
-  ptWND->filterImage(ptFilter);     
+  TImageWindow* ptWnd = cb_data.first;  
+  TObjectPropertiesDialog* dialog = cb_data.second;
+  cout << "Accepting changes" << endl;
+  dialog->accept_changes();
+  dialog->hide();
+  delete dialog;
+  ptWnd->filterImage(ptFilter);     
 }
 
 void imageFilterCB (TImageWindow* ptWND, const char* filter_name)
@@ -82,7 +90,7 @@ void imageFilterCB (TImageWindow* ptWND, const char* filter_name)
   cout << "Pointer=" << ptFilter << endl;
 
   TObjectPropertiesDialog* dialog = new TObjectPropertiesDialog(ptFilter);
-  dialog->getOk().clicked.connect(bind(slot(imageFilterCB2),ptWND,ptFilter));
+  dialog->getOk().clicked.connect(bind(slot(imageFilterCB2),cb2_item(ptWND,dialog),ptFilter));
   dialog->show();
 
 }  /* imageFilterCB() */

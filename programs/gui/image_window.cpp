@@ -44,43 +44,18 @@ Gtk::Menu* TImageWindow::createFilterMenu (void)
   tIter = ptPluginList->find (FX_IMAGE_FILTER_CLASS);
   if ( tIter != ptPluginList->end() )
   {
-    cout << "Image filter plugin type located" << endl;
     if ( !tIter->second.empty() )
     {
-      cout << "List not empty" << endl;
       ptMenuEntries = new GtkMenuEntry [tIter->second.size()];
         
       for (list<string>::const_iterator tIter2 = tIter->second.begin();
 	   tIter2 != tIter->second.end();
 	   ++tIter2)
       {
-	cout << "Menu Option=" << *tIter2 << endl;	
 	menu_list->push_back(MenuElem(*tIter2,
 				      bind(slot(imageFilterCB),this,tIter2->c_str())));
-#if garbage	
-        tMenuOption = string ("<Main>/Filter/") + *tIter2;
-
-        ptMenuEntries[J].path = new char [tMenuOption.length() + 1];
-        
-        strcpy (ptMenuEntries[J].path, tMenuOption.c_str());
-        
-        ptMenuEntries[J].callback = &imageFilterCB;
-
-        ptData = new TImageFilterCallbackData;
-
-        ptData->tName    = *tIter2;
-        ptData->ptWindow = this;
-
-        ptMenuEntries[J].callback_data = ptData;
-        
-        J++;
-#endif /* garbage		 */
       }
 
-#if FIXME
-      ptMenuFactory->add_entries (ptMenuEntries, J);
-#endif
-      
       delete ptMenuEntries;
     }
     else
@@ -97,18 +72,14 @@ Gtk::Menu* TImageWindow::createFilterMenu (void)
 }  /* setFilterMenu() */
 
 
-TImageWindow::TImageWindow (TScene* ptSCENE)
+TImageWindow::TImageWindow (TScene* ptSCENE):
+  ptProgress(NULL)
 {
-
   string             tTitle;
-#if FIXME
-  Gtk_MenuFactory*   ptSubfactory;
-#endif
   NAttribute         nAttrib;
   
   gRenderingDone = false;
   ptScene        = ptSCENE;
-  //  dialog         = NULL;
   ptImage        = ptScene->buffers()->ptImage;
 
   ptVBox = new Gtk::VBox;
@@ -116,25 +87,10 @@ TImageWindow::TImageWindow (TScene* ptSCENE)
   
   add (*ptVBox);
 
-#if FIXME
-  ptMenuFactory = new Gtk_MenuFactory (GTK_MENU_FACTORY_MENU_BAR);
-  ptSubfactory  = new Gtk_MenuFactory (GTK_MENU_FACTORY_MENU_BAR);
-  
-  for (size_t J = 0; ( J < _zMenuItems ) ;J++)
-  {
-    _atMenuItems[J].callback_data = (gpointer) this;
-  }
-  
-  ptMenuFactory->add_subfactory (ptSubfactory, "<Main>");
-  ptMenuFactory->add_entries (_atMenuItems, _zMenuItems);
-
-  ptMenuBar = ptSubfactory->get_menubar_widget();
-#else
   ptMenuBar = manage(new Gtk::MenuBar());
   using namespace Gtk::Menu_Helpers;
   MenuList* menu_list;
   Gtk::Menu* image_menu = manage(new Gtk::Menu());
-  //  Gtk::Menu* filter_menu = manage(new Gtk::Menu());
   Gtk::Menu* help_menu = manage(new Gtk::Menu());
 
   menu_list = &image_menu->items();
@@ -149,17 +105,11 @@ TImageWindow::TImageWindow (TScene* ptSCENE)
   // Add them to the bar...
   menu_list = &ptMenuBar->items();
   menu_list->push_back(MenuElem("_Image",*image_menu));
-  //  menu_list->push_back(MenuElem("_Filter",*filter_menu));
   menu_list->push_back(MenuElem("_Filter",*manage(createFilterMenu())));
   menu_list->push_back(MenuElem("_Help",*help_menu));      
-#endif
-//  ptMenuBar = new Gtk_MenuBar (GTK_MENU_BAR (ptSubfactory->gtkobj()->widget));
+
   ptMenuBar->show_all();
 
-//  ptMenuFactory->factory_find ("<Main>/Help")->widget->right_justify();
-
-  //  setFilterMenu();
-  
   ptVBox->pack_start (*ptMenuBar, 0, 1, 0);
 
   ptPreview = new Gtk::Preview (GTK_PREVIEW_COLOR);
@@ -241,6 +191,31 @@ void TImageWindow::drawImage (void)
   
 }  /* drawImage() */
 
+void TImageWindow::set_progress (size_t line_number)
+{
+  // Height=ptImage->height();
+  gfloat percentage = line_number / gfloat(ptImage->height() - 1);
+
+  if(percentage < 1)
+  {
+    if(ptProgress == NULL)
+    {
+      ptProgress = new Gtk::ProgressBar();
+      ptProgress->show();
+      ptVBox->add (*ptProgress);
+    }
+    ptProgress->set_percentage(percentage);
+  }
+  else
+  {
+    ptProgress->set_percentage(1.0);    
+    /*
+    ptVBox->remove(*ptProgress);
+    ptProgress->hide();
+    delete ptProgress;
+    */
+  }  
+}
 
 void FinishedRenderLine (size_t zROW, void* pvDATA)
 {
@@ -254,6 +229,9 @@ void FinishedRenderLine (size_t zROW, void* pvDATA)
 
   ptWnd->drawRow (zROW);
 
+  // Update progress bar.
+  ptWnd->set_progress(zROW);
+  
 }  /* FinishedRenderLine() */
 
 

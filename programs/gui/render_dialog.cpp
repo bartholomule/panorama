@@ -102,8 +102,9 @@ TRenderDialog::TRenderDialog (TScene* ptSCENE)
 
   ptVBox->pack_start(*ptLabel);
 
-  ptCButton = new Gtk::CheckButton ("Normal");
+  ptCButton = new Gtk::CheckButton ("Normal (NBuffer)");
   ptCButton->set_active(true);
+  wNeededBuffers |= FX_NBUFFER;
   ptCButton->show();
 
   ptCButton->toggled.connect(bind(slot(this, &TRenderDialog::toggleNBuffer), ptCButton));
@@ -111,8 +112,9 @@ TRenderDialog::TRenderDialog (TScene* ptSCENE)
   
   ptVBox->add (*ptCButton);
   
-  ptCButton = new Gtk::CheckButton ("Distance");
-  ptCButton->set_active(true);  
+  ptCButton = new Gtk::CheckButton ("Distance (ZBuffer)");
+  ptCButton->set_active(true);
+  wNeededBuffers |= FX_ZBUFFER;    
   ptCButton->show();
 
   ptCButton->toggled.connect(bind(slot(this, &TRenderDialog::toggleZBuffer), ptCButton));

@@ -28,8 +28,10 @@ class TObjectPropertiesDialog : public Gtk::Dialog
   protected:
 
     TProcedural*   ptObject;
+    TProcedural*   ptObjectCopy; // A copy of the object, only in attributes.
 
-    Gtk::Widget* createValueWidget (EAttribType eTYPE, NAttribute nVALUE);
+    Gtk::Widget* createValueWidget (const string& name, EAttribType eTYPE,
+				    NAttribute nVALUE);
       
     Gtk::Widget* createInfoWidget (void);
     Gtk::Widget* createPropertiesWidget (void);
@@ -38,9 +40,12 @@ class TObjectPropertiesDialog : public Gtk::Dialog
   public:
 
     TObjectPropertiesDialog (TProcedural* ptOBJECT);
+    ~TObjectPropertiesDialog();
 
     Gtk::Button& getOk()             { return *ptOkButton; }
-    const Gtk::Button& getOk() const { return *ptOkButton; }  
+    const Gtk::Button& getOk() const { return *ptOkButton; }
+
+    void accept_changes();
     
 };  /* class TObjectPropertiesDialog */
 

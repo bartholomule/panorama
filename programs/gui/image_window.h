@@ -45,15 +45,15 @@ protected:
   Gtk::VBox*          ptVBox;
   Gtk::MenuBar*       ptMenuBar;
   Gtk::Preview*       ptPreview;
-  TImage*            ptImage;
+  TImage*             ptImage;
 
   Gtk::Menu* createFilterMenu (void);
                         
 public:
 
   Gtk::FileSelection*      ptFileSelection;
+  Gtk::ProgressBar*        ptProgress;
   TScene*                  ptScene;
-  //  TObjectPropertiesDialog* dialog;
   bool                     gRenderingDone;
 
   TImageWindow (TScene* ptSCENE);
@@ -64,6 +64,10 @@ public:
   void drawImage (void);
 
   void filterImage(TImageFilter* ptFilter);
+
+  size_t image_width() const { return ptImage->width(); }
+  size_t image_height() const { return ptImage->height(); }  
+  void set_progress(size_t line_number);
 
 };  /* class TImageWindow */
 
