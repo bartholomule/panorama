@@ -37,8 +37,8 @@ distclean:
 		@for i in $(DIRS); do \
                   $(MAKE) -C $$i distclean; \
                 done
-		@rm -f ${SRC_DIR}/Makefile ${SRC_DIR}/Makefile.targets ${SRC_DIR}/Makefile.vars
-		@rm -f ${SRC_DIR}/config.cache ${SRC_DIR}/config.log ${SRC_DIR}/config.status
+		@rm -f Makefile Makefile.targets Makefile.vars
+		@rm -f config.cache config.log config.status
 
 installdirs:
 		@echo Creating directories...
