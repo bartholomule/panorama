@@ -4,6 +4,7 @@ BUILD_TOP = ../..
 DIRS = brick \
        checker \
        crackle \
+       cylgrad \
        leopard \
        marble \
        noise \
