@@ -1,0 +1,2 @@
+PLUGIN_NAME = of_convert_to_grey
+OBJ         = of_convert_to_grey.o
