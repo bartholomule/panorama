@@ -294,7 +294,7 @@ bool THeightField::traverseGrid (const TRay& rktRAY, TSurfaceData& rtDATA) const
 }  /* traverseGrid() */
 
                                  
-void THeightField::initialize (void)
+bool THeightField::initialize (void)
 {
 
   TScalar   Y;
@@ -327,6 +327,7 @@ void THeightField::initialize (void)
   tBoundingBox.set (TVector (-tHalfWidth, tMinY, -tHalfHeight), TVector (tHalfWidth, tMaxY, tHalfHeight));
   tBoundingBox.applyTransform (*ptMatrix);
 
+  return true;
 }  /* initialize() */
 
 
