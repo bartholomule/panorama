@@ -32,7 +32,8 @@ INCLUDE = -I${BUILD_TOP} -I${SRC_DIR}/${BUILD_TOP} -I${SRC_DIR} @extra_includes@
 LDFLAGS += @extra_libs@
 DEFS    = @DEFS@ \
           -DTOPDIR='"${TOPDIR}"' \
-	  -DSTATIC_LINK=@STATIC_LINK@
+	  -DSTATIC_LINK=@STATIC_LINK@ 
+          
 
 CXX      = @CXX@
 LEX      = @LEX@
@@ -43,11 +44,24 @@ ARCH_MAKE_SHARED_OPTS = @ARCH_MAKE_SHARED_OPTS@
 ARCH_PROG_SETLIBPATH  = @ARCH_PROG_SETLIBPATH@
 
 ifeq (@DEBUG_INFO@,1)
-OPT = -ggdb
+DBG = -ggdb
 else
-OPT = -O
-#-O6 -fexpensive-optimizations -fno-math-errno 
+DBG = 
 endif
+
+ifeq (@OPTIMIZATIONS_ALLOWED@,1)
+OPT = -O@OPTIMIZATION_LEVEL@  
+#-fno-math-errno 
+ifeq (@OPTIMIZE_EXPENSIVE@,1)
+OPT += -fexpensive-optimizations
+endif
+else
+OPT = 
+endif
+
+# Add in the target cpu type
+OPT += @CPU_SPECIFIC_FLAG@
+
 
 ifeq (@STATIC_LINK@,1)
 LLAPI_LIB = ${STATIC_LLAPI_LIB}
@@ -63,7 +77,19 @@ else
 PROF = -fomit-frame-pointer
 endif
 
-CXXFLAGS = ${OPT} ${STAT} ${PROF} -ansi -fno-exceptions -fno-rtti \
+ifeq (@EXCEPTIONS_ALLOWED@, 0)
+EXCEPTION_FLAGS = -fno-exceptions
+else
+EXCEPTION_FLAGS = 
+endif
+
+ifneq (@RTTI_ALLOWED@, 1)
+RTTI = -fno-rtti
+else
+RTTI = -DUSE_RTTI=1
+endif
+
+CXXFLAGS = ${OPT} ${DBG} ${STAT} ${PROF} -ansi ${EXCEPTION_FLAGS} ${RTTI} \
 	   -Wall -Wstrict-prototypes ${DEFS} ${INCLUDE}
 
 # The following one causes the gui to fail to build on my machine.  I don't know why.

@@ -4,10 +4,15 @@ AC_INIT(llapi/base_class.h)
 
 AC_PREFIX_DEFAULT(/opt/panorama)
 
+dnl ---------------------------------------------------------------------------
 dnl Gets the host type
+dnl ---------------------------------------------------------------------------
 AC_CANONICAL_HOST
+AC_CANONICAL_TARGET
 
+dnl ---------------------------------------------------------------------------
 dnl Checks for programs.
+dnl ---------------------------------------------------------------------------
 AC_PROG_CXX
 AC_LANG(C++)
 AC_PROG_INSTALL
@@ -15,13 +20,19 @@ AC_PROG_LEX
 AC_PROG_YACC
 AC_PROG_MAKE_SET
 
-dnl Checks for libraries.
+dnl ---------------------------------------------------------------------------
+dnl Checks for dlopen function
+dnl ---------------------------------------------------------------------------
 AC_CHECK_LIB(dl, dlopen)
 
+dnl ---------------------------------------------------------------------------
 dnl Checks for header files.
+dnl ---------------------------------------------------------------------------
 AC_HEADER_STDC
 
+dnl ---------------------------------------------------------------------------
 dnl Check for math features
+dnl ---------------------------------------------------------------------------
 
 AC_CACHE_CHECK([for working cbrt],
   ac_cv_cbrt_ok,
@@ -167,7 +178,9 @@ if test $ac_cv_inf_tests_ok = yes; then
   fi
 fi
 
+dnl ---------------------------------------------------------------------------
 dnl Check for C++ features
+dnl ---------------------------------------------------------------------------
 AC_CACHE_CHECK([for working member templates (C++)],
   ac_cv_member_templates_ok,
 [AC_TRY_COMPILE([
@@ -226,8 +239,13 @@ if test $ac_cv_virtual_return_type_ok = no; then
   AC_DEFINE(BROKEN_RETURN_SUBTYPES_ON_VIRTUAL)
 fi  
 
+dnl ---------------------------------------------------------------------------
 dnl Check for special libraries
+dnl ---------------------------------------------------------------------------
 
+dnl ---------------
+dnl SigC++
+dnl ---------------
 echo -e "checking for SigC++... \c"
 dnl AC_CHECK_PROG(sigcxx_val,"sigc-config --cflags","yes","no")
 if [ `sigc-config --cflags >/dev/null 2>/dev/null` ]
@@ -245,6 +263,9 @@ fi
 AC_SUBST(extra_includes)
 AC_SUBST(extra_libs)
 
+dnl ---------------
+dnl GTK--
+dnl ---------------
 echo -e "checking for GTK--... \c"
 dnl AC_CHECK_PROG(gtkmm_val,"gtkmm-config --cflags","yes","no")
 if [ `gtkmm-config --cflags >/dev/null 2>/dev/null` ]
@@ -258,6 +279,9 @@ else
 fi
 AC_SUBST(GUI_PROGRAM)
 
+dnl ---------------
+dnl freetype
+dnl ---------------
 text_val=no
 echo -e "checking for modern freetype... \c"
 if [ `freetype-config --cflags >/dev/null 2>/dev/null` ]
@@ -285,6 +309,9 @@ fi
 AC_SUBST(TEXT_FILTER)
 AC_SUBST(PLUGIN_TEXT)
 
+dnl ---------------
+dnl libjpeg
+dnl ---------------
 jpeg_val=no
 AC_CHECK_HEADER(jpeglib.h, [AC_CHECK_LIB(jpeg,main,jpeg_val=yes)])
 if test $jpeg_val = "yes"; then
@@ -298,6 +325,9 @@ fi
 AC_SUBST(JPEG_FILTER)
 AC_SUBST(PLUGIN_JPEG)
 
+dnl ---------------
+dnl libpng
+dnl ---------------
 png_val=no
 AC_CHECK_HEADER(png.h, [AC_CHECK_LIB(png,main,dnl
 AC_CHECK_LIB(z,main,png_val=yes))])
@@ -312,6 +342,9 @@ fi
 AC_SUBST(PNG_FILTER)
 AC_SUBST(PLUGIN_PNG)
 
+dnl ---------------
+dnl libungif
+dnl ---------------
 gif_val=no
 AC_CHECK_HEADER(gif_lib.h, [AC_CHECK_LIB(ungif,main,gif_val=yes)])
 if test $gif_val = "yes"; then
@@ -325,6 +358,9 @@ fi
 AC_SUBST(GIF_FILTER)
 AC_SUBST(PLUGIN_GIF)
 
+dnl ---------------
+dnl libtiff
+dnl ---------------
 tiff_val=no
 AC_CHECK_HEADER(tiffio.h, [AC_CHECK_LIB(tiff,TIFFGetVersion,tiff_val=yes)])
 if test $tiff_val = "yes"; then
@@ -338,7 +374,9 @@ fi
 AC_SUBST(TIFF_FILTER)
 AC_SUBST(PLUGIN_TIFF)
 
+dnl ---------------------------------------------------------------------------
 dnl Checks for typedefs, structures, and compiler characteristics.
+dnl ---------------------------------------------------------------------------
 AC_C_CONST
 AC_C_BIGENDIAN
 AC_TYPE_SIZE_T
@@ -354,8 +392,162 @@ if test $ac_cv_fileno_ok = no; then
   AC_DEFINE(BROKEN_FILENO_INCLUDE)
 fi
 
+AC_MSG_CHECKING(for a forced cpu type)
+AC_ARG_ENABLE(cpu, 
+[  --enable-cpu=CPUTYPE    Force the use of the given cpu type in compilation.]
+[                          This is for using a specific CPU within a family.  ]
+[                          --enable-cpu=pentium4  or  --enable-cpu=athlon-xp  ]
+[                          are both within the i686 family group, but perform ]
+[                          very differently.                                  ]
+[                                                                             ]
+[                          Alternatively, you can use the --target= option to ]
+[                          specify a family, but not a specific CPU.          ]
+[                                                                             ]
+[                          gcc supports some of the following (check yours):  ]
+[                              i386, i486, i586, i686, pentium, pentiumpro,   ]
+[                              pentium-mmx, pentium2, pentium3, pentium4,     ]
+[                              k6, k6-2, k6-3, athlon, athlon-tbird,          ]
+[                              athlon-xp, athlon-mp                           ],
+CPU_TYPE=$enableval, CPU_TYPE="guess")
+if test $CPU_TYPE = "yes"; then
+  CPU_TYPE=$target_cpu
+  CPU_MESSAGE="yes, but not specified, guessing $CPU_TYPE"
+  CPU_OVERRIDE=1
+elif test $CPU_TYPE = "guess"; then
+  CPU_TYPE=$target_cpu
+  CPU_MESSAGE="no, guessing $CPU_TYPE"
+  CPU_OVERRIDE=1
+elif test $CPU_TYPE = "no"; then
+  CPU_OVERRIDE=0
+  CPU_MESSAGE="no"
+else
+  CPU_MESSAGE="yes, $CPU_TYPE"
+  CPU_OVERRIDE=1
+fi
+AC_SUBST(CPU_TYPE)
+AC_MSG_RESULT($CPU_MESSAGE)
 
+if test $CPU_OVERRIDE != 0
+then 
+  AC_MSG_CHECKING(which compiler flag specifies CPU type)
+  OLD_CXXFLAGS=$CXXFLAGS
+  CXXFLAGS="$OLD_CXXFLAGS -march=$CPU_TYPE"
+  AC_TRY_LINK( [ int iii; ], [ iii = 0; ], CPU_SPECIFIC_SWITCH="-march", CPU_SPECIFIC_SWITCH="no")
+  if test "no" = $CPU_SPECIFIC_SWITCH; then
+    CXXFLAGS="$OLD_CXXFLAGS -mcpu=$CPU_TYPE"
+    AC_TRY_LINK( [ int iii; ], [ iii = 0;], CPU_SPECIFIC_SWITCH="-mcpu", CPU_SPECIFIC_SWITCH="no")
+  fi
+  dnl I don't have anything else to try right now.  Someone else can add something.
+  if test "no" = $CPU_SPECIFIC_SWITCH; then
+    AC_MSG_RESULT(
+[NOT FOUND]
+[                   Your CPU type override ($CPU_TYPE) may be invalid         ]
+[                   for your compiler (CHECK THIS FIRST), or I don't know how ]
+[                   to override it on your compiler (send a patch)... Ignoring]
+[                   forced CPU override. ])
+    CPU_SPECIFIC_FLAG=""
+  else
+    AC_MSG_RESULT($CPU_SPECIFIC_SWITCH)
+    CPU_SPECIFIC_FLAG="$CPU_SPECIFIC_SWITCH=$CPU_TYPE"
+  fi
+  CXXFLAGS=$OLD_CXXFLAGS
+else
+  CPU_SPECIFIC_FLAG=""
+fi
+AC_SUBST(CPU_SPECIFIC_FLAG)
+
+
+
+
+
+dnl ---------------------------------------------------------------------------
+dnl Checks for optimizations option.
+dnl ---------------------------------------------------------------------------
+AC_MSG_CHECKING(whether to enable optimizations or not)
+AC_ARG_ENABLE(optimizations,
+[  --enable-optimizations  Enable optimizations (=level given)],
+OPTIMIZATION_VAL=$enableval, OPTIMIZATION_VAL="no")
+if test $OPTIMIZATION_VAL = "yes"; then
+  OPTIMIZATIONS_ALLOWED=1
+  OPTIMIZATION_LEVEL=""
+  OPTIMIZE_EXPENSIVE=0
+  OPTIMIZATION_VAL="yes"
+elif test $OPTIMIZATION_VAL != "no"; then
+  OPTIMIZATIONS_ALLOWED=0
+  OPTIMIZE_EXPENSIVE=0
+  OPTIMIZATION_LEVEL=""
+  dnl For some reason, this didn't work correctly with a simple case:
+  dnl [0-9]) ...
+
+  case $OPTIMIZATION_VAL in
+    1) OPTIMIZATIONS_ALLOWED=1 ;;
+    2) OPTIMIZATIONS_ALLOWED=1 ;;
+    3) OPTIMIZATIONS_ALLOWED=1 ;;
+    4) OPTIMIZATIONS_ALLOWED=1 ;;
+    5) OPTIMIZATIONS_ALLOWED=1 ;; 
+    6) OPTIMIZATIONS_ALLOWED=1 ;; 
+    7) OPTIMIZATIONS_ALLOWED=1 ;; 
+    8) OPTIMIZATIONS_ALLOWED=1 ;; 
+    9) OPTIMIZATIONS_ALLOWED=1 ;; 
+    0) OPTIMIZATIONS_ALLOWED=1 ;;
+    *) OPTIMIZATION_VAL="NO -- unknown value \"$OPTIMIZATION_VAL\"" ;;
+  esac
+  if test $OPTIMIZATIONS_ALLOWED != 0
+  then
+    OPTIMIZATION_LEVEL=$OPTIMIZATION_VAL
+    OPTIMIZATION_VAL="yes, level $OPTIMIZATION_LEVEL"
+    if test $OPTIMIZATION_LEVEL -ge 5
+    then
+      OPTIMIZE_EXPENSIVE=1
+    fi
+  fi
+else
+  OPTIMIZATIONS_ALLOWED=0
+  OPTIMIZATION_VAL="no"
+  OPTIMIZE_EXPENSIVE=0
+fi
+AC_SUBST(OPTIMIZATIONS_ALLOWED)
+AC_SUBST(OPTIMIZATION_LEVEL)
+AC_SUBST(OPTIMIZE_EXPENSIVE)
+AC_MSG_RESULT($OPTIMIZATION_VAL)
+
+dnl ---------------------------------------------------------------------------
+dnl Checks for exceptions option.
+dnl ---------------------------------------------------------------------------
+AC_MSG_CHECKING(whether to enable exceptions or not)
+AC_ARG_ENABLE(exceptions,
+[  --enable-exceptions     Enable exception handling],
+EXCEPTION_VAL=$enableval, EXCEPTION_VAL="no")
+if test $EXCEPTION_VAL = "yes"; then
+  EXCEPTIONS_ALLOWED=1
+  AC_DEFINE(USE_EXCEPTIONS,1)
+else
+  EXCEPTIONS_ALLOWED=0
+  EXCEPTION_VAL="no"
+fi
+AC_SUBST(EXCEPTIONS_ALLOWED)
+AC_MSG_RESULT($EXCEPTION_VAL)
+
+dnl ---------------------------------------------------------------------------
+dnl Checks for rtti option.
+dnl ---------------------------------------------------------------------------
+AC_MSG_CHECKING(whether to enable rtti or not)
+AC_ARG_ENABLE(rtti,
+[  --enable-rtti           Enable runtime type identification],
+RTTI_VAL=$enableval, RTTI_VAL="no")
+if test $RTTI_VAL = "yes"; then
+  RTTI_ALLOWED=1
+else
+  RTTI_ALLOWED=0
+  RTTI_VAL="no"
+fi
+AC_SUBST(RTTI_ALLOWED)
+AC_MSG_RESULT($RTTI_VAL)
+
+
+dnl ---------------------------------------------------------------------------
 dnl Checks for static-link option.
+dnl ---------------------------------------------------------------------------
 AC_MSG_CHECKING(whether to link statically or not)
 AC_ARG_ENABLE(static-link,
 [  --enable-static-link    Link everything statically],
@@ -369,7 +561,9 @@ fi
 AC_SUBST(STATIC_LINK)
 AC_MSG_RESULT($STATIC_VAL)
 
+dnl ---------------------------------------------------------------------------
 dnl Checks for profile option.
+dnl ---------------------------------------------------------------------------
 AC_MSG_CHECKING(whether to add profiling information or not)
 AC_ARG_ENABLE(profile,
 [  --enable-profile        Add profiling information],
@@ -383,7 +577,9 @@ fi
 AC_SUBST(PROFILE)
 AC_MSG_RESULT($PROFILE_VAL)
 
+dnl ---------------------------------------------------------------------------
 dnl Checks for debug option.
+dnl ---------------------------------------------------------------------------
 AC_MSG_CHECKING(whether to enable debug info or not)
 AC_ARG_ENABLE(debug,
 [  --enable-debug          Generate debug information when compiling],
@@ -397,7 +593,9 @@ fi
 AC_SUBST(DEBUG_INFO)
 AC_MSG_RESULT($DEBUG_VAL)
 
+dnl ---------------------------------------------------------------------------
 dnl Checks for experimental code option.
+dnl ---------------------------------------------------------------------------
 AC_MSG_CHECKING(whether to enable experimental code or not)
 AC_ARG_ENABLE(experimental,
 [  --enable-experimental   Include experimental code in build],
@@ -412,7 +610,9 @@ fi
 AC_SUBST(EXPERIMENTAL)
 AC_MSG_RESULT($EXPER_VAL)
 
+dnl ---------------------------------------------------------------------------
 dnl Checks for new attributes option.
+dnl ---------------------------------------------------------------------------
 AC_MSG_CHECKING(whether to enable new attribute model or not)
 AC_ARG_ENABLE(new-attribs,
 [  --disable-new-attribs   Prevent the use of the new attrib model (for experts)],
@@ -427,6 +627,7 @@ fi
 AC_SUBST(ATTRIBUTES)
 AC_MSG_RESULT($ATTRIB_VAL)
 
+dnl ---------------------------------------------------------------------------
 dnl This is the machine specific logic which can set some features depending
 dnl on the platform.
 dnl XXX Check we are really gcc
@@ -439,6 +640,7 @@ dnl have_so_reg flags if so_locations is used by the machine.
 dnl
 dnl ARCH_PROG_SETLIBPATH flags to set the library path in executables
 dnl      convenient so one does not need to set LD_LIBRARY_PATH
+dnl ---------------------------------------------------------------------------
 case $host in
 
 alpha-dec-osf*)
