@@ -27,7 +27,6 @@ class TTransformObject : public TObject
   protected:
 
     virtual TVector localNormal (const TVector& rktPOINT) const { return TVector (0, 0 ,0); }
-    void createMatrices (void);
 
   public:
 

@@ -19,18 +19,6 @@
 #include <cassert>
 #include "llapi/transform_object.h"
 
-void TTransformObject::createMatrices (void)
-{
-
-  ptMatrix        = new TMatrix();
-  ptInverseMatrix = new TMatrix();
-
-  ptMatrix->setIdentity();
-  ptInverseMatrix->setIdentity();
-  
-}  /* createMatrices() */
-
-
 void TTransformObject::translate (const TVector& rktNEW_POS)
 {
   

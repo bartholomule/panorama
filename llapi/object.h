@@ -46,12 +46,43 @@ class TObject : public TVolume
       
     } sCapabilities;
 
+    void createMatrices (void);
+
   public:
 
     TObject (void) :
       ptMaterial (NULL),
       ptMatrix (NULL),
       ptInverseMatrix (NULL) {}
+      
+    TObject (const TObject& rktOBJ)
+    {
+      createMatrices();
+      
+      *ptMatrix        = *(rktOBJ.ptMatrix);
+      *ptInverseMatrix = *(rktOBJ.ptInverseMatrix);
+
+      ptMaterial        = rktOBJ.ptMaterial;
+      zObjectCode       = rktOBJ.zObjectCode;
+      tObjectFilterList = rktOBJ.tObjectFilterList;
+    }
+
+    TObject& operator = (const TObject& rktOBJ)
+    {
+      if ( !ptMatrix )
+      {
+        createMatrices();
+      }
+      
+      *ptMatrix        = *(rktOBJ.ptMatrix);
+      *ptInverseMatrix = *(rktOBJ.ptInverseMatrix);
+
+      ptMaterial        = rktOBJ.ptMaterial;
+      zObjectCode       = rktOBJ.zObjectCode;
+      tObjectFilterList = rktOBJ.tObjectFilterList;
+
+      return *this;
+    }
       
     virtual void initialize (void)
     {
@@ -93,6 +124,20 @@ class TObject : public TVolume
     virtual TMatrix* transformMatrix (void) const { return ptMatrix; }
     virtual TMatrix* inverseTransformMatrix (void) const { return ptInverseMatrix; }
 
+    virtual void setTransformMatrix (const TMatrix& rktMATRIX)
+    {
+      assert ( ptMatrix );
+      
+      *ptMatrix = rktMATRIX;
+    }
+    
+    virtual void setInverseTransformMatrix (const TMatrix& rktMATRIX)
+    {
+      assert ( ptInverseMatrix );
+      
+      *ptInverseMatrix = rktMATRIX;
+    }
+    
     virtual void addFilter (const TObjectFilter* pktFILTER) { tObjectFilterList.push_back (pktFILTER); }
       
     virtual void getMesh (list<TMesh*>& rtMESH_LIST) const {}

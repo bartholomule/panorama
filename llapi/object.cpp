@@ -20,6 +20,18 @@
 #include "llapi/object.h"
 #include "llapi/material.h"
 
+void TObject::createMatrices (void)
+{
+
+  ptMatrix        = new TMatrix();
+  ptInverseMatrix = new TMatrix();
+
+  ptMatrix->setIdentity();
+  ptInverseMatrix->setIdentity();
+  
+}  /* createMatrices() */
+
+
 void TObject::printDebug (void) const
 {
 
