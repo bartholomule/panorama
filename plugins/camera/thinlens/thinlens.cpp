@@ -265,15 +265,15 @@ void TThinlensCamera::getRay (TScalar X, TScalar Y, TRay& rtRAY) const
 void TThinlensCamera::printDebug (const string& indent) const
 {
 
-  cerr << indent << "[_" << className() << "_]" << endl;
+  GOM.debug() << indent << "[_" << className() << "_]" << endl;
 
   string new_indent = TDebug::Indent(indent);
 
   TPinholeCamera::printDebug(new_indent);
-  cerr << new_indent << "Aperture     : " << getAperture() << endl;
-  cerr << new_indent << "Focal Dist   : " << getFocalDistance() << endl;
-  cerr << new_indent << "Focal Length : " << getFocalLength() << endl;
-  cerr << new_indent << "Film Width   : " << getFilmWidth() << endl;
-  cerr << new_indent << "Film Height  : " << getFilmHeight() << endl;
+  GOM.debug() << new_indent << "Aperture     : " << getAperture() << endl;
+  GOM.debug() << new_indent << "Focal Dist   : " << getFocalDistance() << endl;
+  GOM.debug() << new_indent << "Focal Length : " << getFocalLength() << endl;
+  GOM.debug() << new_indent << "Film Width   : " << getFilmWidth() << endl;
+  GOM.debug() << new_indent << "Film Height  : " << getFilmHeight() << endl;
   
 }  /* printDebug() */

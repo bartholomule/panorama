@@ -141,11 +141,11 @@ bool TAggregateUniformGrid::findFirstIntersection (const TRay& rktRAY, TSurfaceD
 void TAggregateUniformGrid::printDebug (const string& indent) const
 {
 
-  cerr << indent << "[_" << className() << "_]" << endl;
+  GOM.debug() << indent << "[_" << className() << "_]" << endl;
 
   string new_indent = TDebug::Indent(indent);
 
-  cerr << new_indent << "Bounding box = "; tBoundingBox.printDebug(new_indent); cerr << endl;
+  GOM.debug() << new_indent << "Bounding box = "; tBoundingBox.printDebug(new_indent); cerr << endl;
   
   for (TObjectList::const_iterator tIter = tObjectList.begin(); ( tIter != tObjectList.end() ) ;tIter++)
   {

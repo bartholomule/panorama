@@ -16,7 +16,7 @@
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include <fstream.h>
+#include <fstream>
 #include <cstdio>
 #include "hlapi/image_manager.h"
 #include "gif_io.h"
@@ -105,7 +105,7 @@ int TImageGif::save (const TImage* pktIMAGE) {
   {
     if( !bSilent )
     {
-      cerr << "TImageGif::save : Error saving " << tFileName << endl;
+      GOM.error() << "TImageGif::save : Error saving " << tFileName << endl;
     }
     return -1;
   }
@@ -115,7 +115,7 @@ int TImageGif::save (const TImage* pktIMAGE) {
   { 
     if( !bSilent )
     {
-      cerr << "TImageGif::save : Error saving " << tFileName << endl;
+      GOM.error() << "TImageGif::save : Error saving " << tFileName << endl;
     }
     return -1;
   }
@@ -125,7 +125,7 @@ int TImageGif::save (const TImage* pktIMAGE) {
   { 
     if( !bSilent )
     {
-      cerr << "TImageGif::save : Error saving " << tFileName << endl;
+      GOM.error() << "TImageGif::save : Error saving " << tFileName << endl;
     }
     return -1;
   }
@@ -139,7 +139,7 @@ int TImageGif::save (const TImage* pktIMAGE) {
   free (ptBlue);
   free (ptOutputImage);
 
-  cout << "Warning: No image compression performed - LZW algorithm is patented by UniSys." << endl;
+  GOM.error() << "Warning: No image compression performed - LZW algorithm is patented by UniSys." << endl;
 
   return 0;
   
@@ -166,7 +166,7 @@ TImage* TImageGif::load (void)
   {
     if( !bSilent )
     {
-      cerr << "TImageGif::load : Error loading " << tFileName << endl;
+      GOM.error() << "TImageGif::load : Error loading " << tFileName << endl;
     }
     return NULL;
   }
@@ -175,7 +175,7 @@ TImage* TImageGif::load (void)
   { 
     if( !bSilent )
     {
-      cerr << "TImageGif::load : Error loading " << tFileName << endl;
+      GOM.error() << "TImageGif::load : Error loading " << tFileName << endl;
     }
     return NULL;
   }

@@ -184,15 +184,15 @@ DEFINE TEXT ASSIGN TEXT
     // create an instance of the object...
     current_object = new Tdynamic_object(instance, true);
 
-    //    cout << "--- current_object is:" << current_object << endl;
+    //    GOM.debug() << "--- current_object is:" << current_object << endl;
     
     // The dynamic object cloned it... So the memory needs to be freed (not anymore).
     //    delete instance;
     
     put_top(get_string($2), current_object);
 
-    //    cout << "--- object in symtab is:" << locate_reference(get_string($2)) << endl;
-    //    cout << "--- object name is:" << get_string($2) << endl;
+    //    GOM.debug() << "--- object in symtab is:" << locate_reference(get_string($2)) << endl;
+    //    GOM.debug() << "--- object name is:" << get_string($2) << endl;
 
     //  FIXME("entering a new scope");
     scope_stack.push(new scope_type);

@@ -286,16 +286,16 @@ bool TPointLight::initialize (void)
 void TPointLight::printDebug (const string& indent) const
 {
 
-  cerr << indent << "[_" << className() << "_]" << endl;
+  GOM.debug() << indent << "[_" << className() << "_]" << endl;
 
   string new_indent = TDebug::Indent(indent);
 
-  cerr << new_indent << "a (falloff)        : " << tFalloff [0] << endl;
-  cerr << new_indent << "b (falloff)        : " << tFalloff [1] << endl;
-  cerr << new_indent << "c (falloff)        : " << tFalloff [2] << endl;
-  cerr << new_indent << "Distance threshold : " << tDistanceThreshold << endl;
-  cerr << new_indent << "Cosine threshold   : " << tCosThreshold << endl;
-  cerr << new_indent << "Cone axis          : "; tConeAxis.printDebug(new_indent);
-  cerr << indent << "." << endl;
+  GOM.debug() << new_indent << "a (falloff)        : " << tFalloff [0] << endl;
+  GOM.debug() << new_indent << "b (falloff)        : " << tFalloff [1] << endl;
+  GOM.debug() << new_indent << "c (falloff)        : " << tFalloff [2] << endl;
+  GOM.debug() << new_indent << "Distance threshold : " << tDistanceThreshold << endl;
+  GOM.debug() << new_indent << "Cosine threshold   : " << tCosThreshold << endl;
+  GOM.debug() << new_indent << "Cone axis          : "; tConeAxis.printDebug(new_indent);
+  GOM.debug() << indent << "." << endl;
 
 }  /* printDebug() */

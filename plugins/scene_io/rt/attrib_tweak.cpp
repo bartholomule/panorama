@@ -44,7 +44,7 @@ magic_pointer<TProcedural> get_procedural_var(magic_pointer<TAttribute> p, bool 
   {
     if( active )
     {
-      cerr << "Cannot get a procedural var from a NULL object" << endl;
+      GOM.error() << "Cannot get a procedural var from a NULL object" << endl;
       exit(1);
     }
     else
@@ -53,66 +53,66 @@ magic_pointer<TProcedural> get_procedural_var(magic_pointer<TAttribute> p, bool 
     }
   }
 
-  //  cout << "getting var from " << p->toString() << endl;
+  //  GOM.debug() << "getting var from " << p->toString() << endl;
 
-  //  cout << "obj..." << endl;
+  //  GOM.debug() << "obj..." << endl;
   magic_pointer<TAttribObject> obj = get_object(p);
   if( !!obj )
   {
     return rcp_static_cast<TProcedural>(obj->tValue);
   }
   
-  // cout << "mat..." << endl;
+  // GOM.debug() << "mat..." << endl;
   magic_pointer<TAttribMaterial> mat = get_material(p);
   if( !!mat )
   {
     return rcp_static_cast<TProcedural>(mat->tValue);    
   }
   
-  // cout << "bsdf..." << endl;
+  // GOM.debug() << "bsdf..." << endl;
   magic_pointer<TAttribBsdf> bsdf = get_bsdf(p);
   if( !!bsdf )
   {
     return rcp_static_cast<TProcedural>(bsdf->tValue);    
   }
   
-  // cout << "pert..." << endl;
+  // GOM.debug() << "pert..." << endl;
   magic_pointer<TAttribPerturbation> pert = get_perturbation(p); 
   if( !!pert )
   {
     return rcp_static_cast<TProcedural>(pert->tValue);    
   }
   
-  // cout << "scene..." << endl;
+  // GOM.debug() << "scene..." << endl;
   magic_pointer<TAttribScene> scene = get_scene(p);
   if( !!scene )
   {
-    // cout << "Warning: Ignoring locally defined scene, using global" << endl;
+    // GOM.error() << "Warning: Ignoring locally defined scene, using global" << endl;
     return rcp_static_cast<TProcedural>(TSceneRT::_ptParsedScene);    
   }
   
-  // cout << "camera..." << endl;
+  // GOM.debug() << "camera..." << endl;
   magic_pointer<TAttribCamera> camera = get_camera(p);
   if( !!camera )
   {
     return rcp_static_cast<TProcedural>(camera->tValue);    
   }
   
-  // cout << "rend..." << endl;
+  // GOM.debug() << "rend..." << endl;
   magic_pointer<TAttribRenderer> rend = get_renderer(p);
   if( !!rend )
   {
     return rcp_static_cast<TProcedural>(rend->tValue);    
   }
 
-  // cout << "img..." << endl;
+  // GOM.debug() << "img..." << endl;
   magic_pointer<TAttribImageIO> img = get_imageio(p);
   if( !!img )
   {
     return rcp_static_cast<TProcedural>(img->tValue);        
   }
   
-  // cout << "pat..." << endl;
+  // GOM.debug() << "pat..." << endl;
   magic_pointer<TAttribPattern> pat = get_pattern(p); // converts, do last.
   if( !!pat )
   {
@@ -121,7 +121,7 @@ magic_pointer<TProcedural> get_procedural_var(magic_pointer<TAttribute> p, bool 
 
   if( active )
   {
-    cerr << "Unable to get procedural var" << endl;
+    GOM.error() << "Unable to get procedural var" << endl;
     exit(1);
   }
   else
@@ -141,7 +141,7 @@ magic_pointer<TAttribute> GetParameter (const string& rktATTRIB)
   }
   else
   {
-    // cout << "Data (as procedural) was apparently non-null" << endl;
+    // GOM.debug() << "Data (as procedural) was apparently non-null" << endl;
   }
   magic_pointer<TAttribute> tattr;
 
@@ -163,11 +163,11 @@ void SetParameter (const string& rktATTRIB, magic_pointer<TAttribute> attr)
 
   EAttribType eTYPE = attr->eType;
   int   iResult;
-  // cout << "Attempting to set value " << rktATTRIB << "(" << EAttribType_to_str(eTYPE) << ")" << endl;
+  // GOM.debug() << "Attempting to set value " << rktATTRIB << "(" << EAttribType_to_str(eTYPE) << ")" << endl;
   
   if( !!DATA )
   {
-    // cout << "Data is a " << DATA->toString() << endl;
+    // GOM.debug() << "Data is a " << DATA->toString() << endl;
   }
   
   magic_pointer<TProcedural> data = get_procedural_var(DATA);
@@ -179,11 +179,11 @@ void SetParameter (const string& rktATTRIB, magic_pointer<TAttribute> attr)
   }
   else
   {
-    // cout << "Data (as procedural) was apparently non-null" << endl;
+    // GOM.debug() << "Data (as procedural) was apparently non-null" << endl;
   }
 
 #if !defined(NEW_ATTRIBUTES)
-  cerr << "WARNING: old attributes are untested!" << endl;
+  GOM.error() << "WARNING: old attributes are untested!" << endl;
   NAttribute nAttrib;
 
   switch(eTYPE)
@@ -233,11 +233,11 @@ void SetParameter (const string& rktATTRIB, magic_pointer<TAttribute> attr)
   }
   iResult = data->setAttribute (rktATTRIB, nAttrib, eTYPE);
 #else
-  // cout << "Identifier check:" << endl;
-  // cout << "it is \"" << data->identifier() << "\"" << endl;
-  // cout << "Attempting to call setAttribute" << endl;
+  // GOM.debug() << "Identifier check:" << endl;
+  // GOM.debug() << "it is \"" << data->identifier() << "\"" << endl;
+  // GOM.debug() << "Attempting to call setAttribute" << endl;
   iResult = data->setAttribute (rktATTRIB, attr, eTYPE);
-  // cout << "Called, returned." << endl;
+  // GOM.debug() << "Called, returned." << endl;
 #endif
 
   if ( iResult == FX_ATTRIB_WRONG_PARAM )
@@ -270,7 +270,7 @@ void SetParameter (const string& rktATTRIB, magic_pointer<TAttribute> attr)
     rt_error (TProcedural::_tUserErrorMessage.c_str());
     exit (1);
   }
-  // cout << "Parameter was successfully set" << endl;
+  // GOM.debug() << "Parameter was successfully set" << endl;
 
 }  /* SetParameter() */
 
@@ -293,7 +293,7 @@ string check_get_string(const magic_pointer<TAttribute> t)
     }
     else
     {
-      cerr << "Warning: usage on line " << TSceneRT::_dwLineNumber
+      GOM.error() << "Warning: usage on line " << TSceneRT::_dwLineNumber
 	   << " as a string requires conversion" << endl;
       magic_pointer<TAttribString> sa = get_string(t);
       if( !!sa )

@@ -68,7 +68,7 @@ int TImageTiff::save (const TImage* pktIMAGE) {
   {
 #if defined(LZW_SUPPORT)
 #warning "Using LZW compresion (a UniSys patent) when compression is requested"
-    cerr << "TiffIO:Warning:LZW comressed TIFF images may not be useable with"
+    GOM.error() << "TiffIO:Warning:LZW comressed TIFF images may not be useable with"
 	 << endl
 	 << "  some installations of panorama (due to UniSys patent)." << endl;
     
@@ -78,7 +78,7 @@ int TImageTiff::save (const TImage* pktIMAGE) {
     TIFFSetField(tif, TIFFTAG_COMPRESSION, COMPRESSION_PACKBITS);
 #else
     
-    cerr << "TiffIO:Warning:Compression was requested, but not supported by your tifflib." << endl;
+    GOM.error() << "TiffIO:Warning:Compression was requested, but not supported by your tifflib." << endl;
     TIFFSetField(tif, TIFFTAG_COMPRESSION, COMPRESSION_NONE);
 #endif /* compression type support */
   }
@@ -107,7 +107,7 @@ int TImageTiff::save (const TImage* pktIMAGE) {
   {
     if( !bSilent )
     {
-      cerr << "Tiff reports strip as " << strip_size
+      GOM.error() << "Tiff reports strip as " << strip_size
 	   << " bytes instead of expected " << 3 * zWidth * rowsperstrip
 	   << " bytes." << endl;
     }
@@ -148,7 +148,7 @@ int TImageTiff::save (const TImage* pktIMAGE) {
     {
       if( !bSilent )
       {
-	cerr << "TiffIO:Error writing strip " << strip << endl;
+	GOM.error() << "TiffIO:Error writing strip " << strip << endl;
       }
       delete[] strip_data;
       TIFFClose(tif);          
@@ -181,7 +181,7 @@ int TImageTiff::save (const TImage* pktIMAGE) {
     {
       if( !bSilent )
       {
-	cerr << "TiffIO:Error writing partial strip " << strip << endl;
+	GOM.error() << "TiffIO:Error writing partial strip " << strip << endl;
       }
       delete[] strip_data;
       TIFFClose(tif);          
@@ -192,7 +192,7 @@ int TImageTiff::save (const TImage* pktIMAGE) {
   {
     if( !bSilent )
     {
-      cerr << "TiffIO:Math error... y (" << y
+      GOM.error() << "TiffIO:Math error... y (" << y
 	   << ") != zHeight (" << zHeight << ")" << endl;
     }
     delete[] strip_data;
@@ -227,7 +227,7 @@ TImage* TImageTiff::load (void)
   {
     if( !bSilent )
     {
-      cerr << "TImageTiff::load : Error loading " << tFileName << endl;
+      GOM.error() << "TImageTiff::load : Error loading " << tFileName << endl;
     }
     return NULL;
   }
@@ -264,7 +264,7 @@ TImage* TImageTiff::load (void)
       {
 	if( !bSilent )
 	{
-	  cerr << "TImageTiff::load : Error loading " << tFileName
+	  GOM.error() << "TImageTiff::load : Error loading " << tFileName
 	       << " (RGBAImageGet failed)"
 	       << endl;
 	}
@@ -275,7 +275,7 @@ TImage* TImageTiff::load (void)
     {
       if( !bSilent )
       {      
-	cerr << "TImageTiff::load : Error loading " << tFileName
+	GOM.error() << "TImageTiff::load : Error loading " << tFileName
 	     << " (out of memory?)"
 	     << endl;
       }
@@ -286,7 +286,7 @@ TImage* TImageTiff::load (void)
   {
     if( !bSilent )
     {    
-      cerr << "TImageTiff::load : Error loading " << tFileName
+      GOM.error() << "TImageTiff::load : Error loading " << tFileName
 	   << " (" << emsg << ")"
 	   << endl;
     }

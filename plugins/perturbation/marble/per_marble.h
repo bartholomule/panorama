@@ -68,7 +68,7 @@ inline TVector TPerturbationMarble::perturbNormal (const TSurfaceData& rktDATA) 
 
     if ( !ptMarblePattern )
     {
-      cout << ("Error: marble_pattern must be set") << endl;
+      GOM.error() << ("Error: marble_pattern must be set") << endl;
       exit (1);
     }
 

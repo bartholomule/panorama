@@ -79,7 +79,7 @@ void TIF_Text::filter (SBuffers& rsBUFFERS)
   iError = FT_Init_FreeType (&tEngine);
   if ( iError )
   {
-    cerr << "Could not create FreeType engine." << endl;
+    GOM.error() << "Could not create FreeType engine." << endl;
     return;
   }
   
@@ -109,14 +109,14 @@ void TIF_Text::filter (SBuffers& rsBUFFERS)
 
   if ( iError )
   {
-    cerr << "Could not open file '" << tFontFile << "'." << endl;
+    GOM.error() << "Could not open file '" << tFontFile << "'." << endl;
     return;
   }
 
   iError = FT_Set_Char_Size(tFace, wSize, wSize, 72, 72);
   if ( iError )
   {
-    cerr << "Could not set the face size and resolution" << endl;
+    GOM.error() << "Could not set the face size and resolution" << endl;
     return;
     
   }
@@ -131,7 +131,7 @@ void TIF_Text::filter (SBuffers& rsBUFFERS)
     }
     else
     {
-      cerr << "Could not get charmap." << endl;
+      GOM.error() << "Could not get charmap." << endl;
       return;
     }
   }
@@ -152,15 +152,15 @@ void TIF_Text::filter (SBuffers& rsBUFFERS)
     uIndex = FT_Get_Char_Index (tFace, tText[tI]);
     if ( ! uIndex )
     {
-      cerr << "Could not find char index for '" << tText[tI] << "'." << endl;
+      GOM.error() << "Could not find char index for '" << tText[tI] << "'." << endl;
       continue;
     }
     
     iError = FT_Load_Glyph (tFace, uIndex, FT_LOAD_DEFAULT);
     if ( iError )
     {
-      cerr << "Could not load glyph for '" << tText[tI] << "'." << endl;
-      cerr << "Error code: " << iError << endl;
+      GOM.error() << "Could not load glyph for '" << tText[tI] << "'." << endl;
+      GOM.error() << "Error code: " << iError << endl;
       continue;
     }
 

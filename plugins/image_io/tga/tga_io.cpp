@@ -116,7 +116,7 @@ TImage* TImageTga::load (void)
   {
     if( !bSilent )
     {
-      cerr << "TImageTga::load : Unsupported image type. Error loading " << tFileName << endl;
+      GOM.error() << "TImageTga::load : Unsupported image type. Error loading " << tFileName << endl;
     }
     return NULL;    
   }
@@ -154,7 +154,7 @@ TImage* TImageTga::load (void)
   {
     if( !bSilent )
     {
-      cerr << "TImageTga::load : Unsupported pixel size. Error loading " << tFileName << endl;
+      GOM.error() << "TImageTga::load : Unsupported pixel size. Error loading " << tFileName << endl;
     }
     return NULL;    
   }

@@ -129,7 +129,7 @@ void ReadPOLSChunk (istream& rsSTREAM, size_t zSIZE, TMeshObject* ptMESH)
 
     if ( (zFaces % 1000) == 0 )
     {
-      cout << "Faces : " << zFaces << endl;
+      GOM.debug() << "Faces : " << zFaces << endl;
     }
     
     wVertices = GetWord (rsSTREAM, FX_BIG_ENDIAN);
@@ -150,7 +150,7 @@ void ReadPOLSChunk (istream& rsSTREAM, size_t zSIZE, TMeshObject* ptMESH)
 
     if ( iSurface < 0 )
     {
-      cout << "MODEL HAS DETAIL POLYGONS!!!!!!!!!!!" << endl;
+      GOM.debug() << "MODEL HAS DETAIL POLYGONS!!!!!!!!!!!" << endl;
     }
 
     if ( wVertices == 3 )
@@ -164,7 +164,7 @@ void ReadPOLSChunk (istream& rsSTREAM, size_t zSIZE, TMeshObject* ptMESH)
     }
     else
     {
-      cout << "NON TRIANGLE VERTEX!!!, vertices = " << wVertices << endl;
+      GOM.debug() << "NON TRIANGLE VERTEX!!!, vertices = " << wVertices << endl;
     }
   }
 

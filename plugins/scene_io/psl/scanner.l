@@ -159,7 +159,7 @@ false                   {
 			    yy_delete_buffer (YY_CURRENT_BUFFER);
 	       		    _tIncludeFileData           = _atIncludeStack [_bIncludeLevel];
 			    TScenePsl::_tInputFileName = _tIncludeFileData.tFileName;
-//			    cout << "Returning to file : " << TScenePsl::_tInputFileName << endl;
+//			    GOM.debug() << "Returning to file : " << TScenePsl::_tInputFileName << endl;
 			    TScenePsl::_dwLineNumber = _tIncludeFileData.dwLineNumber;
 			    yy_switch_to_buffer (_tIncludeFileData.yyBuffer);
 			  }
@@ -303,7 +303,7 @@ bool IncludeFile (void)
   TScenePsl::_dwLineNumber   = 1L;
   yy_switch_to_buffer (yy_create_buffer (yyin, YY_BUF_SIZE));
 
-//  cout << "Including file : " << TScenePsl::_tInputFileName << endl;
+//  GOM.debug() << "Including file : " << TScenePsl::_tInputFileName << endl;
 
   return true;
 

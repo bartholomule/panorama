@@ -126,7 +126,7 @@ void InitObjects (void);
 
 void report_reduction(const string& s);
 
-static void FIXME(const string& s) { cout << "FIXME: " << s << endl; }
+static void FIXME(const string& s) { GOM.error() << "FIXME: " << s << endl; }
 
 %}
 
@@ -208,7 +208,7 @@ everything		: /* Nothing */
 			      {
 				if( !WORLD->containsObject( obj ) )
 				{
-				  //				  cout << "Adding instance of " << obj->className() << " to world." << endl;
+				  //				  GOM.debug() << "Adding instance of " << obj->className() << " to world." << endl;
 				  WORLD->add ( obj );
 				}
 			      }
@@ -239,7 +239,7 @@ definition		: T_DEFINE name expression ';'
 			      rt_warning(string($2) + " redefined here");
 			      rt_warning("previously defined here: " + DATAMAP[$2].first);
 			    }
-			    cout << "Defining \"" << string($2) << "\"" << endl;
+			    GOM.debug() << "Defining \"" << string($2) << "\"" << endl;
 			    
 			    char buffer[1024];
 			    sprintf(buffer,"%s line %d",
@@ -276,7 +276,7 @@ instance                : name
                           }
                         | class
 			  {
-			    //			    cout << "Creating object..." << endl;
+			    //			    GOM.debug() << "Creating object..." << endl;
 			    CreateObject($1,"");
                           }
                           param_block
@@ -284,7 +284,7 @@ instance                : name
 			    report_reduction("instance <--  class { params }");
 			    report_reduction(string("instance <-- ") + DATA->toString());
 			    
-			    //			    cout << "Type is " << DATA->AttributeName() << endl;
+			    //			    GOM.debug() << "Type is " << DATA->AttributeName() << endl;
 			    $$ = DATASTACK.POP();
 			  }
 ;
@@ -746,9 +746,9 @@ color                   : '{' T_RED expression T_GREEN expression T_BLUE express
 			    double g = check_get_real($5);
 			    double b = check_get_real($7);
 
-			    cout << "r=" << r << " g=" << g << " b=" << b << endl;
+			    GOM.debug() << "r=" << r << " g=" << g << " b=" << b << endl;
 			    TColor* c = new TColor(r,g,b);
-			    cout << "Here's what was really created: ";
+			    GOM.debug() << "Here's what was really created: ";
 			    c->printDebug(""); cerr << endl;
 			    
 			    $$ = magic_pointer<TColor>(c);
@@ -821,9 +821,9 @@ class			: /* Nothing
 			      exit (1);
                             }
 
-			    //			    cout << "the type of the parent is " << DATAMAP [$1].second->AttributeName() << endl;
+			    //			    GOM.debug() << "the type of the parent is " << DATAMAP [$1].second->AttributeName() << endl;
                             PARENT_OBJECT = attr_to_base(DATAMAP [$1].second);
-			    //			    cout << "the parent's classname is " << PARENT_OBJECT->className() << endl;
+			    //			    GOM.debug() << "the parent's classname is " << PARENT_OBJECT->className() << endl;
 			    $$ = PARENT_OBJECT->className();
 			  }
 			| T_CLASS T_IDENTIFIER
@@ -970,11 +970,11 @@ scene_param		: T_LIGHT '=' instance
 			    
 			    if(!gave_warning)
 			    {
-			      cout << "Note for light instance on line "
+			      GOM.error() << "Note for light instance on line "
 				   << TSceneRT::_dwLineNumber
 				   << endl;
-			      cout << "  Usage of lights in the 'scene' section is no longer required" << endl;
-			      cout << "  They may now be added to aggregates, csg, etc., or used "
+			      GOM.error() << "  Usage of lights in the 'scene' section is no longer required" << endl;
+			      GOM.error() << "  They may now be added to aggregates, csg, etc., or used "
 				   << endl
 				   << "  external to the scene section (same syntax)." 
 				   << endl;
@@ -1008,14 +1008,14 @@ scene_param		: T_LIGHT '=' instance
 			  if( !!pscene )
 			  {
 			    //			    magic_pointer<TScene> scene = pscene->tValue;
-			    cout << "Warning: Ignoring locally defined scene" << endl;
+			    GOM.error() << "Warning: Ignoring locally defined scene" << endl;
 			    magic_pointer<TScene> scene = TSceneRT::_ptParsedScene;
 			    if( !!scene )
 			    {
 			      magic_pointer<TAttribImageIO> io = get_imageio($3);
 			      if( !!io )
 			      {
-				//				cout << "Setting image IO to " << io->toString() << endl;
+				//				GOM.debug() << "Setting image IO to " << io->toString() << endl;
 				scene->setImageOutput (io->tValue);
 			      }
 			      else
@@ -1088,21 +1088,21 @@ reserved_words          : T_BLUE
 void rt_error (const char* pkcTEXT)
 {
 
-  cout << endl << TSceneRT::_tInputFileName << "(" << TSceneRT::_dwLineNumber << ") Error: " << pkcTEXT << endl;
+  GOM.error() << endl << TSceneRT::_tInputFileName << "(" << TSceneRT::_dwLineNumber << ") Error: " << pkcTEXT << endl;
 
 }  /* rt_error() */
 
 void rt_error (const string& rksTEXT)
 {
 
-  cout << endl << TSceneRT::_tInputFileName << "(" << TSceneRT::_dwLineNumber << ") Error: " << rksTEXT << endl;
+  GOM.error() << endl << TSceneRT::_tInputFileName << "(" << TSceneRT::_dwLineNumber << ") Error: " << rksTEXT << endl;
 
 }  /* rt_error() */
 
 void rt_warning (const string& rksTEXT)
 {
 
-  cout << TSceneRT::_tInputFileName << "(" << TSceneRT::_dwLineNumber << ") Warning: " << rksTEXT << endl;
+  GOM.error() << TSceneRT::_tInputFileName << "(" << TSceneRT::_dwLineNumber << ") Warning: " << rksTEXT << endl;
 
 }  /* rt_error() */
 
@@ -1162,7 +1162,7 @@ magic_pointer<TBaseClass> NewObject (const string& rktCLASS,
 
 void CreateObject (const string& rktCLASS, const string& rktDEF_CLASS)
 {
-  //  cout << "Attempting to create instance of " << rktCLASS << endl;
+  //  GOM.debug() << "Attempting to create instance of " << rktCLASS << endl;
   magic_pointer<TBaseClass> ptData;
   if ( rktCLASS == "" )
   {
@@ -1172,7 +1172,7 @@ void CreateObject (const string& rktCLASS, const string& rktDEF_CLASS)
   {
     ptData = NewObject (rktCLASS, PARENT_OBJECT);
   }
-  //  cout << "Instance created... " << ptData->className() << endl;
+  //  GOM.debug() << "Instance created... " << ptData->className() << endl;
   
   DATASTACK.push (base_to_attr(ptData));
   PARENT_OBJECT = (magic_pointer<TBaseClass>)NULL;

@@ -454,7 +454,7 @@ void TZBufferRenderer::render (SBuffers& rsBUFFERS)
   
   ptScene->world()->getMesh (tMeshList);
 
-  cout << "Meshes : " << tMeshList.size() << endl;
+  GOM.debug() << "Meshes : " << tMeshList.size() << endl;
 
   // For every mesh, set the normal of each vertex to the mean of adjacent triangle normals.
   for (list<TMesh*>::iterator tIter = tMeshList.begin(); ( tIter != tMeshList.end() ) ;tIter++)
@@ -671,10 +671,10 @@ TColor TZBufferRenderer::specularTransmittedLight (const TSurfaceData& rktDATA, 
 void TZBufferRenderer::printDebug (const string& indent) const
 {
 
-  cerr << indent << "[_ZBufferRenderer_]" << endl;
+  GOM.debug() << indent << "[_ZBufferRenderer_]" << endl;
 
   string new_indent = TDebug::Indent(indent);
   
-  cerr << new_indent << "Ambient light : "; tAmbientLight.printDebug(new_indent);
+  GOM.debug() << new_indent << "Ambient light : "; tAmbientLight.printDebug(new_indent);
 
 }  /* printDebug() */

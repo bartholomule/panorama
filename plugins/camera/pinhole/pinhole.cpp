@@ -94,7 +94,7 @@ bool TPinholeCamera::initialize (void)
 
   if ( fabs (dotProduct (tDirection, tUp)) == 1 )
   {
-    cout << "Error: Camera direction and up vectors cannot be parallel" << endl;
+    GOM.error() << "Error: Camera direction and up vectors cannot be parallel" << endl;
     val = false;
   }
   
@@ -144,12 +144,12 @@ bool TPinholeCamera::getPlaneProjection (const TVector& rktPOINT, TVector2& rtPR
 void TPinholeCamera::printDebug (const string& indent) const
 {
 
-  cerr << indent << "[_" << className() << "_]" << endl;
+  GOM.debug() << indent << "[_" << className() << "_]" << endl;
 
   string new_indent = TDebug::Indent(indent);
 
-  cerr << new_indent << "Angle     : " << getAngle() << endl;
-  cerr << new_indent << "Up vector : "; tUp.printDebug(new_indent);
-  cerr << new_indent << "Look at   : "; tLookAt.printDebug(new_indent);
+  GOM.debug() << new_indent << "Angle     : " << getAngle() << endl;
+  GOM.debug() << new_indent << "Up vector : "; tUp.printDebug(new_indent);
+  GOM.debug() << new_indent << "Look at   : "; tLookAt.printDebug(new_indent);
   
 }  /* printDebug() */

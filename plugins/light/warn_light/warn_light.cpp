@@ -158,8 +158,8 @@ void TWarnLight::printDebug (const string& indent) const
   
   string new_indent = TDebug::Indent(indent);
 
-  cerr << new_indent << "Light axis : "; tLightAxis.printDebug(new_indent);
-  cerr << new_indent << "Exponent   : " << tExponent << endl;
-  cerr << indent << "." << endl;
+  GOM.debug() << new_indent << "Light axis : "; tLightAxis.printDebug(new_indent);
+  GOM.debug() << new_indent << "Exponent   : " << tExponent << endl;
+  GOM.debug() << indent << "." << endl;
   
 }  /* printDebug() */

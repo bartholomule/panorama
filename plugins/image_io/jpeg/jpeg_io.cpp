@@ -144,7 +144,7 @@ int TImageJpeg::save (const TImage* pktIMAGE)
 
     if( !bSilent )
     {
-      cerr << "TImageJpeg::save : error saving file " << tFileName << endl;
+      GOM.error() << "TImageJpeg::save : error saving file " << tFileName << endl;
     }
     return -1;
   }  
@@ -250,7 +250,7 @@ TImage* TImageJpeg::load (void)
 
     if( !bSilent )
     {
-      cerr << "TImageJpeg::load : " << tFileName << " is not a jpeg file." << endl;
+      GOM.error() << "TImageJpeg::load : " << tFileName << " is not a jpeg file." << endl;
     }
     
     return NULL;

@@ -87,7 +87,7 @@ static Byte               _bIncludeLevel = 0;
 #define RESERVED(x)                 \
 {                                   \
   p->sIdent.assign(yytext, yyleng); \
-/*  cout << "scanner returning: \"" << p->sIdent << "\"" << endl; */ \
+/*  GOM.debug() << "scanner returning: \"" << p->sIdent << "\"" << endl; */ \
   return x;                         \
 } 
  
@@ -174,7 +174,7 @@ false			{
 
 {identifier}		{
                           p->sIdent.assign(yytext, yyleng);
-			  /*			  cout << "scanner returning: \"" << p->sIdent << "\"" << endl; */
+			  /*			  GOM.debug() << "scanner returning: \"" << p->sIdent << "\"" << endl; */
 			  return T_IDENTIFIER;
 			}
 
@@ -196,11 +196,11 @@ false			{
 
 {quoted_string}		{
                           p->sIdent.assign(yytext+1, yyleng-2);
-			  /*			  cout << "scanner returning: \"" << p->sIdent << "\"" << endl;			   */
+			  /*			  GOM.debug() << "scanner returning: \"" << p->sIdent << "\"" << endl;			   */
 			  return T_QUOTED_STRING;
 			}
 
-.			/* cout << "scanner returning: '" << yytext[0] << "'" << endl; */ return yytext[0];
+.			/* GOM.debug() << "scanner returning: '" << yytext[0] << "'" << endl; */ return yytext[0];
 
 <<EOF>>			{
 			  if ( _bIncludeLevel == 0 )
@@ -213,7 +213,7 @@ false			{
 			    yy_delete_buffer (YY_CURRENT_BUFFER);
 			    _tIncludeFileData         = _atIncludeStack [_bIncludeLevel];
 			    TSceneRT::_tInputFileName = _tIncludeFileData.tFileName;
-//			    cout << "Returning to file : " << TSceneRT::_tInputFileName << endl;
+//			    GOM.debug() << "Returning to file : " << TSceneRT::_tInputFileName << endl;
 			    TSceneRT::_dwLineNumber = _tIncludeFileData.dwLineNumber;
 			    yy_switch_to_buffer (_tIncludeFileData.yyBuffer);
 			  }
@@ -314,7 +314,7 @@ bool IncludeFile (void)
   }
 
   string name = FilenameConvert(_tIncludeFileName);
-  // cout << "Attempting to open \"" + name + "\" for include" << endl;
+  // GOM.debug() << "Attempting to open \"" + name + "\" for include" << endl;
 
   yyin = fopen (name.c_str(), "r");
 
@@ -353,7 +353,7 @@ bool IncludeFile (void)
   TSceneRT::_dwLineNumber   = 1L;
   yy_switch_to_buffer (yy_create_buffer (yyin, YY_BUF_SIZE));
 
-//  cout << "Including file : " << TSceneRT::tInputFileName << endl;
+//  GOM.debug() << "Including file : " << TSceneRT::tInputFileName << endl;
 
   return true;
 
@@ -372,10 +372,10 @@ void scanner_unput_string(const string& s)
   {
     unput(new_text[i]);
   }
-  cout << "Scanner: Just unput: \"" << new_text << "\"" << endl;
+  GOM.debug() << "Scanner: Just unput: \"" << new_text << "\"" << endl;
 
   YY_FLUSH_BUFFER;
   
   string trash_text = string(yytext,yyleng);
-  cout << "  new yytext=\"" << trash_text << "\"" << endl;
+  GOM.debug() << "  new yytext=\"" << trash_text << "\"" << endl;
 }

@@ -991,9 +991,9 @@ TColor TRaytracer::directLight (const TSurfaceData& rktDATA, const magic_pointer
   TColor    tRadiance;
   TVector   rand_point = pktALIGHT->RandomPointOnSurface();
 
-  //  cerr << "Rand point="; rand_point.printDebug();
+  //  GOM.debug() << "Rand point="; rand_point.printDebug();
   TVector   light_point = (*pktALIGHT->transformMatrix()) * rand_point;
-  //  cerr << "light point="; light_point.printDebug();  
+  //  GOM.debug() << "light point="; light_point.printDebug();  
   
   TRay      tRay (rktDATA.point(), light_point - rktDATA.point());
 
@@ -1109,11 +1109,11 @@ TColor TRaytracer::specularTransmittedLight (const TSurfaceData& rktDATA, Word w
 void TRaytracer::printDebug (const string& indent) const
 {
 
-  cerr << indent << "[_Raytracer_]" << endl;
+  GOM.debug() << indent << "[_Raytracer_]" << endl;
 
   string new_indent = TDebug::Indent(indent);
 
-  cerr << new_indent << "Max. depth    : " << wMaxDepth << endl;
-  cerr << new_indent << "Ambient light : "; tAmbientLight.printDebug(new_indent); cerr << endl;
+  GOM.debug() << new_indent << "Max. depth    : " << wMaxDepth << endl;
+  GOM.debug() << new_indent << "Ambient light : "; tAmbientLight.printDebug(new_indent); GOM.debug() << endl;
   
 }  /* printDebug() */

@@ -68,7 +68,7 @@ inline TVector TPerturbationCrackle::perturbNormal (const TSurfaceData& rktDATA)
 
     if ( !ptCracklePattern )
     {
-      cout << ("Error: crackle_pattern must be set") << endl;
+      GOM.error() << ("Error: crackle_pattern must be set") << endl;
       exit (1);
     }
 

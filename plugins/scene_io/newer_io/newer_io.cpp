@@ -43,7 +43,7 @@ TScene* TSceneNEWER::_load (const string& rktNAME)
 
   if ( !yyin )
   {
-    cerr << "ERROR: Could not open scene file." << endl;
+    GOM.error() << "ERROR: Could not open scene file." << endl;
     return NULL;
   }
 
@@ -57,8 +57,10 @@ TScene* TSceneNEWER::_load (const string& rktNAME)
   //  NEWER_CloseParser();
   
   fclose (yyin);
-  
-  fprintf(stderr,"\n\n\n%s: Not done with the useful stuff... bailing...\n",__PRETTY_FUNCTION__);
+
+  char buffer[1024];
+  sprintf(buffer,"\n\n\n%s: Not done with the useful stuff... bailing...\n",__PRETTY_FUNCTION__);
+  GOM.error() << buffer << flush();
   exit(1);
 
   if ( iResult != 0 )

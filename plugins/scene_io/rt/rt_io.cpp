@@ -49,7 +49,7 @@ magic_pointer<TScene> TSceneRT::load (const string& rktNAME)
 
   if ( !rt_in )
   {
-    cerr << "ERROR: Could not open scene file." << endl;
+    GOM.error() << "ERROR: Could not open scene file." << endl;
     return (magic_pointer<TScene>)NULL;
   }
 

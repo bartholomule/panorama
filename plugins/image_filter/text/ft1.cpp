@@ -45,7 +45,7 @@ void TIF_Text::filter (SBuffers& rsBUFFERS)
   iError = TT_Init_FreeType (&tEngine);
   if ( iError )
   {
-    cerr << "Could not create FreeType engine." << endl;
+    GOM.error() << "Could not create FreeType engine." << endl;
     return;
   }
   
@@ -74,56 +74,56 @@ void TIF_Text::filter (SBuffers& rsBUFFERS)
 
   if ( iError )
   {
-    cerr << "Could not open file '" << tFontFile << "'." << endl;
+    GOM.error() << "Could not open file '" << tFontFile << "'." << endl;
     return;
   }
 
   iError = TT_Set_Raster_Gray_Palette (tEngine, abPalette);
   if ( iError )
   {
-    cerr << "Could not set raster palette." << endl;
+    GOM.error() << "Could not set raster palette." << endl;
     return;
   }
     
   iError = TT_Get_Face_Properties (tFace, &tFaceProps);
   if ( iError )
   {
-    cerr << "Could not get face properties." << endl;
+    GOM.error() << "Could not get face properties." << endl;
     return;
   }
 
   iError = TT_New_Instance (tFace, &tInstance);
   if ( iError )
   {
-    cerr << "Could not create instance." << endl;
+    GOM.error() << "Could not create instance." << endl;
     return;
   }
 
   iError = TT_Set_Instance_Resolutions (tInstance, 72, 72);
   if ( iError )
   {
-    cerr << "Could not set resolution." << endl;
+    GOM.error() << "Could not set resolution." << endl;
     return;
   }
 
   iError = TT_Set_Instance_CharSize (tInstance, wSize);
   if ( iError )
   {
-    cerr << "Could not set character size." << endl;
+    GOM.error() << "Could not set character size." << endl;
     return;
   }
 
   iError = TT_Get_CharMap (tFace, 0, &tCharMap);
   if ( iError )
   {
-    cerr << "Could not get charmap." << endl;
+    GOM.error() << "Could not get charmap." << endl;
     return;
   }
 
   iError = TT_New_Glyph (tFace, &tGlyph);
   if ( iError )
   {
-    cerr << "Could not create glyph." << endl;
+    GOM.error() << "Could not create glyph." << endl;
     return;
   }
 
@@ -150,15 +150,15 @@ void TIF_Text::filter (SBuffers& rsBUFFERS)
     uIndex = TT_Char_Index (tCharMap, tText[tI]);
     if ( ! uIndex )
     {
-      cerr << "Could not find char index for '" << tText[tI] << "'." << endl;
+      GOM.error() << "Could not find char index for '" << tText[tI] << "'." << endl;
       continue;
     }
     
     iError = TT_Load_Glyph (tInstance, tGlyph, uIndex, TTLOAD_DEFAULT);
     if ( iError )
     {
-      cerr << "Could not load glyph for '" << tText[tI] << "'." << endl;
-      cerr << "Error code: " << iError << endl;
+      GOM.error() << "Could not load glyph for '" << tText[tI] << "'." << endl;
+      GOM.error() << "Error code: " << iError << endl;
       continue;
     }
 

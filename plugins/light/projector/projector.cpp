@@ -296,9 +296,9 @@ void TProjector::printDebug (const string& indent) const
 
   string new_indent = TDebug::Indent(indent);
 
-  cerr << new_indent << "Angle     : " << tAngle << endl;
-  cerr << new_indent << "Up vector : "; tUp.printDebug(new_indent);
-  cerr << new_indent << "Point at  : "; tPointAt.printDebug(new_indent);
-  cerr << indent << "." << endl;
+  GOM.debug() << new_indent << "Angle     : " << tAngle << endl;
+  GOM.debug() << new_indent << "Up vector : "; tUp.printDebug(new_indent);
+  GOM.debug() << new_indent << "Point at  : "; tPointAt.printDebug(new_indent);
+  GOM.debug() << indent << "." << endl;
 
 }  /* printDebug() */

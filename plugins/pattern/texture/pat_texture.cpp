@@ -287,7 +287,7 @@ TColor TPatternTexture::pattern (const TSurfaceData& rktDATA) const
   
   if ( !ptImage )
   {
-    cerr << "Error: texture must be set" << endl;
+    GOM.error() << "Error: texture must be set" << endl;
     exit (1);
   }
 

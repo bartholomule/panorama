@@ -65,7 +65,7 @@ TVector TPerturbationBump::perturbNormal (const TSurfaceData& rktDATA) const
 
     if ( !ptPattern )
     {
-      cout << ("Error: pattern must be set") << endl;
+      GOM.error() << ("Error: pattern must be set") << endl;
       exit (1);
     }
 

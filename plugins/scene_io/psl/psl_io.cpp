@@ -38,7 +38,7 @@ TScene* TScenePsl::_load (const string& rktNAME)
 
   if ( !psl_in )
   {
-    cerr << "ERROR: Could not open scene file." << endl;
+    GOM.error() << "ERROR: Could not open scene file." << endl;
     return NULL;
   }
 

@@ -50,7 +50,7 @@ protected:
       
       if ( !ptPattern )
       {
-        cerr << "Error: source pattern must be set" << endl;
+        GOM.error() << "Error: source pattern must be set" << endl;
 	exit (1);
       }
 

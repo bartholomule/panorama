@@ -203,7 +203,7 @@ bool TPolyhedron::findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) c
 
   tSurfaceData.setup (this, rktRAY);
 
-//  cout << "poly : " << endl;
+//  GOM.debug() << "poly : " << endl;
 
   for (list<TPlaneData>::const_iterator tIter = _atPlaneDataList[eShape].begin(); ( tIter != _atPlaneDataList[eShape].end() ) ;tIter++)
   {
@@ -226,25 +226,25 @@ bool TPolyhedron::findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) c
 
       if ( tDen > 0 )
       {
-//        cout << "t (far) = " << t;
+//        GOM.debug() << "t (far) = " << t;
         if ( ( t < tFar ) )
         {
-//          cout << ", assigned";
+//          GOM.debug() << ", assigned";
           tFar       = t;
           tNormalFar = pktPlaneData->tNormal;
         }
       }
       else
       {
-//        cout << "t (near) = " << t;
+//        GOM.debug() << "t (near) = " << t;
         if ( ( t > tNear ) )
         {
-//          cout << ", assigned";
+//          GOM.debug() << ", assigned";
           tNear       = t;
           tNormalNear = pktPlaneData->tNormal;
         }
       }
-//      cout << endl;
+//      GOM.debug() << endl;
       if ( tNear >= tFar )
       {
         return false;
@@ -252,8 +252,8 @@ bool TPolyhedron::findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) c
     }
   }
 
-//  cout << "near : " << tNear << endl;
-//  cout << "far  : " << tFar << endl;
+//  GOM.debug() << "near : " << tNear << endl;
+//  GOM.debug() << "far  : " << tFar << endl;
 
   if( tRayIT.range().inside(tNear) )
   {
@@ -307,7 +307,7 @@ bool TPolyhedron::findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) c
 
   tSurfaceData.setup (this, rktRAY);
 
-//  cout << "poly : " << endl;
+//  GOM.debug() << "poly : " << endl;
 
   for (list<TPlaneData>::const_iterator tIter = atPlaneDataList[eShape].begin(); ( tIter != atPlaneDataList[eShape].end() ) ;tIter++)
   {
@@ -344,8 +344,8 @@ bool TPolyhedron::findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) c
     }
   }
 
-//  cout << "min : " << tInt.min() << endl;
-//  cout << "max : " << tInt.max() << endl;
+//  GOM.debug() << "min : " << tInt.min() << endl;
+//  GOM.debug() << "max : " << tInt.max() << endl;
 
   if ( ( tInt.min() > FX_EPSILON ) && ( tInt.min() < tRayIT.limit() ) )
   {

@@ -487,7 +487,7 @@ var                     : T_IDENTIFIER
                             if ( _eVarType != $3.eType )
                             {
                               psl_error ("wrong type in assignment");
-                              cout << "left = " << (int) _eVarType << ", right = " << (int) $3.eType << endl;
+                              GOM.error() << "left = " << (int) _eVarType << ", right = " << (int) $3.eType << endl;
                               exit (1);
                             }
                             AddVariable ($1);
@@ -576,7 +576,7 @@ code                    : variables sentences
 void psl_error (const char* pkcTEXT)
 {
 
-  cerr << endl << TScenePsl::_tInputFileName << "(" << TScenePsl::_dwLineNumber << ") Error: " << pkcTEXT << endl;
+  GOM.error() << endl << TScenePsl::_tInputFileName << "(" << TScenePsl::_dwLineNumber << ") Error: " << pkcTEXT << endl;
 
 }  /* psl_error() */
 
@@ -712,7 +712,7 @@ TProcedural* NewObject (const string& rktCLASS, const TProcedural* pktPARENT)
 
   TProcedural*   ptChild;
 
-//  cout << "New object : \"" << rktCLASS << "\"" << endl;
+//  GOM.debug() << "New object : \"" << rktCLASS << "\"" << endl;
   
   ptChild = (TProcedural*) TClassManager::_newObject (rktCLASS, pktPARENT);
   if ( !ptChild )
@@ -742,7 +742,7 @@ void* UpdateObject (const string& rktNAME)
 void DefineObject (const string& rktNAME, const string& rktCLASS, const string& rktDEF_CLASS)
 {
 
-//  cout << "Defining object : \"" << rktNAME << "\", \"" << rktCLASS << "\", \"" << rktDEF_CLASS << "\"" << endl;
+//  GOM.debug() << "Defining object : \"" << rktNAME << "\", \"" << rktCLASS << "\", \"" << rktDEF_CLASS << "\"" << endl;
 
   if ( rktNAME == "" )
   {
@@ -774,7 +774,7 @@ void DefineObject (const string& rktNAME, const string& rktCLASS, const string& 
 void CreateObject (const string& rktCLASS, const string& rktDEF_CLASS)
 {
 
-//  cout << "Creating object : \"" << rktCLASS << "\", \"" << rktDEF_CLASS << "\"" << endl;
+//  GOM.debug() << "Creating object : \"" << rktCLASS << "\", \"" << rktDEF_CLASS << "\"" << endl;
   
   if ( rktCLASS == "" )
   {

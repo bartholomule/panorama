@@ -67,7 +67,7 @@ inline TVector TPerturbationLeopard::perturbNormal (const TSurfaceData& rktDATA)
 
     if ( !ptLeopardPattern )
     {
-      cout << ("Error: leopard_pattern must be set") << endl;
+      GOM.error() << ("Error: leopard_pattern must be set") << endl;
       exit (1);
     }
 

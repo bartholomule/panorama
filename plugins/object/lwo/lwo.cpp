@@ -45,7 +45,7 @@ int TLightWaveObject::parseObject (void)
   GetLWIdTag (sFile, acTag);
   if ( strcmp (acTag, "FORM") )
   {
-    cerr << "File not in IFF format" << endl;
+    GOM.error() << "File not in IFF format" << endl;
 
     sFile.close();
 
@@ -57,7 +57,7 @@ int TLightWaveObject::parseObject (void)
   GetLWIdTag (sFile, acTag);
   if ( strcmp (acTag, "LWOB") )
   {
-    cerr << "File is not a LightWave object" << endl;
+    GOM.error() << "File is not a LightWave object" << endl;
 
     sFile.close();
 
@@ -77,7 +77,7 @@ int TLightWaveObject::parseObject (void)
       ReadPNTSChunk (sFile, zTagSize, tVertexList);
       gPointsRead = true;
 
-      cout << "Vertices : " << tVertexList.size() << endl;
+      GOM.debug() << "Vertices : " << tVertexList.size() << endl;
     }
     else if ( !strcmp (acTag, "SRFS") )
     {
@@ -85,18 +85,18 @@ int TLightWaveObject::parseObject (void)
 
       for (size_t J = 0; ( J < tSurfaceNameList.size() ) ;J++)
       {
-        cout << "Surface (" << J << ") : " << tSurfaceNameList [J] << endl;
+        GOM.debug() << "Surface (" << J << ") : " << tSurfaceNameList [J] << endl;
       }
     }
     else if ( !strcmp (acTag, "POLS") )
     {
       ReadPOLSChunk (sFile, zTagSize, this);
 
-      cout << "Faces : " << tFaceList.size() << endl;
+      GOM.debug() << "Faces : " << tFaceList.size() << endl;
     }
     else
     {
-      cout << "Unknown tag : " << acTag << endl;
+      GOM.debug() << "Unknown tag : " << acTag << endl;
 
       sFile.seekg (zTagSize, ios::cur);
     }

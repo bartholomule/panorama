@@ -40,7 +40,7 @@ extern void rt_warning (const string& rksTEXT);
 
 static void PrintJunk(magic_pointer<TAttribute> attr)
 {
-  cout << attr->toString() << endl;
+  GOM.out() << attr->toString() << endl;
 }
 
 static string env(string s)
@@ -61,7 +61,7 @@ static void PrintFunctionList()
 {
   TUserFunctionMap all_functions = all_user_functions();
 
-  cout << "Currently accessable functions are:" << endl;
+  GOM.out() << "Currently accessable functions are:" << endl;
   for( TUserFunctionMap::iterator i = all_functions.begin();
        i != all_functions.end();
        ++i )
@@ -69,29 +69,29 @@ static void PrintFunctionList()
     string function_name = i->first;
     vector<user_arg_type> args = i->second->required_args();
 
-    cout << "  " << function_name << "(";
+    GOM.out() << "  " << function_name << "(";
 
     vector<user_arg_type>::iterator i = args.begin();
 
     if( i != args.end() )
     {
-      cout << (*i)->AttributeName();
+      GOM.out() << (*i)->AttributeName();
       for( ++i;
 	   i != args.end();
 	   ++i )
       {
-	cout << ", " << (*i)->AttributeName();
+	GOM.out() << ", " << (*i)->AttributeName();
       }
     }
 
-    cout << ")" << endl;
+    GOM.out() << ")" << endl;
     
   }
 }
 
 static void Halt()
 {
-  cout << "Terminating due to halt request on line "
+  GOM.error() << "Terminating due to halt request on line "
        << TSceneRT::_dwLineNumber
        << "."
        << endl;
@@ -210,6 +210,19 @@ static void evaluate(const string& s)
   // This needs work.  It will cause problems if it is used.
 }
 
+static void debug(bool b)
+{
+  if( b )
+  {
+    GOM.EnableStream("debug");
+  }
+  else
+  {
+    GOM.DisableStream("debug");    
+  }
+}
+
+
 #include <cmath>
 
 void GlobalInitFunctions (void)
@@ -240,6 +253,7 @@ void GlobalInitFunctions (void)
   // EVAL DOES NOT WORK YET!!!
   GLOBAL_FUNCTIONS["eval"] = create_user_function(&evaluate);
   GLOBAL_FUNCTIONS["env"] = create_user_function(&env);
+  GLOBAL_FUNCTIONS["debug"] = create_user_function(&debug);  
   
   // Functions for type conversions
   GLOBAL_FUNCTIONS["vector"]  = create_user_function(&getVector);
@@ -355,7 +369,7 @@ TUserFunctionMap all_user_functions()
 {
   TUserFunctionMap temp_map;
 
-  // cout << "Getting global functions." << endl;
+  // GOM.debug() << "Getting global functions." << endl;
   temp_map.insert(GLOBAL_FUNCTIONS.begin(),
 		  GLOBAL_FUNCTIONS.end());
   
@@ -372,14 +386,14 @@ TUserFunctionMap all_user_functions()
   }
 
   // Now, copy back, collecting any procedural variables in the stack...
-  // cout << "Getting all local functions (in all scopes)." << endl;
+  // GOM.debug() << "Getting all local functions (in all scopes)." << endl;
 
   while( !temp_stack.empty() )
   {
     magic_pointer<TAttribute> attr = temp_stack.top();
     temp_stack.pop();
 
-    //    cout << "Adding functions from " << attr->toString() << endl;
+    //    GOM.debug() << "Adding functions from " << attr->toString() << endl;
     
 
     DATASTACK.push(attr);
@@ -401,13 +415,13 @@ TUserFunctionMap all_user_functions()
 	    i != new_map.end();
 	    ++i)
 	{
-	  //	  cout << "Manually placing " << i->first << " into the map." << endl;
+	  //	  GOM.debug() << "Manually placing " << i->first << " into the map." << endl;
 	  temp_map[i->first] = i->second;
 	}
       }
     }
   }
 
-  // cout << "Returning functions..." << endl;
+  // GOM.debug() << "Returning functions..." << endl;
   return temp_map;
 }

@@ -70,7 +70,7 @@ inline TVector TPerturbationBrick::perturbNormal (const TSurfaceData& rktDATA) c
 
     if ( !ptBrickPattern )
     {
-      cout << ("Error: brick_pattern must be set") << endl;
+      GOM.error() << ("Error: brick_pattern must be set") << endl;
       exit (1);
     }
 

@@ -2295,7 +2295,7 @@ void TUniformGrid::printGrid (void) const
   size_t   zElements       = 0;
   size_t   zVoxelsNonEmpty = 0;
   
-  cerr << "TUniformGrid::printGrid tVoxelSize " << tVoxelSize << endl;
+  GOM.debug() << "TUniformGrid::printGrid tVoxelSize " << tVoxelSize << endl;
   
   for (size_t m = 0; ( m < ktHashSize ) ;m++)
   {
@@ -2354,13 +2354,13 @@ void TUniformGrid::printGrid (void) const
     }
   }
 
-  cerr << "TUniformGrid::printGrid empty buckets = " << zCont0 << endl;
-  cerr << "TUniformGrid::printGrid buckets with 1 element    = " << zCont1 << endl;
-  cerr << "TUniformGrid::printGrid buckets with 2 elements   = " << zCont2 << endl;
-  cerr << "TUniformGrid::printGrid buckets with 3 elements   = " << zCont3 << endl;
-  cerr << "TUniformGrid::printGrid buckets with 4 elements   = " << zCont4 << endl;
-  cerr << "TUniformGrid::printGrid buckets with 5 elements   = " << zCont5 << endl;
-  cerr << "TUniformGrid::printGrid buckets with more elements = " << zContDefault << endl;
-  cerr << "TUniformGrid::printGrid non empty voxels = " << zVoxelsNonEmpty << endl;
+  GOM.debug() << "TUniformGrid::printGrid empty buckets = " << zCont0 << endl;
+  GOM.debug() << "TUniformGrid::printGrid buckets with 1 element    = " << zCont1 << endl;
+  GOM.debug() << "TUniformGrid::printGrid buckets with 2 elements   = " << zCont2 << endl;
+  GOM.debug() << "TUniformGrid::printGrid buckets with 3 elements   = " << zCont3 << endl;
+  GOM.debug() << "TUniformGrid::printGrid buckets with 4 elements   = " << zCont4 << endl;
+  GOM.debug() << "TUniformGrid::printGrid buckets with 5 elements   = " << zCont5 << endl;
+  GOM.debug() << "TUniformGrid::printGrid buckets with more elements = " << zContDefault << endl;
+  GOM.debug() << "TUniformGrid::printGrid non empty voxels = " << zVoxelsNonEmpty << endl;
 
 }  /* printGrid() */

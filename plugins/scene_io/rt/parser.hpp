@@ -156,7 +156,7 @@ void InitObjects (void);
 
 void report_reduction(const string& s);
 
-static void FIXME(const string& s) { cout << "FIXME: " << s << endl; }
+static void FIXME(const string& s) { GOM.error() << "FIXME: " << s << endl; }
 
 
 

@@ -35,7 +35,7 @@ extern "C" {
   void error_callback (png_structp ptPng, png_const_charp kcpMsg)
   {
 
-    cerr << kcpMsg << endl;
+    GOM.error() << kcpMsg << endl;
 
   }  /* error_callback() */
 
@@ -192,7 +192,7 @@ TImage* TImagePng::load (void)
   {
     if( !bSilent )
     {
-      cerr << "TImagePng::load : Error loading " << tFileName << endl;
+      GOM.error() << "TImagePng::load : Error loading " << tFileName << endl;
     }
     return NULL;
   }
@@ -205,7 +205,7 @@ TImage* TImagePng::load (void)
   {
     if( !bSilent )
     {
-      cerr << "TImagePng::load : " << tFileName << " is not a PNG file." << endl;
+      GOM.error() << "TImagePng::load : " << tFileName << " is not a PNG file." << endl;
     }
     tInput.close();
     return NULL;
@@ -217,7 +217,7 @@ TImage* TImagePng::load (void)
   {
     if( !bSilent )
     {
-      cerr << "TImagePng::load : Error loading " << tFileName << endl;
+      GOM.error() << "TImagePng::load : Error loading " << tFileName << endl;
     }
     tInput.close();
     return NULL;
@@ -228,7 +228,7 @@ TImage* TImagePng::load (void)
   {
     if( !bSilent )
     {
-      cerr << "TImagePng::load : Error loading " << tFileName << endl;
+      GOM.error() << "TImagePng::load : Error loading " << tFileName << endl;
     }
     png_destroy_read_struct (&ptPng, (png_infopp) NULL, (png_infopp) NULL);
     tInput.close();
@@ -240,7 +240,7 @@ TImage* TImagePng::load (void)
   {
     if( !bSilent )
     {
-      cerr << "TImagePng::load : Error loading " << tFileName << endl;
+      GOM.error() << "TImagePng::load : Error loading " << tFileName << endl;
     }
     png_destroy_read_struct (&ptPng, &ptInfo, (png_infopp) NULL);
     tInput.close();
@@ -267,7 +267,7 @@ TImage* TImagePng::load (void)
   {
     if( !bSilent )
     {
-      cerr << "TImagePng::load : Error loading " << tFileName << endl;
+      GOM.error() << "TImagePng::load : Error loading " << tFileName << endl;
     }
     return NULL;
   }
@@ -318,7 +318,7 @@ TImage* TImagePng::load (void)
 #else
     if( !bSilent )
     {
-      cerr << "TImagePng::load : Error loading " << tFileName
+      GOM.error() << "TImagePng::load : Error loading " << tFileName
 	   << " alpha channel not supported" << endl;
     }
     png_destroy_read_struct (&ptPng, &ptInfo, (png_infopp) NULL);

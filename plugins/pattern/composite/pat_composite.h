@@ -49,7 +49,7 @@ class TPatternComposite : public TPattern
       
       if ( ( !ptPattern1 ) || ( !ptPattern2 ) )
       {
-        cerr << "Error: both pattern1 and pattern2 must be set" << endl;
+        GOM.error() << "Error: both pattern1 and pattern2 must be set" << endl;
 	exit (1);
       }
       

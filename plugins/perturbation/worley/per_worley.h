@@ -66,7 +66,7 @@ inline TVector TPerturbationWorley::perturbNormal (const TSurfaceData& rktDATA) 
   {
     if ( !ptWorleyPattern )
     {
-      cout << ("Error: worley_pattern must be set") << endl;
+      GOM.error() << ("Error: worley_pattern must be set") << endl;
       exit (1);
     }
 

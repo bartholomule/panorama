@@ -69,7 +69,7 @@ inline TVector TPerturbationNoise::perturbNormal (const TSurfaceData& rktDATA) c
 
     if ( !ptNoisePattern )
     {
-      cout << ("Error: noise_pattern must be set") << endl;
+      GOM.error() << ("Error: noise_pattern must be set") << endl;
       exit (1);
     }
 
