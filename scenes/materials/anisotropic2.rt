@@ -1,0 +1,77 @@
+/*
+*  Anisotropic reflection test
+*/
+
+#include "materials.inc"
+
+define material MShinyPlastic : class MaterialCylGrad
+{ 
+  bsdf : class BsdfSchlickDouble
+  {
+    reflection_color  { red 0.4 green 0.6 blue 0.5 }
+    roughness         0.20
+    isotropy          0.10
+
+    l2_reflection_color  { red 0.9 green 0.3 blue 0.2 }
+    l2_roughness         0.60
+    l2_isotropy          0.80
+  }
+  ambient	0.1
+  diffuse	0.4
+  specular	0.5
+}
+
+define camera c
+{
+  translate	<90, 350, 180>
+  look_at	<0, 100, 0>
+}
+
+define light l
+{
+  translate	<-24, 170, -50>
+  color		CWhite
+}
+
+plane
+{
+  translate	<0, 0, 0>
+  normal	<0, 1, 0>
+  material : extends MShinyPlastic
+  {
+    base_color	CBlue
+    specular	0.2
+    diffuse	0.7
+  }
+}
+
+cylinder
+{
+  scale         <50, 5, 50>
+  translate	<0, 95, 0>
+  material : extends MShinyPlastic
+  {
+    cycles      5
+    swirl       170
+    base_color	"tropical"
+  }
+}
+
+scene
+{
+  camera	c
+  light		l
+  width		640
+  height	480
+  background	CSummerSky
+  output
+  {
+    type        "png"
+    name	"anisotropic2.png"
+  }
+  renderer : class Raytracer
+  {
+    sampling    "adaptive"
+  }
+}
+
