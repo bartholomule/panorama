@@ -6,8 +6,12 @@
 atm_const.plg
 
 # BSDF
+bsdf_cook_torrance.plg
 bsdf_lambertian.plg
 bsdf_phong.plg
+bsdf_schlick.plg
+bsdf_schlick_double.plg
+bsdf_ward.plg
 
 # Cameras
 pinhole.plg
@@ -16,6 +20,7 @@ pinhole.plg
 if_cartoon.plg
 if_convert_to_grey.plg
 if_fog.plg
+if_lens_flare.plg
 @PLUGIN_TEXT@
 
 # Image input/output formats
