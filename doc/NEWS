@@ -1,4 +1,6 @@
 
+ - Fixed bug in box intersection code.
+
  - Fixes for out of tree builds.
  
  - Added check for unrecognized output image format.
