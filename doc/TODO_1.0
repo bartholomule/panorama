@@ -1,0 +1,28 @@
+
+ OBJECTS
+ 
+ - Transformations should be working, both with and without aggregates.
+ - Raytracing acceleration system.
+
+ MATERIALS
+ 
+ - 2D textures (with different mapping methods).
+ - Mappings for 3D textures.
+
+ LIGHTS
+ 
+ - Extended (area, linear, volume) lights for raytracing.
+
+ SCENE LANGUAGE
+ 
+ - The new procedural scene language/engine (animation would be good, but not
+ necessary for 1.0).
+
+ RENDERERS
+ 
+ - ZBuffer renderer (not sure about this one; it implies several other
+ features).
+
+ GENERAL
+ 
+ - No (or very little) "experimental" code.
