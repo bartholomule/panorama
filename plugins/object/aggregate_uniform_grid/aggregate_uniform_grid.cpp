@@ -72,9 +72,9 @@ void TAggregateUniformGrid::initialize (void)
     ptUniformGrid->setVoxelSize (tVoxelSize);
   }
 
-  for (vector<TObject*>::iterator tIter = tObjectList.begin(); ( tIter != tObjectList.end() ) ;tIter++)
+  for (vector<TObject*>::iterator tIter2 = tObjectList.begin(); ( tIter2 != tObjectList.end() ) ;tIter2++)
   {
-    ptUniformGrid->addObject (*tIter);
+    ptUniformGrid->addObject (*tIter2);
   }
 
   ptUniformGrid->initialize();
