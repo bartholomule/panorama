@@ -23,16 +23,15 @@
 
 DEFINE_PLUGIN ("PatternBrick", FX_PATTERN_CLASS, TPatternBrick);
 
-
-inline TScalar TPatternBrick::step (TScalar a, TScalar x) const
+TScalar TPatternBrick::step (TScalar a, TScalar x) const
 {
 
   return (TScalar) ( x >= a );
 
-}
+}  /* step() */
 
 
-inline TScalar TPatternBrick::smoothstep (TScalar a, TScalar b, TScalar x) const
+TScalar TPatternBrick::smoothstep (TScalar a, TScalar b, TScalar x) const
 {
 
   if (x < a) 
@@ -49,10 +48,10 @@ inline TScalar TPatternBrick::smoothstep (TScalar a, TScalar b, TScalar x) const
 
   return x * x * (3 - 2 * x);
 
-}
+}  /* smoothstep() */
 
 
-inline TScalar TPatternBrick::smoothstepdiff (TScalar a, TScalar b, TScalar x) const
+TScalar TPatternBrick::smoothstepdiff (TScalar a, TScalar b, TScalar x) const
 {
 
   if ( ( x < a ) || ( x >= b ) ) 
@@ -65,10 +64,10 @@ inline TScalar TPatternBrick::smoothstepdiff (TScalar a, TScalar b, TScalar x) c
 
   return 4.0 * x * (1.0 - x);
 
-}
+}  /* smoothstepdiff() */
 
 
-inline TScalar TPatternBrick::evaluate (const TVector& rktPOINT, TVector* ptGRADIENT) const
+TScalar TPatternBrick::evaluate (const TVector& rktPOINT, TVector* ptGRADIENT) const
 {
 
   TScalar   tValue, tX, tY, tZ, tWX, tWY, tWZ;
