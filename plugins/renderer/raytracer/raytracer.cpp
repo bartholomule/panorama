@@ -81,10 +81,7 @@ inline TColor TRaytracer::getRadiance (TSurfaceData& rtDATA, Word wDEPTH) const
       tRadiance += specularTransmittedLight (rtDATA, wDEPTH, &rtDATA.zTransmission);
     }
 
-    if ( ptScene->participatingMedia() )
-    {
-      tRadiance = mediaRadiance (rtDATA, tRadiance);
-    }
+    tRadiance = mediaRadiance (rtDATA, tRadiance);
 
     for (list<const TObjectFilter*>::const_iterator tIter = rtDATA.object()->filterList().begin(); ( tIter != rtDATA.object()->filterList().end() ) ;tIter++)
     {
@@ -96,11 +93,7 @@ inline TColor TRaytracer::getRadiance (TSurfaceData& rtDATA, Word wDEPTH) const
     //
     // There was no intersection
     //
-    tRadiance = ptScene->backgroundColor();
-    if ( ptScene->participatingMedia() )
-    {
-      tRadiance = mediaRadiance (rtDATA, tRadiance);
-    }
+    tRadiance = mediaRadiance (rtDATA, ptScene->backgroundColor());
   }
 
   return tRadiance;
@@ -666,7 +659,19 @@ void TRaytracer::render (SBuffers& rsBUFFERS)
 inline TColor TRaytracer::mediaRadiance (const TSurfaceData& rktDATA, const TColor& rktRAD) const
 {
 
-  return ptScene->atmosphere()->filterRadiance (rktDATA, rktRAD);
+  TColor   tRad = rktRAD;
+
+  for (vector<TLight*>::const_iterator tIter = ptScene->lightList().begin(); ( tIter != ptScene->lightList().end() ) ;tIter++)
+  {
+    tRad += (*tIter)->scatteredLight (rktDATA);
+  }
+
+  if ( ptScene->participatingMedia() )
+  {
+    tRad = ptScene->atmosphere()->filterRadiance (rktDATA, rktRAD);
+  }
+
+  return tRad;
   
 }  /* mediaRadiance() */
 
