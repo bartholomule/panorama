@@ -13,7 +13,7 @@ all:
 
 install:
 		@echo "Installing scenes (lights)..."
-		@${BUILD_TOP}/mkinstalldirs ${SCENE_DIR}/lights
+		@${SRC_DIR}/${BUILD_TOP}/mkinstalldirs ${SCENE_DIR}/lights
 		@set -e; \
 		for i in $(FILES); do \
 		  @INSTALL_DATA@ ${SRC_DIR}/$$i ${SCENE_DIR}/lights; \

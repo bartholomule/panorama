@@ -32,7 +32,7 @@ install:        all
 		  @INSTALL_DATA@ ${SRC_DIR}/$$i ${DOC_DIR}; \
 		done
 		@@INSTALL_DATA@ ${SRC_DIR}/pluginrc ${CONFIG_DIR}
-		@${BUILD_TOP}/mkinstalldirs ${DOC_DIR}/developers ${DOC_DIR}/users
+		@${SRC_DIR}/${BUILD_TOP}/mkinstalldirs ${DOC_DIR}/developers ${DOC_DIR}/users
 		@set -e; \
 		for i in $(DIRS); do \
                   $(MAKE) -C $$i install; \

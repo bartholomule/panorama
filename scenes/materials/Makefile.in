@@ -22,7 +22,7 @@ all:
 
 install:
 		@echo "Installing scenes (materials)..."
-		@${BUILD_TOP}/mkinstalldirs ${SCENE_DIR}/materials
+		@${SRC_DIR}/${BUILD_TOP}/mkinstalldirs ${SCENE_DIR}/materials
 		@set -e; \
 		for i in $(FILES); do \
 		  @INSTALL_DATA@ ${SRC_DIR}/$$i ${SCENE_DIR}/materials; \

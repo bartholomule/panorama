@@ -28,7 +28,7 @@ HLAPI_LIB = ${BUILD_TOP}/hlapi/libhlapi.so
 STATIC_LLAPI_LIB = ${BUILD_TOP}/llapi/libllapi.a
 STATIC_HLAPI_LIB = ${BUILD_TOP}/hlapi/libhlapi.a
 
-INCLUDE = -I${BUILD_TOP}
+INCLUDE = -I${BUILD_TOP} -I${SRC_DIR}/${BUILD_TOP} -I${SRC_DIR}
 DEFS    = @DEFS@ \
           -DTOPDIR='"${TOPDIR}"' \
           -DBIN_DIR='"${BIN_DIR}"' \

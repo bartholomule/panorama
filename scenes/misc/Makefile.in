@@ -15,7 +15,7 @@ all:
 
 install:
 		@echo "Installing scenes (misc)..."
-		@${BUILD_TOP}/mkinstalldirs ${SCENE_DIR}/misc
+		@${SRC_DIR}/${BUILD_TOP}/mkinstalldirs ${SCENE_DIR}/misc
 		@set -e; \
 		for i in $(FILES); do \
 		  @INSTALL_DATA@ ${SRC_DIR}/$$i ${SCENE_DIR}/misc; \

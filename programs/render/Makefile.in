@@ -2,7 +2,7 @@
 BUILD_TOP = ../..
 
 include ${BUILD_TOP}/Makefile.vars
-include ${BUILD_TOP}/Makefile.rules
+include @srcdir@/${BUILD_TOP}/Makefile.rules
 
 INSTALL = @INSTALL@
 SRC_DIR = @srcdir@

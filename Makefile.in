@@ -42,7 +42,7 @@ distclean:
 
 installdirs:
 		@echo Creating directories...
-		@${BUILD_TOP}/mkinstalldirs ${TOP_DIR} ${BIN_DIR} ${LIB_DIR} ${DOC_DIR} \
+		@${SRC_DIR}/mkinstalldirs ${TOP_DIR} ${BIN_DIR} ${LIB_DIR} ${DOC_DIR} \
                 			    ${CONFIG_DIR} ${INCLUDE_DIR} ${PLUGIN_DIR}  \
                                             ${TEXTURE_DIR} ${SCENE_DIR} ${GRADIENT_DIR}
 

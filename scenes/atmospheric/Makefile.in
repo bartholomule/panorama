@@ -12,7 +12,7 @@ all:
 
 install:
 		@echo "Installing scenes (atmospheric)..."
-		@${BUILD_TOP}/mkinstalldirs ${SCENE_DIR}/atmospheric
+		@${SRC_DIR}/${BUILD_TOP}/mkinstalldirs ${SCENE_DIR}/atmospheric
 		@set -e; \
 		for i in $(FILES); do \
 		  @INSTALL_DATA@ ${SRC_DIR}/$$i ${SCENE_DIR}/atmospheric; \

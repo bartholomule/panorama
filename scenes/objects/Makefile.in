@@ -21,7 +21,7 @@ all:
 
 install:
 		@echo "Installing scenes (objects)..."
-		@${BUILD_TOP}/mkinstalldirs ${SCENE_DIR}/objects
+		@${SRC_DIR}/${BUILD_TOP}/mkinstalldirs ${SCENE_DIR}/objects
 		@set -e; \
 		for i in $(FILES); do \
 		  @INSTALL_DATA@ ${SRC_DIR}/$$i ${SCENE_DIR}/objects; \

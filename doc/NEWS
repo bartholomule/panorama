@@ -1,4 +1,6 @@
 
+ - Fixes for out of tree builds.
+ 
  - Added check for unrecognized output image format.
 
  - Fixed minor problem in 'make -install'.
