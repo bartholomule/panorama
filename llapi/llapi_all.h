@@ -47,6 +47,8 @@
 #include "llapi/object.h"
 #include "llapi/object_filter.h"
 #include "llapi/perlin_noise.h"
+#include "llapi/pattern.h"
+#include "llapi/perturbation.h"
 #include "llapi/priority_queue.h"
 #include "llapi/procedural.h"
 #include "llapi/program.h"

@@ -21,9 +21,10 @@
 
 #include <cmath>
 #include <iostream>
+#include "llapi/base_class.h"
 #include "llapi/math_tools.h"
 
-class TColor
+class TColor : public TBaseClass
 {
 
   protected:
@@ -47,7 +48,12 @@ class TColor
       fRed (fRED),
       fGreen (fGREEN),
       fBlue (fBLUE) {}
-    
+
+    TColor (const TColor& rktCOLOR) :
+      fRed (rktCOLOR.fRed),
+      fGreen (rktCOLOR.fGreen),
+      fBlue (rktCOLOR.fBlue) {}
+
     float red (void) const { return fRed; }
     float green (void) const { return fGreen; }
     float blue (void) const { return fBlue; }
@@ -70,6 +76,7 @@ class TColor
     TColor convertFrom24Bits (void) const;
     TColor convertToGrey (void) const;
                           
+    float average (void) const;
     float intensity (void) const;
 
     void clamp (void);
@@ -80,6 +87,9 @@ class TColor
     bool saturated (void) const;
 
     void printDebug (void) const;
+
+    EClass classType (void) const { return FX_COLOR_CLASS; }
+    string className (void) const { return "Color"; }
 
 };  /* class TColor */
 
@@ -208,6 +218,14 @@ inline TColor TColor::convertToGrey (void) const
   return TColor (fValue, fValue, fValue);
 
 }  /* convertToGrey() */
+
+
+inline float TColor::average (void) const
+{
+
+  return (fRed + fGreen + fBlue) / 3.0;
+
+}  /* average() */
 
 
 inline float TColor::intensity (void) const

@@ -1,5 +1,6 @@
 /*
-*  Copyright (C) 1998, 1999 Angel Jimenez Jimenez and Carlos Jimenez Moreno
+*  Copyright (C) 1998-2000 Angel Jimenez Jimenez, Carlos Jimenez Moreno and
+*                          Jon Frydensbjerg
 *
 *  This program is free software; you can redistribute it and/or modify
 *  it under the terms of the GNU General Public License as published by
@@ -23,48 +24,53 @@
 #include "llapi/span_list.h"
 
 TMaterial::TMaterial (void) :
-  gTransparent (false),
-  tOpacity (1),
-  tAmbientReflection (0),
-  tDiffuseReflection (0),
-  tSpecularReflection (0),
-  tIor (1),
-  tCaustics (0),
   tSelfEmission (0),
-  ptBsdf (NULL) {}
-
-
-TMaterial::TMaterial (const TMaterial& rktMATERIAL) :
-  TProcedural(rktMATERIAL),
-  gTransparent (rktMATERIAL.gTransparent),
-  tColor (rktMATERIAL.tColor),
-  tOpacity (rktMATERIAL.tOpacity),
-  tAmbientReflection (rktMATERIAL.tAmbientReflection),
-  tDiffuseReflection (rktMATERIAL.tDiffuseReflection),
-  tSpecularReflection (rktMATERIAL.tSpecularReflection),
-  tIor (rktMATERIAL.tIor),
-  tCaustics (rktMATERIAL.tCaustics),
-  tSelfEmission (rktMATERIAL.tSelfEmission),
-  ptBsdf (rktMATERIAL.ptBsdf) {}
-
-
-TMaterial& TMaterial::operator = (const TMaterial& rktMATERIAL)
+  ptBsdf (NULL) 
 {
 
-  if( &rktMATERIAL != this )
+  ptColor              = new TPattern (0.0);
+  ptOpacity            = new TPattern (1.0);
+  ptAmbientReflection  = new TPattern (0.0);
+  ptDiffuseReflection  = new TPattern (0.0);
+  ptSpecularReflection = new TPattern (0.0);
+  ptIor                = new TPattern (1.0);
+  ptCaustics           = new TPattern (0.0);
+  ptPerturbation       = new TPerturbation();
+ 
+}  /* TMaterial() */
+
+
+TMaterial::TMaterial (TMaterial* ptMATERIAL) :
+  TProcedural(*ptMATERIAL),
+  ptColor (ptMATERIAL->ptColor),
+  ptOpacity (ptMATERIAL->ptOpacity),
+  ptAmbientReflection (ptMATERIAL->ptAmbientReflection),
+  ptDiffuseReflection (ptMATERIAL->ptDiffuseReflection),
+  ptSpecularReflection (ptMATERIAL->ptSpecularReflection),
+  ptIor (ptMATERIAL->ptIor),
+  ptCaustics (ptMATERIAL->ptCaustics),
+  ptPerturbation (ptMATERIAL->ptPerturbation),
+  tSelfEmission (ptMATERIAL->tSelfEmission),
+  ptBsdf (ptMATERIAL->ptBsdf) {}
+
+
+TMaterial& TMaterial::operator = (TMaterial* ptMATERIAL)
+{
+
+  if( ptMATERIAL != this )
   {
-    gTransparent        = rktMATERIAL.gTransparent;
-    tColor              = rktMATERIAL.tColor;
-    tOpacity            = rktMATERIAL.tOpacity;
-    tAmbientReflection  = rktMATERIAL.tAmbientReflection;
-    tDiffuseReflection  = rktMATERIAL.tDiffuseReflection;
-    tSpecularReflection = rktMATERIAL.tSpecularReflection;
-    tIor                = rktMATERIAL.tIor;
-    tCaustics           = rktMATERIAL.tCaustics;
-    tSelfEmission       = rktMATERIAL.tSelfEmission;
-    ptBsdf              = rktMATERIAL.ptBsdf;
+    ptColor              = ptMATERIAL->ptColor;
+    ptOpacity            = ptMATERIAL->ptOpacity;
+    ptAmbientReflection  = ptMATERIAL->ptAmbientReflection;
+    ptDiffuseReflection  = ptMATERIAL->ptDiffuseReflection;
+    ptSpecularReflection = ptMATERIAL->ptSpecularReflection;
+    ptIor                = ptMATERIAL->ptIor;
+    ptCaustics           = ptMATERIAL->ptCaustics;
+    ptPerturbation       = ptMATERIAL->ptPerturbation;
+    tSelfEmission        = ptMATERIAL->tSelfEmission;
+    ptBsdf               = ptMATERIAL->ptBsdf;
     
-    TProcedural::operator= (rktMATERIAL);
+    TProcedural::operator= (*ptMATERIAL);
   }
   
   return *this;
@@ -96,7 +102,13 @@ TScalar TMaterial::transparency (const TSpanList& rktLIST) const
   if ( transparent (tData1) && transparent (tData2) )
   {
     tDistance     = tData2.distance() - tData1.distance();
-    tTransparency = exp (-tOpacity * tDistance);
+
+    //
+    // Take opacity value from the first span, but the last span could
+    // also have been used as long the homogenity assertion holds.
+    // However, this assertion is NOT always true anymore!
+    //
+    tTransparency = exp (-ptOpacity->scalar (tData1) * tDistance);
     
     // Check if light is inside object
     if ( tDistance > 0 )
@@ -118,22 +130,22 @@ TScalar TMaterial::transparency (const TSpanList& rktLIST) const
 }  /* transparency() */
 
 
-inline TScalar TMaterial::transparency (TScalar tDIST) const
-{
-
-  return exp (-tOpacity * tDIST);
-
-}  /* transparency() */
-
-
 int TMaterial::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
 
   if ( rktNAME == "color" )
   {
-    if ( eTYPE == FX_COLOR )
+    if ( eTYPE == FX_PATTERN )
     {
-      setColor (*((TColor*) nVALUE.pvValue));
+      setColor ((TPattern*) nVALUE.pvValue);
+    }
+    else if ( eTYPE == FX_REAL )
+    {
+      setColor (new TPattern (nVALUE.dValue));
+    }
+    else if ( eTYPE == FX_COLOR )
+    {
+      setColor (new TPattern (*((TColor*) nVALUE.pvValue)));
     }
     else
     {
@@ -142,9 +154,17 @@ int TMaterial::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribTy
   }
   else if ( rktNAME == "opacity" )
   {
-    if ( eTYPE == FX_REAL )
+    if ( eTYPE == FX_PATTERN )
     {
-      setOpacity (nVALUE.dValue);
+      setOpacity ((TPattern*) nVALUE.pvValue);
+    } 
+    else if ( eTYPE == FX_REAL )
+    {
+      setOpacity (new TPattern (nVALUE.dValue));
+    }
+    else if ( eTYPE == FX_COLOR )
+    {
+      setOpacity (new TPattern (*((TColor*) nVALUE.pvValue)));
     }
     else
     {
@@ -153,9 +173,17 @@ int TMaterial::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribTy
   }
   else if ( rktNAME == "ambient" )
   {
-    if ( eTYPE == FX_REAL )
+    if ( eTYPE == FX_PATTERN )
     {
-      setAmbientReflection (nVALUE.dValue);
+      setAmbientReflection ((TPattern*) nVALUE.pvValue);
+    }
+    else if ( eTYPE == FX_REAL )
+    {
+      setAmbientReflection (new TPattern (nVALUE.dValue));
+    }
+    else if ( eTYPE == FX_COLOR )
+    {
+      setAmbientReflection (new TPattern (*((TColor*) nVALUE.pvValue)));
     }
     else
     {
@@ -164,9 +192,17 @@ int TMaterial::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribTy
   }
   else if ( rktNAME == "diffuse" )
   {
-    if ( eTYPE == FX_REAL )
+    if ( eTYPE == FX_PATTERN )
     {
-      setDiffuseReflection (nVALUE.dValue);
+      setDiffuseReflection ((TPattern*) nVALUE.pvValue);
+    }
+    else if ( eTYPE == FX_REAL )
+    {
+      setDiffuseReflection (new TPattern (nVALUE.dValue));
+    }
+    else if ( eTYPE == FX_COLOR )
+    {
+      setDiffuseReflection (new TPattern (*((TColor*) nVALUE.pvValue)));
     }
     else
     {
@@ -175,9 +211,17 @@ int TMaterial::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribTy
   }
   else if ( rktNAME == "specular" )
   {
-    if ( eTYPE == FX_REAL )
+    if ( eTYPE == FX_PATTERN )
     {
-      setSpecularReflection (nVALUE.dValue);
+      setSpecularReflection ((TPattern*) nVALUE.pvValue);
+    }
+    else if ( eTYPE == FX_REAL )
+    {
+      setSpecularReflection (new TPattern (nVALUE.dValue));
+    }
+    else if ( eTYPE == FX_COLOR )
+    {
+      setSpecularReflection (new TPattern (*((TColor*) nVALUE.pvValue)));
     }
     else
     {
@@ -186,9 +230,17 @@ int TMaterial::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribTy
   }
   else if ( rktNAME == "ior" )
   {
-    if ( eTYPE == FX_REAL )
+    if ( eTYPE == FX_PATTERN )
     {
-      setIor (nVALUE.dValue);
+      setIor ((TPattern*) nVALUE.pvValue);
+    }
+    else if ( eTYPE == FX_REAL )
+    {
+      setIor (new TPattern (nVALUE.dValue));
+    }
+    else if ( eTYPE == FX_COLOR )
+    {
+      setIor (new TPattern (*((TColor*) nVALUE.pvValue)));
     }
     else
     {
@@ -197,9 +249,28 @@ int TMaterial::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribTy
   }
   else if ( rktNAME == "caustics" )
   {
-    if ( eTYPE == FX_REAL )
+    if ( eTYPE == FX_PATTERN )
     {
-      setCaustics (nVALUE.dValue);
+      setCaustics ((TPattern*) nVALUE.pvValue);
+    }
+    else if ( eTYPE == FX_REAL )
+    {
+      setCaustics (new TPattern (nVALUE.dValue));
+    }
+    else if ( eTYPE == FX_COLOR )
+    {
+      setCaustics (new TPattern (*((TColor*) nVALUE.pvValue)));
+    }
+    else
+    {
+      return FX_ATTRIB_WRONG_TYPE;
+    }
+  }
+  else if ( rktNAME == "perturb_func" )
+  {
+    if ( eTYPE == FX_PERTURBATION )
+    {
+      setPerturbation ((TPerturbation*) nVALUE.pvValue);
     }
     else
     {
@@ -243,31 +314,35 @@ int TMaterial::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 
   if ( rktNAME == "color" )
   {
-    rnVALUE.pvValue = &tColor;
+    rnVALUE.pvValue = ptColor;
   }
   else if ( rktNAME == "opacity" )
   {
-    rnVALUE.dValue = tOpacity;
+    rnVALUE.pvValue = ptOpacity;
   }
   else if ( rktNAME == "ambient" )
   {
-    rnVALUE.dValue = tAmbientReflection;
+    rnVALUE.pvValue = ptAmbientReflection;
   }
   else if ( rktNAME == "diffuse" )
   {
-    rnVALUE.dValue = tDiffuseReflection;
+    rnVALUE.pvValue = ptDiffuseReflection;
   }
   else if ( rktNAME == "specular" )
   {
-    rnVALUE.dValue = tSpecularReflection;
+    rnVALUE.pvValue = ptSpecularReflection;
   }
   else if ( rktNAME == "ior" )
   {
-    rnVALUE.dValue = tIor;
+    rnVALUE.pvValue = ptIor;
   }
   else if ( rktNAME == "caustics" )
   {
-    rnVALUE.dValue = tCaustics;
+    rnVALUE.pvValue = ptCaustics;
+  } 
+  else if ( rktNAME == "perturb_func" )
+  {
+    rnVALUE.pvValue = ptPerturbation;
   }
   else if ( rktNAME == "emission" )
   {
@@ -292,15 +367,16 @@ void TMaterial::getAttributeList (TAttributeList& rtLIST) const
 
   TProcedural::getAttributeList (rtLIST);
 
-  rtLIST ["color"]    = FX_COLOR;
-  rtLIST ["opacity"]  = FX_REAL;
-  rtLIST ["ambient"]  = FX_REAL;
-  rtLIST ["diffuse"]  = FX_REAL;
-  rtLIST ["specular"] = FX_REAL;
-  rtLIST ["ior"]      = FX_REAL;
-  rtLIST ["caustics"] = FX_REAL;
-  rtLIST ["emission"] = FX_REAL;
-  rtLIST ["bsdf"]     = FX_BSDF;
+  rtLIST ["color"]        = FX_PATTERN;
+  rtLIST ["opacity"]      = FX_PATTERN;
+  rtLIST ["ambient"]      = FX_PATTERN;
+  rtLIST ["diffuse"]      = FX_PATTERN;
+  rtLIST ["specular"]     = FX_PATTERN;
+  rtLIST ["ior"]          = FX_PATTERN;
+  rtLIST ["caustics"]     = FX_PATTERN;
+  rtLIST ["perturb_func"] = FX_PERTURBATION;
+  rtLIST ["emission"]     = FX_REAL;
+  rtLIST ["bsdf"]         = FX_BSDF;
 
 }  /* getAttributeList() */
 
@@ -312,12 +388,14 @@ void TMaterial::printDebug (void) const
 
   TDebug::_push();
 
-  cerr << TDebug::_indent() <<"Color    : "; tColor.printDebug(); cerr << endl;
-  cerr << TDebug::_indent() <<"Ambient  : " << tAmbientReflection << endl;
-  cerr << TDebug::_indent() <<"Diffuse  : " << tDiffuseReflection << endl;
-  cerr << TDebug::_indent() <<"Specular : " << tSpecularReflection << endl;
-  cerr << TDebug::_indent() <<"IOR      : " << tIor << endl;
-  cerr << TDebug::_indent() <<"Emission : " << tSelfEmission << endl;
+  cerr << TDebug::_indent() << "Color    : "; ptColor->lastColor().printDebug(); cerr << endl;
+  cerr << TDebug::_indent() << "Opacity  : " << ptOpacity->lastScalar() << endl;
+  cerr << TDebug::_indent() << "Ambient  : " << ptAmbientReflection->lastScalar() << endl;
+  cerr << TDebug::_indent() << "Diffuse  : " << ptDiffuseReflection->lastScalar() << endl;
+  cerr << TDebug::_indent() << "Specular : " << ptSpecularReflection->lastScalar() << endl;
+  cerr << TDebug::_indent() << "IOR      : " << ptIor->lastScalar() << endl;
+  cerr << TDebug::_indent() << "Caustics : " << ptCaustics->lastScalar() << endl;
+  cerr << TDebug::_indent() << "Emission : " << tSelfEmission << endl;
 
   TDebug::_pop();
   

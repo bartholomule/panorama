@@ -29,6 +29,28 @@ string TBaseClass::classTypeString (EClass eCLASS)
     }
     break;
 
+    case FX_VECTOR_CLASS:
+    {
+      return "Vector";
+    }
+    
+    case FX_VECTOR2_CLASS:
+    {
+      return "Vector2";
+    }
+
+    case FX_PATTERN_CLASS:
+    {
+      return "Pattern";
+    }
+    break;
+
+    case FX_PERTURBATION_CLASS:
+    {
+      return "Perturbation";
+    }
+    break;
+
     case FX_MATERIAL_CLASS:
     {
       return "Material";

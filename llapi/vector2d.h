@@ -22,6 +22,7 @@
 
 #include <cassert>
 #include <iostream>
+#include "llapi/base_class.h"
 #include "llapi/machine.h"
 
 template <class TItem>
@@ -86,6 +87,9 @@ class TVector2D
     void normalize (void);
 
     void printDebug (void) const;
+
+    EClass classType (void) const { return FX_VECTOR2_CLASS; }
+    string className (void) const { return "Vector2"; }
 
 };  /* class TVector2D */
 

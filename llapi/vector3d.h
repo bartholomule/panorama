@@ -22,6 +22,7 @@
 #include <cassert>
 #include <cmath>
 #include <iostream>
+#include "llapi/base_class.h"
 #include "llapi/machine.h"
 #include "llapi/math_tools.h"
 
@@ -29,7 +30,7 @@ template <class TItem>
 class TBaseMatrix;
 
 template <class TItem>
-class TVector3D
+class TVector3D : public TBaseClass
 {
 
   protected:
@@ -110,6 +111,9 @@ class TVector3D
     void applyTransform (const TBaseMatrix<TItem>* pktMATRIX);
 
     void printDebug (void) const;
+
+    EClass classType (void) const { return FX_VECTOR_CLASS; }
+    string className (void) const { return "Vector"; }
     
 };  /* class TVector3D */
 

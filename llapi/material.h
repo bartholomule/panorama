@@ -1,5 +1,6 @@
 /*
-*  Copyright (C) 1998, 1999 Angel Jimenez Jimenez and Carlos Jimenez Moreno
+*  Copyright (C) 1998-2000 Angel Jimenez Jimenez, Carlos Jimenez Moreno and
+*                          Jon Frydensbjerg
 *
 *  This program is free software; you can redistribute it and/or modify
 *  it under the terms of the GNU General Public License as published by
@@ -22,41 +23,42 @@
 #include "llapi/span_list.h"
 #include "llapi/bsdf.h"
 #include "llapi/procedural.h"
+#include "llapi/pattern.h"
+#include "llapi/perturbation.h"
 
 class TMaterial : public TProcedural
 {
 
   protected:
 
-    bool      gTransparent;
-    TColor    tColor;
-    TScalar   tOpacity;
-    TScalar   tAmbientReflection;
-    TScalar   tDiffuseReflection;
-    TScalar   tSpecularReflection;
-    TScalar   tIor;
-    TScalar   tCaustics;
-    TScalar   tSelfEmission;
-    TBsdf*    ptBsdf;
+    TPattern*       ptColor;
+    TPattern*       ptOpacity;
+    TPattern*       ptAmbientReflection;
+    TPattern*       ptDiffuseReflection;
+    TPattern*       ptSpecularReflection;
+    TPattern*       ptIor;
+    TPattern*       ptCaustics;
+    TPerturbation*  ptPerturbation;
+    TScalar         tSelfEmission;
+    TBsdf*          ptBsdf;
 
   public:
 
     TMaterial (void);
-    TMaterial (const TMaterial& rktMATERIAL);
+    TMaterial (TMaterial* ptMATERIAL);
 
-    TMaterial& operator = (const TMaterial& rktMATERIAL);
+    TMaterial& operator = (TMaterial* ptMATERIAL);
 
-    virtual bool transparent (const TSurfaceData& rktDATA) const { return gTransparent; }
-    virtual TScalar transparency (const TSpanList& rktLIST) const;
-    virtual TScalar transparency (TScalar tDIST) const;
-    virtual TColor color (const TSurfaceData& rktDATA) const { return tColor; }
-    virtual TScalar opacity (const TSurfaceData& rktDATA) const { return tOpacity; }
-    virtual TScalar ambientReflection (const TSurfaceData& rktDATA) const { return tAmbientReflection; }
-    virtual TScalar diffuseReflection (const TSurfaceData& rktDATA) const { return tDiffuseReflection; }
-    virtual TScalar specularReflection (const TSurfaceData& rktDATA) const { return tSpecularReflection; }
-    virtual TScalar ior (const TSurfaceData& rktDATA) const { return tIor; }
-    virtual TScalar causticExponent (const TSurfaceData& rktDATA) const { return tCaustics; }
-    virtual TScalar selfEmission (void) { return tSelfEmission; }
+    bool transparent (const TSurfaceData& rktDATA) const { return ( opacity (rktDATA) < 1 ); }
+    TScalar transparency (const TSpanList& rktLIST) const;
+    TColor color (const TSurfaceData& rktDATA) const { return ptColor->color (rktDATA); }
+    TScalar opacity (const TSurfaceData& rktDATA) const { return ptOpacity->scalar (rktDATA); }
+    TScalar ambientReflection (const TSurfaceData& rktDATA) const { return ptAmbientReflection->scalar (rktDATA); }
+    TScalar diffuseReflection (const TSurfaceData& rktDATA) const { return ptDiffuseReflection->scalar (rktDATA); }
+    TScalar specularReflection (const TSurfaceData& rktDATA) const { return ptSpecularReflection->scalar (rktDATA); }
+    TScalar ior (const TSurfaceData& rktDATA) const { return ptIor->scalar (rktDATA); }
+    TScalar causticExponent (const TSurfaceData& rktDATA) const { return ptCaustics->scalar (rktDATA); }
+    TScalar selfEmission (void) { return tSelfEmission; }
 
     TBsdf* bsdf (void) const { return ptBsdf; }
 
@@ -71,24 +73,27 @@ class TMaterial : public TProcedural
     int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
     void getAttributeList (TAttributeList& rtLIST) const;
 
-    virtual void setColor (const TColor& rktCOLOR)
-    {
-      tColor = rktCOLOR;
-    }
-    virtual void setOpacity (TScalar tVALUE)
-    {
-      tOpacity     = tVALUE;
-      gTransparent = ( tOpacity < 1 );
-    }
-    virtual void setAmbientReflection (TScalar tVALUE) { tAmbientReflection = tVALUE; }
-    virtual void setDiffuseReflection (TScalar tVALUE) { tDiffuseReflection = tVALUE; }
-    virtual void setSpecularReflection (TScalar tVALUE) { tSpecularReflection = tVALUE; }
-    virtual void setIor (TScalar tVALUE) { tIor = tVALUE; }
-    virtual void setBsdf (TBsdf* ptBSDF) { ptBsdf = ptBSDF; }
-    virtual void setCaustics (TScalar tCAUSTICS) { tCaustics = tCAUSTICS; }
-    virtual void setSelfEmission (TScalar tSELF_EMISSION) { tSelfEmission = tSELF_EMISSION; }
+    TPattern* color (void) const { return ptColor; }
+    TPattern* opacity (void) const { return ptOpacity; }
+    TPattern* ambientReflection (void) const { return ptAmbientReflection; }
+    TPattern* diffuseReflection (void) const { return ptDiffuseReflection; }
+    TPattern* specularReflection (void) const { return ptSpecularReflection; }
+    TPattern* ior (void) const { return ptIor; }
+    TPattern* caustics (void) const { return ptCaustics; }
+    TPerturbation* perturbation (void) const { return ptPerturbation; }
 
-    virtual TVector perturbNormal (const TSurfaceData& rktDATA) const { return rktDATA.normal(); }
+    void setColor (TPattern* ptPATTERN) { ptColor = ptPATTERN; }
+    void setOpacity (TPattern* ptPATTERN) { ptOpacity = ptPATTERN; }
+    void setAmbientReflection (TPattern* ptPATTERN) { ptAmbientReflection = ptPATTERN; }
+    void setDiffuseReflection (TPattern* ptPATTERN) { ptDiffuseReflection = ptPATTERN; }
+    void setSpecularReflection (TPattern* ptPATTERN) { ptSpecularReflection = ptPATTERN; }
+    void setIor (TPattern* ptPATTERN) { ptIor = ptPATTERN; }
+    void setCaustics (TPattern* ptPATTERN) { ptCaustics = ptPATTERN; }
+    void setPerturbation (TPerturbation* ptPERTURBATION) { ptPerturbation = ptPERTURBATION; }
+    void setSelfEmission (TScalar tSELF_EMISSION) { tSelfEmission = tSELF_EMISSION; }
+    void setBsdf (TBsdf* ptBSDF) { ptBsdf = ptBSDF; }
+
+    TVector perturbNormal (const TSurfaceData& rktDATA) const { return ptPerturbation->perturbNormal (rktDATA); }
                                 
     void printDebug (void) const;
 
@@ -98,3 +103,7 @@ class TMaterial : public TProcedural
 };  /* class TMaterial */
 
 #endif  /* _MATERIAL__ */
+
+
+
+
