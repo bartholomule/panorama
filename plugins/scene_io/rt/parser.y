@@ -123,25 +123,25 @@ static void FIXME(const string& s) { cerr << "FIXME: " << s << endl; }
 %token <gValue> T_BOOL
 %token <dValue> T_REAL
 %token <iValue> T_INTEGER
-%token <acIdent> T_IDENTIFIER
-%token <acIdent> T_QUOTED_STRING
+%token <sIdent> T_IDENTIFIER
+%token <sIdent> T_QUOTED_STRING
 
 /* "Reserved word" tokens.
    Modified to all act the same as identifiers (KH--07Aug2000)  */
-%token <acIdent> T_BLUE
-%token <acIdent> T_CAMERA
-%token <acIdent> T_CLASS
-%token <acIdent> T_DEFINE
-%token <acIdent> T_DIFFERENCE
-%token <acIdent> T_EXTENDS
-%token <acIdent> T_FILTER
-%token <acIdent> T_GREEN
-%token <acIdent> T_INTERSECTION
-%token <acIdent> T_LIGHT
-%token <acIdent> T_OUTPUT
-%token <acIdent> T_RED
-%token <acIdent> T_RENDERER
-%token <acIdent> T_UNION
+%token <sIdent> T_BLUE
+%token <sIdent> T_CAMERA
+%token <sIdent> T_CLASS
+%token <sIdent> T_DEFINE
+%token <sIdent> T_DIFFERENCE
+%token <sIdent> T_EXTENDS
+%token <sIdent> T_FILTER
+%token <sIdent> T_GREEN
+%token <sIdent> T_INTERSECTION
+%token <sIdent> T_LIGHT
+%token <sIdent> T_OUTPUT
+%token <sIdent> T_RED
+%token <sIdent> T_RENDERER
+%token <sIdent> T_UNION
 
 %token <gValue> AND_L
 %token <gValue> OR_L
@@ -151,19 +151,19 @@ static void FIXME(const string& s) { cerr << "FIXME: " << s << endl; }
 %token <gValue> GREATER_EQ
 %token <gValue> LESS
 %token <gValue> LESS_EQ
-%token <acIdent> PARAM
-%token <acIdent> DEFINED
-%token <acIdent> THIS
+%token <sIdent> PARAM
+%token <sIdent> DEFINED
+%token <sIdent> THIS
 
 
 /* Tokens to allow user requested information about types/attribute lists.
    Added 06/Aug/2000 */ 
-%type <acIdent> reserved_words
-%type <acIdent> potential_name
+%type <sIdent> reserved_words
+%type <sIdent> potential_name
 %type <ptAttribute> instance;
 
-%type <acIdent> name
-%type <acIdent> class
+%type <sIdent> name
+%type <sIdent> class
 %type <ptColor> color
 %type <ptVector> vector3
 %type <ptVector2> vector2
@@ -768,14 +768,14 @@ name			:
                         /*
 			  {
 			    report_reduction("name <-- nothing");
-			    strcpy ($$, "");
+			    $$ = "";
 			  }
 			|
                         Nothing */			
                         T_IDENTIFIER
 			  {
 			    report_reduction("name <-- IDENTIFIER");
-			    strcpy ($$, $1);
+			    $$ = $1;
 			  }
 			;
 
@@ -783,7 +783,7 @@ class			: /* Nothing
 			  {
 			  
 			    report_reduction("class <-- nothing");
-			    strcpy ($$, "");
+			    $$ = "";
 			  }
 			| */
                           T_IDENTIFIER /*':' T_EXTENDS */
@@ -798,13 +798,13 @@ class			: /* Nothing
 			    //			    cout << "the type of the parent is " << DATAMAP [$1].second->AttributeName() << endl;
                             PARENT_OBJECT = attr_to_base(DATAMAP [$1].second);
 			    //			    cout << "the parent's classname is " << PARENT_OBJECT->className() << endl;
-			    strcpy ($$, PARENT_OBJECT->className().c_str());
+			    $$ = PARENT_OBJECT->className();
 			  }
 			| T_CLASS T_IDENTIFIER
 			  {
 			    report_reduction("class <-- : CLASS IDENTIFIER");
 			    PARENT_OBJECT = NULL;
-			    strcpy ($$, $2);
+			    $$ = $2;
 			  }
 			;
 

@@ -47,6 +47,9 @@ extern "C" {
 }
 #endif
 
+using std::multimap;
+using std::string;
+ 
 extern multimap<string, string>   tConfigData;
 
 //
@@ -81,9 +84,8 @@ static Byte               _bIncludeLevel = 0;
 // strings at some point in the parser.
 #define RESERVED(x)                 \
 {                                   \
-  strcpy (rt_lval.acIdent, yytext); \
-  rt_lval.acIdent [yyleng] = '\0';  \
-/*  cout << "scanner returning: \"" << rt_lval.acIdent << "\"" << endl; */ \
+  rt_lval.sIdent.assign(yytext, yyleng); \
+/*  cout << "scanner returning: \"" << rt_lval.sIdent << "\"" << endl; */ \
   return x;                         \
 } 
  
@@ -172,9 +174,8 @@ false			{
 \n			TSceneRT::_dwLineNumber++;
 
 {identifier}		{
-			  strcpy (rt_lval.acIdent, yytext);
-			  rt_lval.acIdent [MAX_IDENTIFIER] = 0;
-			  /*			  cout << "scanner returning: \"" << rt_lval.acIdent << "\"" << endl; */
+                          rt_lval.sIdent.assign(yytext, yyleng);
+			  /*			  cout << "scanner returning: \"" << rt_lval.sIdent << "\"" << endl; */
 			  return T_IDENTIFIER;
 			}
 
@@ -195,9 +196,8 @@ false			{
 			}
 
 {quoted_string}		{
-			  strncpy (rt_lval.acIdent, yytext + 1, yyleng - 2);
-			  rt_lval.acIdent [yyleng - 2] = 0;
-			  /*			  cout << "scanner returning: \"" << rt_lval.acIdent << "\"" << endl;			   */
+                          rt_lval.sIdent.assign(yytext+1, yyleng-2);
+			  /*			  cout << "scanner returning: \"" << rt_lval.sIdent << "\"" << endl;			   */
 			  return T_QUOTED_STRING;
 			}
 

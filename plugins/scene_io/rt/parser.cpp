@@ -907,20 +907,20 @@ case 4:
 {
 			    report_reduction("definition <-- DEFINE name expression ;");
 			    report_reduction(string("definition <-- DEFINE ") +
-					     yyvsp[-2].acIdent + " " + yyvsp[-1].ptAttribute->toString());
+					     yyvsp[-2].sIdent + " " + yyvsp[-1].ptAttribute->toString());
 
-			    if( DATAMAP.find(yyvsp[-2].acIdent) != DATAMAP.end() )
+			    if( DATAMAP.find(yyvsp[-2].sIdent) != DATAMAP.end() )
 			    {
-			      rt_warning(string(yyvsp[-2].acIdent) + " redefined here");
-			      rt_warning("previously defined here: " + DATAMAP[yyvsp[-2].acIdent].first);
+			      rt_warning(string(yyvsp[-2].sIdent) + " redefined here");
+			      rt_warning("previously defined here: " + DATAMAP[yyvsp[-2].sIdent].first);
 			    }
-			    cout << "Defining \"" << string(yyvsp[-2].acIdent) << "\"" << endl;
+			    cout << "Defining \"" << string(yyvsp[-2].sIdent) << "\"" << endl;
 			    
 			    char buffer[1024];
 			    sprintf(buffer,"%s line %d",
 				    TSceneRT::_tInputFileName.c_str(),
 				    int(TSceneRT::_dwLineNumber));
-			    DATAMAP[yyvsp[-2].acIdent] = pair<string,attrib_type>(string(buffer),yyvsp[-1].ptAttribute);
+			    DATAMAP[yyvsp[-2].sIdent] = pair<string,attrib_type>(string(buffer),yyvsp[-1].ptAttribute);
 			  ;
     break;}
 case 5:
@@ -929,34 +929,34 @@ case 5:
 			    report_reduction("definition <-- DEFINE reserved_words name instance");
 			    cerr << "Warning: definition on line "
 			         << TSceneRT::_dwLineNumber
-				 << " should not have \"" << yyvsp[-3].acIdent << "\" anymore"
+				 << " should not have \"" << yyvsp[-3].sIdent << "\" anymore"
 				 << endl;
 
-			    if( DATAMAP.find(yyvsp[-2].acIdent) != DATAMAP.end() )
+			    if( DATAMAP.find(yyvsp[-2].sIdent) != DATAMAP.end() )
 			    {
-			      rt_warning(string(yyvsp[-2].acIdent) + " redefined here");
-			      rt_warning("previously defined here: " + DATAMAP[yyvsp[-2].acIdent].first);
+			      rt_warning(string(yyvsp[-2].sIdent) + " redefined here");
+			      rt_warning("previously defined here: " + DATAMAP[yyvsp[-2].sIdent].first);
 			    }
 			    char buffer[1024];
 			    sprintf(buffer,"%s line %d",
 				    TSceneRT::_tInputFileName.c_str(),
 				    int(TSceneRT::_dwLineNumber));
-			    DATAMAP[yyvsp[-3].acIdent] = pair<string,attrib_type>(string(buffer),yyvsp[-1].ptAttribute);
+			    DATAMAP[yyvsp[-3].sIdent] = pair<string,attrib_type>(string(buffer),yyvsp[-1].ptAttribute);
 			  ;
     break;}
 case 6:
 #line 266 "parser.y"
 {
 			    report_reduction("instance <-- name");
-			    report_reduction(string("instance <-- ") + yyvsp[0].acIdent);			    
-			    yyval.ptAttribute = Instance(yyvsp[0].acIdent);
+			    report_reduction(string("instance <-- ") + yyvsp[0].sIdent);			    
+			    yyval.ptAttribute = Instance(yyvsp[0].sIdent);
                           ;
     break;}
 case 7:
 #line 272 "parser.y"
 {
 			    //			    cout << "Creating object..." << endl;
-			    CreateObject(yyvsp[0].acIdent,"");
+			    CreateObject(yyvsp[0].sIdent,"");
                           ;
     break;}
 case 8:
@@ -1268,9 +1268,9 @@ case 34:
 #line 560 "parser.y"
 {
 			  report_reduction("prec_1 <-- quoted_string");
-			  report_reduction("prec_1 <-- " + string(yyvsp[0].acIdent));
+			  report_reduction("prec_1 <-- " + string(yyvsp[0].sIdent));
 			  
-			  yyval.ptAttribute = new TAttribString(yyvsp[0].acIdent);
+			  yyval.ptAttribute = new TAttribString(yyvsp[0].sIdent);
 			;
     break;}
 case 35:
@@ -1286,7 +1286,7 @@ case 36:
 {
 			  report_reduction("prec_1 <-- DEFINED name");
 
-			  if( DATAMAP.find(yyvsp[0].acIdent) != DATAMAP.end() )
+			  if( DATAMAP.find(yyvsp[0].sIdent) != DATAMAP.end() )
 			  {
 			    yyval.ptAttribute = new TAttribBool(true);
 			  }
@@ -1368,7 +1368,7 @@ case 47:
 #line 640 "parser.y"
 {
 			  report_reduction("function_call <-- potential_name ( )");
-			  report_reduction("function_call <-- " + string(yyvsp[-2].acIdent) +  "( )");
+			  report_reduction("function_call <-- " + string(yyvsp[-2].sIdent) +  "( )");
 
 #if defined(DEBUG_IT)
 			  rt_error("about to call a function");
@@ -1378,14 +1378,14 @@ case 47:
 			  // then check the global table... 
 			  TUserFunctionMap functions = all_user_functions();
 
-			  if( functions.find(yyvsp[-2].acIdent) != functions.end() )
+			  if( functions.find(yyvsp[-2].sIdent) != functions.end() )
 			  {
 			    user_arg_vector empty_args;
-			    yyval.ptAttribute = functions[yyvsp[-2].acIdent]->call(empty_args);
+			    yyval.ptAttribute = functions[yyvsp[-2].sIdent]->call(empty_args);
 			  }
 			  else
 			  {
-			    rt_error("function " + string(yyvsp[-2].acIdent) + " does not exist");
+			    rt_error("function " + string(yyvsp[-2].sIdent) + " does not exist");
 			    yyval.ptAttribute = new TAttribute();
 			  }
 			;
@@ -1394,7 +1394,7 @@ case 48:
 #line 664 "parser.y"
 {
 			  report_reduction("function_call <-- potential_name ( expression )");
-			  report_reduction("function_call <-- " + string(yyvsp[-3].acIdent) + "( " + yyvsp[-1].ptAttribute->toString() + " )");
+			  report_reduction("function_call <-- " + string(yyvsp[-3].sIdent) + "( " + yyvsp[-1].ptAttribute->toString() + " )");
 			  
 			  
 #if defined(DEBUG_IT)
@@ -1405,16 +1405,16 @@ case 48:
 			  // then check the global table...
 			  TUserFunctionMap functions = all_user_functions();
 			  
-			  if( functions.find(yyvsp[-3].acIdent) != functions.end() )
+			  if( functions.find(yyvsp[-3].sIdent) != functions.end() )
 			  {
 			    user_arg_vector args;
 			    args.push_back(yyvsp[-1].ptAttribute);
-			    yyval.ptAttribute = functions[yyvsp[-3].acIdent]->call(args);
+			    yyval.ptAttribute = functions[yyvsp[-3].sIdent]->call(args);
 
 			  }
 			  else
 			  {
-			    rt_error("function " + string(yyvsp[-3].acIdent) + " does not exist");
+			    rt_error("function " + string(yyvsp[-3].sIdent) + " does not exist");
 			    yyval.ptAttribute = new TAttribute();
 			  }			    
 			;
@@ -1423,7 +1423,7 @@ case 49:
 #line 691 "parser.y"
 {
 			  report_reduction("function_call <-- potential_name ( expression , expression )");
-			  report_reduction("function_call <-- " + string(yyvsp[-5].acIdent) + "( " + yyvsp[-3].ptAttribute->toString() + "," + yyvsp[-1].ptAttribute->toString() + " )");
+			  report_reduction("function_call <-- " + string(yyvsp[-5].sIdent) + "( " + yyvsp[-3].ptAttribute->toString() + "," + yyvsp[-1].ptAttribute->toString() + " )");
 			  
 			  
 #if defined(DEBUG_IT)
@@ -1434,17 +1434,17 @@ case 49:
 			  // then check the global table...
 			  TUserFunctionMap functions = all_user_functions();
 			  
-			  if( functions.find(yyvsp[-5].acIdent) != functions.end() )
+			  if( functions.find(yyvsp[-5].sIdent) != functions.end() )
 			  {
 			    user_arg_vector args;
 			    args.push_back(yyvsp[-3].ptAttribute);
 			    args.push_back(yyvsp[-1].ptAttribute);			    
-			    yyval.ptAttribute = functions[yyvsp[-5].acIdent]->call(args);
+			    yyval.ptAttribute = functions[yyvsp[-5].sIdent]->call(args);
 
 			  }
 			  else
 			  {
-			    rt_error("function " + string(yyvsp[-5].acIdent) + " does not exist");
+			    rt_error("function " + string(yyvsp[-5].sIdent) + " does not exist");
 			    yyval.ptAttribute = new TAttribute();
 			  }			    
 			;
@@ -1500,23 +1500,23 @@ case 53:
 #line 776 "parser.y"
 {
 			    report_reduction("name <-- IDENTIFIER");
-			    strcpy (yyval.acIdent, yyvsp[0].acIdent);
+			    yyval.sIdent = yyvsp[0].sIdent;
 			  ;
     break;}
 case 54:
 #line 790 "parser.y"
 {
 			    report_reduction("class <-- : EXTENDS IDENTIFIER");
-                            if ( DATAMAP.find (yyvsp[0].acIdent) == DATAMAP.end() )
+                            if ( DATAMAP.find (yyvsp[0].sIdent) == DATAMAP.end() )
                             {
 			      yyerror ("trying to extend from non existing object");
 			      exit (1);
                             }
 
 			    //			    cout << "the type of the parent is " << DATAMAP [$1].second->AttributeName() << endl;
-                            PARENT_OBJECT = attr_to_base(DATAMAP [yyvsp[0].acIdent].second);
+                            PARENT_OBJECT = attr_to_base(DATAMAP [yyvsp[0].sIdent].second);
 			    //			    cout << "the parent's classname is " << PARENT_OBJECT->className() << endl;
-			    strcpy (yyval.acIdent, PARENT_OBJECT->className().c_str());
+			    yyval.sIdent = PARENT_OBJECT->className();
 			  ;
     break;}
 case 55:
@@ -1524,7 +1524,7 @@ case 55:
 {
 			    report_reduction("class <-- : CLASS IDENTIFIER");
 			    PARENT_OBJECT = NULL;
-			    strcpy (yyval.acIdent, yyvsp[0].acIdent);
+			    yyval.sIdent = yyvsp[0].sIdent;
 			  ;
     break;}
 case 56:
@@ -1557,7 +1557,7 @@ case 60:
 #line 837 "parser.y"
 {
 			  report_reduction("param <-- IDENTIFIER = expression");
-			  SetParameter (yyvsp[-2].acIdent, yyvsp[0].ptAttribute);
+			  SetParameter (yyvsp[-2].sIdent, yyvsp[0].ptAttribute);
 			;
     break;}
 case 61:
@@ -1614,7 +1614,7 @@ case 62:
 #line 890 "parser.y"
 {
 			  report_reduction("param <-- reserved_words = expression");
-			  SetParameter (yyvsp[-2].acIdent, yyvsp[0].ptAttribute);			    
+			  SetParameter (yyvsp[-2].sIdent, yyvsp[0].ptAttribute);			    
 			;
     break;}
 case 63:
@@ -1656,7 +1656,7 @@ case 65:
 			  }
 			  else
 			  {
-			    SetParameter(yyvsp[-2].acIdent,yyvsp[0].ptAttribute);
+			    SetParameter(yyvsp[-2].sIdent,yyvsp[0].ptAttribute);
 			  }
 			;
     break;}
@@ -1726,7 +1726,7 @@ case 67:
 			  }
 			  else
 			  {
-			    SetParameter(yyvsp[-2].acIdent,yyvsp[0].ptAttribute);
+			    SetParameter(yyvsp[-2].sIdent,yyvsp[0].ptAttribute);
 			  }
 			;
     break;}
@@ -1746,70 +1746,70 @@ case 70:
 #line 1016 "parser.y"
 {
 			    report_reduction("reserved_words <-- BLUE");
-			    yyval.acIdent = yyvsp[0].acIdent;
+			    yyval.sIdent = yyvsp[0].sIdent;
 			  ;
     break;}
 case 71:
 #line 1021 "parser.y"
 {
 			    report_reduction("reserved_words <-- CLASS");
-			    yyval.acIdent = yyvsp[0].acIdent;
+			    yyval.sIdent = yyvsp[0].sIdent;
 			  ;
     break;}
 case 72:
 #line 1026 "parser.y"
 {
 			    report_reduction("reserved_words <-- DEFINE");
-			    yyval.acIdent = yyvsp[0].acIdent;
+			    yyval.sIdent = yyvsp[0].sIdent;
 			  ;
     break;}
 case 73:
 #line 1031 "parser.y"
 {
 			    report_reduction("reserved_words <-- DIFFERENCE");
-			    yyval.acIdent = yyvsp[0].acIdent;
+			    yyval.sIdent = yyvsp[0].sIdent;
 			  ;
     break;}
 case 74:
 #line 1036 "parser.y"
 {
 			    report_reduction("reserved_words <-- EXTENDS");
-			    yyval.acIdent = yyvsp[0].acIdent;
+			    yyval.sIdent = yyvsp[0].sIdent;
 			  ;
     break;}
 case 75:
 #line 1041 "parser.y"
 {
 			    report_reduction("reserved_words <-- GREEN");
-			    yyval.acIdent = yyvsp[0].acIdent;
+			    yyval.sIdent = yyvsp[0].sIdent;
 			  ;
     break;}
 case 76:
 #line 1046 "parser.y"
 {
 			    report_reduction("reserved_words <-- INTERSECTION");
-			    yyval.acIdent = yyvsp[0].acIdent;
+			    yyval.sIdent = yyvsp[0].sIdent;
 			  ;
     break;}
 case 77:
 #line 1051 "parser.y"
 {
 			    report_reduction("reserved_words <-- RED");
-			    yyval.acIdent = yyvsp[0].acIdent;
+			    yyval.sIdent = yyvsp[0].sIdent;
 			  ;
     break;}
 case 78:
 #line 1056 "parser.y"
 {
 			    report_reduction("reserved_words <-- RENDERER");
-			    yyval.acIdent = yyvsp[0].acIdent;
+			    yyval.sIdent = yyvsp[0].sIdent;
 			  ;
     break;}
 case 79:
 #line 1061 "parser.y"
 {
 			    report_reduction("reserved_words <-- UNION");
-			    yyval.acIdent = yyvsp[0].acIdent;
+			    yyval.sIdent = yyvsp[0].sIdent;
 			  ;
     break;}
 }

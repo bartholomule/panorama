@@ -18,6 +18,7 @@
 #if       !defined(PARSED_TYPES_H)
 #define            PARSED_TYPES_H
 
+#include <string>
 #include "llapi/llapi_all.h"
 #include "hlapi/hlapi_all.h"
 #include "generic/magic_pointer.h"
@@ -26,9 +27,11 @@
 #include <llapi/attribs.h>
 #endif
 
-struct YYSTYPE
+#define YYSTYPE yy_data_type
+
+struct yy_data_type
 {
-  char                  acIdent [200];
+  std::string           sIdent;
   double                dValue;
   int                   iValue;
   bool                  gValue;
