@@ -27,7 +27,7 @@ TCatRom2::TCatRom2()
   for (i = 0; i < NENTRIES ; i++)
   {
     tX = i / (TScalar) SAMPRATE;
-    tX = sqrtf (tX);
+    tX = sqrt (tX);
     
     if ( tX < 1)
     {
