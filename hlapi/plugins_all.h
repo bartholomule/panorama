@@ -37,6 +37,7 @@
 #include "plugins/material/worley/mat_worley.h"
 #include "plugins/object/abvh/abvh.h"
 #include "plugins/object/bezier/bezier.h"
+#include "plugins/object/subdiv/subdiv.h"
 #include "plugins/object/height_field/height_field.h"
 #include "plugins/object/lwo/lwo.h"
 #include "plugins/object/polyhedron/polyhedron.h"
