@@ -28,7 +28,7 @@ AC_TYPE_SIZE_T
 dnl Checks for static-link option.
 AC_MSG_CHECKING(whether to link statically or not)
 AC_ARG_ENABLE(static-link,
-[  --enable-static-link    Link everything statically, with profile information],
+[  --enable-static-link    Link everything statically],
 STATIC_VAL=$enableval, STATIC_VAL="no")
 if test $STATIC_VAL = "yes"; then
   STATIC_LINK=1
@@ -38,6 +38,20 @@ else
 fi
 AC_SUBST(STATIC_LINK)
 AC_MSG_RESULT($STATIC_VAL)
+
+dnl Checks for profile option.
+AC_MSG_CHECKING(whether to add profiling information or not)
+AC_ARG_ENABLE(profile,
+[  --enable-profile        Add profiling information],
+PROFILE_VAL=$enableval, PROFILE_VAL="no")
+if test $PROFILE_VAL = "yes"; then
+  PROFILE=1
+else
+  PROFILE_VAL="no";
+  PROFILE=0
+fi
+AC_SUBST(PROFILE)
+AC_MSG_RESULT($PROFILE_VAL)
 
 dnl Checks for debug option.
 AC_MSG_CHECKING(whether to enable debug info or not)
@@ -110,8 +124,11 @@ AC_OUTPUT(\
         data/include/Makefile \
         data/texture/Makefile \
         doc/Makefile \
+        doc/config \
         doc/developers/Makefile \
         doc/users/Makefile \
+        doc/api/Makefile \
+        doc/api/Doxyfile \
         llapi/Makefile \
         hlapi/Makefile \
         plugins/Makefile \
@@ -126,6 +143,7 @@ AC_OUTPUT(\
         plugins/image_filter/cartoon/Makefile:Makefile.plugin.in \
         plugins/image_filter/convert_to_grey/Makefile:Makefile.plugin.in \
         plugins/image_filter/fog/Makefile:Makefile.plugin.in \
+        plugins/image_filter/text/Makefile:Makefile.plugin.in \
         plugins/image_io/Makefile \
         plugins/image_io/jpeg/Makefile:Makefile.plugin.in \
         plugins/image_io/png/Makefile:Makefile.plugin.in \
