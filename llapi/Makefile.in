@@ -16,8 +16,10 @@ OBJ = atmosphere.o \
       bounding_box.o \
       bsdf.o \
       camera.o \
+      catrom2.o \
       debug.o \
       file.o \
+      gradient.o \
       image.o \
       image_io.o \
       light.o \
@@ -27,9 +29,11 @@ OBJ = atmosphere.o \
       perlin_noise.o \
       ray.o \
       root_solver.o \
+      sc_noise.o \
       scene.o \
       span_list.o \
       surface_data.o \
+      wood.o \
       worley_basis.o
 
 all:		${LLAPI_LIB} ${STATIC_LLAPI_LIB}
