@@ -1,7 +1,8 @@
 
 BUILD_TOP = ../..
 
-DIRS = @JPEG_FILTER@ \
+DIRS = @GIF_FILTER@ \
+       @JPEG_FILTER@ \
        @PNG_FILTER@ \
        tga
 
