@@ -1,2 +1,2 @@
 PLUGIN_NAME = per_worley
-OBJ         = per_worley.o
+OBJ         = per_worley.lo

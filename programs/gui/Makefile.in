@@ -19,21 +19,21 @@ CXXFLAGS += `gtkmm-config --cflags` -O2 -fno-expensive-optimizations
 LDFLAGS  += `gtkmm-config --libs` -L${BUILD_TOP}/llapi -L${BUILD_TOP}/hlapi -lllapi -lhlapi @LIBS@
 
 EXE = panorama
-OBJ = main.o \
-      scene_window.o \
-      scene_callbacks.o \
-      scene_tree.o \
-      image_window.o \
-      image_callbacks.o \
-      message_dialog.o \
-      render_dialog.o \
-      object_properties_dialog.o \
-      color_preview.o \
-      plugin_window.o \
-      material_window.o \
-      material_graph.o
+OBJ = main.lo \
+      scene_window.lo \
+      scene_callbacks.lo \
+      scene_tree.lo \
+      image_window.lo \
+      image_callbacks.lo \
+      message_dialog.lo \
+      render_dialog.lo \
+      object_properties_dialog.lo \
+      color_preview.lo \
+      plugin_window.lo \
+      material_window.lo \
+      material_graph.lo
 
-ALL_FILES = $(strip $(wildcard $(OBJ:%.o=%.cpp)))
+ALL_FILES = $(strip $(wildcard $(OBJ:%.lo=%.cpp)))
 
 all:		${EXE}
 
@@ -41,19 +41,14 @@ install:        all
 		@echo Installing program panorama...
 		@@INSTALL_PROGRAM@ ${EXE} ${BIN_DIR}
 
-ifeq (1,@STATIC_LINK@)
 ${EXE}:		${OBJ}
 		@echo Making program ${EXE}...
-		@${CXX} ${CXXFLAGS} ${OBJ} ${STATIC_HLAPI_LIB} ${STATIC_LLAPI_LIB} -o $@ ${LDFLAGS}
-else
-${EXE}:		${OBJ}
-		@echo Making program ${EXE}...
-		@${CXX} ${CXXFLAGS} ${OBJ} -o $@ ${LDFLAGS}
-endif
+		@${LIBTOOL} --mode=link ${CXX} ${CXXFLAGS} ${OBJ} ${HLAPI_LIB} ${LLAPI_LIB} -o $@ ${LDFLAGS}
 
 clean:
 		@rm -f ${OBJ} ${EXE}
 		@rm -f $ *~ *.bak core
+		@rm -rf .libs
 
 distclean:      clean
 		@rm -f Makefile

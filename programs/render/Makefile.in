@@ -16,8 +16,8 @@ LDFLAGS += -L${BUILD_TOP}/llapi -L${BUILD_TOP}/hlapi -lllapi -lhlapi @LIBS@ ${AR
 endif
 
 EXE = render
-OBJ = render.o
-ALL_FILES = $(strip $(wildcard $(OBJ:%.o=%.cpp)))
+OBJ = render.lo
+ALL_FILES = $(strip $(wildcard $(OBJ:%.lo=%.cpp)))
 
 all:		${EXE}
 
@@ -25,19 +25,15 @@ install:        all
 		@echo Installing program render...
 		@@INSTALL_PROGRAM@ ${EXE} ${BIN_DIR}
 
-ifeq (1,@STATIC_LINK@)
 ${EXE}:		${OBJ}
 		@echo Making program ${EXE}...
-		@${CXX} ${CXXFLAGS} ${OBJ} ${STATIC_HLAPI_LIB} ${STATIC_LLAPI_LIB} -o $@ ${LDFLAGS}
-else
-${EXE}:		${OBJ}
-		@echo Making program ${EXE}...
-		@${CXX} ${CXXFLAGS} ${OBJ} -o $@ ${LDFLAGS}
-endif
+		${LIBTOOL} --mode=link ${CXX} ${CXXFLAGS} ${OBJ} ${HLAPI_LIB} ${LLAPI_LIB} -o $@ ${LDFLAGS}
+
 
 clean:
 		@rm -f ${OBJ} ${EXE}
 		@rm -f $ *~ *.bak core
+		@rm -rf .libs
 
 distclean:      clean
 		@rm -f Makefile

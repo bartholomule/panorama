@@ -1,2 +1,2 @@
 PLUGIN_NAME = per_crackle
-OBJ         = per_crackle.o
+OBJ         = per_crackle.lo

@@ -1,2 +1,2 @@
 PLUGIN_NAME = per_wave
-OBJ         = per_wave.o
+OBJ         = per_wave.lo

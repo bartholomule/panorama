@@ -10,7 +10,7 @@
   I don't know how to approach the tubes, sockets, or bulbs.
 */
 
-define camera c
+define camera c : class ParallelCamera
 {
   translate < 0, 0, -45.000 >
   look_at   < 0, -6,  0 >

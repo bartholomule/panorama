@@ -1,2 +1,2 @@
 PLUGIN_NAME = zbuffer
-OBJ         = zbuffer.o
+OBJ         = zbuffer.lo

@@ -28,6 +28,10 @@ multimap<string, string>   tConfigData;
 static string   _tTopDir;
 static string   _tLocalPath;
 
+#include "llapi/class_mgr_base.h"
+#include "hlapi/class_manager.h"
+TClassManagerBase* GlobalClassManager;
+
 bool ProcessConfigFile (const string& rktCONFIG, multimap<string, string>& rtMAP)
 {
 
@@ -143,6 +147,8 @@ int main (int argc, char *argv[])
   string         appname = string ("Panorama");
   string         appid = string ("0.0.5");
 
+  GlobalClassManager = new TClassManager();
+
   SetPaths();
 
   if ( !FileExists (_tLocalPath + "config") )
@@ -179,6 +185,8 @@ int main (int argc, char *argv[])
   tMainWindow.show();
   
   tMainApp.run();
+
+  delete GlobalClassManager;
   
   return 0;
 

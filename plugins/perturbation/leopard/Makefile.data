@@ -1,2 +1,2 @@
 PLUGIN_NAME = per_leopard
-OBJ         = per_leopard.o
+OBJ         = per_leopard.lo

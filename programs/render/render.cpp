@@ -37,6 +37,10 @@ static string   _tLogFileName;
 static string   _tLocalPath;
 static bool     _gKeepLog = false;
 
+#include "llapi/class_mgr_base.h"
+#include "hlapi/class_manager.h"
+TClassManagerBase* GlobalClassManager;
+
 void DisplayHelp (void)
 {
 
@@ -206,6 +210,8 @@ int main (int argc, char *argv[])
   char       acTimeString [30];
   time_t     tBaseTime, tInitTime, tRenderTime, tPostProcessTime;
 
+  GlobalClassManager = new TClassManager();
+
   _tProgramName = "render";
 
   ProcessCommandLine (argc, argv);
@@ -310,6 +316,8 @@ int main (int argc, char *argv[])
 
     tLogFile.close();
   }
+
+  delete GlobalClassManager;
 
   return 0;
 
