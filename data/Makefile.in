@@ -2,6 +2,7 @@
 BUILD_TOP = ..
 
 DIRS = include \
-       texture
+       texture \
+       gradient
 
 include ${BUILD_TOP}/Makefile.targets
