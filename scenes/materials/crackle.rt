@@ -28,7 +28,7 @@ define material MirrorCrackle : class MaterialCrackle
 
 define camera c
 {
-  translate	<0, 400, 600>
+  translate	<10, 400, 600>
   look_at	<0, 0, 0>
 }
 
@@ -48,7 +48,7 @@ define light l : class WarnLight
   angle_th      15
   intensity     1
 }
-
+/*
 box
 {
   scale         <150, 150, 150>
@@ -56,23 +56,21 @@ box
   translate     <0, 75, -50>
   material : extends MCrackle
   {
-    color       CYellow
-    base_color  CBlue
-    zoom        <20, 20, 20>
-    bump        0
+    base_color  "crackle1"
+    zoom        <.20, .20, .20>
+    bump        0.2
   }
 }
-
+*/
 sphere
 {
   translate     <120, 75, 150>
   radius        75
   material : extends MCrackle
   {
-    color       CRed
-    base_color  CBlack
+    base_color  "tropical"
     zoom        <20, 20, 20>
-    bump        -1.0
+    bump        -0.2
   }
 }
 
@@ -95,13 +93,11 @@ plane
 {
   translate     <0, 0, 0>
   normal	<0, 1, 0>
-  material : extends MChecker
+  material : extends MCrackle
   {
-    color       CBlack
-    base_color  CWhite
-    size        50
-    specular    0
-    border      0
+    base_color  "crackle1"
+    zoom < 75, 75, 75>
+    bump 0.2
   }
 }
 
@@ -110,8 +106,8 @@ scene
   camera	c
   light		l
   light		l_ambient
-  width		300
-  height	200
+  width		600
+  height	400
   background	CSummerSky
   output
   {
