@@ -7,8 +7,8 @@
  
  - Added bicubic Bezier patches (done by Matt Kimball).
  
- - Fixed problem with built-in 'install-sh' in SGI (thanks to Ezra Peisach for
-   this one).
+ - Lots of changes to Makefiles in order to increase portability to Alpha and
+   SGI systems (done by Ezra Peisach).
 
  - Changed included headers to ANSI C++ standards ('cstdio' instead of
    'stdio.h', 'iostream' instead of 'iostream.h', etc.).
