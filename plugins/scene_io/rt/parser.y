@@ -613,6 +613,11 @@ image_io_param		: T_TYPE T_QUOTED_STRING
                             delete _ptImageIO;
                             
                             _ptImageIO = TImageManager::_getImageIO ($2);
+                            if ( !_ptImageIO )
+                            {
+                              yyerror ("Image output type not available");
+                              exit (1);
+                            }
                             _tDataStack.push (_ptImageIO);
 			  }
 			| param

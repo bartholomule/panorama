@@ -298,20 +298,20 @@ static const short yyrline[] = { 0,
    467,   472,   477,   482,   489,   490,   493,   497,   501,   504,
    508,   511,   512,   515,   519,   523,   526,   544,   552,   568,
    572,   578,   579,   582,   586,   590,   596,   600,   606,   607,
-   610,   618,   621,   625,   631,   636,   642,   649,   650,   653,
-   657,   661,   665,   668,   672,   678,   682,   686,   692,   696,
-   702,   706,   710,   716,   720,   726,   730,   734,   740,   744,
-   750,   754,   758,   764,   768,   774,   778,   782,   789,   793,
-   799,   803,   807,   813,   817,   823,   827,   831,   837,   841,
-   847,   851,   855,   861,   865,   871,   875,   879,   885,   889,
-   895,   899,   903,   909,   914,   925,   929,   934,   945,   946,
-   949,   954,   957,   962,   973,   977,   982,   993,   994,   997,
-  1002,  1005,  1010,  1021,  1025,  1030,  1041,  1042,  1045,  1050,
-  1053,  1057,  1063,  1067,  1071,  1077,  1078,  1081,  1085,  1088,
-  1092,  1098,  1102,  1106,  1112,  1116,  1122,  1126,  1130,  1136,
-  1140,  1146,  1150,  1154,  1160,  1164,  1170,  1174,  1178,  1184,
-  1188,  1194,  1198,  1202,  1208,  1212,  1218,  1222,  1226,  1232,
-  1236,  1242,  1246,  1250,  1256,  1257,  1260,  1265
+   610,   623,   626,   630,   636,   641,   647,   654,   655,   658,
+   662,   666,   670,   673,   677,   683,   687,   691,   697,   701,
+   707,   711,   715,   721,   725,   731,   735,   739,   745,   749,
+   755,   759,   763,   769,   773,   779,   783,   787,   794,   798,
+   804,   808,   812,   818,   822,   828,   832,   836,   842,   846,
+   852,   856,   860,   866,   870,   876,   880,   884,   890,   894,
+   900,   904,   908,   914,   919,   930,   934,   939,   950,   951,
+   954,   959,   962,   967,   978,   982,   987,   998,   999,  1002,
+  1007,  1010,  1015,  1026,  1030,  1035,  1046,  1047,  1050,  1055,
+  1058,  1062,  1068,  1072,  1076,  1082,  1083,  1086,  1090,  1093,
+  1097,  1103,  1107,  1111,  1117,  1121,  1127,  1131,  1135,  1141,
+  1145,  1151,  1155,  1159,  1165,  1169,  1175,  1179,  1183,  1189,
+  1193,  1199,  1203,  1207,  1213,  1217,  1223,  1227,  1231,  1237,
+  1241,  1247,  1251,  1255,  1261,  1262,  1265,  1270
 };
 #endif
 
@@ -1790,30 +1790,35 @@ case 101:
                             delete _ptImageIO;
                             
                             _ptImageIO = TImageManager::_getImageIO (yyvsp[0].acIdent);
+                            if ( !_ptImageIO )
+                            {
+                              yyerror ("Image output type not available");
+                              exit (1);
+                            }
                             _tDataStack.push (_ptImageIO);
 			  ;
     break;}
 case 103:
-#line 622 "parser.y"
+#line 627 "parser.y"
 {
 			    DefineObject (yyvsp[-1].acIdent, yyvsp[0].acIdent, "Scene");
 			  ;
     break;}
 case 104:
-#line 626 "parser.y"
+#line 631 "parser.y"
 {
 			    yyval.ptScene = (TScene*) UpdateObject (yyvsp[-5].acIdent);
 			  ;
     break;}
 case 105:
-#line 632 "parser.y"
+#line 637 "parser.y"
 {
 			    yyval.ptScene = (TScene*) InstanceObject (yyvsp[0].acIdent);
 			    TSceneRT::_ptParsedScene = yyval.ptScene;
 			  ;
     break;}
 case 106:
-#line 637 "parser.y"
+#line 642 "parser.y"
 {
 //			    CreateObject ($1, "Scene");
 			    _ptData = TSceneRT::_ptParsedScene;
@@ -1821,340 +1826,340 @@ case 106:
 			  ;
     break;}
 case 107:
-#line 643 "parser.y"
+#line 648 "parser.y"
 {
 			    yyval.ptScene = (TScene*) _tDataStack.POP();
 //			    $$ = &tScene;
 			  ;
     break;}
 case 110:
-#line 654 "parser.y"
+#line 659 "parser.y"
 {
 			    SCENE->addLight (yyvsp[0].ptLight);
 			  ;
     break;}
 case 111:
-#line 658 "parser.y"
+#line 663 "parser.y"
 {
 			    SCENE->addImageFilter (yyvsp[0].ptIFilter);
 			  ;
     break;}
 case 112:
-#line 662 "parser.y"
+#line 667 "parser.y"
 {
 			    SCENE->setImageOutput (yyvsp[0].ptImageIO);
 			  ;
     break;}
 case 114:
-#line 669 "parser.y"
+#line 674 "parser.y"
 {
 			    DefineObject (yyvsp[-1].acIdent, yyvsp[0].acIdent, "PinholeCamera");
 			  ;
     break;}
 case 115:
-#line 673 "parser.y"
+#line 678 "parser.y"
 {
 			    yyval.ptCamera = (TCamera*) UpdateObject (yyvsp[-5].acIdent);
 			  ;
     break;}
 case 116:
-#line 679 "parser.y"
+#line 684 "parser.y"
 {
 			    yyval.ptCamera = (TCamera*) InstanceObject (yyvsp[0].acIdent);
 			  ;
     break;}
 case 117:
-#line 683 "parser.y"
+#line 688 "parser.y"
 {
 			    CreateObject (yyvsp[0].acIdent, "PinholeCamera");
 			  ;
     break;}
 case 118:
-#line 687 "parser.y"
+#line 692 "parser.y"
 {
 			    yyval.ptCamera = (TCamera*) _tDataStack.POP();
 			  ;
     break;}
 case 119:
-#line 693 "parser.y"
+#line 698 "parser.y"
 {
 			    DefineObject (yyvsp[-1].acIdent, yyvsp[0].acIdent, "PointLight");
 			  ;
     break;}
 case 120:
-#line 697 "parser.y"
+#line 702 "parser.y"
 {
 			    yyval.ptLight = (TLight*) UpdateObject (yyvsp[-5].acIdent);
 			  ;
     break;}
 case 121:
-#line 703 "parser.y"
+#line 708 "parser.y"
 {
 			    yyval.ptLight = (TLight*) InstanceObject (yyvsp[0].acIdent);
 			  ;
     break;}
 case 122:
-#line 707 "parser.y"
+#line 712 "parser.y"
 {
 			    CreateObject (yyvsp[0].acIdent, "PointLight");
 			  ;
     break;}
 case 123:
-#line 711 "parser.y"
+#line 716 "parser.y"
 {
 			    yyval.ptLight = (TLight*) _tDataStack.POP();
 			  ;
     break;}
 case 124:
-#line 717 "parser.y"
+#line 722 "parser.y"
 {
 			    DefineObject (yyvsp[-1].acIdent, yyvsp[0].acIdent, "BsdfPhong");
 			  ;
     break;}
 case 125:
-#line 721 "parser.y"
+#line 726 "parser.y"
 {
 			    yyval.ptBsdf = (TBsdf*) UpdateObject (yyvsp[-5].acIdent);
 			  ;
     break;}
 case 126:
-#line 727 "parser.y"
+#line 732 "parser.y"
 {
 			    yyval.ptBsdf = (TBsdf*) InstanceObject (yyvsp[0].acIdent);
 			  ;
     break;}
 case 127:
-#line 731 "parser.y"
+#line 736 "parser.y"
 {
                             CreateObject (yyvsp[0].acIdent, "BsdfPhong");
 			  ;
     break;}
 case 128:
-#line 735 "parser.y"
+#line 740 "parser.y"
 {
                             yyval.ptBsdf = (TBsdf*) _tDataStack.POP();
 			  ;
     break;}
 case 129:
-#line 741 "parser.y"
+#line 746 "parser.y"
 {
 			    DefineObject (yyvsp[-1].acIdent, yyvsp[0].acIdent, "Raytracer");
 			  ;
     break;}
 case 130:
-#line 745 "parser.y"
+#line 750 "parser.y"
 {
 			    yyval.ptRenderer = (TRenderer*) UpdateObject (yyvsp[-5].acIdent);
 			  ;
     break;}
 case 131:
-#line 751 "parser.y"
+#line 756 "parser.y"
 {
 			    yyval.ptRenderer = (TRenderer*) InstanceObject (yyvsp[0].acIdent);
 			  ;
     break;}
 case 132:
-#line 755 "parser.y"
+#line 760 "parser.y"
 {
 			    CreateObject (yyvsp[0].acIdent, "Raytracer");
 			  ;
     break;}
 case 133:
-#line 759 "parser.y"
+#line 764 "parser.y"
 {
 			    yyval.ptRenderer = (TRenderer*) _tDataStack.POP();
 			  ;
     break;}
 case 134:
-#line 765 "parser.y"
+#line 770 "parser.y"
 {
 			    DefineObject (yyvsp[-1].acIdent, yyvsp[0].acIdent, "Material");
 			  ;
     break;}
 case 135:
-#line 769 "parser.y"
+#line 774 "parser.y"
 {
                             yyval.ptMaterial = (TMaterial*) UpdateObject (yyvsp[-5].acIdent);
 			  ;
     break;}
 case 136:
-#line 775 "parser.y"
+#line 780 "parser.y"
 {
 			    yyval.ptMaterial = (TMaterial*) InstanceObject (yyvsp[0].acIdent);
 			  ;
     break;}
 case 137:
-#line 779 "parser.y"
+#line 784 "parser.y"
 {
 			    CreateObject (yyvsp[0].acIdent, "Material");
 			  ;
     break;}
 case 138:
-#line 783 "parser.y"
+#line 788 "parser.y"
 {
 			    yyval.ptMaterial = (TMaterial*) _tDataStack.POP();
 
 			  ;
     break;}
 case 139:
-#line 790 "parser.y"
+#line 795 "parser.y"
 {
 			    DefineObject (yyvsp[-1].acIdent, yyvsp[0].acIdent, "");
 			  ;
     break;}
 case 140:
-#line 794 "parser.y"
+#line 799 "parser.y"
 {
 			    yyval.ptIFilter = (TImageFilter*) UpdateObject (yyvsp[-5].acIdent);
 			  ;
     break;}
 case 141:
-#line 800 "parser.y"
+#line 805 "parser.y"
 {
 			    yyval.ptIFilter = (TImageFilter*) InstanceObject (yyvsp[0].acIdent);
 			  ;
     break;}
 case 142:
-#line 804 "parser.y"
+#line 809 "parser.y"
 {
 			    CreateObject (yyvsp[0].acIdent, "");
 			  ;
     break;}
 case 143:
-#line 808 "parser.y"
+#line 813 "parser.y"
 {
 			    yyval.ptIFilter = (TImageFilter*) _tDataStack.POP();
 			  ;
     break;}
 case 144:
-#line 814 "parser.y"
+#line 819 "parser.y"
 {
 			    DefineObject (yyvsp[-1].acIdent, yyvsp[0].acIdent, "");
 			  ;
     break;}
 case 145:
-#line 818 "parser.y"
+#line 823 "parser.y"
 {
 			    yyval.ptOFilter = (TObjectFilter*) UpdateObject (yyvsp[-5].acIdent);
 			  ;
     break;}
 case 146:
-#line 824 "parser.y"
+#line 829 "parser.y"
 {
 			    yyval.ptOFilter = (TObjectFilter*) InstanceObject (yyvsp[0].acIdent);
 			  ;
     break;}
 case 147:
-#line 828 "parser.y"
+#line 833 "parser.y"
 {
 			    CreateObject (yyvsp[0].acIdent, "");
 			  ;
     break;}
 case 148:
-#line 832 "parser.y"
+#line 837 "parser.y"
 {
 			    yyval.ptOFilter = (TObjectFilter*) _tDataStack.POP();
 			  ;
     break;}
 case 149:
-#line 838 "parser.y"
+#line 843 "parser.y"
 {
 			    DefineObject (yyvsp[-1].acIdent, yyvsp[0].acIdent, "");
 			  ;
     break;}
 case 150:
-#line 842 "parser.y"
+#line 847 "parser.y"
 {
 			    yyval.ptObject = (TObject*) UpdateObject (yyvsp[-5].acIdent);
 			  ;
     break;}
 case 151:
-#line 848 "parser.y"
+#line 853 "parser.y"
 {
 			    yyval.ptObject = (TObject*) InstanceObject (yyvsp[0].acIdent);
 			  ;
     break;}
 case 152:
-#line 852 "parser.y"
+#line 857 "parser.y"
 {
 			    CreateObject (yyvsp[0].acIdent, "");
 			  ;
     break;}
 case 153:
-#line 856 "parser.y"
+#line 861 "parser.y"
 {
 			    yyval.ptObject = (TObject*) _tDataStack.POP();
 			  ;
     break;}
 case 154:
-#line 862 "parser.y"
+#line 867 "parser.y"
 {
 			    DefineObject (yyvsp[-1].acIdent, yyvsp[0].acIdent, "Plane");
 			  ;
     break;}
 case 155:
-#line 866 "parser.y"
+#line 871 "parser.y"
 {
 			    yyval.ptObject = (TPlane*) UpdateObject (yyvsp[-5].acIdent);
 			  ;
     break;}
 case 156:
-#line 872 "parser.y"
+#line 877 "parser.y"
 {
 			    yyval.ptObject = (TPlane*) InstanceObject (yyvsp[0].acIdent);
 			  ;
     break;}
 case 157:
-#line 876 "parser.y"
+#line 881 "parser.y"
 {
 			    CreateObject (yyvsp[0].acIdent, "Plane");
 			  ;
     break;}
 case 158:
-#line 880 "parser.y"
+#line 885 "parser.y"
 {
 			    yyval.ptObject = (TPlane*) _tDataStack.POP();
 			  ;
     break;}
 case 159:
-#line 886 "parser.y"
+#line 891 "parser.y"
 {
 			    DefineObject (yyvsp[-1].acIdent, yyvsp[0].acIdent, "Sphere");
 			  ;
     break;}
 case 160:
-#line 890 "parser.y"
+#line 895 "parser.y"
 {
 			    yyval.ptObject = (TSphere*) UpdateObject (yyvsp[-5].acIdent);
 			  ;
     break;}
 case 161:
-#line 896 "parser.y"
+#line 901 "parser.y"
 {
 			    yyval.ptObject = (TSphere*) InstanceObject (yyvsp[0].acIdent);
 			  ;
     break;}
 case 162:
-#line 900 "parser.y"
+#line 905 "parser.y"
 {
 			    CreateObject (yyvsp[0].acIdent, "Sphere");
 			  ;
     break;}
 case 163:
-#line 904 "parser.y"
+#line 909 "parser.y"
 {
 			    yyval.ptObject = (TSphere*) _tDataStack.POP();
 			  ;
     break;}
 case 164:
-#line 910 "parser.y"
+#line 915 "parser.y"
 {
 			    DefineObject (yyvsp[-1].acIdent, yyvsp[0].acIdent, "Triangle");
 			    _bVertices = 0;
 			  ;
     break;}
 case 165:
-#line 915 "parser.y"
+#line 920 "parser.y"
 {
 			    if ( _bVertices != 3 )
 			    {
@@ -2165,20 +2170,20 @@ case 165:
 			  ;
     break;}
 case 166:
-#line 926 "parser.y"
+#line 931 "parser.y"
 {
 			    yyval.ptObject = (TTriangle*) InstanceObject (yyvsp[0].acIdent);
 			  ;
     break;}
 case 167:
-#line 930 "parser.y"
+#line 935 "parser.y"
 {
 			    CreateObject (yyvsp[0].acIdent, "Triangle");
 			    _bVertices = 0;
 			  ;
     break;}
 case 168:
-#line 935 "parser.y"
+#line 940 "parser.y"
 {
 			    if ( _bVertices != 3 )
 			    {
@@ -2189,21 +2194,21 @@ case 168:
 			  ;
     break;}
 case 171:
-#line 950 "parser.y"
+#line 955 "parser.y"
 {
 			    TRIANGLE->setVertex (*yyvsp[0].ptVector);
 			    _bVertices++;
 			  ;
     break;}
 case 173:
-#line 958 "parser.y"
+#line 963 "parser.y"
 {
 			    DefineObject (yyvsp[-1].acIdent, yyvsp[0].acIdent, "PhongTriangle");
 			    _bVertices = 0;
 			  ;
     break;}
 case 174:
-#line 963 "parser.y"
+#line 968 "parser.y"
 {
 			    if ( _bVertices != 3 )
 			    {
@@ -2214,20 +2219,20 @@ case 174:
 			  ;
     break;}
 case 175:
-#line 974 "parser.y"
+#line 979 "parser.y"
 {
 			    yyval.ptObject = (TPhongTriangle*) InstanceObject (yyvsp[0].acIdent);
 			  ;
     break;}
 case 176:
-#line 978 "parser.y"
+#line 983 "parser.y"
 {
 			    CreateObject (yyvsp[0].acIdent, "PhongTriangle");
 			    _bVertices = 0;
 			  ;
     break;}
 case 177:
-#line 983 "parser.y"
+#line 988 "parser.y"
 {
 			    if ( _bVertices != 3 )
 			    {
@@ -2238,21 +2243,21 @@ case 177:
 			  ;
     break;}
 case 180:
-#line 998 "parser.y"
+#line 1003 "parser.y"
 {
 			    TRIANGLE->setVertex (*yyvsp[0].ptVector);
 			    _bVertices++;
 			  ;
     break;}
 case 182:
-#line 1006 "parser.y"
+#line 1011 "parser.y"
 {
 			    DefineObject (yyvsp[-1].acIdent, yyvsp[0].acIdent, "Rectangle");
 			    _bVertices = 0;
 			  ;
     break;}
 case 183:
-#line 1011 "parser.y"
+#line 1016 "parser.y"
 {
 			    if ( _bVertices != 4 )
 			    {
@@ -2263,20 +2268,20 @@ case 183:
 			  ;
     break;}
 case 184:
-#line 1022 "parser.y"
+#line 1027 "parser.y"
 {
 			    yyval.ptObject = (TRectangle*) InstanceObject (yyvsp[0].acIdent);
 			  ;
     break;}
 case 185:
-#line 1026 "parser.y"
+#line 1031 "parser.y"
 {
 			    CreateObject (yyvsp[0].acIdent, "Rectangle");
 			    _bVertices = 0;
 			  ;
     break;}
 case 186:
-#line 1031 "parser.y"
+#line 1036 "parser.y"
 {
 			    if ( _bVertices != 4 )
 			    {
@@ -2287,260 +2292,260 @@ case 186:
 			  ;
     break;}
 case 189:
-#line 1046 "parser.y"
+#line 1051 "parser.y"
 {
 			    RECTANGLE->setVertex (*yyvsp[0].ptVector);
 			    _bVertices++;
 			  ;
     break;}
 case 191:
-#line 1054 "parser.y"
+#line 1059 "parser.y"
 {
 			    DefineObject (yyvsp[-1].acIdent, yyvsp[0].acIdent, "Circle");
 			  ;
     break;}
 case 192:
-#line 1058 "parser.y"
+#line 1063 "parser.y"
 {
 			    yyval.ptObject = (TCircle*) UpdateObject (yyvsp[-5].acIdent);
 			  ;
     break;}
 case 193:
-#line 1064 "parser.y"
+#line 1069 "parser.y"
 {
 			    yyval.ptObject = (TCircle*) InstanceObject (yyvsp[0].acIdent);
 			  ;
     break;}
 case 194:
-#line 1068 "parser.y"
+#line 1073 "parser.y"
 {
 			    CreateObject (yyvsp[0].acIdent, "Circle");
 			  ;
     break;}
 case 195:
-#line 1072 "parser.y"
+#line 1077 "parser.y"
 {
 			    yyval.ptObject = (TCircle*) _tDataStack.POP();
 			  ;
     break;}
 case 198:
-#line 1082 "parser.y"
+#line 1087 "parser.y"
 {
 			    AGGREGATE->add (yyvsp[0].ptObject);
 			  ;
     break;}
 case 200:
-#line 1089 "parser.y"
+#line 1094 "parser.y"
 {
 			    DefineObject (yyvsp[-1].acIdent, yyvsp[0].acIdent, "Aggregate");
 			  ;
     break;}
 case 201:
-#line 1093 "parser.y"
+#line 1098 "parser.y"
 {
 			    yyval.ptObject = (TAggregate*) UpdateObject (yyvsp[-5].acIdent);
 			  ;
     break;}
 case 202:
-#line 1099 "parser.y"
+#line 1104 "parser.y"
 {
 			    yyval.ptObject = (TAggregate*) InstanceObject (yyvsp[0].acIdent);
 			  ;
     break;}
 case 203:
-#line 1103 "parser.y"
+#line 1108 "parser.y"
 {
 			    CreateObject (yyvsp[0].acIdent, "Aggregate");
 			  ;
     break;}
 case 204:
-#line 1107 "parser.y"
+#line 1112 "parser.y"
 {
 			    yyval.ptObject = (TAggregate*) _tDataStack.POP();
 			  ;
     break;}
 case 205:
-#line 1113 "parser.y"
+#line 1118 "parser.y"
 {
 			    DefineObject (yyvsp[-1].acIdent, yyvsp[0].acIdent, "AtmConst");
 			  ;
     break;}
 case 206:
-#line 1117 "parser.y"
+#line 1122 "parser.y"
 {
 			    yyval.ptAtmObject = (TAtmosphericObject*) UpdateObject (yyvsp[-5].acIdent);
 			  ;
     break;}
 case 207:
-#line 1123 "parser.y"
+#line 1128 "parser.y"
 {
 			    yyval.ptAtmObject = (TAtmosphericObject*) InstanceObject (yyvsp[0].acIdent);
 			  ;
     break;}
 case 208:
-#line 1127 "parser.y"
+#line 1132 "parser.y"
 {
 			    CreateObject (yyvsp[0].acIdent, "AtmConst");
 			  ;
     break;}
 case 209:
-#line 1131 "parser.y"
+#line 1136 "parser.y"
 {
 			    yyval.ptAtmObject = (TAtmosphericObject*) _tDataStack.POP();
 			  ;
     break;}
 case 210:
-#line 1137 "parser.y"
+#line 1142 "parser.y"
 {
 			    DefineObject (yyvsp[-1].acIdent, yyvsp[0].acIdent, "Box");
 			  ;
     break;}
 case 211:
-#line 1141 "parser.y"
+#line 1146 "parser.y"
 {
 			    yyval.ptObject = (TBox*) UpdateObject (yyvsp[-5].acIdent);
 			  ;
     break;}
 case 212:
-#line 1147 "parser.y"
+#line 1152 "parser.y"
 {
 			    yyval.ptObject = (TBox*) InstanceObject (yyvsp[0].acIdent);
 			  ;
     break;}
 case 213:
-#line 1151 "parser.y"
+#line 1156 "parser.y"
 {
 			    CreateObject (yyvsp[0].acIdent, "Box");
 			  ;
     break;}
 case 214:
-#line 1155 "parser.y"
+#line 1160 "parser.y"
 {
 			    yyval.ptObject = (TBox*) _tDataStack.POP();
 			  ;
     break;}
 case 215:
-#line 1161 "parser.y"
+#line 1166 "parser.y"
 {
 			    DefineObject (yyvsp[-1].acIdent, yyvsp[0].acIdent, "Cylinder");
 			  ;
     break;}
 case 216:
-#line 1165 "parser.y"
+#line 1170 "parser.y"
 {
 			    yyval.ptObject = (TCylinder*) UpdateObject (yyvsp[-5].acIdent);
 			  ;
     break;}
 case 217:
-#line 1171 "parser.y"
+#line 1176 "parser.y"
 {
 			    yyval.ptObject = (TCylinder*) InstanceObject (yyvsp[0].acIdent);
 			  ;
     break;}
 case 218:
-#line 1175 "parser.y"
+#line 1180 "parser.y"
 {
 			    CreateObject (yyvsp[0].acIdent, "Cylinder");
 			  ;
     break;}
 case 219:
-#line 1179 "parser.y"
+#line 1184 "parser.y"
 {
 			    yyval.ptObject = (TCylinder*) _tDataStack.POP();
 			  ;
     break;}
 case 220:
-#line 1185 "parser.y"
+#line 1190 "parser.y"
 {
 			    DefineObject (yyvsp[-1].acIdent, yyvsp[0].acIdent, "Cone");
 			  ;
     break;}
 case 221:
-#line 1189 "parser.y"
+#line 1194 "parser.y"
 {
 			    yyval.ptObject = (TCone*) UpdateObject (yyvsp[-5].acIdent);
 			  ;
     break;}
 case 222:
-#line 1195 "parser.y"
+#line 1200 "parser.y"
 {
 			    yyval.ptObject = (TCone*) InstanceObject (yyvsp[0].acIdent);
 			  ;
     break;}
 case 223:
-#line 1199 "parser.y"
+#line 1204 "parser.y"
 {
 			    CreateObject (yyvsp[0].acIdent, "Cone");
 			  ;
     break;}
 case 224:
-#line 1203 "parser.y"
+#line 1208 "parser.y"
 {
 			    yyval.ptObject = (TCone*) _tDataStack.POP();
 	       		  ;
     break;}
 case 225:
-#line 1209 "parser.y"
+#line 1214 "parser.y"
 {
 			    DefineObject (yyvsp[-1].acIdent, yyvsp[0].acIdent, "Torus");
 			  ;
     break;}
 case 226:
-#line 1213 "parser.y"
+#line 1218 "parser.y"
 {
 			    yyval.ptObject = (TTorus*) UpdateObject (yyvsp[-5].acIdent);
 			  ;
     break;}
 case 227:
-#line 1219 "parser.y"
+#line 1224 "parser.y"
 {
 			    yyval.ptObject = (TTorus*) InstanceObject (yyvsp[0].acIdent);
 			  ;
     break;}
 case 228:
-#line 1223 "parser.y"
+#line 1228 "parser.y"
 {
 			    CreateObject (yyvsp[0].acIdent, "Torus");
 			  ;
     break;}
 case 229:
-#line 1227 "parser.y"
+#line 1232 "parser.y"
 {
 			    yyval.ptObject = (TTorus*) _tDataStack.POP();
 			  ;
     break;}
 case 230:
-#line 1233 "parser.y"
+#line 1238 "parser.y"
 {
 			    DefineObject (yyvsp[-1].acIdent, yyvsp[0].acIdent, "Mesh");
 			  ;
     break;}
 case 231:
-#line 1237 "parser.y"
+#line 1242 "parser.y"
 {
 			    yyval.ptObject = (TMeshObject*) UpdateObject (yyvsp[-5].acIdent);
 			  ;
     break;}
 case 232:
-#line 1243 "parser.y"
+#line 1248 "parser.y"
 {
 			    yyval.ptObject = (TMeshObject*) InstanceObject (yyvsp[0].acIdent);
 			  ;
     break;}
 case 233:
-#line 1247 "parser.y"
+#line 1252 "parser.y"
 {
 			    CreateObject (yyvsp[0].acIdent, "Mesh");
 			  ;
     break;}
 case 234:
-#line 1251 "parser.y"
+#line 1256 "parser.y"
 {
 			    yyval.ptObject = (TMeshObject*) _tDataStack.POP();
 			  ;
     break;}
 case 237:
-#line 1261 "parser.y"
+#line 1266 "parser.y"
 {
 			    MESH->addTriangle ((TTriangle*) yyvsp[0].ptObject);
                             delete yyvsp[0].ptObject;
@@ -2744,7 +2749,7 @@ yyerrhandle:
   yystate = yyn;
   goto yynewstate;
 }
-#line 1268 "parser.y"
+#line 1273 "parser.y"
 
 
 void yyerror (const char* pkcTEXT)
