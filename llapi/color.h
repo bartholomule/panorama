@@ -20,6 +20,7 @@
 #define _COLOR__
 
 #include <cmath>
+#include <iostream>
 #include "llapi/math_tools.h"
 
 class TColor
