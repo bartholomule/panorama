@@ -61,5 +61,8 @@ else
 PROF = -fomit-frame-pointer
 endif
 
-CXXFLAGS = ${OPT} ${STAT} ${PROF} -ansi -pedantic -fno-exceptions -fno-rtti \
+CXXFLAGS = ${OPT} ${STAT} ${PROF} -ansi -fno-exceptions -fno-rtti \
 	   -Wall -Wstrict-prototypes ${DEFS} ${INCLUDE}
+
+# The following one causes the gui to fail to build on my machine.  I don't know why.
+# -pedantic

@@ -1,0 +1,12 @@
+
+ - When 'preview' option is selected, raytracing could be done at a smaller
+   resolution. Then you could select an area of this image to be rendered at
+   real resolution.
+
+ - Preview could also be done using ZBuffer renderer. Selecting an area could
+   make this to be raytraced.
+
+ - Add the possibility to "merge" another scene into the current one.
+
+ - In the image window, we should be able to apply any image filter to a
+   selected area.
