@@ -47,6 +47,7 @@ mat_worley.plg
 
 # Objects
 bezier.plg
+aggregate_uniform_grid.plg
 
 # Object filters
 of_cartoon.plg

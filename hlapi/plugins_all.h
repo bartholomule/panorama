@@ -42,6 +42,7 @@
 #include "plugins/material/wood/mat_wood.h"
 #include "plugins/material/worley/mat_worley.h"
 #include "plugins/object/abvh/abvh.h"
+#include "plugins/object/aggregate_uniform_grid/aggregate_uniform_grid.h"
 #include "plugins/object/bezier/bezier.h"
 #include "plugins/object/subdiv/subdiv.h"
 #include "plugins/object/height_field/height_field.h"

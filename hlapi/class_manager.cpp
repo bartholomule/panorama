@@ -81,6 +81,7 @@ TBaseClass* TClassManager::_newObject (const string& rktCLASS, const TBaseClass*
   STATIC_CLASS (TMaterialWood, "MaterialWood");
   STATIC_CLASS (TMaterialWorley, "MaterialWorley");
   STATIC_CLASS (TABVH, "ABVH");
+  STATIC_CLASS (TAggregateUniformGrid, "AggregateUniformGrid");
   STATIC_CLASS (TBezierSurface, "BezierSurface");
   STATIC_CLASS (TSubdiv, "SubdivisionSurface");
   STATIC_CLASS (THeightField, "HeightField");
