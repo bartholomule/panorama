@@ -31,24 +31,9 @@ DEFINE_PLUGIN ("Raytracer", FX_RENDERER_CLASS, TRaytracer);
 *  traceRay()
 *
 */
-inline void TRaytracer::traceRay (TRay& rtRAY, TSurfaceData& rtDATA, const TObject* pktOBJ) const
+inline void TRaytracer::traceRay (TRay& rtRAY, TSurfaceData& rtDATA) const
 {
 
-  //
-  // Check intersection with object in cache.
-  //
-  if ( pktOBJ )
-  {
-    if ( pktOBJ->findFirstIntersection (rtRAY, rtDATA) )
-    {
-      //
-      // Set new distance limit for sucesive intersections.
-      //
-      // [_ERROR_] Fix problem in intersection checks.
-      rtRAY.setLimit (rtDATA.distance() + FX_EPSILON);
-    }
-  }
-  
   //
   // Search for the first intersection.
   //
@@ -141,7 +126,6 @@ inline bool TRaytracer::traceShadowRay (const TRay& rktRAY, const TLight& rktLIG
   TScalar          tTransparency;
   TSurfaceData     tSurfaceData;
   TSpanList        tList;
-  const TObject*   pktInst;
   TRay             tRay = rktRAY;
 
   //
@@ -168,18 +152,6 @@ inline bool TRaytracer::traceShadowRay (const TRay& rktRAY, const TLight& rktLIG
   //
   tRay.setLimit (Distance (tRay.location(), rktLIGHT.location()));
 
-  //
-  // First we check if last occluder blocks light along this ray.
-  //
-  pktInst = rktLIGHT.lastOccluder();
-  if ( pktInst )
-  {
-    if ( pktInst->intersects (tRay) )
-    {
-      return false;
-    }
-  }
-
   while ( ptScene->world()->findFirstIntersection (tRay, tSurfaceData) )
   {
     //
@@ -197,7 +169,6 @@ inline bool TRaytracer::traceShadowRay (const TRay& rktRAY, const TLight& rktLIG
       //
       // Light is blocked by this object.
       //
-      rktLIGHT.setLastOccluder (tSurfaceData.object());
       return false;
     }
     else
@@ -233,8 +204,7 @@ inline TColor TRaytracer::shadePrimaryRay (TScalar I, TScalar J, TSurfaceData& r
 
   ptScene->camera()->getRay (I, J, tRay);
 
-  traceRay (tRay, rtDATA, tCache.pktLastObject);
-  tCache.pktLastObject = rtDATA.object();
+  traceRay (tRay, rtDATA);
 
   return getRadiance (rtDATA, wMaxDepth);
   

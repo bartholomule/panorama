@@ -42,16 +42,6 @@ class TRaytracer : public TRenderer
 
   protected:
 
-    struct TCache
-    {
-
-      const TObject*   pktLastObject;
-
-      TCache (void) :
-        pktLastObject (NULL) {}
-        
-    };  /* struct TCache */
-
     Word              wMaxDepth;
     TScalar           tMaxColorDiff;
     TColor            tAmbientLight;
@@ -59,9 +49,7 @@ class TRaytracer : public TRenderer
     ESamplingMethod   eSamplingMethod;
     Byte              bMaxAADepth;
 
-    mutable TCache   tCache;
-
-    void traceRay (TRay& rtRAY, TSurfaceData& rtDATA, const TObject* pktOBJ = NULL) const;
+    void traceRay (TRay& rtRAY, TSurfaceData& rtDATA) const;
     TColor getRadiance (TSurfaceData& rtDATA, Word wDEPTH) const;
     bool traceShadowRay (const TRay& rktRAY, const TLight& rktLIGHT, TColor& rtRAD) const;
     TColor shadePrimaryRay (TScalar I, TScalar J, TSurfaceData& rtDATA);
