@@ -408,7 +408,7 @@ AC_ARG_ENABLE(cpu,
 [                              pentium-mmx, pentium2, pentium3, pentium4,     ]
 [                              k6, k6-2, k6-3, athlon, athlon-tbird,          ]
 [                              athlon-xp, athlon-mp                           ],
-CPU_TYPE=$enableval, CPU_TYPE="guess")
+CPU_TYPE=$enableval, CPU_TYPE="no")
 if test $CPU_TYPE = "yes"; then
   CPU_TYPE=$target_cpu
   CPU_MESSAGE="yes, but not specified, guessing $CPU_TYPE"
@@ -769,3 +769,5 @@ AC_OUTPUT(\
         scenes/misc/Makefile \
         scenes/objects/Makefile
 )
+
+AC_CONFIG_LINKS(Makefile.deps:Makefile.deps)

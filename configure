@@ -4302,7 +4302,7 @@ if test "${enable_cpu+set}" = set; then
   enableval="$enable_cpu"
   CPU_TYPE=$enableval
 else
-  CPU_TYPE="guess"
+  CPU_TYPE="no"
 fi;
 if test $CPU_TYPE = "yes"; then
   CPU_TYPE=$target_cpu
@@ -5389,3 +5389,4 @@ if test "$no_create" != yes; then
   $ac_cs_success || { (exit 1); exit 1; }
 fi
 
+ac_config_links="$ac_config_links Makefile.deps:Makefile.deps"

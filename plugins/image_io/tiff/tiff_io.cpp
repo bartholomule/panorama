@@ -339,7 +339,7 @@ int TImageTiff::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 #if !defined(NEW_ATTRIBUTES)
     rnVALUE.gValue = compression;
 #else
-    rnVALUE = new TAttribBool (compression);
+    rnVALUE = (user_arg_type)new TAttribBool (compression);
 #endif
   }
   else
