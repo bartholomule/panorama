@@ -27,6 +27,13 @@ define light l : class WarnLight
   intensity     1
 }
 
+define pattern pat_leopard1 : class PatternLeopard
+{
+  color       CYellow
+  base_color  CRed
+  zoom        <.1, .1, .1>
+}
+
 box
 {
   scale         <150, 150, 150>
@@ -34,11 +41,15 @@ box
   translate     <0, 75, -50>
   material : extends MLeopard
   {
-    color       CYellow
-    base_color  CRed
-    zoom        <.1, .1, .1>
-    bump        0
+    color   pat_leopard1
   }
+}
+
+define pattern pat_leopard2 : class PatternLeopard
+{
+  color       CRed
+  base_color  CBlack
+  zoom        <5, 5, 5>
 }
 
 sphere
@@ -47,11 +58,21 @@ sphere
   radius        75
   material : extends MLeopard
   {
-    color       CRed
-    base_color  CBlack
-    zoom        <5, 5, 5>
-    bump        0.25
+    color   pat_leopard2
+    
+    perturb_func : class PerturbationLeopard
+    {
+      leopard_pattern   pat_leopard2
+      bump              0.25      
+    }
   }
+}
+
+define pattern pat_leopard3 : class PatternLeopard
+{
+  color       CBlue
+  base_color  CBlue
+  zoom        <5, 5, 5>
 }
 
 torus
@@ -61,10 +82,13 @@ torus
   radius_b      35
   material : extends MLeopard
   {
-    color       CBlue
-    base_color  CBlue
-    zoom        <5, 5, 5>
-    bump        -0.25
+    color   pat_leopard3
+    
+    perturb_func : class PerturbationLeopard
+    {
+      leopard_pattern   pat_leopard3
+      bump              -0.25      
+    }
   }
 }
 
@@ -74,11 +98,14 @@ plane
   normal	<0, 1, 0>
   material : extends MChecker
   {
-    color       CBlack
-    base_color  CWhite
-    size        50
+    color : class PatternChecker 
+    {
+      color       CBlack
+      base_color  CWhite
+      size        50
+      border      0    
+    }
     specular    0
-    border      0
   }
 }
 

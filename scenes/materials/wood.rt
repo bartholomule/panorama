@@ -4,7 +4,7 @@
 
 #include "materials.inc"
 
-define material MWood : class MaterialWood
+define material MWood
 {
   bsdf : class BsdfPhong
   {
@@ -15,7 +15,7 @@ define material MWood : class MaterialWood
   specular	0.25
 }
 
-define material Marble : class MaterialMarble
+define material Marble
 {
   bsdf : class BsdfPhong
   {
@@ -49,6 +49,7 @@ define light l : class WarnLight
   intensity     1
 }
 
+
 cylinder
 {
   translate <-2.5, 0, -0.5>
@@ -56,11 +57,20 @@ cylinder
 
   material : extends Marble
   {
-    color       CMediumWood
-    base_color  "marble1"
-    zoom        <.2, .2, .2>
-    bump        0
+    color : class PatternMarble
+    {
+      color       CMediumWood
+      base_color  "marble1"
+      zoom        <.2, .2, .2>
+    }
   }
+}
+
+define pattern pat_marble : class PatternMarble
+{
+  color       CMediumWood
+  base_color  "marble2"
+  zoom        <.7, .1, .7>
 }
 
 cylinder
@@ -70,10 +80,13 @@ cylinder
 
   material : extends Marble
   {
-    color       CMediumWood
-    base_color  "marble2"
-    zoom        <.7, .1, .7>
-    bump        0.2
+    color   pat_marble
+
+    perturb_func : class PerturbationMarble
+    {
+      marble_pattern   pat_marble
+      bump             0.2
+    }
   }
 }
 
@@ -84,11 +97,13 @@ box
   translate     <0, 75, -50>
   material : extends MWood
   {
-    base_color  "wood1"
-    zoom        <.2, .2, .2>
-    bump        0
-    grain       1
-    ringscale   20
+    color : class PatternWood
+    {
+      base_color  "wood1"
+      zoom        <.2, .2, .2>
+      grain       1
+      ringscale   20    
+    }
   }
 }
 
@@ -98,12 +113,14 @@ sphere
   radius        75
   material : extends MWood
   {
-    color       CMediumWood
-    base_color  "wood2"
-    zoom        <85, 10, 75>
-    bump        0
-    grain       0.5
-    ringscale   30
+    color : class PatternWood
+    {
+      color       CMediumWood
+      base_color  "wood2"
+      zoom        <85, 10, 75>
+      grain       0.5
+      ringscale   30
+    }
   }
 }
 
@@ -115,9 +132,11 @@ torus
   radius_b      35
   material : extends MWood
   {
-    base_color  "wood5"
-    zoom        <50, 50, 50>
-    bump        0
+    color : class PatternWood
+    {
+      base_color  "wood5"
+      zoom        <50, 50, 50>
+    }
   }
 }
 
@@ -127,9 +146,12 @@ plane
   normal	<0, 1, 0>
   material : extends MWood
   {
-    color       COrange
-    base_color  "wood3"
-    zoom        <50, 50, 50>
+    color : class PatternWood
+    {
+      color       COrange
+      base_color  "wood3"
+      zoom        <50, 50, 50>
+    }
   }
 }
 

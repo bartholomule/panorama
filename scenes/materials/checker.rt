@@ -29,9 +29,12 @@ plane
   normal	<0, 1, 0>
   material : extends MChecker
   {
-    color       CBlack
-    base_color  CWhite
-    size        50
+    color : class PatternChecker
+    {
+      color       CBlack
+      base_color  CWhite
+      size        50    
+    }
     specular    0
   }
 }

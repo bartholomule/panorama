@@ -4,10 +4,9 @@
 
 #include "materials.inc"
 
-define material M : class MaterialMarble
+define material M
 {
   bsdf : class BsdfPhong
-  //bsdf : class BsdfLambertian
   {
     exponent 50 
   }
@@ -46,10 +45,12 @@ box
   translate     <0, 75, -50>
   material : extends M
   {
-    color       CBlack
-    base_color  CWhite
-    zoom        <10, 10, 10>
-    bump        0
+    color : class PatternMarble
+    {
+      color       CBlack
+      base_color  CWhite
+      zoom        <10, 10, 10>    
+    }
   }
 }
 
@@ -59,11 +60,20 @@ sphere
   radius        75
   material : extends M
   {
-    color       CWhite
-    base_color  CBlack
-    zoom        <10, 10, 10>
-    bump        0
+    color : class PatternMarble
+    {    
+      color       CWhite
+      base_color  CBlack
+      zoom        <10, 10, 10>
+    }
   }
+}
+
+define pattern pat_marble : class PatternMarble
+{
+  color       CBlue
+  base_color  CWhite
+  zoom        <10, 10, 10>
 }
 
 torus
@@ -73,10 +83,13 @@ torus
   radius_b      35
   material : extends M
   {
-    color       CBlue
-    base_color  CWhite
-    zoom        <10, 10, 10>
-    bump        -1
+    color   pat_marble
+    
+    perturb_func : class PerturbationMarble
+    {
+      marble_pattern   pat_marble
+      bump             -1
+    }
   }
 }
 
@@ -86,11 +99,14 @@ plane
   normal	<0, 1, 0>
   material : extends MChecker
   {
-    color       CBlack
-    base_color  CWhite
-    size        50
+    color : class PatternChecker
+    {
+      color       CBlack
+      base_color  CWhite
+      size        50
+      border      0
+    }
     specular    0
-    border      0
   }
 }
 

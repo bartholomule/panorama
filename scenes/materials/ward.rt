@@ -36,15 +36,18 @@ plane
   normal	<0, 1, 0>
   material : extends MChecker
   {
-    color       CWhite
-    base_color  CWood
-    size        50
+    color : class PatternChecker
+    {
+      color       CWhite
+      base_color  CDarkWood
+      size        50    
+    }
   }
 }
 
 torus
 {
-  translate     <0, 0, 200>
+  translate     <0, 0, -100>
   rotate        <45, 0, 0>
   radius_a      75
   radius_b      38
@@ -54,18 +57,6 @@ torus
   }
 }
 
-/*
-sphere
-{
-  translate     <0, 0, 200>
-  rotate        <45, 0, 0>
-  radius        75
-  material : extends MShinyPlastic
-  {
-    color       CBlue
-  }
-}
-*/
 
 scene
 {
@@ -83,10 +74,6 @@ scene
   {
 //    sampling    "adaptive"
   }
-/*  filter : class IF_Lens_Flare {
-    intensity   2.3
-    threshold   1.1
-  }*/
 }
 
 

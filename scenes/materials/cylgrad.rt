@@ -4,7 +4,7 @@
 
 #include "materials.inc"
 
-define material MWood : class MaterialWood
+define material MWood
 {
   bsdf : class BsdfPhong
   {
@@ -15,7 +15,7 @@ define material MWood : class MaterialWood
   specular	0.25
 }
 
-define material MCylGrad : class MaterialCylGrad
+define material MCylGrad
 {
   bsdf : class BsdfPhong
   {
@@ -26,7 +26,7 @@ define material MCylGrad : class MaterialCylGrad
   specular	0.25
 }
 
-define material MMarble : class MaterialMarble
+define material MMarble
 {
   bsdf : class BsdfPhong
   {
@@ -37,7 +37,7 @@ define material MMarble : class MaterialMarble
   specular 0.25
 }
 
-define material MCrackle : class MaterialCrackle
+define material MCrackle
 {
   bsdf : class BsdfPhong
   {
@@ -92,9 +92,12 @@ plane
   normal	<0, 1, 0>
   material : extends MWood
   {
-    color       COrange
-    base_color  CBlack
-    zoom        <100, 100, 100>
+    color : class PatternWood
+    {
+      color       COrange
+      base_color  CBlack
+      zoom        <100, 100, 100>    
+    }
   }
   rotate <0,90,0>
 }
@@ -105,11 +108,14 @@ sphere
   translate < 0, 150, 0 >
   material : extends MCylGrad
   {
-    cycles     8
-    swirl      0
-    //color CWhite
-    //base_color CBlack
-    base_color "marble1"
+    color : class PatternCylGrad
+    {
+      cycles     8
+      swirl      0
+      //color CWhite
+      //base_color CBlack
+      base_color "marble1"    
+    }
   }
   translate < -350, 0, 0 >
   rotate < 30, 0, -30 >
@@ -121,11 +127,14 @@ sphere
   translate < 0, 150, 0 >
   material : extends MCylGrad
   {
-    cycles      8
-    swirl     150
-    //color CWhite
-    //base_color CBlack
-    base_color "tropical"
+    color : class PatternCylGrad
+    {
+      cycles     8
+      swirl      150
+      //color CWhite
+      //base_color CBlack
+      base_color "tropical"    
+    }
   }
 }
 
@@ -135,11 +144,14 @@ sphere
   translate < 0, 150, 0 >
   material : extends MCylGrad
   {
-    cycles      16
-    swirl      150
-    //color CWhite
-    //base_color CBlack
-    base_color "wood1"
+    color : class PatternCylGrad
+    {
+      cycles     16
+      swirl      150
+      //color CWhite
+      //base_color CBlack
+      base_color "wood1"    
+    }
   }
   translate <  350, 0, 0 >
   rotate < 45, 0, 30 > 

@@ -114,7 +114,9 @@ scene
     type        "png"
     name        "projector_cartoon.png"
   }
-  renderer : class Raytracer {}
+  renderer : class Raytracer {
+//    sampling    "adaptive"
+  }
   filter : class IF_Cartoon
   {
     levels      4

@@ -6,7 +6,7 @@
 
 define color CMySea { red 0 green 0.15 blue 0.30 }
 
-define material Marble : class MaterialMarble
+define material Marble
 {
   bsdf : class BsdfPhong
   {
@@ -70,11 +70,13 @@ define aggregate column
   }
   material : extends Marble
   {
-    color       CWhite
-    base_color  "marble1"
-    zoom        <5, 5, 5>
-    bump        0
-    octaves     5
+    color : class PatternMarble
+    {
+      color       CWhite
+      base_color  "marble1"
+      zoom        <5, 5, 5>
+      octaves     5    
+    }
     diffuse     0.7
   }
 }
@@ -121,20 +123,42 @@ aggregate : extends column
   translate <-125, 0, -1150>
 }
 
+define pattern pat_noise1 : class PatternNoise
+{
+  color       CMySea
+  base_color  CMySea
+  zoom        <3, 3, 3>
+}
+
 plane // the water
 {
   translate     <0, 0, 0>
   normal	<0, 1, 0>
   material : extends MNoise
   {
-    color       CMySea
-    base_color  CMySea
-    zoom        <3, 3, 3>
-    bump        0.1
+    color   pat_noise1
+
+    perturb_func : class PerturbationNoise
+    {
+      noise_pattern   pat_noise1
+      bump            0.1
+    }
+    
     ambient     0.1
     diffuse     0.4
     specular    0.6
   }
+}
+
+define pattern pat_marble1 : class PatternMarble
+{
+  color       CLightGrey
+  base_color  CWhite
+  zoom        <500, 500, 500>
+  lacunarity  2.17
+  octaves     5
+  offset      0.250
+  multiplier  0.5 //0.750
 }
 
 sphere // marble parameters set to make a lunar surface
@@ -143,19 +167,29 @@ sphere // marble parameters set to make a lunar surface
   radius     1200
   material : extends Marble
   {
-    color       CLightGrey
-    base_color  CWhite
-    zoom        <500, 500, 500>
+    color       pat_marble1
     ambient     0.3
     diffuse     0.7
     specular    0.0
-    bump        0.3
-    lacunarity  2.17
-    octaves     5
-    offset      0.250
-    multiplier  0.5 //0.750
+
+    perturb_func : class PerturbationMarble
+    {
+      marble_pattern   pat_marble1
+      bump	       0.3
+    }
   }
   rotate < 0, 45, 0>
+}
+
+define pattern pat_marble2 : class PatternMarble
+{
+    color       CWhite
+    base_color  CBlack
+    zoom        <10, 10, 10>
+    lacunarity  4.37
+    octaves     3
+    offset      1.5
+    multiplier  1
 }
 
 sphere // marble parameters set to make a starfield
@@ -164,16 +198,10 @@ sphere // marble parameters set to make a starfield
   radius        10000
   material : extends Marble
   {
-    color       CWhite
-    base_color  CBlack
-    zoom        <10, 10, 10>
+    color       pat_marble2
     ambient     1
     diffuse     0
     specular    0
-    lacunarity  4.37
-    octaves     3
-    offset      1.5
-    multiplier  1
   }
 }
 

@@ -4,7 +4,7 @@
 
 #include "materials.inc"
 
-define material MCrackle : class MaterialCrackle
+define material MCrackle
 {
   bsdf : class BsdfPhong
   {
@@ -15,7 +15,7 @@ define material MCrackle : class MaterialCrackle
   specular	0.0
 }
 
-define material MirrorCrackle : class MaterialCrackle
+define material MirrorCrackle
 {
   bsdf : class BsdfPhong
   {
@@ -62,16 +62,33 @@ box
   }
 }
 */
+
+define pattern pat_crackle1 : class PatternCrackle
+{
+  base_color   "tropical"
+  zoom         <20, 20, 20>
+}
+
 sphere
 {
   translate     <120, 75, 150>
   radius        75
   material : extends MCrackle
   {
-    base_color  "tropical"
-    zoom        <20, 20, 20>
-    bump        -0.2
+    color   pat_crackle1
+
+    perturb_func : class PerturbationCrackle {
+      crackle_pattern   pat_crackle1
+      bump              -0.2    
+    }
   }
+}
+
+define pattern pat_crackle2 : class PatternCrackle
+{
+  color       CBlue
+  base_color  CBlue
+  zoom        <20, 20, 20>
 }
 
 torus
@@ -82,11 +99,19 @@ torus
   radius_b      35
   material : extends MirrorCrackle
   {
-    color       CBlue
-    base_color  CBlue
-    zoom        <20, 20, 20>
-    bump        0.5
+    color   pat_crackle2
+
+    perturb_func : class PerturbationCrackle {
+      crackle_pattern   pat_crackle2
+      bump              0.5 
+    }
   }
+}
+
+define pattern pat_crackle3 : class PatternCrackle
+{
+  base_color  "crackle1"
+  zoom        <75, 75, 75>
 }
 
 plane
@@ -95,9 +120,12 @@ plane
   normal	<0, 1, 0>
   material : extends MCrackle
   {
-    base_color  "crackle1"
-    zoom < 75, 75, 75>
-    bump 0.2
+    color   pat_crackle3
+
+    perturb_func : class PerturbationCrackle {
+      crackle_pattern   pat_crackle3
+      bump              0.2
+    }
   }
 }
 

@@ -4,7 +4,7 @@
 
 #include "materials.inc"
 
-define material MMarble : class MaterialMarble
+define material MMarble
 {
   bsdf : class BsdfPhong
   {
@@ -16,19 +16,28 @@ define material MMarble : class MaterialMarble
   specular 0.2 //0.2
 }
 
-define material MBrick : class MaterialBrick
+define pattern pat_brick : class PatternBrick
+{
+  height 0.75
+  width  0.75
+  mortar 0.5 // 1.0
+}
+
+define material MBrick
 {
   bsdf : class BsdfPhong
   {
     exponent 30
   }
-  bump 1.0
-  height 0.75
-  width  0.75
-  mortar 0.5 // 1.0
-  ambient  0.1
-  diffuse  0.2
-  specular 0.6
+  color      pat_brick
+  ambient    0.1
+  diffuse    0.2
+  specular   0.6
+  perturb_func : class PerturbationBrick
+  {
+    brick_pattern   pat_brick
+    bump            1.0
+  }
 }
 
 define camera c
@@ -61,6 +70,13 @@ define light star
 
 define color CMySea { red 0 green 0.15 blue 0.30 }
 
+define pattern pat_brick1 : extends pat_brick
+{
+  color      { red 0.5 green 0.5 blue 0.5 }
+  base_color { red 0.5 green 0.5 blue 0.5 }
+  zoom < 40, 40, 40 > // was 20
+}
+
 box // Wall
 {
   point1 <-300,-150,-1000>
@@ -68,9 +84,13 @@ box // Wall
   //translate <0, -50, 0>
   material : extends MBrick
   {
-    color      { red 0.5 green 0.5 blue 0.5 }
-    base_color { red 0.5 green 0.5 blue 0.5 }
-    zoom < 40, 40, 40 > // was 20
+    color   pat_brick1
+    
+    perturb_func : class PerturbationBrick 
+    {
+      brick_pattern   pat_brick1
+      bump            1.0
+    }
   }
 }
 
@@ -80,9 +100,12 @@ box // Walkway
   point2 < -50, -50, 600>
   material : extends MMarble
   {
-    color CWhite
-    base_color { red 0.5 green 0.5 blue 0.5 }
-    zoom < 10, 10, 10 >
+    color : class PatternMarble
+    {
+      color CWhite
+      base_color { red 0.5 green 0.5 blue 0.5 }
+      zoom < 10, 10, 10 >
+    }
   }
 }
 
@@ -92,12 +115,21 @@ box // Top of wall
   point2 <-320, 110, 600>
   material : extends MMarble
   {
-    color CWhite
-    base_color { red 0.5 green 0.5 blue 0.5 }
-    zoom < 10, 10, 10 >
+    color : class PatternMarble
+    {
+      color CWhite
+      base_color { red 0.5 green 0.5 blue 0.5 }
+      zoom < 10, 10, 10 >
+    }
   }
 }
 
+define pattern pat_water : class PatternNoise
+{
+  color       CMySea
+  base_color  CMySea
+  zoom        <5, 5, 5>
+}
 
 plane // the water
 {
@@ -105,10 +137,13 @@ plane // the water
   normal	<0, 1, 0>
   material : extends MNoise
   {
-    color       CMySea
-    base_color  CMySea
-    zoom        <5, 5, 5>
-    bump        0.1
+    color       pat_water
+    
+    perturb_func : class PerturbationNoise
+    {
+      noise_pattern   pat_water
+      bump            0.1
+    }
     ambient     0.1
     diffuse     0.4
     specular    0.6

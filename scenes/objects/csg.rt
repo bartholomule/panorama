@@ -60,9 +60,12 @@ plane
   normal        <0, 1, 0>
   material : extends MChecker
   {
-    color       CGreen
-    base_color  CYellow
-    size        30
+    color : class PatternChecker
+    {
+      color       CGreen
+      base_color  CYellow
+      size        30    
+    }
   }
 }
 

@@ -4,7 +4,7 @@
 
 #include "materials.inc"
 
-define material MWood : class MaterialWood
+define material MWood
 {
   bsdf : class BsdfPhong
   {
@@ -58,9 +58,12 @@ plane
   normal	<0, 1, 0>
   material : extends MWood
   {
-    color       COrange
-    base_color  CBlack
-    zoom        <100, 100, 100>
+    color : class PatternWood 
+    {
+      color       COrange
+      base_color  CBlack
+      zoom        <100, 100, 100>    
+    }
   }
   rotate <0,90,0>
 }

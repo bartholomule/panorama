@@ -4,7 +4,7 @@
 
 #include "materials.inc"
 
-define material MShinyPlastic : class MaterialCylGrad
+define material MShinyPlastic
 { 
   bsdf : class BsdfSchlickDouble
   {
@@ -39,7 +39,10 @@ plane
   normal	<0, 1, 0>
   material : extends MShinyPlastic
   {
-    base_color	CBlue
+    color : class PatternCylGrad
+    {
+      base_color   CBlue    
+    }
     specular	0.2
     diffuse	0.7
   }
@@ -51,9 +54,12 @@ cylinder
   translate	<0, 95, 0>
   material : extends MShinyPlastic
   {
-    cycles      5
-    swirl       170
-    base_color	"tropical"
+    color : class PatternCylGrad
+    {
+      cycles      5
+      swirl       170
+      base_color  "tropical"    
+    }
   }
 }
 

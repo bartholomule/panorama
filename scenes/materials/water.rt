@@ -24,10 +24,20 @@ rectangle
   vertex        <200, 0, -200>
   material : extends MChecker
   {
-    color       CBlack
-    base_color  CWhite
-    size        50
+    color : class PatternChecker
+    {
+      color       CBlack
+      base_color  CWhite
+      size        50    
+    }
   }
+}
+
+define pattern pat_noise : class PatternNoise
+{
+  color       CWhite
+  base_color  CWhite
+  zoom        <20, 20, 20>
 }
 
 rectangle
@@ -44,11 +54,14 @@ rectangle
     opacity	0.01
     ior		1.52
     caustics	20
+
+    color       pat_noise
     
-    color       CWhite
-    base_color  CWhite
-    zoom        <20, 20, 20>
-    bump        0.3
+    perturb_func : class PerturbationNoise
+    {
+      noise_pattern   pat_noise
+      bump            0.3
+    }
   }
 }
 
