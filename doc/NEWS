@@ -4,17 +4,60 @@
  - Added libtool support (now required).
 
  - Added another abstraction above the class manager, to allow a more complete
-   separation of the llapi and hlapi libraries. 
-
+   separation of the llapi and hlapi libraries. NOTE: This still needs work.
 
 >> Version 0.18 released (21 November 2002)
 
  - Windows (MSVC++6) project files added, for a statically linked 'render'
-   executable (done by Kevin Harris).
+   executable, TGA image only (done by Kevin Harris). No windows gui exists 
+   (yet).
 
  - Fixed some problems with the RT SDL, and added some new features to it.
 
  - Fixed problem with static linking and profile info.
+
+ - Functions added for root solving (generic, and specific).
+
+ - Area lights added.  
+   This added the ability to have any object of any shape be an area light.
+
+ - Added Dependency file creation: make deps
+
+ - Initialize() returns bool.  
+   Checking of the 'initialize' function will be possible to detect problems,
+   and potentially quit before those problems become HUGE, and possibly eat up
+   all your memory, or core dump.
+
+ - GTK-- GUI added.  
+   This is Angel's GUI, but fixed to work with newer GTK-- versions, and with
+   newer additions to panorama (still not complete, and buggy, due to current
+   panorama limitations).
+
+ - TIFF images are now supported, if libtiff is installed.
+
+ - Freetype library compatibly fix added for newer freetype.
+   Version 2 is now supported.
+
+ - Thin-lens camera added.  
+   This allows focal blur, for some interesting and increasingly realistic
+   images. 
+
+ - Parallel-projection camera added.  
+   This could allow the generation of the 'impossible triangle' and other such
+   optical illusions, as well as non-distorted (in perspective) images for use
+   in range-data or height field image creation. 
+
+ - Perturbations added. 
+   Normal Perturbations were added to enhance/simplify texture creation (see
+   patterns). 
+
+ - Patterns added. 
+   Constant values in textures were replaced by patterns.  This allows nice
+   texture mapping, bump mapping, etc. based on patterns or images.
+
+ - Some parser bugs corrected.
+
+ - More scene files.
 
  - Other portability bug fixes.
 
