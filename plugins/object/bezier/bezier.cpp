@@ -106,6 +106,6 @@ int TBezierSurface::setAttribute (const string& rktNAME, NAttribute nVALUE,
     return FX_ATTRIB_OK;
   }
 
-  return TTransformObject::setAttribute (rktNAME, nVALUE, eTYPE);
+  return TObject::setAttribute (rktNAME, nVALUE, eTYPE);
 
 }  /* setAttribute() */

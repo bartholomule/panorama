@@ -20,12 +20,12 @@
 #define _BEZIER__
 
 #include <vector>
-#include "llapi/transform_object.h"
+#include "llapi/object.h"
 #include "hlapi/plugin_manager.h"
 
 class TBezierSubsurface;
 
-class TBezierSurface : public TTransformObject
+class TBezierSurface : public TObject
 {
 
   friend TBezierSubsurface;
