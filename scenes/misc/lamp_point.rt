@@ -669,7 +669,7 @@ scene
   output
   {
     type        "png"
-    name	"lamp.png"
+    name	"lamp_point.png"
   }
   renderer : class Raytracer 
   {
