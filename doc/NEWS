@@ -1,5 +1,13 @@
 
->> Version 0.13.3 released
+>> Version 0.14 released
+
+ - Several new sample scenes.
+ 
+ - Added kd-tree data structure.
+
+ - Added color gradients in MaterialNoise (done by Peter Barnett).
+
+ - Added new plugin MaterialCylGrad (done by Peter Barnett).
 
  - Added new plugin AggregateUniformGrid (done by Carlos Jimenez).
 
