@@ -278,11 +278,19 @@ void TCone::initialize (void)
   if ( tMinRadius != 0 )
   {
     TVector   tTmp;
-    TVector   tAxis   = tMaxCirclePoint - tMinCirclePoint;
+    TVector   tAxis;
+    TVector   tNormAxis;   
     TMatrix   tMatrix = *ptMatrix;
     
-    tHeight = tAxis.norm();
-
+    tMaxCirclePoint = tMatrix * tMaxCirclePoint;
+    tMinCirclePoint = tMatrix * tMinCirclePoint;
+    tAxis           = tMaxCirclePoint - tMinCirclePoint;
+    tHeight         = tAxis.norm();
+    
+    tMatrix.setIdentity();
+    ptMatrix->setIdentity();
+    ptInverseMatrix->setIdentity();
+    
     // We need that tMaxRadius > tMinRadius for the construction of the bounding box
     // We need that tMaxRadius - tMinRadius > FX_EPSILON for the next division
     // Joining both conditions...
@@ -292,6 +300,8 @@ void TCone::initialize (void)
     assert ( fabs (tHeight) > FX_EPSILON );
     tMaxRadiusByHeight2 = tMaxRadius2 / (tHeight * tHeight);
 
+    // Find the coordinates of the apex, then translate it to the origin
+    
     if ( ( fabs (tAxis.x()) < FX_EPSILON ) && ( fabs (tAxis.z()) < FX_EPSILON ) )
     {
       if ( dotProduct (tAxis, TVector (0, 1, 0)) < 0 )
@@ -329,7 +339,7 @@ void TCone::initialize (void)
   }
 
   TObject::initialize();
-  
+
 }  /* initialize() */
 
 
