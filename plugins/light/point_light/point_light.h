@@ -36,9 +36,10 @@ class TPointLight : public TLight
     virtual TScalar attenuation (const TVector& rktPOINT) const
     {
       TScalar   tDist = Distance (rktPOINT, tLocation);
+      TScalar   f = tFalloff.z() + tDist * (tFalloff.y() + (tFalloff.x() * tDist));
 
-      return min (1 / (tFalloff.z() + tDist * (tFalloff.y() + (tFalloff.x() * tDist))), TScalar (1));
-    }
+      return ( f != 0.0 ) ? min (TScalar (1) / f, TScalar (1)) : TScalar (1);
+     }
 
   public:
 

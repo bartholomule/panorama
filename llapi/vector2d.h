@@ -104,6 +104,8 @@ inline void TVector2D<TItem>::normalize (void)
 
   TItem   tNorm = norm();
 
+  assert ( tNorm > 0.0 );
+  
   vx /= tNorm;
   vy /= tNorm;
 

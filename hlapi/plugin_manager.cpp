@@ -23,6 +23,11 @@
 
 TPluginManager   tPluginManager;
 
+// DEC OSF does not have this variable
+#ifndef RTLD_GLOBAL
+#define RTLD_GLOBAL 0
+#endif
+
 int TPluginManager::loadPlugin (const string& rktNAME)
 {
 

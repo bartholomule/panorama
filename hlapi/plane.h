@@ -36,6 +36,7 @@ class TPlane : public TObject
 
     TPlane (void) :
       TObject(),
+      tNormal (0, 0, 1),
       gOneSided (false)
     {
       sCapabilities.gInfinite = true;
