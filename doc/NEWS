@@ -1,4 +1,10 @@
 
+>> Version 0.11.2 released
+
+ - Added documentation for some files.
+ 
+ - Fixed cone transformations.
+
  - Added automatic documentation generation (using Doxygen).
 
  - Minor changes in pluginrc file format.
