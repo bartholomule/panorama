@@ -4,6 +4,8 @@ BUILD_TOP = ..
 include ${BUILD_TOP}/Makefile.vars
 include @srcdir@/${BUILD_TOP}/Makefile.rules
 
+CXXFLAGS += -fPIC
+
 INSTALL = @INSTALL@
 
 VPATH = @srcdir@
