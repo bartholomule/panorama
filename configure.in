@@ -232,17 +232,28 @@ AC_OUTPUT(\
         plugins/light/point_light/Makefile:Makefile.plugin.in \
         plugins/light/projector/Makefile:Makefile.plugin.in \
         plugins/light/warn_light/Makefile:Makefile.plugin.in \
-        plugins/material/Makefile \
-        plugins/material/brick/Makefile:Makefile.plugin.in \
-        plugins/material/checker/Makefile:Makefile.plugin.in \
-        plugins/material/crackle/Makefile:Makefile.plugin.in \
-        plugins/material/cylgrad/Makefile:Makefile.plugin.in \
-        plugins/material/leopard/Makefile:Makefile.plugin.in \
-        plugins/material/marble/Makefile:Makefile.plugin.in \
-        plugins/material/noise/Makefile:Makefile.plugin.in \
-        plugins/material/parquet/Makefile:Makefile.plugin.in \
-        plugins/material/wood/Makefile:Makefile.plugin.in \
-        plugins/material/worley/Makefile:Makefile.plugin.in \
+        plugins/pattern/Makefile \
+        plugins/pattern/amplifier/Makefile:Makefile.plugin.in \
+        plugins/pattern/brick/Makefile:Makefile.plugin.in \
+        plugins/pattern/checker/Makefile:Makefile.plugin.in \
+        plugins/pattern/composite/Makefile:Makefile.plugin.in \
+        plugins/pattern/crackle/Makefile:Makefile.plugin.in \
+        plugins/pattern/cylgrad/Makefile:Makefile.plugin.in \
+        plugins/pattern/leopard/Makefile:Makefile.plugin.in \
+        plugins/pattern/marble/Makefile:Makefile.plugin.in \
+        plugins/pattern/noise/Makefile:Makefile.plugin.in \
+        plugins/pattern/parquet/Makefile:Makefile.plugin.in \
+        plugins/pattern/texture/Makefile:Makefile.plugin.in \
+        plugins/pattern/wood/Makefile:Makefile.plugin.in \
+        plugins/pattern/worley/Makefile:Makefile.plugin.in \
+        plugins/perturbation/Makefile \
+        plugins/perturbation/brick/Makefile:Makefile.plugin.in \
+        plugins/perturbation/bump/Makefile:Makefile.plugin.in \
+        plugins/perturbation/crackle/Makefile:Makefile.plugin.in \
+        plugins/perturbation/leopard/Makefile:Makefile.plugin.in \
+        plugins/perturbation/marble/Makefile:Makefile.plugin.in \
+        plugins/perturbation/noise/Makefile:Makefile.plugin.in \
+        plugins/perturbation/worley/Makefile:Makefile.plugin.in \
         plugins/object/Makefile \
         plugins/object/abvh/Makefile:Makefile.plugin.in \
         plugins/object/aggregate_uniform_grid/Makefile:Makefile.plugin.in \
