@@ -25,9 +25,13 @@
 void TPlane::update (void)
 {
 
+#if defined(DEBUG)
+  cerr << "TPlane::update() called!" << endl;
+#endif
+  
   tNormal.normalize();
 
-  D = -dotProduct (tNormal, location() );
+  D = -dotProduct (tNormal, location());
 
 }  /* update() */
 
