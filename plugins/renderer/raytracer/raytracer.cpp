@@ -747,8 +747,10 @@ TColor TRaytracer::specularReflectedLight (const TSurfaceData& rktDATA, Word wDE
   TRay           tRay;
   TColor         tRadiance;
   TSurfaceData   tSurfaceData;
-  TVector        tNormal    = rktDATA.normal();
-  TMaterial*     ptMaterial = rktDATA.object()->material();
+  TSurfaceData   tTempSurfaceData = rktDATA;
+  TVector        tNormal          = rktDATA.normal();
+  TVector        tOrigNormal      = rktDATA.object()->normal(tTempSurfaceData);
+  TMaterial*     ptMaterial       = rktDATA.object()->material();
 
   if ( wDEPTH-- )
   {
@@ -761,7 +763,7 @@ TColor TRaytracer::specularReflectedLight (const TSurfaceData& rktDATA, Word wDE
       tNormal = -tNormal;
     }
     
-    tRay.reflect (tNormal);
+    tRay.reflect (tNormal, tOrigNormal);
 
     traceRay (tRay, tSurfaceData);
 
