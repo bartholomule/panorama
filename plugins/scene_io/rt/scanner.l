@@ -112,7 +112,11 @@ translate		return T_TRANSLATE;
 triangle		return T_TRIANGLE;
 type			return T_TYPE;
 union                   return T_UNION;
+vector			return T_VECTOR;
 vertex			return T_VERTEX;
+x                       return T_X;
+y                       return T_Y;
+z                       return T_Z;
 
 on			{
 			  rt_lval.gValue = true;

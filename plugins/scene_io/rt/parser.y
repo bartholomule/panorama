@@ -30,6 +30,7 @@
 
 static map<string, TProcedural*, less<string> >       _tObjectMap;
 static map<string, TColor, less<string> >             _tColorMap;
+static map<string, TVector, less<string> >            _tVectorMap;
 static map<string, double(*)(void), less<string> >    _tFunctionMap;
 static stack<TProcedural*>                            _tDataStack;
 
@@ -50,6 +51,7 @@ static double (*_pfFunction)(void);
 #define DATA		(_tDataStack.top())
 #define ENTITY		((TEntity*) _tDataStack.top())
 #define VOLUME		((TVolume*) _tDataStack.top())
+#define VECTOR		((TVector*) _tDataStack.top())
 #define COLOR		((TColor*) _tDataStack.top())
 #define SCENE		(TSceneRT::_ptParsedScene)
 #define MATERIAL	((TMaterial*) _tDataStack.top())
@@ -136,7 +138,11 @@ static void InitFunctions (void);
 %token T_TRIANGLE
 %token T_TYPE
 %token T_UNION
+%token T_VECTOR
 %token T_VERTEX
+%token T_X
+%token T_Y
+%token T_Z
 
 %type <dValue> real_expr
 %type <acIdent> name
@@ -144,6 +150,8 @@ static void InitFunctions (void);
 %type <ptVector> vector3
 %type <ptVector2> vector2
 %type <ptVector> vertex_instance
+%type <ptVector> vector_def
+%type <ptVector> vector_instance
 %type <ptColor> color_def
 %type <ptColor> color_instance
 %type <ptScene> scene_def
@@ -219,6 +227,8 @@ instance		: T_SCENE scene_instance
 			;
                         
 definition		: T_DEFINE T_COLOR color_def
+			  {}
+			| T_DEFINE T_VECTOR vector_def
 			  {}
 			| T_DEFINE T_OBJECT object_def
 			  {}
@@ -454,6 +464,16 @@ param			: T_IDENTIFIER vector3
 			    _nAttrib.pvValue = $2;
 			    SetParameter ("color", FX_COLOR);
 			  }
+			| T_VECTOR vector_instance
+			  {
+			    _nAttrib.pvValue = $2;
+			    SetParameter ("vector", FX_VECTOR);
+			  }
+			| T_IDENTIFIER vector_instance
+			  {
+			    _nAttrib.pvValue = $2;
+			    SetParameter ($1, FX_VECTOR);
+			  }
 			| T_IDENTIFIER camera_instance
 			  {
 			    _nAttrib.pvValue = $2;
@@ -495,6 +515,14 @@ entity_param		: T_TRANSLATE vector3
 			    ENTITY->translate (*$2);
 			  }
 			| T_ROTATE vector3
+			  {
+			    ENTITY->rotate (*$2);
+			  }
+			| T_TRANSLATE vector_instance
+			  {
+			    ENTITY->translate (*$2);
+			  }
+			| T_ROTATE vector_instance
 			  {
 			    ENTITY->rotate (*$2);
 			  }
@@ -590,6 +618,76 @@ color_param		: T_RED real_expr
 			| T_BLUE real_expr
 			  {
 			    _tColor.setBlue ($2);
+			  }
+			;
+
+vector_def		: name class
+			  {
+                            if ( $1 == "" )
+                            {
+                              yyerror ("cannot define unnamed vector");
+                              exit (1);
+                            }
+
+                            if ( _tVectorMap.find ($1) != _tVectorMap.end() )
+                            {
+                              yyerror ("cannot redefine an existing vector");
+                              exit (1);
+                            }
+
+                            _tVector = TVector (0, 0, 0);
+
+                            _ptParent = NULL;
+			  }
+			  '{' vector_params '}'
+			  {
+                            _tVectorMap [$1] = _tVector;
+                            
+                            $$ = &_tVector;
+			  }
+			;
+
+vector_instance		: name
+			  {
+                            if ( $1 == "" )
+                            {
+                              yyerror ("instanced object cannot be unnamed");
+                              exit (1);
+                            }
+
+                            if ( _tVectorMap.find ($1) == _tVectorMap.end() )
+                            {
+                              yyerror ("vector does not exist");
+                              exit (1);
+                            }
+
+                            $$ = (TVector*) &(_tVectorMap [$1]);
+			  }
+			| class
+			  {
+                            _tVector = TVector (0, 0, 0);
+			  }
+			  '{' vector_params '}'
+			  {
+			    $$ = (TVector*) &_tVector;
+			  }
+			;
+
+vector_params		: /* Nothing */
+			| vector_params vector_param
+			;
+
+vector_param		: T_X real_expr
+			  {
+			    _tVector.setX ($2);
+			  }
+			| T_Y real_expr
+			  {
+			    _tVector.setY ($2);
+			  }
+			| T_Z real_expr
+			  {
+			    _tVector.setZ ($2);
 			  }
 			;
 

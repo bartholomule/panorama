@@ -59,8 +59,12 @@ typedef union {
 #define	T_TRIANGLE	297
 #define	T_TYPE	298
 #define	T_UNION	299
-#define	T_VERTEX	300
-#define	UNARY_MINUS	301
+#define	T_VECTOR	300
+#define	T_VERTEX	301
+#define	T_X	302
+#define	T_Y	303
+#define	T_Z	304
+#define	UNARY_MINUS	305
 
 
 extern YYSTYPE rt_lval;
