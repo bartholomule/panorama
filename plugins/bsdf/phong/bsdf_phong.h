@@ -21,6 +21,7 @@
 
 #include "llapi/bsdf.h"
 #include "llapi/material.h"
+#include "llapi/vector.h"
 #include "hlapi/plugin_manager.h"
 
 class TBsdfPhong : public TBsdf
@@ -35,6 +36,14 @@ class TBsdfPhong : public TBsdf
     static TBaseClass* _create (const TBaseClass* pktPARENT);
 
     TColor evaluateReflection (const TSurfaceData& rktDATA, const TVector& rktLIGHT, TScalar tCOSNL, TColor tRAD) const;
+
+    // [_TODO_] This implementation is for Lambertian reflection. It should be replaced.
+    void getRayDirection (const TSurfaceData& rktDATA, const TVector& rktREFLECTED, TVector& rtDIR) const
+    {
+      TVector   v = RandomVectorInSphere();
+
+      rtDIR = ( dotProduct (v, rktDATA.normal()) > 0 ) ? v : -v;
+    }
 
     int setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
     int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
