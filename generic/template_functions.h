@@ -35,7 +35,7 @@
 
 #include <iosfwd>
 #include <vector>
-#include <pair.h>
+#include <utility>
 
 //
 // Send a pair to a stream with trivial formatting < a,b >

@@ -40,10 +40,10 @@ class foo
 
   void ick(const TVector& vec)
   {
-    cout << "ick="
+    cout << "ick=<"
 	 << vec.x() << ","
 	 << vec.y() << ","
-	 << vec.z()      
+	 << vec.z() << ">"
 	 << endl;
   }  
 
@@ -100,7 +100,7 @@ void do_it()
   fns = f.get_user_functions();
 
   //  vec.push_back(new TAttribInt(1000));
-  vec.push_back(new TAttribVector(TVector(1,2,3)));  
+  vec.push_back(user_arg_type(new TAttribVector(TVector(1,2,3))));  
   
   for(fn_map_type::iterator i = fns.begin();
       i != fns.end();
