@@ -72,7 +72,7 @@ define material MMirror
   specular      1
 }
 
-define material MChecker : class MaterialChecker
+define material MChecker
 {
   bsdf : class BsdfPhong
   {
@@ -81,9 +81,10 @@ define material MChecker : class MaterialChecker
   ambient	0.2
   diffuse	0.6
   specular	0.2
+  color : class PatternChecker {}
 }
 
-define material MNoise : class MaterialNoise
+define material MNoise
 {
   bsdf : class BsdfPhong
   {
@@ -92,9 +93,10 @@ define material MNoise : class MaterialNoise
   ambient	0.2
   diffuse	0.6
   specular	0.2
+  color : class PatternNoise {}
 }
 
-define material MWorley : class MaterialWorley
+define material MWorley
 {
   bsdf : class BsdfPhong
   {
@@ -103,9 +105,10 @@ define material MWorley : class MaterialWorley
   ambient	0.2
   diffuse	0.6
   specular	0.2
+  color : class PatternWorley {}
 }
 
-define material MLeopard : class MaterialLeopard
+define material MLeopard
 {
   bsdf : class BsdfPhong
   {
@@ -114,4 +117,5 @@ define material MLeopard : class MaterialLeopard
   ambient	0.2
   diffuse	0.6
   specular	0.2
+  color : class PatternLeopard {}
 }
