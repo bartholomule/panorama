@@ -1,2 +1,0 @@
-PLUGIN_NAME = mat_parquet
-OBJ         = mat_parquet.o

@@ -1,2 +1,0 @@
-PLUGIN_NAME = mat_cylgrad
-OBJ         = mat_cylgrad.o
