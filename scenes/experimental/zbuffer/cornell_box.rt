@@ -1,0 +1,167 @@
+/*
+*  ZBuffer test
+*/
+
+#include "materials.inc"
+
+define camera c
+{
+  translate	<0, 0, 695>
+  look_at	<0, 0, 0>
+}
+
+define light l
+{
+  translate     <0, 149, 0>
+  color         CWhite
+  shadow        off
+}
+
+define light l2
+{
+  translate     <0, -149, 150>
+  color         CWhite
+  intensity     0.5
+  shadow        off
+}
+
+define material WallMaterial : extends MLambertian
+{
+}
+
+/*
+define material WallMaterial : extends MChecker
+{
+  base_color    CYellow
+  size          50
+  specular      0
+}
+*/
+
+// Floor
+rectangle
+{
+  vertex        <-200, -200, 200>
+  vertex        <200, -200, 200>
+  vertex        <200, -200, -200>
+  vertex        <-200, -200, -200>
+
+  one_sided     on
+
+  material : extends WallMaterial
+  {
+    color	CWhite
+  }
+}
+
+// Ceiling
+rectangle
+{
+  vertex        <-200, 200, 200>
+  vertex        <-200, 200, -200>
+  vertex        <200, 200, -200>
+  vertex        <200, 200, 200>
+
+  one_sided     on
+
+  material : extends WallMaterial
+  {
+    color	CWhite
+    emission    4
+  }
+}
+
+// Left wall
+rectangle
+{
+  vertex        <-200, 200, 200>
+  vertex        <-200, -200, 200>
+  vertex        <-200, -200, -200>
+  vertex        <-200, 200, -200>
+
+  one_sided     on
+
+  material : extends WallMaterial
+  {
+    color	CRed
+  }
+}
+
+// Right wall
+rectangle
+{
+  vertex        <200, 200, 200>
+  vertex        <200, 200, -200>
+  vertex        <200, -200, -200>
+  vertex        <200, -200, 200>
+
+  one_sided     on
+
+  material : extends WallMaterial
+  {
+    color	CBlue
+  }
+}
+
+// Front wall
+rectangle
+{
+  vertex        <-200, 200, -200>
+  vertex        <-200, -200, -200>
+  vertex        <200, -200, -200>
+  vertex        <200, 200, -200>
+
+  one_sided     on
+
+  material : extends WallMaterial
+  {
+    color	CWhite
+  }
+}
+
+// Back wall
+rectangle
+{
+  vertex        <-200, 200, 200>
+  vertex        <200, 200, 200>
+  vertex        <200, -200, 200>
+  vertex        <-200, -200, 200>
+
+  one_sided     on
+
+  material : extends WallMaterial
+  {
+    color	CWhite
+  }
+}
+
+box
+{
+  scale         <150, 150, 150>
+  translate	<0, -25, 0>
+  rotate        <45, 45, 0>
+  material : extends MPlastic
+  {
+    color	CWhite
+  }
+}
+
+scene
+{
+  camera	c
+  light         l
+//  light         l2
+  width		400
+  height        400
+  background    CBlack
+  output
+  {
+    name        "cornell_box.tga"
+  }
+  renderer : class ZBufferRenderer
+  {
+    shading     "phong"
+    backface    on
+  }
+//  renderer : class Raytracer {}
+}

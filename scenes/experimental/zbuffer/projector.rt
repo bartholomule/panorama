@@ -1,0 +1,153 @@
+/*
+*  Projector test
+*/
+
+#include "materials.inc"
+
+define camera c
+{
+  translate	<0, 0, 685>
+  look_at	<0, 0, 0>
+}
+
+define light l
+{
+  translate	<0, 100, 100>
+  color		CWhite
+  shadow        off
+}
+
+define light lp : class Projector
+{
+  translate	<0, -50, 190>
+  point_at	<0, -50, -200>
+  texture	"f16.tga"
+  shadow        off
+}
+
+define material WallMaterial : extends MLambertian
+{
+}
+
+// Floor
+rectangle
+{
+  vertex        <-200, -200, 200>
+  vertex        <200, -200, 200>
+  vertex        <200, -200, -200>
+  vertex        <-200, -200, -200>
+
+  one_sided     on
+
+  material : extends WallMaterial
+  {
+    color	CWhite
+  }
+}
+
+// Ceiling
+rectangle
+{
+  vertex        <-200, 200, 200>
+  vertex        <-200, 200, -200>
+  vertex        <200, 200, -200>
+  vertex        <200, 200, 200>
+
+  one_sided     on
+
+  material : extends WallMaterial
+  {
+    color	CWhite
+    emission    4
+  }
+}
+
+// Left wall
+rectangle
+{
+  vertex        <-200, 200, 200>
+  vertex        <-200, -200, 200>
+  vertex        <-200, -200, -200>
+  vertex        <-200, 200, -200>
+
+  one_sided     on
+
+  material : extends WallMaterial
+  {
+    color	CRed
+  }
+}
+
+// Right wall
+rectangle
+{
+  vertex        <200, 200, 200>
+  vertex        <200, 200, -200>
+  vertex        <200, -200, -200>
+  vertex        <200, -200, 200>
+
+  one_sided     on
+
+  material : extends WallMaterial
+  {
+    color	CBlue
+  }
+}
+
+// Front wall
+rectangle
+{
+  vertex        <-200, 200, -200>
+  vertex        <-200, -200, -200>
+  vertex        <200, -200, -200>
+  vertex        <200, 200, -200>
+
+  one_sided     on
+
+  material : extends WallMaterial
+  {
+    color	CWhite
+  }
+}
+
+// Back wall
+rectangle
+{
+  vertex        <-200, 200, 200>
+  vertex        <200, 200, 200>
+  vertex        <200, -200, 200>
+  vertex        <-200, -200, 200>
+
+  one_sided     on
+
+  material : extends WallMaterial
+  {
+    color	CWhite
+  }
+}
+
+box
+{
+  scale         <100, 100, 100>
+  translate     <50, -100, 0>
+  rotate        <0, 45, 0>
+  material : extends MPlastic
+  {
+    color	CWhite
+  }
+}
+
+scene
+{
+  camera	c
+//  light		l
+  light		lp
+  width		400
+  height	400
+  background	CBlack
+  output
+  {
+    name	"projector.tga"
+  }
+  renderer : class ZBufferRenderer {}
+}
