@@ -1,0 +1,268 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN"
+"http://www.w3.org/TR/REC-html40/strict.dtd">
+<HTML>
+<HEAD>
+<TITLE>The Panorama FAQ
+</TITLE>
+</HEAD>
+<BODY>
+<PRE>
+The Panorama FAQ
+================
+
+----------------------------------------
+Subject: <A NAME="0">0</A> Introduction and Intent
+
+This is the FAQ (list of Frequently Asked/Answered
+Questions) for the Panorama package.
+
+Hosting of this FAQ by a site does not
+imply any endorsement of Panorama or of
+the views expressed herein.
+
+This FAQ may be distributed over the 
+internet or by other means for non-commercial
+purposes only.  If you wish to publish 
+this for profit on a CD-ROM obtain 
+permission from the maintainer(s) first.
+
+
+
+----------------------------------------
+Subject: <A NAME="1">1</A> Contents
+
+         <A HREF="#0">0</A> Introduction and Intent
+         <A HREF="#1">1</A> Contents
+         <A HREF="#2">2</A> Changes
+         <A HREF="#3">3</A> General Questions.
+         <A HREF="#3.1">3.1</A> What is Panorama?
+         <A HREF="#3.2">3.2</A> Is Panorama a renderer?
+         <A HREF="#3.3">3.3</A> Is Panorama a raytracer?
+         <A HREF="#3.4">3.4</A> Is Panorama compatible with POVRay?
+         <A HREF="#3.5">3.5</A> Does it have a modeler?
+         <A HREF="#3.6">3.6</A> Who wrote Panorama?
+         <A HREF="#3.7">3.7</A> Can I distribute it?
+         <A HREF="#3.8">3.8</A> Can I help ?
+         <A HREF="#3.9">3.9</A> Does Panorama have a homepage?
+         <A HREF="#3.10">3.10</A> What Panorama mailing lists/newsgroups are there?
+         <A HREF="#3.11">3.11</A> What plans do you have for the future?
+         <A HREF="#4">4</A> Questions about building Panorama
+         <A HREF="#4.1">4.1</A> What is the latest version?
+         <A HREF="#4.2">4.2</A> Where can I get it?
+         <A HREF="#4.3">4.3</A> Will it ever build under GNU C++ 2.7.2.X?
+         <A HREF="#4.4">4.4</A> I have had problems building under Solaris 2.5.1. 
+             What should I look out for?
+         <A HREF="#4.5">4.5</A> I have successfully built Panorama, how do I 
+             run a make check to be sure things are sane.
+         <A HREF="#4.6">4.6</A> I have successfully installed Panorama, but render
+             complains about not seeing libllapi.so.0
+         <A HREF="#4.7">4.7</A> What executables exist after the build?
+         <A HREF="#5">5</A> Questions about the Scene Language
+         <A HREF="#5.1">5.1</A>: Where can I find a grammar for the Scene Language
+
+----------------------------------------
+
+Subject: <A NAME="2">2</A> Changes
+
+19-AUG-1999 Hugh Sasse added 4.7.
+
+July 1999 Hugh Sasse &lt;<A HREF="mailto:hgs@dmu.ac.uk">hgs@dmu.ac.uk</A>&gt;
+revised the format for the file
+
+----------------------------------------
+
+Subject: <A NAME="3">3</A> General Questions.
+
+Questions about what Panorama is, etc.
+
+----------------------------------------
+
+Subject: <A NAME="3.1">3.1</A> What is Panorama?
+
+Panorama is a framework for 3D graphics production.
+It is part of the GNU project.
+This will include modeling, rendering, animating,
+post-processing, etc. Currently, there is no
+support for animation, but this will be added soon.
+
+Functionally, it is structured as an API, composed
+by two dynamic libraries, and several plugins, that
+you can optionally load in runtime. A simple console
+mode front-end for this API is included in the package,
+that can load a scene description in one of the supported
+scene languages, and then outputs a single image file
+in any of the supported graphic formats.
+
+----------------------------------------
+
+Subject: <A NAME="3.2">3.2</A> Is Panorama a renderer?
+
+Yes, but it is more than a renderer. It is a general framework for
+3D graphics production. This includes rendering, procedural
+modeling and animation, postprocesing, etc. See
+README file for more information in current status.
+
+----------------------------------------
+
+Subject: <A NAME="3.3">3.3</A> Is Panorama a raytracer?
+
+It can do raytracing (see next question), but it is not simply
+a raytracer or renderer (see previous question).
+
+----------------------------------------
+
+Subject: <A NAME="3.4">3.4</A> Is Panorama compatible with POVRay?
+
+It can do raytracing. When the POV scene plugin is finished, it will be
+able to load POVRay scenes and render them. But not only that. It will be
+able to render this scene with any of its renderers.
+
+----------------------------------------
+
+Subject: <A NAME="3.5">3.5</A> Does it have a modeler?
+
+A graphic interface has been started, but it does not currently include a
+modelling tool.  It does, however, have an object
+oriented scene description language. This allowing objects
+or material types to inherit properties from other
+such objects, and it includes the idea of aggregate
+objects to handle collections as a single unit.
+
+----------------------------------------
+
+Subject: <A NAME="3.6">3.6</A> Who wrote Panorama?
+
+Angel Jimenez Jimenez (<A HREF="mailto:ajimenez@vnet.es">ajimenez@vnet.es</A>) 
+Carlos Jimenez Moreno  (<A HREF="mailto:carlosj@leader.es">carlosj@leader.es</A>)(<A HREF="mailto:carlosj@vnet.es">carlosj@vnet.es</A>)
+
+----------------------------------------
+
+Subject: <A NAME="3.7">3.7</A> Can I distribute it?
+
+Yes. Panorama has been put under GPL license.
+See:
+<A HREF="http://www.ie.gnu.org/software/panorama/LICENSE">http://www.ie.gnu.org/software/panorama/LICENSE</A>
+
+----------------------------------------
+
+Subject: <A NAME="3.8">3.8</A> Can I help ?
+
+Of course. Take a look at the developers page:
+<A HREF="http://www.ie.gnu.org/software/panorama/developers.html">http://www.ie.gnu.org/software/panorama/developers.html</A>
+
+----------------------------------------
+
+Subject: <A NAME="3.9">3.9</A> Does Panorama have a homepage?
+
+Yes, on the Gnu site.
+<A HREF="http://www.gnu.org/software/panorama/panorama.html">http://www.gnu.org/software/panorama/panorama.html</A>
+Some mirrors:
+<A HREF="http://gnu.via.ecp.fr/software/panorama/panorama.html">http://gnu.via.ecp.fr/software/panorama/panorama.html</A>
+<A HREF="http://www.ie.gnu.org/software/panorama/panorama.html">http://www.ie.gnu.org/software/panorama/panorama.html</A>
+
+----------------------------------------
+
+Subject: <A NAME="3.10">3.10</A> What Panorama mailing lists/newsgroups are there?
+
+There are no newsgroups.  There are the following
+mailing lists:
+<A HREF="mailto:bug-panorama@gnu.org">bug-panorama@gnu.org</A> to send bug reports and fixes. 
+<A HREF="mailto:help-panorama@gnu.org">help-panorama@gnu.org</A> for user discussion of the program.
+<A HREF="mailto:devel-panorama@gnu.org">devel-panorama@gnu.org</A> for discussion among developers.
+
+To subscribe, send a message to 
+    <A HREF="mailto:bug-panorama-request@gnu.org">bug-panorama-request@gnu.org</A> 
+or
+    <A HREF="mailto:help-panorama-request@gnu.org">help-panorama-request@gnu.org</A> 
+or
+    <A HREF="mailto:devel-panorama-request@gnu.org">devel-panorama-request@gnu.org</A> 
+with the word 'subscribe' in the subject.
+
+----------------------------------------
+
+Subject: <A NAME="3.11">3.11</A> What plans do you have for the future?
+
+ A010: We just want to make this the best environment for
+       modeling, rendering and animation. More info about
+       what we are doing now in the development page:
+       <A HREF="http://www.gnu.org/software/panorama/development.html">http://www.gnu.org/software/panorama/development.html</A>
+
+----------------------------------------
+
+Subject: <A NAME="4">4</A> Questions about building Panorama
+
+----------------------------------------
+
+Subject: <A NAME="4.1">4.1</A> What is the latest version?
+
+0.13.3
+----------------------------------------
+
+Subject: <A NAME="4.2">4.2</A> Where can I get it?
+
+<A HREF="http://www.gnu.org/software/panorama/download.html">http://www.gnu.org/software/panorama/download.html</A>
+has pointers to:
+<A HREF="ftp://alpha.gnu.org/gnu/panorama-0.13.3.tar.gz">ftp://alpha.gnu.org/gnu/panorama-0.13.3.tar.gz</A>
+<A HREF="http://www.vnet.es/~ajimenez/panorama-0.13.3.tar.gz">http://www.vnet.es/~ajimenez/panorama-0.13.3.tar.gz</A>
+and other places.
+
+----------------------------------------
+
+Subject: <A NAME="4.3">4.3</A> Will it ever build under GNU C++ 2.7.2.X?
+
+No. Panorama makes extensive use of STL classes, and there are many
+problems in GNU C++ 2.7.2 STL implementation, and with templates in
+general.
+
+----------------------------------------
+
+Subject: <A NAME="4.4">4.4</A> I have had problems building under Solaris 2.5.1. 
+             What should I look out for?
+
+If you are using egcs-1.1.2 or later, make sure
+your LD_LIBRARY_PATH is not pointing at the 
+Sun Workshop libraries.  And Vice Versa.
+
+----------------------------------------
+
+Subject: <A NAME="4.5">4.5</A> I have successfully built Panorama, how do I 
+             run a make check to be sure things are sane.
+
+You cannot do this at this time. Running
+programs/render/render directly is likely to
+result in an error about not finding some 
+library file.
+
+----------------------------------------
+
+Subject: <A NAME="4.6">4.6</A> I have successfully installed Panorama, but render
+             complains about not seeing libllapi.so.0
+
+Make sure that the lib directory you have just
+installed is in your LD_LIBRARY_PATH
+
+----------------------------------------
+
+Subject: <A NAME="4.7">4.7</A> What executables exist after the build?
+
+Only render.  Prior to installation this is
+to be found in programs/render/render.
+On Solaris it will be installed in 
+/opt/panorama/bin/render .
+
+----------------------------------------
+
+Subject: <A NAME="5">5</A> Questions about the Scene Language
+
+----------------------------------------
+
+Subject: <A NAME="5.1">5.1</A>: Where can I find a grammar for the Scene Language
+ 
+There is a Bison grammar in the distribution at:
+plugins/scene_io/rt/parser.y
+
+----------------------------------------
+
+</PRE>
+</BODY>
+</HTML>

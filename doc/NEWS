@@ -1,4 +1,18 @@
 
+>> Version 0.13.3 released
+
+ - Added new plugin AggregateUniformGrid (done by Carlos Jimenez).
+
+ - Fixed bug in Schlick and SchlickDouble BSDF plugins (done by Jon Frydensbjerg).
+ 
+ - Added support in PNG plugin for libpng 0.89 (done by Ezra Peisach).
+
+ - Fixed bug in total internal reflection (done by Jon Frydensbjerg).
+ 
+ - Added attribute 'open' in Cylinder.
+
+ - Minor changes and bug fixes.
+
 >> Version 0.13.2 released
 
  - Added lens flare image filter plugin (done by Jon Frydensbjerg).
