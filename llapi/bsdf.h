@@ -33,6 +33,8 @@ class TBsdf : public TProcedural
     virtual TColor evaluateReflection (const TSurfaceData& rktDATA, const TVector& rktLIGHT, TScalar tCOSNL, TColor tRAD) const = 0;
     virtual TColor evaluateTransmission (const TSurfaceData& rktDATA, const TVector& rktLIGHT, TColor tRAD) const;
 
+    virtual void getRayDirection (const TSurfaceData& rktDATA, const TVector& rktREFLECTED, TVector& rtDIR) const = 0;
+      
     virtual void initialize (void) {}
     
     EClass classType (void) const { return FX_BSDF_CLASS; }
