@@ -396,7 +396,7 @@ void TBaseMatrix<TItem>::printDebug (void) const
   {
     for (Byte J = 0; ( J < 4 ) ;J++)
     {
-      cerr << atElement[I][J]; cout << " | ";
+      cerr << atElement[I][J]; cerr << " | ";
     }
     cerr << endl;
   }
