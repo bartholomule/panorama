@@ -41,10 +41,7 @@ TScene* TSceneRT::_load (const string& rktNAME)
     return NULL;
   }
 
-  //
-  // Uncomment next line for parsing debug info.
-  //
-//  yydebug = 1;
+  yydebug = 0;
 
   InitParser();
   
