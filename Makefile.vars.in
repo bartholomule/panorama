@@ -9,14 +9,14 @@
 
 TOPDIR       = @prefix@
 BIN_DIR      = ${TOPDIR}/bin/
-INCLUDE_DIR  = ${TOPDIR}/include/
+INCLUDE_DIR  = ${TOPDIR}/share/panorama/include/
 LIB_DIR      = ${TOPDIR}/lib/
-DOC_DIR      = ${TOPDIR}/doc/
-CONFIG_DIR   = ${TOPDIR}/etc/
-PLUGIN_DIR   = ${LIB_DIR}/plugins/
-TEXTURE_DIR  = ${LIB_DIR}/texture/
-GRADIENT_DIR = ${LIB_DIR}/gradients/
-SCENE_DIR    = ${TOPDIR}/scenes/
+DOC_DIR      = ${TOPDIR}/share/doc/panorama/
+CONFIG_DIR   = ${TOPDIR}/etc/panorama/
+PLUGIN_DIR   = ${LIB_DIR}/panorama/plugins/
+TEXTURE_DIR  = ${LIB_DIR}/panorama/texture/
+GRADIENT_DIR = ${LIB_DIR}/panorama/gradients/
+SCENE_DIR    = ${TOPDIR}/share/panorama/scenes/
 
 #
 # Don't change anything below this line.

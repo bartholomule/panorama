@@ -18,7 +18,8 @@
 
 #include <cmath>
 #include <string.h>
-#include <freetype/freetype.h>
+#include <ft2build.h>
+#include FT_FREETYPE_H
 #include "llapi/file.h"
 #include "llapi/scene.h"
 #include "if_text.h"

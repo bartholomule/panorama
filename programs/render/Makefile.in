@@ -23,7 +23,7 @@ all:		${EXE}
 
 install:        all
 		@echo Installing program render...
-		@@INSTALL_PROGRAM@ ${EXE} ${BIN_DIR}
+		${LIBTOOL} --mode=install @INSTALL_PROGRAM@ ${EXE} ${BIN_DIR}
 
 ${EXE}:		${OBJ}
 		@echo Making program ${EXE}...

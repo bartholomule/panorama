@@ -193,18 +193,19 @@ void TPriorityQueue<TItem>::downHeap (size_t zPOS)
 template <class TItem>
 void TPriorityQueue<TItem>::printDebug (void) const
 {
-
-  cerr << TDebug::indent() << "[_TPriorityQueue_]" << endl;
+  
+  cerr << TDebug::_indent() << "[_TPriorityQueue_]" << endl;
                  
-  TDebug::push();
+  TDebug::_push();
 
   for (size_t J = 1; ( J <= zSize ) ;J++)
   {
+    string tString;
     tString << atData[J] + ", " << afPriority[J];
-    cerr << TDebug::indent() << tString << endl;
+    cerr << TDebug::_indent() << tString << endl;
   }
 
-  TDebug::pop();
+  TDebug::_pop();
   
 }  /* printDebug() */
 
