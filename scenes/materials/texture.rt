@@ -1,0 +1,115 @@
+/*
+*  Texture mapping test
+*/
+
+#include "materials.inc"
+
+define camera c
+{
+  translate	<-250, 0, 400>
+  look_at	<0, 0, 400>
+}
+
+define light l
+{
+  translate	<-250, 0, 400>
+  color		CWhite
+}
+
+define material MTexture : extends MPlastic
+{
+  specular      0
+  diffuse       0.8
+}
+
+define pattern PTexture : class PatternTexture
+{
+  texture       "f16.tga"
+}
+
+// Upper left
+torus
+{
+  translate	<0, 50, 350>
+  rotate        <0, 0, 90>
+  radius_a      30
+  radius_b      15
+
+  material : extends MTexture
+  {
+    color : extends PTexture
+    {
+      offset    <0.5, 0.5>
+      mapping   "planar"
+      scaling   <0.1, 0.1, 0.1>
+      rotation  <90, 0, 0>
+    }
+  }
+}
+
+// Upper right
+sphere
+{
+  translate	<0, 50, 450>
+  radius	45
+
+  material : extends MTexture
+  {
+    color : extends PTexture
+    {
+      tiling    <6, 6>
+      mirror    on
+    }    
+  }
+}
+
+// Lower left
+box
+{
+  scale         <60, 60, 60>
+  translate	<0, -50, 350>
+  rotate        <30, 30, 30>
+
+  material : extends MTexture
+  {
+    color : extends PTexture
+    {
+      tiling    <4, 4>
+      mirror    off
+    }    
+  }
+}
+
+// Lower right
+cylinder
+{
+  scale         <30, -35, 30>
+  translate	<0, -50, 450>
+
+  material : extends MTexture
+  {
+    color : extends PTexture
+    {
+      tiling    <4, 2>
+      tile      off
+      color     CWhite      
+      mapping   "cylindrical"      
+      rotation  <45, 0, 0>
+    }    
+  }
+}
+
+scene
+{
+  camera	c
+  light		l
+  width		600
+  height	600
+  background    CBlack
+  output
+  {
+    type        "png"
+    name	"texture.png"
+  }
+  renderer : class Raytracer {}
+}
