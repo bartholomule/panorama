@@ -339,3 +339,7 @@ AC_OUTPUT(\
         scenes/misc/Makefile \
         scenes/objects/Makefile
 )
+
+dnl AC_CONFIG_LINKS(Makefile.deps:Makefile.deps)
+ln -s $ac_aux_dir/Makefile.deps . 2>/dev/null
+ln -s $ac_aux_dir/install-sh . 2>/dev/null
