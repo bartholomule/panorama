@@ -1,4 +1,8 @@
 
+ - Failing to load a plugin does not stop execution anymore.
+
+>> Version 0.12 released
+
  - Added new syntax for cylinder (given two points and radius).
 
  - Implemented CSG objects (union, intersection and difference).
