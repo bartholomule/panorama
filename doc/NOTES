@@ -1,0 +1,9 @@
+Debugging:
+  In the new rt scene format, debugging can be enabled or disabled at will, by
+  calling the debug() function, passing it 'on', 'off', 'true', 'false', 1, 0,
+  or similar constructs that can be converted into boolean values. 
+  ie. 
+     debug(off); // Turns off debugging...
+     ... // Perform non-debug initialization
+     debug(on); // Turns on debugging...
+     ... // Test something for debugging purposes.
