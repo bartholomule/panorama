@@ -119,7 +119,7 @@ void TZBufferRenderer::getAttributeList (TAttributeList& rtLIST) const
 }  /* getAttributeList() */
 
 
-inline void TZBufferRenderer::initBuffers (SBuffers& rsBUFFERS) const
+void TZBufferRenderer::initBuffers (SBuffers& rsBUFFERS) const
 {
   TRay          tRay;
   TSurfaceData  tData;
@@ -144,12 +144,12 @@ inline void TZBufferRenderer::initBuffers (SBuffers& rsBUFFERS) const
 }  /* initBuffers() */
 
 
-inline void TZBufferRenderer::renderHalfTriangle (SBuffers& rsBUFFERS,
-                                                  TMesh::TFace* ptFACE,
-                                                  TVertexData& rtVERTEX1,
-                                                  TVertexData& rtVERTEX2,
-                                                  TVertexData& rtVERTEX3,
-                                                  TVertexData& rtVERTEX4) const
+void TZBufferRenderer::renderHalfTriangle (SBuffers& rsBUFFERS,
+                                           TMesh::TFace* ptFACE,
+                                           TVertexData& rtVERTEX1,
+                                           TVertexData& rtVERTEX2,
+                                           TVertexData& rtVERTEX3,
+                                           TVertexData& rtVERTEX4) const
 {
 
   TSurfaceData   tSurfaceData;
@@ -314,7 +314,7 @@ inline void TZBufferRenderer::renderHalfTriangle (SBuffers& rsBUFFERS,
 }  /* renderHalfTriangle() */
 
 
-inline void TZBufferRenderer::sortVertices (TVertexData atVERTEX [3]) const
+void TZBufferRenderer::sortVertices (TVertexData atVERTEX [3]) const
 {
 
   TVertexData   tTmpVertex;
@@ -487,7 +487,7 @@ void TZBufferRenderer::render (SBuffers& rsBUFFERS)
 }  /* render() */
 
 
-inline TColor TZBufferRenderer::directLight (const TSurfaceData& rktDATA) const
+TColor TZBufferRenderer::directLight (const TSurfaceData& rktDATA) const
 {
 
   TLight*   ptLight;
@@ -504,7 +504,7 @@ inline TColor TZBufferRenderer::directLight (const TSurfaceData& rktDATA) const
 }  /* directLight() */
 
 
-inline TColor TZBufferRenderer::directLight (const TSurfaceData& rktDATA, const TLight* pktLIGHT) const
+TColor TZBufferRenderer::directLight (const TSurfaceData& rktDATA, const TLight* pktLIGHT) const
 {
 
   TScalar   tCosNL;
