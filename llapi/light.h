@@ -42,8 +42,6 @@ class TLight : public TEntity
     TScalar            tIntensity;
     TLightProperties   tProperties;
 
-    mutable const TObject*   pktLastOccluder;
-
     virtual bool visible (const TVector& rktPOINT) const
     {
       return true;
@@ -53,8 +51,7 @@ class TLight : public TEntity
 
     TLight (void) :
       tColor (TColor::_white()),
-      tIntensity (1),
-      pktLastOccluder (NULL)
+      tIntensity (1)
     {
       tProperties.gShadow     = true;
       tProperties.gVolumetric = true;
@@ -67,9 +64,6 @@ class TLight : public TEntity
     
     void setColor (const TColor& rktCOLOR) { tColor = rktCOLOR; }
     void setIntensity (TScalar tINTENSITY) { tIntensity = tINTENSITY; }
-
-    void setLastOccluder (const TObject* pktOBJ) const { pktLastOccluder = pktOBJ; }
-    const TObject* lastOccluder (void) const { return pktLastOccluder; }
 
     virtual void initialize (void) {}
     
