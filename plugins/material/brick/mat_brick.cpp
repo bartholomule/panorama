@@ -26,12 +26,15 @@ DEFINE_PLUGIN ("MaterialBrick", FX_MATERIAL_CLASS, TMaterialBrick);
 
 inline TScalar TMaterialBrick::step (TScalar a, TScalar x) const
 {
+
   return (TScalar) ( x >= a );
+
 }
 
 
 inline TScalar TMaterialBrick::smoothstep (TScalar a, TScalar b, TScalar x) const
 {
+
   if (x < a) 
   {
     return 0.0;
@@ -41,50 +44,52 @@ inline TScalar TMaterialBrick::smoothstep (TScalar a, TScalar b, TScalar x) cons
     return 1.0;
   }
 
-  x = (x - a) / (b - a); // normalize x 
+	// Normalize x 
+  x = (x - a) / (b - a); 
 
   return x * x * (3 - 2 * x);
+
 }
 
 
 inline TScalar TMaterialBrick::smoothstepdiff (TScalar a, TScalar b, TScalar x) const
 {
-  if (x < a) 
-  {
-    return 0.0;
-  }
-  if (x >= b)
+
+  if ( ( x < a ) || ( x >= b ) ) 
   {
     return 0.0;
   }
   
-  x = (x - a) / (b - a); // normalize x 
+	// Normalize x 
+  x = (x - a) / (b - a); 
 
   return 4.0 * x * (1.0 - x);
+
 }
 
 
 inline TScalar TMaterialBrick::evaluate (const TVector& rktPOINT, TVector* ptGRADIENT) const
 {
-  TScalar tValue, tX, tY, tZ, tWX, tWY, tWZ;
-  TScalar tTotalWidth  = tBrickWidth + tMortarThickness;
-  TScalar tTotalHeight = tBrickHeight + tMortarThickness;
-  TScalar tMortarW     = tMortarThickness * 0.5 / tTotalWidth;
-  TScalar tMortarH     = tMortarThickness * 0.5 / tTotalHeight;
+
+  TScalar   tValue, tX, tY, tZ, tWX, tWY, tWZ;
+  TScalar   tTotalWidth  = tBrickWidth + tMortarThickness;
+  TScalar   tTotalHeight = tBrickHeight + tMortarThickness;
+  TScalar   tMortarW     = tMortarThickness * 0.5 / tTotalWidth;
+  TScalar   tMortarH     = tMortarThickness * 0.5 / tTotalHeight;
   
-  // scale coordinates into the interval 0..1  
+  // Scale coordinates into the interval 0..1  
   tX = rktPOINT.x() / tTotalWidth;
   tY = rktPOINT.y() / tTotalHeight;
   tZ = rktPOINT.z() / tTotalWidth;
   
-  // offset x and z for alternate layers of bricks
-  if (mod (tY * 0.5, 1.0) < 0.5)
+  // Offset x and z for alternate layers of bricks
+  if ( mod (tY * 0.5, 1.0) < 0.5 )
   {
     tX += 0.5;
     tZ += 0.5;
   }
   
-  // get x, y, and z as offsets into scaled brick  
+  // Get x, y, and z as offsets into scaled brick  
   tX -= floor (tX);
   tY -= floor (tY);
   tZ -= floor (tZ);
@@ -95,9 +100,9 @@ inline TScalar TMaterialBrick::evaluate (const TVector& rktPOINT, TVector* ptGRA
 
   tValue = tWX * tWY * tWZ;
     
-  if (ptGRADIENT)
+  if ( ptGRADIENT )
   {
-    TScalar tGx, tGy, tGz;
+    TScalar   tGx, tGy, tGz;
 
     tGx = smoothstepdiff (1.0 - tMortarW, 1.0, tX) - smoothstepdiff (0.0, tMortarW, tX);
     tGy = smoothstepdiff (1.0 - tMortarH, 1.0, tY) - smoothstepdiff (0.0, tMortarH, tY);
@@ -113,6 +118,7 @@ inline TScalar TMaterialBrick::evaluate (const TVector& rktPOINT, TVector* ptGRA
 
 inline TVector TMaterialBrick::perturbNormal (const TSurfaceData& rktDATA) const
 {
+
   TVector   tNewNormal = rktDATA.normal();
 
   if ( fabs(tBumpFactor) > FX_EPSILON )
@@ -122,7 +128,7 @@ inline TVector TMaterialBrick::perturbNormal (const TSurfaceData& rktDATA) const
 
     tPoint = tPoint + tNewNormal * evaluate (tPoint);
 
-    evaluate(tPoint, &tGradient);
+    evaluate (tPoint, &tGradient);
 
     tNewNormal = rktDATA.normal() + tGradient * tBumpFactor;
     tNewNormal.normalize();
@@ -152,6 +158,7 @@ int TMaterialBrick::setAttribute (const string& rktNAME, NAttribute nVALUE, EAtt
     if ( eTYPE == FX_VECTOR )
     {
       tZoomOriginal = *((TVector*) nVALUE.pvValue);
+
       tZoom.set (1.0 / tZoomOriginal.x(), 1.0 / tZoomOriginal.y(), 1.0 / tZoomOriginal.z());
     }
     else
