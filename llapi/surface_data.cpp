@@ -38,10 +38,11 @@ bool TSurfaceData::setPoint (TScalar tDISTANCE, const TVector& rktNORMAL)
   tDistance = tDISTANCE;
   if ( pktObject )
   {
-    gNormalAssigned = true;
-    tPoint          = tRay.location() + (tRay.direction() * tDISTANCE);
-    tNormal         = rktNORMAL;
-    tNormal         = pktObject->material()->perturbNormal (*this);
+    gNormalAssigned    = true;
+    tPoint             = tRay.location() + (tRay.direction() * tDISTANCE);
+    tUnperturbedNormal = rktNORMAL;
+    tNormal            = tUnperturbedNormal;
+    tNormal            = pktObject->material()->perturbNormal (*this);
     
     return true;
   }
@@ -72,15 +73,36 @@ TVector TSurfaceData::localPoint (void) const
 TVector TSurfaceData::unperturbedNormal (void) const
 {
 
-  if ( gFlipNormal )
-  {
-    tNormal     = -tNormal;
-    gFlipNormal = false;
-  }
-
-  return tNormal;
+  return tUnperturbedNormal;
 
 }  /* unperturbedNormal() */
+
+
+void TSurfaceData::setUnperturbedNormal (const TVector& rktNORMAL)
+{
+
+  tUnperturbedNormal = rktNORMAL;
+  tNormal            = tUnperturbedNormal;
+
+  gNormalAssigned = true;
+
+}  /* setUnperturbedNormal() */
+
+
+void TSurfaceData::setNormal (const TVector& rktNORMAL)
+{
+
+  tUnperturbedNormal = rktNORMAL;
+  tNormal            = tUnperturbedNormal;
+
+  if ( pktObject )
+  {
+    tNormal = pktObject->material()->perturbNormal (*this);
+  }
+
+  gNormalAssigned = true;
+
+}  /* setNormal() */
 
 
 TVector TSurfaceData::normal (void) const
@@ -92,14 +114,19 @@ TVector TSurfaceData::normal (void) const
     if ( !pktObject )
     {
       tNormal.set (0, 0, 0);
+      tUnperturbedNormal = tNormal;
     }
     else
     {
-      tNormal = pktObject->normal (*this);
+      tUnperturbedNormal = pktObject->normal (*this);
+
+      tNormal = tUnperturbedNormal;
       tNormal = pktObject->material()->perturbNormal (*this);
+
       if ( gFlipNormal )
       {
-        tNormal     = -tNormal;
+        tUnperturbedNormal = -tUnperturbedNormal;
+        tNormal            = -tNormal;
         gFlipNormal = false;
       }
     }
@@ -129,6 +156,7 @@ void TSurfaceData::printDebug (void) const
     cerr << TDebug::_indent() << "Point                 : "; tPoint.printDebug(); cerr << endl;
     if ( gNormalAssigned )
     {
+      cerr << TDebug::_indent() << "tUnperturbedNormal    : "; tUnperturbedNormal.printDebug(); cerr << endl;
       cerr << TDebug::_indent() << "tNormal               : "; tNormal.printDebug(); cerr << endl;
     }
   }

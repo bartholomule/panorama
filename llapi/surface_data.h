@@ -28,16 +28,17 @@ class TSurfaceData
 
   protected:
     
-    const TObject*   pktObject;   // Object intersected
-    size_t           zObjectCode; // Code of object intersected
-    TRay             tRay;        // Ray that intersected with object
-    TScalar          tDistance;   // Distance from ray location to intersection
-    TVector          tPoint;      // Point of intersection
-    void*            pvData;      // User assignable data
+    const TObject*   pktObject;           // Object intersected
+    size_t           zObjectCode;         // Code of object intersected
+    TRay             tRay;                // Ray that intersected with object
+    TScalar          tDistance;           // Distance from ray location to intersection
+    TVector          tPoint;              // Point of intersection
+    void*            pvData;              // User assignable data
 
-    mutable TVector   tNormal;     // Surface normal in that point
+    mutable TVector   tNormal;            // Perturbed Surface normal in that point
+    mutable TVector   tUnperturbedNormal; // Real normal in that point
     mutable bool      gNormalAssigned;
-    mutable bool      gFlipNormal; // Normal must be flipped (for CSG difference)
+    mutable bool      gFlipNormal;        // Normal must be flipped (for CSG difference)
 
   public:
 
@@ -64,6 +65,7 @@ class TSurfaceData
       tPoint (rktDATA.tPoint),
       pvData (rktDATA.pvData),
       tNormal (rktDATA.tNormal),
+      tUnperturbedNormal (rktDATA.tUnperturbedNormal),
       gNormalAssigned (rktDATA.gNormalAssigned),
       gFlipNormal (false),
       zReflection (rktDATA.zReflection),
@@ -72,18 +74,19 @@ class TSurfaceData
 
     TSurfaceData& operator = (const TSurfaceData& rktDATA)
     {
-      pktObject       = rktDATA.pktObject;
-      zObjectCode     = rktDATA.zObjectCode;
-      tRay            = rktDATA.tRay;
-      tDistance       = rktDATA.tDistance;
-      tPoint          = rktDATA.tPoint;
-      pvData          = rktDATA.pvData;
-      tNormal         = rktDATA.tNormal;
-      gNormalAssigned = rktDATA.gNormalAssigned;
-      gFlipNormal     = rktDATA.gFlipNormal;
-      zReflection     = rktDATA.zReflection;
-      zTransmission   = rktDATA.zTransmission;
-      tLightRadiance  = rktDATA.tLightRadiance;
+      pktObject          = rktDATA.pktObject;
+      zObjectCode        = rktDATA.zObjectCode;
+      tRay               = rktDATA.tRay;
+      tDistance          = rktDATA.tDistance;
+      tPoint             = rktDATA.tPoint;
+      pvData             = rktDATA.pvData;
+      tNormal            = rktDATA.tNormal;
+      tUnperturbedNormal = rktDATA.tUnperturbedNormal;
+      gNormalAssigned    = rktDATA.gNormalAssigned;
+      gFlipNormal        = rktDATA.gFlipNormal;
+      zReflection        = rktDATA.zReflection;
+      zTransmission      = rktDATA.zTransmission;
+      tLightRadiance     = rktDATA.tLightRadiance;
 
       return *this;
     }
@@ -113,11 +116,8 @@ class TSurfaceData
       gNormalAssigned = false;
     }
 
-    void setNormal (const TVector& rktNORMAL)
-    {
-      tNormal         = rktNORMAL;
-      gNormalAssigned = true;
-    }
+    void setUnperturbedNormal (const TVector& rktNORMAL);
+    void setNormal (const TVector& rktNORMAL);
 
     bool checkObject (const TObject* pktOBJECT) const
     {
@@ -128,7 +128,8 @@ class TSurfaceData
     {
       if ( gNormalAssigned )
       {
-        tNormal     = -tNormal;
+        tNormal            = -tNormal;
+        tUnperturbedNormal = -tUnperturbedNormal;
         gFlipNormal = false;
       }
       else
