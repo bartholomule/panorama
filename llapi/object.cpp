@@ -32,6 +32,84 @@ void TObject::createMatrices (void)
 }  /* createMatrices() */
 
 
+void TObject::translate (const TVector& rktNEW_POS)
+{
+  
+  TMatrix   tMatrix;
+
+  tMatrix.setTranslation (rktNEW_POS);
+  (*ptMatrix) = tMatrix * (*ptMatrix);
+  tMatrix.setTranslation (-rktNEW_POS);
+  (*ptInverseMatrix) = (*ptInverseMatrix) * tMatrix;
+
+  tLocation = rktNEW_POS;
+  update();
+  
+}  /* translate() */
+
+
+void TObject::rotate (const TVector& rktAXISPOINT1, const TVector& rktAXISPOINT2, TScalar tANGLE)
+{
+
+  TMatrix   tMatrix;
+
+  tMatrix.setRotation (rktAXISPOINT1, rktAXISPOINT2, tANGLE);
+  (*ptMatrix) = tMatrix * (*ptMatrix);
+
+  tMatrix.setRotation (rktAXISPOINT1, rktAXISPOINT2, -tANGLE);
+  (*ptInverseMatrix) = (*ptInverseMatrix) * tMatrix;
+
+}  /* rotate() */
+
+
+void TObject::rotate (const TVector& rktANGLESXYZ)
+{
+
+  TMatrix   tMatrix;
+  TVector   tOrigin = TVector (0, 0, 0);
+  TVector   tAxisX  = TVector (1, 0, 0);
+  TVector   tAxisY  = TVector (0, 1, 0);
+  TVector   tAxisZ  = TVector (0, 0, 1);
+
+  tOrigin = (*ptMatrix) * tOrigin;
+
+  tAxisX  = (*ptMatrix) * tAxisX;
+  tMatrix.setRotation (tOrigin, tAxisX, rktANGLESXYZ.x());
+  (*ptMatrix) = tMatrix * (*ptMatrix);
+  tMatrix.setRotation (tOrigin, tAxisX, -(rktANGLESXYZ.x()));
+  (*ptInverseMatrix) = (*ptInverseMatrix) * tMatrix;
+
+  tAxisY = (*ptMatrix) * tAxisY;
+  tMatrix.setRotation (tOrigin, tAxisY, rktANGLESXYZ.y());
+  (*ptMatrix) = tMatrix * (*ptMatrix);
+  tMatrix.setRotation (tOrigin, tAxisY, -(rktANGLESXYZ.y()));
+  (*ptInverseMatrix) = (*ptInverseMatrix) * tMatrix;
+
+  tAxisZ = (*ptMatrix) * tAxisZ;
+  tMatrix.setRotation (tOrigin, tAxisZ, rktANGLESXYZ.z());
+  (*ptMatrix) = tMatrix * (*ptMatrix);
+  tMatrix.setRotation (tOrigin, tAxisZ, -(rktANGLESXYZ.z()));
+  (*ptInverseMatrix) = (*ptInverseMatrix) * tMatrix;
+    
+}  /* rotate() */
+
+
+void TObject::scale (const TVector& rktSCALING_XYZ, const TVector& rktPOINT)
+{
+
+  TVector   tInverseScaling;
+  TMatrix   tMatrix;
+
+  tMatrix.setScaling (rktSCALING_XYZ, rktPOINT);
+  (*ptMatrix) = tMatrix * (*ptMatrix);
+
+  tInverseScaling.set (1.0 / rktSCALING_XYZ.x(), 1.0 / rktSCALING_XYZ.y(), 1.0 / rktSCALING_XYZ.z());
+  tMatrix.setScaling (tInverseScaling, rktPOINT);
+  (*ptInverseMatrix) = (*ptInverseMatrix) * tMatrix;
+
+}  /* scale() */
+
+
 void TObject::printDebug (void) const
 {
 

@@ -55,6 +55,12 @@ class TObject : public TVolume
       ptMatrix (NULL),
       ptInverseMatrix (NULL) {}
       
+    virtual ~TObject (void)
+    {
+      delete ptMatrix;
+      delete ptInverseMatrix;
+    }
+      
     TObject (const TObject& rktOBJ)
     {
       createMatrices();
@@ -111,7 +117,12 @@ class TObject : public TVolume
       
     virtual bool findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) const = 0;
 
-    virtual TVector normal (const TSurfaceData& rktDATA) const = 0;
+    void translate (const TVector& rktNEW_POS);
+    void rotate (const TVector& rktAXISPOINT1, const TVector& rktAXISPOINT2, TScalar tANGLE);
+    void rotate (const TVector& rktANGLESXYZ);
+    void scale (const TVector& rktSCALING_XYZ, const TVector& rktPOINT);
+
+    virtual TVector normal (const TSurfaceData& rktDATA) const;
 
     TBoundingBox boundingBox (void) const { return tBoundingBox; }
     TMaterial* material (void) const { return ptMaterial; }
@@ -147,5 +158,18 @@ class TObject : public TVolume
     EClass classType (void) const { return FX_OBJECT_CLASS; }
       
 };  /* class TObject */
+
+inline TVector TObject::normal (const TSurfaceData& rktDATA) const
+{
+
+  TVector   tPoint  = (*ptInverseMatrix) * rktDATA.point();
+  TVector   tNormal = localNormal (tPoint);
+
+  tNormal.applyTransform (ptInverseMatrix);
+  tNormal.normalize();
+
+  return tNormal;
+
+}  /* normal() */
 
 #endif  /* _OBJECT__ */
