@@ -1,4 +1,21 @@
 
+>> Version 0.13.2 released
+
+ - Added lens flare image filter plugin (done by Jon Frydensbjerg).
+ 
+ - Added new BSDF models: Ward, Schlick (single and double coating) and
+   Cook-Torrance (done by Jon Frydensbjerg).
+
+ - Added error message for wrong value given to attribute in RT language.
+
+ - Added English spelling for colo(u)r in RT and PSL languages.
+ 
+ - Fixed problem in point light initialization.
+
+ - Added several warnings for potential problems in scene files.
+
+ - Fixed problems in sphere transformations.
+
 >> Version 0.13.1 released
 
  - Changes in psl scene plugin (still unfinished).
