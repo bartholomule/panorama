@@ -279,7 +279,6 @@ void TCone::initialize (void)
   {
     TVector   tTmp;
     TVector   tAxis;
-    TVector   tNormAxis;   
     TMatrix   tMatrix = *ptMatrix;
     
     tMaxCirclePoint = tMatrix * tMaxCirclePoint;
