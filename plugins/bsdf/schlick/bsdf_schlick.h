@@ -211,7 +211,8 @@ inline TColor TBsdfSchlick::evaluateReflection (const TSurfaceData& rktDATA, con
   // Find halfway vector projected perpendicular onto the normal
   // 
 
-  tHalfwayProj = crossProduct (crossProduct (rktDATA.normal(), tHalfway), rktDATA.normal());
+  tHalfwayProj = tHalfway - (rktDATA.normal() * dotProduct (rktDATA.normal(), tHalfway));
+  tHalfwayProj.normalize();
 
   tCosTI = dotProduct (tTangent, tHalfwayProj);
 
