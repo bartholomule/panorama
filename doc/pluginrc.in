@@ -16,12 +16,12 @@ pinhole.plg
 if_cartoon.plg
 if_convert_to_grey.plg
 if_fog.plg
-if_text.plg
+@PLUGIN_TEXT@
 
 # Image input/output formats
 tga_io.plg
-png_io.plg
-jpeg_io.plg
+@PLUGIN_PNG@
+@PLUGIN_JPEG@
 
 # Lights
 point_light.plg

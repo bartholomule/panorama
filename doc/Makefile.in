@@ -51,4 +51,4 @@ distclean:
 		@for i in $(DIRS); do \
                   $(MAKE) -C $$i distclean; \
                 done
-		@rm -f Makefile config
+		@rm -f Makefile config pluginrc
