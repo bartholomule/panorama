@@ -7,15 +7,16 @@
 # directory structure
 #
 
-TOPDIR      = @prefix@
-BIN_DIR     = ${TOPDIR}/bin/
-INCLUDE_DIR = ${TOPDIR}/include/
-LIB_DIR     = ${TOPDIR}/lib/
-DOC_DIR     = ${TOPDIR}/doc/
-CONFIG_DIR  = ${TOPDIR}/etc/
-PLUGIN_DIR  = ${LIB_DIR}/plugins/
-TEXTURE_DIR = ${LIB_DIR}/texture/
-SCENE_DIR   = ${TOPDIR}/scenes/
+TOPDIR       = @prefix@
+BIN_DIR      = ${TOPDIR}/bin/
+INCLUDE_DIR  = ${TOPDIR}/include/
+LIB_DIR      = ${TOPDIR}/lib/
+DOC_DIR      = ${TOPDIR}/doc/
+CONFIG_DIR   = ${TOPDIR}/etc/
+PLUGIN_DIR   = ${LIB_DIR}/plugins/
+TEXTURE_DIR  = ${LIB_DIR}/texture/
+SCENE_DIR    = ${TOPDIR}/scenes/
+GRADIENT_DIR = ${TOPDIR}/scenes/
 
 #
 # Don't change anything below this line.
@@ -37,6 +38,7 @@ DEFS    = @DEFS@ \
           -DPLUGIN_DIR='"${PLUGIN_DIR}"' \
           -DTEXTURE_DIR='"${TEXTURE_DIR}"' \
           -DSCENE_DIR='"${SCENE_DIR}"' \
+          -DGRADIENT_DIR='"${GRADIENT_DIR}"' \
           -DSTATIC_LINK=@STATIC_LINK@
 
 CXX      = @CXX@
