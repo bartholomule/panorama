@@ -68,7 +68,7 @@ TBaseClass* TClassManager::_newObject (const string& rktCLASS, const TBaseClass*
   STATIC_CLASS (TIF_ConvertToGrey, "IF_ConvertToGrey");
   STATIC_CLASS (TIF_Fog, "IF_Fog");
   STATIC_CLASS (TIF_Lens_Flare, "IF_Lens_Flare");
-  STATIC_CLASS (TIF_Text, "IF_Text");
+//  STATIC_CLASS (TIF_Text, "IF_Text");
   STATIC_CLASS (TPointLight, "PointLight");
   STATIC_CLASS (TProjector, "Projector");
   STATIC_CLASS (TWarnLight, "WarnLight");
@@ -82,17 +82,21 @@ TBaseClass* TClassManager::_newObject (const string& rktCLASS, const TBaseClass*
   STATIC_CLASS (TMaterialParquet, "MaterialParquet");
   STATIC_CLASS (TMaterialWood, "MaterialWood");
   STATIC_CLASS (TMaterialWorley, "MaterialWorley");
-  STATIC_CLASS (TABVH, "ABVH");
   STATIC_CLASS (TAggregateUniformGrid, "AggregateUniformGrid");
   STATIC_CLASS (TBezierSurface, "BezierSurface");
+  STATIC_CLASS (TOF_Cartoon, "OF_Cartoon");
+  STATIC_CLASS (TOF_ConvertToGrey, "OF_ConvertToGrey");
+  STATIC_CLASS (TRaytracer, "Raytracer");
+
+#if ( EXPERIMENTAL == 1 )
+  STATIC_CLASS (TABVH, "ABVH");
   STATIC_CLASS (TSubdiv, "SubdivisionSurface");
   STATIC_CLASS (THeightField, "HeightField");
   STATIC_CLASS (TLightWaveObject, "LightWaveObject");
   STATIC_CLASS (TPolyhedron, "Polyhedron");
-  STATIC_CLASS (TOF_Cartoon, "OF_Cartoon");
-  STATIC_CLASS (TOF_ConvertToGrey, "OF_ConvertToGrey");
-  STATIC_CLASS (TRaytracer, "Raytracer");
   STATIC_CLASS (TZBufferRenderer, "ZBufferRenderer");
+#endif
+
 #endif
 
   return tPluginManager.newObject (rktCLASS, pktPARENT);

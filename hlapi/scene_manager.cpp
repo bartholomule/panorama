@@ -88,8 +88,13 @@ void TSceneManager::_initialize (void)
 {
 
 #if ( STATIC_LINK == 1 )
+
   _addFormat ("rt", &TSceneRT::_load, &TSceneRT::_save);
+
+#if ( EXPERIMENTAL == 1 )
   _addFormat ("psl", &TScenePsl::_load, &TScenePsl::_save);
+#endif
+
 #endif
   
 }  /* _initialize() */

@@ -16,7 +16,10 @@
 *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#if ( STATIC_LINK == 0 )
 #include <dlfcn.h>
+#endif
+
 #include <fstream>
 #include <iostream>
 #include "llapi/file.h"
@@ -33,6 +36,8 @@ TPluginManager   tPluginManager;
 
 int TPluginManager::loadPlugin (const string& rktNAME)
 {
+
+#if ( STATIC_LINK == 0 )
 
   int                  iError;
   const char*          pkcError;
@@ -99,6 +104,8 @@ int TPluginManager::loadPlugin (const string& rktNAME)
     }
   }
   
+#endif
+
   return 0;
 
 }  /* loadPlugin() */

@@ -121,9 +121,9 @@ void TImageManager::_initialize (void)
 
 #if ( STATIC_LINK == 1 )
   _addFormat ("tga", &TImageTga::_create);
-  _addFormat ("jpeg", &TImageJpeg::_create);
-  _addFormat ("png", &TImagePng::_create);
-  _addFormat ("gif", &TImageGif::_create);
+//  _addFormat ("jpeg", &TImageJpeg::_create);
+//  _addFormat ("png", &TImagePng::_create);
+//  _addFormat ("gif", &TImageGif::_create);
 #endif
   
 }  /* _initialize() */
