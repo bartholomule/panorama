@@ -77,6 +77,11 @@ int TLight::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType 
       return FX_ATTRIB_WRONG_TYPE;
     }
   }
+  else if ( rktNAME == "lightonly" )
+  {
+    // This can not be modified by a user.  It is a property inherent in lights.
+    return FX_ATTRIB_USER_ERROR;
+  }
   else
   {
     return TEntity::setAttribute (rktNAME, nVALUE, eTYPE);
@@ -110,6 +115,10 @@ int TLight::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
   {
     rnVALUE.gValue = tProperties.gRaytraced;
   }
+  else if ( rktNAME == "lightonly" )
+  {
+    rnVALUE.gValue = true;
+  }  
   else
   {
     return TEntity::getAttribute (rktNAME, rnVALUE);
@@ -130,5 +139,7 @@ void TLight::getAttributeList (TAttributeList& rtLIST) const
   rtLIST ["shadow"]     = FX_BOOL;
   rtLIST ["volumetric"] = FX_BOOL;
   rtLIST ["raytraced"]  = FX_BOOL;
-
+  rtLIST ["lightonly"]  = FX_BOOL;
 }  /* getAttributeList() */
+
+

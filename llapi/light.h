@@ -33,7 +33,7 @@ struct TLightProperties
 };  /* struct TLightProperties */
 
 
-class TLight : public TEntity
+class TLight : public TObject
 {
 
   protected:
@@ -66,7 +66,7 @@ class TLight : public TEntity
     void setIntensity (TScalar tINTENSITY) { tIntensity = tINTENSITY; }
 
     virtual void initialize (void) {}
-    
+  
     virtual TColor color (const TVector& rktPOINT) const
     {
       if ( !visible (rktPOINT) )
@@ -87,7 +87,13 @@ class TLight : public TEntity
     bool raytraced (void) const { return tProperties.gRaytraced; }
 
     EClass classType (void) const { return FX_LIGHT_CLASS; }
-    
+  
+    virtual bool findAllIntersections(const class TRay &, class TSpanList &) const
+    {
+      cerr << "Pure light with intersection test!!" << endl;
+      return false;
+    }
+
 };  /* class TLight */
 
 #endif  /* _LIGHT__ */
