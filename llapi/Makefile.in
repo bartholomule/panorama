@@ -10,8 +10,7 @@ VPATH = @srcdir@
 
 LIBNAME = libllapi.so.0
 
-OBJ = aggregate.o \
-      atmosphere.o \
+OBJ = atmosphere.o \
       atmospheric_object.o \
       base_class.o \
       bounding_box.o \

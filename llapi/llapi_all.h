@@ -16,7 +16,6 @@
 *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "llapi/aggregate.h"
 #include "llapi/atmosphere.h"
 #include "llapi/atmospheric_object.h"
 #include "llapi/base_class.h"
