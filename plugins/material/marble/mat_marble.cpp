@@ -64,13 +64,13 @@ int TMaterialMarble::setAttribute (const string& rktNAME, NAttribute nVALUE, EAt
       return FX_ATTRIB_WRONG_TYPE;
     }
   }
-  else if ( rktNAME == "falloff" )
+  else if ( rktNAME == "lacunarity" )
   {
     if ( eTYPE == FX_REAL )
     {
       if ( nVALUE.dValue > 0.0 )
       {
-        tFalloff = nVALUE.dValue;
+        tLacunarity = nVALUE.dValue;
       }
       else
       {
@@ -89,12 +89,6 @@ int TMaterialMarble::setAttribute (const string& rktNAME, NAttribute nVALUE, EAt
       if ( nVALUE.dValue >= 1.0 )
       {
         tNumOctaves = nVALUE.dValue;
-        tEndFreq   = tStartFreq;
-        
-        for (int i = 0; i < (int) tNumOctaves; i++)
-        {
-          tEndFreq *= 2.17;
-        }
       }
       else
       {
@@ -102,6 +96,27 @@ int TMaterialMarble::setAttribute (const string& rktNAME, NAttribute nVALUE, EAt
       }
     }
   }
+  else if ( rktNAME == "offset" )
+  {
+    if ( eTYPE == FX_REAL )
+    {
+      tOffset = nVALUE.dValue;
+    }
+  }
+  else if ( rktNAME == "multiplier" )
+  {
+    if ( eTYPE == FX_REAL )
+    {
+      if ( fabs (nVALUE.dValue) > FX_EPSILON )
+      {
+        tMultiplier = nVALUE.dValue;
+      }
+      else
+      {
+        return FX_ATTRIB_WRONG_VALUE;
+      }
+    }
+  }  
   else
   {
     return TMaterial::setAttribute (rktNAME, nVALUE, eTYPE);
@@ -128,9 +143,17 @@ int TMaterialMarble::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
   {
     rnVALUE.dValue = tBumpFactor;
   }
-  else if ( rktNAME == "start_freq" )
+  else if ( rktNAME == "offset" )
   {
-    rnVALUE.dValue = tStartFreq;
+    rnVALUE.dValue = tOffset;
+  }
+  else if ( rktNAME == "multiplier" )
+  {
+    rnVALUE.dValue = tMultiplier;
+  }
+  else if ( rktNAME == "lacunarity" )
+  {
+    rnVALUE.dValue = tLacunarity;
   }
   else if ( rktNAME == "octaves" )
   {

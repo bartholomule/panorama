@@ -32,11 +32,11 @@ class TMaterialMarble : public TMaterial
     TColor         tBaseColor;
     TVector        tZoom;
     TScalar        tBumpFactor;
-    TScalar        tStartFreq;
-    TScalar        tEndFreq;
+    TScalar        tOffset;
+    TScalar        tMultiplier;
     TScalar        tNumOctaves;
     bool           bGradientLoaded;
-    TScalar        tFalloff;
+    TScalar        tLacunarity;
     
     TPerlinNoise   tNoise;
     TGradient      tGradient;
@@ -50,11 +50,11 @@ class TMaterialMarble : public TMaterial
       TMaterial(),
       tZoom (1, 1, 1),
       tBumpFactor (0),
-      tStartFreq (0.75),
-      tEndFreq (4.0),
+      tOffset (1.0),
+      tMultiplier (0.5),
       tNumOctaves (3.0),
       bGradientLoaded (false),
-      tFalloff (2.15) {}
+      tLacunarity (2.17) {}
       
     TColor color (const TSurfaceData& rktDATA) const;    
     TVector perturbNormal (const TSurfaceData& rktDATA) const;
@@ -88,26 +88,11 @@ inline TScalar TMaterialMarble::evaluate (const TVector& rktPOINT, TVector* ptGR
   for (i = 0; i < iNumOctaves ; i++)
   {
     tValue += tNoise.snoise (rktPOINT * tFreq) / tFreq;
-    tFreq *= tFalloff;
+    tFreq *= tLacunarity;
   }
-  
-  //tValue /= tFreq; 
-  tValue = 0.5 - tValue / 2.7;
-  
-  static TScalar tMax = -1e6;
-  static TScalar tMin = 1e6;
-  
-  if ( tValue > tMax )
-  {
-    tMax = tValue;
-//    cout << "\t" << tMax << " " << tMin << endl;
-  }
-  else if ( tValue < tMin )
-  {
-    tMin = tValue;
-//    cout << "\t" << tMax << " " << tMin << endl;
-  }
-  
+
+  tValue =  (tOffset + tValue) * tMultiplier;
+    
   if (ptGRADIENT)
   {
     TVector   tDx, tDy, tDz;
