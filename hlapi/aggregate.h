@@ -23,12 +23,14 @@
 #include "hlapi/class_manager.h"
 #include "llapi/object.h"
 
+typedef vector<TObject*>   TObjectList;
+
 class TAggregate : public TObject
 {
 
   protected:
 
-    vector<TObject*>   tObjectList;
+    TObjectList   tObjectList;
 
   public:
 
@@ -48,9 +50,9 @@ class TAggregate : public TObject
       return *this;
     }
 
-    virtual void copy (const vector<TObject*>& rktLIST)
+    virtual void copy (const TObjectList& rktLIST)
     {
-      for (vector<TObject*>::const_iterator iter = rktLIST.begin(); ( iter != rktLIST.end() ); iter++)
+      for (TObjectList::const_iterator iter = rktLIST.begin(); ( iter != rktLIST.end() ); iter++)
       {
         tObjectList.push_back ((TObject*) TClassManager::_newObject ((*iter)->className(), (TObject*) (*iter)));
       }
@@ -76,14 +78,14 @@ class TAggregate : public TObject
       return rktDATA.object()->normal (rktDATA);
     }
 
-    vector<TObject*>* objectList (void)
+    TObjectList* objectList (void)
     {
       return &tObjectList;
     }
 
     void getMesh (list<TMesh*>& rtMESH_LIST) const
     {
-      for (vector<TObject*>::const_iterator tIter = tObjectList.begin(); ( tIter != tObjectList.end() ) ;tIter++)
+      for (TObjectList::const_iterator tIter = tObjectList.begin(); ( tIter != tObjectList.end() ) ;tIter++)
       {
         (*tIter)->getMesh (rtMESH_LIST);
       }

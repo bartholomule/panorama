@@ -21,9 +21,9 @@
 void TAggregate::initialize (void)
 {
 
-  vector<TObject*>::iterator   tIter;
-  TObject*                     ptObj;
-  TMatrix*                     ptMat;
+  TObjectList::iterator   tIter;
+  TObject*                ptObj;
+  TMatrix*                ptMat;
 
   for (tIter = tObjectList.begin(); ( tIter != tObjectList.end() ) ;tIter++)
   {
@@ -54,7 +54,7 @@ void TAggregate::finalize (void)
 
   TObject*   ptObj;
 
-  for (vector<TObject*>::iterator tIter = tObjectList.begin(); ( tIter != tObjectList.end() ) ;tIter++)
+  for (TObjectList::iterator tIter = tObjectList.begin(); ( tIter != tObjectList.end() ) ;tIter++)
   {
     ptObj = *tIter;
     
@@ -75,7 +75,7 @@ bool TAggregate::findFirstIntersection (const TRay& rktRAY, TSurfaceData& rtDATA
 //    return false;
 //  }
   
-  for (vector<TObject*>::const_iterator tIter = tObjectList.begin(); ( tIter != tObjectList.end() ) ;tIter++)
+  for (TObjectList::const_iterator tIter = tObjectList.begin(); ( tIter != tObjectList.end() ) ;tIter++)
   {
     if ( (*tIter)->findFirstIntersection (tRay, rtDATA) )
     {
@@ -99,7 +99,7 @@ bool TAggregate::findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) co
 //    return false;
 //  }
   
-  for (vector<TObject*>::const_iterator tIter = tObjectList.begin(); ( tIter != tObjectList.end() ) ;tIter++)
+  for (TObjectList::const_iterator tIter = tObjectList.begin(); ( tIter != tObjectList.end() ) ;tIter++)
   {
     if ( (*tIter)->findAllIntersections (rktRAY, rtLIST) )
     {
@@ -115,7 +115,7 @@ bool TAggregate::findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) co
 void TAggregate::setMaterial (TMaterial* ptMATERIAL)
 {
 
-  for (vector<TObject*>::iterator tIter = tObjectList.begin(); ( tIter != tObjectList.end() ) ;tIter++)
+  for (TObjectList::iterator tIter = tObjectList.begin(); ( tIter != tObjectList.end() ) ;tIter++)
   {
     (*tIter)->setMaterial (ptMATERIAL);
   }
@@ -130,7 +130,7 @@ void TAggregate::setObjectCode (size_t zCODE)
 
   zObjectCode = zCODE++;
   
-  for (vector<TObject*>::iterator tIter = tObjectList.begin(); ( tIter != tObjectList.end() ) ;tIter++)
+  for (TObjectList::iterator tIter = tObjectList.begin(); ( tIter != tObjectList.end() ) ;tIter++)
   {
     (*tIter)->setObjectCode (zCODE++);
   }
@@ -141,7 +141,7 @@ void TAggregate::setObjectCode (size_t zCODE)
 void TAggregate::addFilter (const TObjectFilter* pktFILTER)
 {
 
-  for (vector<TObject*>::iterator tIter = tObjectList.begin(); ( tIter != tObjectList.end() ) ;tIter++)
+  for (TObjectList::iterator tIter = tObjectList.begin(); ( tIter != tObjectList.end() ) ;tIter++)
   {
     (*tIter)->addFilter (pktFILTER);
   }
@@ -160,7 +160,7 @@ void TAggregate::printDebug (void) const
 
   cerr << TDebug::_indent() << "Bounding box = "; tBoundingBox.printDebug(); cerr << endl;
   
-  for (vector<TObject*>::const_iterator tIter = tObjectList.begin(); ( tIter != tObjectList.end() ) ;tIter++)
+  for (TObjectList::const_iterator tIter = tObjectList.begin(); ( tIter != tObjectList.end() ) ;tIter++)
   {
     (*tIter)->printDebug();
   }
