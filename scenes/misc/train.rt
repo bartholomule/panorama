@@ -111,19 +111,19 @@ define cabin aggregate
     {
       cylinder
       {
-        scale    = <  65, 101,  65>;
+        scale    ( <  65, 101,  65> );
         rotate   ( <  90,   0,   0> );
         translate( <  70,  65,   0> );
       };
       cylinder
       {
-        scale    = <  30, 101,   30>;
+        scale    ( <  30, 101,   30> );
         rotate   ( <   0,   0,   90> );
         translate( <   0, 110,   60> );
       };
       cylinder
       {
-        scale    = <  30, 101,   30>;
+        scale    ( <  30, 101,   30> );
         rotate   ( <   0,   0,   90> );
         translate( <   0, 110,  -60> );
       };
@@ -135,314 +135,310 @@ define cabin aggregate
   };
 };
 
-print("Continue tweaking from here!");
-halt();
-
-define aggregate cabin_roof
+define cabin_roof aggregate
 {
-  name "Cabin Roof"
+  name = "Cabin Roof";
   intersection
   {
     box
     {
-      point1 <-130, 150,-110>
-      point2 <  80, 180, 110>
-    }
+      point1 = <-130, 150,-110>;
+      point2 = <  80, 180, 110>;
+    };
     cylinder
     {
-      scale     < 200, 150, 200>
-      rotate    <   0,   0,  90>
-      translate <   0, -20,   0>
-    }
-  }
-  material : extends MPlastic
+      scale    ( < 200, 150, 200> );
+      rotate   ( <   0,   0,  90> );
+      translate( <   0, -20,   0> );
+    };
+  };
+  material = MPlastic
   {
-    color CYellow
-  }
-}
+    color = CYellow;
+  };
+};
 
-define aggregate body
+define body aggregate
 {
-  name "Body"
+  name = "Body";
   cylinder
   {
-    scale     <  90, 200,  90>
-    rotate    <   0,   0,  90>
-    translate <-300, -10,   0>
-  }
+    scale    ( <  90, 200,  90> );
+    rotate   ( <   0,   0,  90> );
+    translate( <-300, -10,   0> );
+  };
   sphere
   {
-    scale     <  20,  90,  90>
-    translate <-500, -10,   0>
-  }
-  material : extends MPlastic
+    scale    ( <  20,  90,  90> );
+    translate( <-500, -10,   0> );
+  };
+  material = MPlastic
   {
-    color CRed
-  }
-}
+    color = CRed;
+  };
+};
 
-define aggregate base : class AggregateUniformGrid
+define base class AggregateUniformGrid
 {
-  name "Base"
+  name = "Base";
   sphere
   {
-    scale     <  10,  10,  10>
-    translate <-500,-110,-100>
-  }
+    scale    ( <  10,  10,  10> );
+    translate( <-500,-110,-100> );
+  };
   sphere
   {
-    scale     <  10,  10,  10>
-    translate <-500,-110, 100>
-  }
+    scale    ( <  10,  10,  10> );
+    translate( <-500,-110, 100> );
+  };
   sphere
   {
-    scale     <  10,  10,  10>
-    translate <  70,-110,-100>
-  }
+    scale    ( <  10,  10,  10> );
+    translate( <  70,-110,-100> );
+  };
   sphere
   {
-    scale     <  10,  10,  10>
-    translate <  70,-110, 100>
-  }
+    scale    ( <  10,  10,  10> );
+    translate( <  70,-110, 100> );
+  };
   cylinder
   {
-    scale     <  10, 285,  10>
-    rotate    <   0,   0,  90>
-    translate <-215,-110, 100>
-  }
+    scale    ( <  10, 285,  10> );
+    rotate   ( <   0,   0,  90> );
+    translate( <-215,-110, 100> );
+  };
   cylinder
   {
-    scale     <  10, 100,  10>
-    rotate    <  90,   0,   0>
-    translate <-500,-110,   0>
-  }
+    scale    ( <  10, 100,  10> );
+    rotate   ( <  90,   0,   0> );
+    translate( <-500,-110,   0> );
+  };
   cylinder
   {
-    scale     <  10, 285,  10>
-    rotate    <   0,   0,  90>
-    translate <-215,-110,-100>
-  }
+    scale    ( <  10, 285,  10> );
+    rotate   ( <   0,   0,  90> );
+    translate( <-215,-110,-100> );
+  };
   cylinder
   {
-    scale     <  10, 100,  10>
-    rotate    <  90,   0,   0>
-    translate <  70,-110,   0>
-  }
+    scale    ( <  10, 100,  10> );
+    rotate   ( <  90,   0,   0> );
+    translate( <  70,-110,   0> );
+  };
   box
   {
-    point1 < -500, -100, -100>
-    point2 <   70, -120,  100>
-  }
+    point1 = < -500, -100, -100>;
+    point2 = <   70, -120,  100>;
+  };
   box
   {
-    point1 < -500, -120, -80>
-    point2 <   50, -200,  80>
-  }
-  material : extends MPlastic
+    point1 = < -500, -120, -80>;
+    point2 = <   50, -200,  80>;
+  };
+  material = MPlastic
   {
-    color CBlue
-  }
-}
+    color = CBlue;
+  };
+};
 
-define aggregate wheelA : class AggregateUniformGrid
+define wheelA class AggregateUniformGrid
 {
-  name "WheelA"
+  name = "WheelA";
   torus
   {
-    radius_a  50
-    radius_b   5
-    rotate < 90, 0, 0 >
-    translate < 0, 0,  90 >
-  }
+    radius_a = 50;
+    radius_b = 5;
+    rotate   ( < 90,  0,  0 > );
+    translate( <  0,  0, 90 > );
+  };
   cylinder
   {
-    scale     < 50, 5, 50>
-    rotate < 90, 0, 0 >
-    translate < 0, 0,  90 >
-  }
+    scale    ( < 50,  5, 50 > );
+    rotate   ( < 90,  0,  0 > );
+    translate( <  0,  0, 90 > );
+  };
   cylinder
   {
-    scale     < 45,  5, 45>
-    rotate < 90, 0, 0 >
-    translate < 0,  0, 100 >
-  }
+    scale    ( < 45,  5,  45 > );
+    rotate   ( < 90,  0,   0 > );
+    translate( <  0,  0, 100 > );
+  };
   torus
   {
-    radius_a  40
-    radius_b   5
-    rotate < 90, 0, 0 >
-    translate <  0, 0, 105 >
-  }
+    radius_a = 40;
+    radius_b = 5;
+    rotate   ( < 90, 0,   0 > );
+    translate( <  0, 0, 105 > );
+  };
   cylinder
   {
-    scale     < 40,  5, 40>
-    rotate < 90, 0, 0 >
-    translate <  0, 0, 105 >
-  }
+    scale    ( < 40,  5,  40 > );
+    rotate   ( < 90,  0,   0 > );
+    translate( <  0,  0, 105 > );
+  };
   torus
   {
-    radius_a  50
-    radius_b   5
-    rotate < 90, 0, 0 >
-    translate < 0, 0, -90 >
-  }
+    radius_a = 50;
+    radius_b =  5;
+    rotate   ( < 90, 0,   0 > );
+    translate( <  0, 0, -90 > );
+  };
   cylinder
   {
-    scale     < 50, 5, 50>
-    rotate < 90, 0, 0 >
-    translate < 0, 0, -90 >
-  }
+    scale    ( < 50, 5,  50 > );
+    rotate   ( < 90, 0,   0 > );
+    translate( <  0, 0, -90 > );
+  };
   cylinder
   {
-    scale     < 45,  5, 45>
-    rotate < 90, 0, 0 >
-    translate < 0,  0,-100 >
-  }
+    scale    ( < 45,  5,  45 > );
+    rotate   ( < 90,  0,   0 > );
+    translate( <  0,  0,-100 > );
+  };
   torus
   {
-    radius_a  40
-    radius_b   5
-    rotate < 90, 0, 0 >
-    translate <  0, 0,-105 >
-  }
+    radius_a = 40;
+    radius_b =  5;
+    rotate   ( < 90, 0,   0 > );
+    translate( <  0, 0,-105 > );
+  };
   cylinder
   {
-    scale     < 40,  5, 40>
-    rotate < 90, 0, 0 >
-    translate <  0, 0,-105 >
-  }
+    scale    ( < 40,  5,  40 > );
+    rotate   ( < 90,  0,   0 > );
+    translate( <  0,  0,-105 > );
+  };
   
-  material : extends MPlastic
+  material = MPlastic
   {
-    color CYellow
-  }
-}
+    color = CYellow;
+  };
+};
 
-define aggregate wheelB
+define wheelB aggregate
 {
-  name "WheelB"
+  name = "WheelB";
   sphere
   {
-    radius 10
-    translate < 0, 0, 110>
-  }
+    radius = 10;
+    translate( < 0, 0, 110> );
+  };
   sphere
   {
-    radius 10
-    translate < 0, 0,-110>
-  }
+    radius = 10;
+    translate( < 0, 0,-110> );
+  };
   cylinder
   {
-    scale <4,110,4>
-    rotate < 90, 0, 0 >
-  }
-  material : extends MMirror
+    scale( <4,110,4> );
+    rotate( < 90, 0, 0 > );
+  };
+  material = MMirror
   {
-  }
-}
+  };
+};
 
-define aggregate wheels
+define wheels aggregate
 {
-  name "Wheels"
-  aggregate wheelA
-  aggregate wheelB
-}
+  name = "Wheels";
+  wheelA { };
+  wheelB { };
+};
 
-define aggregate funnel
+define funnel aggregate
 {
-  name "Funnel"
+  name = "Funnel";
   difference
   {
     union
     {
       cone
       {
-        min_circle_point < 0,   0, 0 >
-        max_circle_point < 0,  70, 0 >
-        min_radius 20
-        max_radius 50
-      }
+        min_circle_point = < 0,   0, 0 >;
+        max_circle_point = < 0,  70, 0 >;
+        min_radius = 20;
+        max_radius = 50;
+      };
       cone
       {
-        max_circle_point < 0,  70, 0 >
-        min_circle_point < 0, 100, 0 >
-        min_radius 30
-        max_radius 50
-      }
-    }
+        max_circle_point = < 0,  70, 0 >;
+        min_circle_point = < 0, 100, 0 >;
+        min_radius = 30;
+        max_radius = 50;
+      };
+    };
     cylinder
     {
-      scale < 20, 110, 20 >
-    }
-  }
-  material : extends MPlastic
+      scale( < 20, 110, 20 > );
+    };
+  };
+  material = MPlastic
   {
-    color CYellow
-  }
-  translate <-420, 80, 0 >
-}
+    color = CYellow;
+  };
+  translate( <-420, 80, 0 > );
+};
 
-define aggregate hump // dunno what these actually are :)
+define hump aggregate // dunno what these actually are :)
 {
-  name "Hump"
+  name = "Hump";
   cylinder
   {
-    scale < 30, 30, 30 >
-  }
+    scale( < 30, 30, 30 > );
+  };
   sphere
   {
-    radius 30
-    translate < 0, 30, 0 >
-  }
-  material : extends MPlastic
+    radius = 30;
+    translate( < 0, 30, 0 > );
+  };
+  material = MPlastic
   {
-    color CYellow
-  }
-  translate <-280, 80, 0 >
-}
+    color = CYellow;
+  };
+  translate( <-280, 80, 0 > );
+};
 
-aggregate : class AggregateUniformGrid
+class AggregateUniformGrid
 {
-  name "Train"
-  aggregate : extends wheels
+  name = "Train";
+  wheels
   {
-    translate <   20, -180, 0 >
-  }
-  aggregate : extends wheels
+    translate( <   20, -180, 0 > );
+  };
+  wheels
   {
-    translate < -110, -180, 0 >
-  }
-  aggregate : extends wheels
+    translate( < -110, -180, 0 > );
+  };
+  wheels
   {
-    translate < -460, -180, 0 >
-  }
-  aggregate cabin
-  aggregate cabin_roof
-  aggregate body
-  aggregate funnel
-  aggregate hump
-  aggregate base
-  rotate <0, 30,0>
-  translate < 200, 235, 0>
-}
+    translate( < -460, -180, 0 > );
+  };
+  cabin { };
+  cabin_roof { };
+  body { };
+  funnel { };
+  hump { };
+  base { };
+  rotate( <0, 30,0> );
+  translate( < 200, 235, 0> );
+};
 
 
 scene
 {
-  camera	c
-  light		l
-  light		l_ambient
-  width		400
-  height	300
-  background	CSummerSky
-  output
+  camera     = c;
+  light	     = l;
+  light	     = l_ambient;
+  width	     = 100; //400;
+  height     = 100; //300;
+  background = CSummerSky;
+  output = class png
   {
-    type        "png"
-    name	"train.png"
-  }
-  renderer : class Raytracer 
+    name = "train.png";
+  };
+  renderer = class Raytracer 
   {
-    //sampling "adaptive"
-  }
-}
+    //sampling = "adaptive";
+  };
+};
 

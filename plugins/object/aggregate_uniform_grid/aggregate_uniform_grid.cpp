@@ -22,7 +22,7 @@
 
 DEFINE_PLUGIN ("AggregateUniformGrid", FX_OBJECT_CLASS, TAggregateUniformGrid);
 
-void TAggregateUniformGrid::add (TObject* ptOBJ)
+void TAggregateUniformGrid::add (magic_pointer<TObject> ptOBJ)
 {
 
   if ( ptOBJ->capabilities().gInfinite == true )
@@ -41,8 +41,8 @@ void TAggregateUniformGrid::add (TObject* ptOBJ)
 bool TAggregateUniformGrid::initialize (void)
 {
 
-  TObject*   ptObj;
-  TMatrix*   ptMat;
+  magic_pointer<TObject> ptObj;
+  magic_pointer<TMatrix>   ptMat;
   
   bool val = TAggregate::initialize();
 
@@ -76,7 +76,6 @@ bool TAggregateUniformGrid::initialize (void)
 
   for (TObjectList::iterator tIter2 = tObjectList.begin(); ( tIter2 != tObjectList.end() ) ;tIter2++)
   {
-#warning "FIXME! converting to non-reference counted object"
     ptUniformGrid->addObject (*tIter2);
   }
 

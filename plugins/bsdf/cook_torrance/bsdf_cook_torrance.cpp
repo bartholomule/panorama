@@ -30,8 +30,8 @@ DEFINE_PLUGIN ("BsdfCookTorrance", FX_BSDF_CLASS, TBsdfCookTorrance);
 TBsdfCookTorrance::TBsdfCookTorrance (void)
 {
 
-  setSpecularReflectionCoefficients (new TPattern (TColor::_white()));
-  setStandardDeviation (new TPattern (1.0));
+  setSpecularReflectionCoefficients ((magic_pointer<TPattern>)new TPattern (TColor::_white()));
+  setStandardDeviation ((magic_pointer<TPattern>)new TPattern (1.0));
 
 }  /* TBsdfCookTorrance() */
 
@@ -118,11 +118,11 @@ int TBsdfCookTorrance::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 #else
   if ( rktNAME == "roughness" )
   {
-    rnVALUE = new TAttribPattern (ptStandardDeviation);
+    rnVALUE = (user_arg_type)new TAttribPattern (ptStandardDeviation);
   }
   else if ( rktNAME == "reflection_color" )
   {
-    rnVALUE = new TAttribPattern (ptSpecularReflectionCoefficients);
+    rnVALUE = (user_arg_type)new TAttribPattern (ptSpecularReflectionCoefficients);
   }  
 #endif
   else

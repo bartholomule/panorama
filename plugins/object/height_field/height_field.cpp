@@ -373,7 +373,7 @@ int THeightField::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttri
     magic_pointer<TAttribString> str = get_string(nVALUE);
     if( !!str )
     {
-      ptImage = tImageManager.newImage (str->tValue, FileExtension (str->tValue));
+      ptImage = (magic_pointer<TImage>)tImageManager.newImage (str->tValue, FileExtension (str->tValue));
       if( !ptImage )
       {
         TProcedural::_tUserErrorMessage = string ("could not open texture file ") + str->tValue;
@@ -418,7 +418,7 @@ int THeightField::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 #if !defined(NEW_ATTRIBUTES)
     rnVALUE.pvValue = ptImage;
 #else
-    rnVALUE = new TAttribImage(ptImage);
+    rnVALUE = (user_arg_type)new TAttribImage(ptImage);
 #endif
   }
   else

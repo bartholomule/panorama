@@ -427,11 +427,11 @@ int TBox::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 #else
   if ( rktNAME == "point1" )
   {
-    rnVALUE = new TAttribVector(tP1);
+    rnVALUE = (user_arg_type)new TAttribVector(tP1);
   }
   else if ( rktNAME == "point2" )
   {
-    rnVALUE = new TAttribVector(tP2);
+    rnVALUE = (user_arg_type)new TAttribVector(tP2);
   }
 #endif    
   else

@@ -378,7 +378,7 @@ void TIF_Lens_Flare::flaresByLightsources (void)
 {
 
   magic_pointer<TCamera> ptSceneCamera;
-  const TLight*  ptLight;
+  magic_pointer<const TLight>  ptLight;
   TVector2       tScreenPosition;
   TVector        tPosition;
   TRay           tRay;
@@ -395,9 +395,9 @@ void TIF_Lens_Flare::flaresByLightsources (void)
 
   ptSceneCamera = ptScene->camera();
 
-  for (vector<TLight*>::const_iterator tIter = ptScene->lightList().begin(); ( tIter != ptScene->lightList().end() ) ;tIter++)
+  for (vector<magic_pointer<TLight> >::const_iterator tIter = ptScene->lightList().begin(); ( tIter != ptScene->lightList().end() ) ;tIter++)
   {
-    ptLight = *tIter;
+    ptLight = rcp_static_cast<const TLight>(*tIter);
 
     if ( ptLight->className() == "PointLight" )
     {
@@ -749,7 +749,7 @@ int TIF_Lens_Flare::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
       type_choices.push_back (type_strings[FX_NEAR]);
       type_choices.push_back (type_strings[FX_FAR]);      
     }
-    rnVALUE = new TAttribStringList (type_choices, type_strings[eType]);
+    rnVALUE = (user_arg_type)new TAttribStringList (type_choices, type_strings[eType]);
   }
   else if ( rktNAME == "lf_form" )
   {
@@ -765,27 +765,27 @@ int TIF_Lens_Flare::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
       form_choices.push_back (form_strings[FX_HEXAGON]);
       form_choices.push_back (form_strings[FX_CIRCLE]);      
     }    
-    rnVALUE = new TAttribStringList (form_choices, form_strings[eForm]);
+    rnVALUE = (user_arg_type)new TAttribStringList (form_choices, form_strings[eForm]);
   }
   else if ( rktNAME == "lf_scale" )
   {
-    rnVALUE = new TAttribReal (fScale);
+    rnVALUE = (user_arg_type)new TAttribReal (fScale);
   }
   else if ( rktNAME == "threshold" )
   {
-    rnVALUE = new TAttribReal (fThreshold);
+    rnVALUE = (user_arg_type)new TAttribReal (fThreshold);
   }
   else if ( rktNAME == "intensity" )
   {
-    rnVALUE = new TAttribReal (fIntensity);
+    rnVALUE = (user_arg_type)new TAttribReal (fIntensity);
   }
   else if ( rktNAME == "influence" )
   {
-    rnVALUE = new TAttribReal (fInfluence);
+    rnVALUE = (user_arg_type)new TAttribReal (fInfluence);
   }
   else if ( rktNAME == "artefacts" )
   {
-    rnVALUE = new TAttribBool (gArtefacts);
+    rnVALUE = (user_arg_type)new TAttribBool (gArtefacts);
   }  
 #endif
   else

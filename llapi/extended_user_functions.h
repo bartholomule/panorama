@@ -51,7 +51,7 @@ public:
     {
       // [REPORT ERROR HERE]
       cerr << "Incorrect number of arguments (should be 2)" << endl;
-      return new TAttribute();
+      return (user_arg_type)new TAttribute();
     }
     // Perform type checking...
     user_arg_vector fn_args = required_args();
@@ -67,7 +67,7 @@ public:
     {
       // [REPORT ERROR HERE]
       cerr << "Types did not match." << endl;
-      return new TAttribute();
+      return (user_arg_type)new TAttribute();
     }
   }
 
@@ -102,7 +102,7 @@ public:
     {
       // [REPORT ERROR HERE]
       cerr << "Incorrect number of arguments (should be 2)" << endl;
-      return new TAttribute();
+      return (user_arg_type)new TAttribute();
     }
     // Perform type checking...
     user_arg_vector fn_args = required_args();
@@ -113,13 +113,13 @@ public:
       magic_pointer<TAttribute> c2;
       sig(attrib_to_type<fn_arg_type1>(args[0],c1),
 	  attrib_to_type<fn_arg_type2>(args[1],c2));	  
-      return new TAttribute();
+      return (user_arg_type)new TAttribute();
     }
     else
     {
       // [REPORT ERROR HERE]
       cerr << "Types did not match." << endl;
-      return new TAttribute();
+      return (user_arg_type)new TAttribute();
     }
   }
   
@@ -158,7 +158,7 @@ public:
     {
       // [REPORT ERROR HERE]
       cerr << "Incorrect number of arguments (should be 2)" << endl;      
-      return new TAttribute();
+      return (user_arg_type)new TAttribute();
     }
     // Perform type checking...
     user_arg_vector fn_args = required_args();
@@ -174,7 +174,7 @@ public:
     {
       // [REPORT ERROR HERE]
       cerr << "Types did not match." << endl;      
-      return new TAttribute();
+      return (user_arg_type)new TAttribute();
     }
   }  
   
@@ -215,7 +215,7 @@ public:
     {
       // [REPORT ERROR HERE]
       cerr << "Incorrect number of arguments (should be 2)" << endl;      
-      return new TAttribute();
+      return (user_arg_type)new TAttribute();
     }
     // Perform type checking...
     user_arg_vector fn_args = required_args();
@@ -226,13 +226,13 @@ public:
       magic_pointer<TAttribute> c2;
       (instance_ptr->*sig)(attrib_to_type<fn_arg_type1>(args[0],c1),
 			   attrib_to_type<fn_arg_type2>(args[1],c2));      
-      return new TAttribute();
+      return (user_arg_type)new TAttribute();
     }
     else
     {
       // [REPORT ERROR HERE]
       cerr << "Types did not match." << endl;      
-      return new TAttribute();
+      return (user_arg_type)new TAttribute();
     }
   }  
   
@@ -248,7 +248,7 @@ inline magic_pointer<user_function>
 create_user_function(class_type* t, ret_type (class_type::*f)(arg_type1,arg_type2))
 {
   //  cout << __PRETTY_FUNCTION__ << endl;
-  return new user_member_function_2<class_type,arg_type1,arg_type2,ret_type>(t,f);
+  return (magic_pointer<user_function>)new user_member_function_2<class_type,arg_type1,arg_type2,ret_type>(t,f);
 }
 
 // const Member, 2 args 
@@ -261,7 +261,7 @@ create_user_function(const class_type* t,
   typedef user_member_function_2<class_type,arg_type1,arg_type2,ret_type> classtype;
   
   //  cout << __PRETTY_FUNCTION__ << endl;
-  return new classtype(const_cast<class_type*>(t),(function_type)f);
+  return (magic_pointer<user_function>)new classtype(const_cast<class_type*>(t),(function_type)f);
 }
 
 // void Member, 2 args 
@@ -270,7 +270,7 @@ inline magic_pointer<user_function>
 create_user_function(class_type* t, void (class_type::*f)(arg_type1,arg_type2))
 {
   //  cout << __PRETTY_FUNCTION__ << endl;
-  return new void_user_member_function_2<class_type,arg_type1,arg_type2>(t,f);
+  return magic_pointer<user_function>(new void_user_member_function_2<class_type,arg_type1,arg_type2>(t,f));
 }
 
 // void const Member, 2 args 
@@ -284,7 +284,7 @@ create_user_function(const class_type* t,
   typedef void_user_member_function_2<class_type,arg_type1,arg_type2> classtype;
   
   //  cout << __PRETTY_FUNCTION__ << endl;
-  return new classtype(const_cast<class_type*>(t),(function_type)f);
+  return (magic_pointer<user_function>)new classtype(const_cast<class_type*>(t),(function_type)f);
 }
 // Non-member, 2 args
 template <class ret_type, class arg_type1, class arg_type2>
@@ -292,7 +292,7 @@ inline magic_pointer<user_function>
 create_user_function(ret_type (*f)(arg_type1, arg_type2))
 {
   //  cout << __PRETTY_FUNCTION__ << endl;
-  return new user_function_2<arg_type1,arg_type2,ret_type>(f);
+  return (magic_pointer<user_function>)new user_function_2<arg_type1,arg_type2,ret_type>(f);
 }
 
 // void Non-member, 2 args
@@ -300,6 +300,6 @@ template <class arg_type1, class arg_type2>
 inline magic_pointer<user_function> create_user_function(void (*f)(arg_type1, arg_type2))
 {
   //  cout << __PRETTY_FUNCTION__ << endl;
-  return new void_user_function_2<arg_type1,arg_type2>(f);
+  return (magic_pointer<user_function>)new void_user_function_2<arg_type1,arg_type2>(f);
 }
 

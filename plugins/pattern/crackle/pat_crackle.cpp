@@ -357,16 +357,16 @@ int TPatternCrackle::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 #else
   if ( rktNAME == "color" )
   {
-    rnVALUE = new TAttribColor (tColor);
+    rnVALUE = (user_arg_type)new TAttribColor (tColor);
   }
   else if ( rktNAME == "base_color" )
   {
-    rnVALUE = new TAttribColor (tBaseColor);
+    rnVALUE = (user_arg_type)new TAttribColor (tBaseColor);
   }
   else if ( rktNAME == "zoom" )
   {
     TVector vec(1 / tZoom.x(), 1 / tZoom.y(), 1 / tZoom.z());
-    rnVALUE = new TAttribVector (vec);
+    rnVALUE = (user_arg_type)new TAttribVector (vec);
   }
 #endif
   else

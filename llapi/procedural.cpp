@@ -115,7 +115,7 @@ int TProcedural::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 #if !defined(NEW_ATTRIBUTES)    
     rnVALUE.pvValue = (void*)tIdentifier.c_str();
 #else
-    rnVALUE = new TAttribString (tIdentifier);
+    rnVALUE = (user_arg_type)new TAttribString (tIdentifier);
 #endif
     return FX_ATTRIB_OK;
   }

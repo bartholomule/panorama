@@ -482,7 +482,7 @@ int TCone::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 #if !defined(NEW_ATTRIBUTES)        
     rnVALUE.pvValue = &tMaxCirclePoint;
 #else
-    rnVALUE = new TAttribVector(tMaxCirclePoint);
+    rnVALUE = (user_arg_type)new TAttribVector(tMaxCirclePoint);
 #endif
   }
   else if ( rktNAME == "min_circle_point" )
@@ -490,7 +490,7 @@ int TCone::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 #if !defined(NEW_ATTRIBUTES)            
     rnVALUE.pvValue = &tMinCirclePoint;
 #else
-    rnVALUE = new TAttribVector(tMinCirclePoint);
+    rnVALUE = (user_arg_type)new TAttribVector(tMinCirclePoint);
 #endif    
   }
   else if ( rktNAME == "max_radius" )
@@ -498,7 +498,7 @@ int TCone::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 #if !defined(NEW_ATTRIBUTES)            
     rnVALUE.dValue = tMaxRadius;
 #else
-    rnVALUE = new TAttribReal(tMaxRadius);
+    rnVALUE = (user_arg_type)new TAttribReal(tMaxRadius);
 #endif
   }
   else if ( rktNAME == "min_radius" )
@@ -506,7 +506,7 @@ int TCone::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 #if !defined(NEW_ATTRIBUTES)            
     rnVALUE.dValue = tMinRadius;
 #else
-    rnVALUE = new TAttribReal(tMinRadius);
+    rnVALUE = (user_arg_type)new TAttribReal(tMinRadius);
 #endif
   }
   else

@@ -26,11 +26,11 @@
 TColor TAtmosphericObject::evaluateScattering (const TSurfaceData& rktDATA) const
 {
 
-  const TLight* ptLight;
+  magic_pointer<TLight> ptLight;
   TScalar       tPhase      = 1;
   TColor        tScattering = TColor::_null();
 
-  for (vector<TLight*>::const_iterator tIter = ptScene->lightList().begin(); ( tIter != ptScene->lightList().end() ) ;tIter++)
+  for (vector<magic_pointer<TLight> >::const_iterator tIter = ptScene->lightList().begin(); ( tIter != ptScene->lightList().end() ) ;tIter++)
   {
     ptLight = *tIter;
     if ( ptLight->shadow() && ptLight->volumetric() )
@@ -243,23 +243,23 @@ int TAtmosphericObject::getAttribute (const string& rktNAME, NAttribute& rnVALUE
 #else
   if ( rktNAME == "samples" )
   {
-    rnVALUE = new TAttribInt (wSamples);
+    rnVALUE = (user_arg_type)new TAttribInt (wSamples);
   }
   else if ( rktNAME == "jitter" )
   {
-    rnVALUE = new TAttribReal (tJitter);
+    rnVALUE = (user_arg_type)new TAttribReal (tJitter);
   }
   else if ( rktNAME == "min_step_size" )
   {
-    rnVALUE = new TAttribReal (tMinStepSize);
+    rnVALUE = (user_arg_type)new TAttribReal (tMinStepSize);
   }
   else if ( rktNAME == "transp_th" )
   {
-    rnVALUE = new TAttribReal (tTransparencyThreshold);
+    rnVALUE = (user_arg_type)new TAttribReal (tTransparencyThreshold);
   }
   else if ( rktNAME == "slope_th" )
   {
-    rnVALUE = new TAttribReal (tSlopeThreshold);
+    rnVALUE = (user_arg_type)new TAttribReal (tSlopeThreshold);
   }  
 #endif
   else

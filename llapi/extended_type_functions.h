@@ -43,7 +43,8 @@ inline EAttribType type_to_etype<TImage>(TImage i)
 template <>
 inline magic_pointer<TAttribute> type_to_attrib<TImage>(TImage i)
 {
-  return new TAttribImage(new TImage(i));
+  magic_pointer<TImage> ip(new TImage(i));
+  return user_arg_type(new TAttribImage(ip));
 }
 
 template <>
@@ -65,7 +66,7 @@ inline TImage attrib_to_type<TImage>(magic_pointer<TAttribute> atp,
 template <>
 inline magic_pointer<TAttribute> get_attrib<TImage>()
 {
-  return new TAttribImage;
+  return user_arg_type(new TAttribImage);
 }
 
 // ---------------------------------------------------------------------------
@@ -82,7 +83,7 @@ template <>
 inline magic_pointer<TAttribute>
 type_to_attrib<magic_pointer<TImage> >(magic_pointer<TImage> i)
 {
-  return new TAttribImage(i);
+  return user_arg_type(new TAttribImage(i));
 }
 
 template <>
@@ -96,13 +97,13 @@ attrib_to_type<magic_pointer<TImage> >(magic_pointer<TAttribute> atp,
   {
     return img->tValue;
   }
-  return new TImage(1,1);
+  return magic_pointer<TImage>(new TImage(1,1));
 }
 
 template <>
 inline magic_pointer<TAttribute> get_attrib<magic_pointer<TImage> >()
 {
-  return new TAttribImage;
+  return user_arg_type(new TAttribImage);
 }
 
 // ---------------------------------------------------------------------------
@@ -119,7 +120,7 @@ template <>
 inline magic_pointer<TAttribute>
 type_to_attrib<const magic_pointer<TImage> >(const magic_pointer<TImage> i)
 {
-  return new TAttribImage(i);
+  return user_arg_type(new TAttribImage(i));
 }
 
 template <>
@@ -133,13 +134,13 @@ attrib_to_type<const magic_pointer<TImage> >(magic_pointer<TAttribute> atp,
   {
     return img->tValue;
   }
-  return new TImage(1,1);
+  return magic_pointer<TImage>(new TImage(1,1));
 }
 
 template <>
 inline magic_pointer<TAttribute> get_attrib<const magic_pointer<TImage> >()
 {
-  return new TAttribImage;
+  return user_arg_type(new TAttribImage);
 }
 
 
@@ -156,7 +157,7 @@ template <>
 inline magic_pointer<TAttribute>
 type_to_attrib<magic_pointer<TBsdf> >(magic_pointer<TBsdf> p)
 {
-  return new TAttribBsdf(p);
+  return user_arg_type(new TAttribBsdf(p));
 }
 
 template <>
@@ -184,7 +185,7 @@ attrib_to_type<magic_pointer<TBsdf> >(magic_pointer<TAttribute> atp,
 template <>
 inline magic_pointer<TAttribute> get_attrib<magic_pointer<TBsdf> >()
 {
-  return new TAttribBsdf();
+  return user_arg_type(new TAttribBsdf());
 }
 
 // ---------------------------------------------------------------------------
@@ -200,7 +201,7 @@ template <>
 inline magic_pointer<TAttribute>
 type_to_attrib<const magic_pointer<TBsdf> >(const magic_pointer<TBsdf> p)
 {
-  return new TAttribBsdf(p);
+  return user_arg_type(new TAttribBsdf(p));
 }
 
 template <>
@@ -228,7 +229,7 @@ attrib_to_type<const magic_pointer<TBsdf> >(magic_pointer<TAttribute> atp,
 template <>
 inline magic_pointer<TAttribute> get_attrib<const magic_pointer<TBsdf> >()
 {
-  return new TAttribBsdf();
+  return user_arg_type(new TAttribBsdf());
 }
 
 // ---------------------------------------------------------------------------
@@ -243,7 +244,7 @@ inline EAttribType type_to_etype<magic_pointer<TCamera> >(magic_pointer<TCamera>
 template <>
 inline magic_pointer<TAttribute> type_to_attrib<magic_pointer<TCamera> >(magic_pointer<TCamera> p)
 {
-  return new TAttribCamera(p);
+  return user_arg_type(new TAttribCamera(p));
 }
 
 template <>
@@ -269,7 +270,7 @@ attrib_to_type<magic_pointer<TCamera> >(magic_pointer<TAttribute> atp,
 template <>
 inline magic_pointer<TAttribute> get_attrib<magic_pointer<TCamera> >()
 {
-  return new TAttribCamera();
+  return user_arg_type(new TAttribCamera());
 }
 
 // ---------------------------------------------------------------------------
@@ -284,7 +285,7 @@ inline EAttribType type_to_etype<const magic_pointer<TCamera> >(const magic_poin
 template <>
 inline magic_pointer<TAttribute> type_to_attrib<const magic_pointer<TCamera> >(const magic_pointer<TCamera> p)
 {
-  return new TAttribCamera(p);
+  return user_arg_type(new TAttribCamera(p));
 }
 
 template <>
@@ -310,7 +311,7 @@ attrib_to_type<const magic_pointer<TCamera> >(magic_pointer<TAttribute> atp,
 template <>
 inline magic_pointer<TAttribute> get_attrib<const magic_pointer<TCamera> >()
 {
-  return new TAttribCamera();
+  return user_arg_type(new TAttribCamera());
 }
 
 // ---------------------------------------------------------------------------
@@ -326,7 +327,7 @@ template <>
 inline magic_pointer<TAttribute>
 type_to_attrib<magic_pointer<TPattern> >(magic_pointer<TPattern> p)
 {
-  return new TAttribPattern(p);
+  return user_arg_type(new TAttribPattern(p));
 }
 
 template <>
@@ -341,13 +342,13 @@ attrib_to_type<magic_pointer<TPattern> >(magic_pointer<TAttribute> atp,
     data = rcp_static_cast<TAttribute>(pat);
     return pat->tValue;
   }
-  return new TPattern;
+  return magic_pointer<TPattern>(new TPattern);
 }
 
 template <>
 inline magic_pointer<TAttribute> get_attrib<magic_pointer<TPattern> >()
 {
-  return new TAttribPattern();
+  return user_arg_type(new TAttribPattern());
 }
 
 // ---------------------------------------------------------------------------
@@ -363,7 +364,7 @@ template <>
 inline magic_pointer<TAttribute>
 type_to_attrib<const magic_pointer<TPattern> >(const magic_pointer<TPattern> p)
 {
-  return new TAttribPattern(p);
+  return user_arg_type(new TAttribPattern(p));
 }
 
 template <>
@@ -378,13 +379,13 @@ attrib_to_type<const magic_pointer<TPattern> >(magic_pointer<TAttribute> atp,
     data = rcp_static_cast<TAttribute>(pat);
     return pat->tValue;
   }  
-  return new TPattern;
+  return magic_pointer<TPattern>(new TPattern);
 }
 
 template <>
 inline magic_pointer<TAttribute> get_attrib<const magic_pointer<TPattern> >()
 {
-  return new TAttribPattern();
+  return user_arg_type(new TAttribPattern());
 }
 
 // ---------------------------------------------------------------------------
@@ -407,20 +408,20 @@ attrib_to_type<magic_pointer<TPerturbation> >(magic_pointer<TAttribute> atp,
   {
     return pert->tValue;
   }
-  return new TPerturbation;
+  return magic_pointer<TPerturbation>(new TPerturbation);
 }
 
 template <>
 inline magic_pointer<TAttribute>
 type_to_attrib<magic_pointer<TPerturbation> >(magic_pointer<TPerturbation> p)
 {
-  return new TAttribPerturbation(p);
+  return user_arg_type(new TAttribPerturbation(p));
 }
 
 template <>
 inline magic_pointer<TAttribute> get_attrib<magic_pointer<TPerturbation> >()
 {
-  return new TAttribPerturbation();
+  return user_arg_type(new TAttribPerturbation());
 }
 
 // ---------------------------------------------------------------------------
@@ -443,20 +444,20 @@ attrib_to_type<const magic_pointer<TPerturbation> >(magic_pointer<TAttribute> at
   {
     return pert->tValue;
   }
-  return new TPerturbation;
+  return magic_pointer<TPerturbation>(new TPerturbation);
 }
 
 template <>
 inline magic_pointer<TAttribute>
 type_to_attrib<const magic_pointer<TPerturbation> >(const magic_pointer<TPerturbation> p)
 {
-  return new TAttribPerturbation(p);
+  return user_arg_type(new TAttribPerturbation(p));
 }
 
 template <>
 inline magic_pointer<TAttribute> get_attrib<const magic_pointer<TPerturbation> >()
 {
-  return new TAttribPerturbation();
+  return user_arg_type(new TAttribPerturbation());
 }
 
 // ---------------------------------------------------------------------------
@@ -472,7 +473,7 @@ template <>
 inline magic_pointer<TAttribute>
 type_to_attrib<magic_pointer<TMaterial> >(magic_pointer<TMaterial> p)
 {
-  return new TAttribMaterial(p);
+  return user_arg_type(new TAttribMaterial(p));
 }
 
 template <>
@@ -486,13 +487,13 @@ attrib_to_type<magic_pointer<TMaterial> >(magic_pointer<TAttribute> atp,
   {
     return mat->tValue;
   }
-  return new TMaterial;
+  return magic_pointer<TMaterial>(new TMaterial);
 }
 
 template <>
 inline magic_pointer<TAttribute> get_attrib<magic_pointer<TMaterial> >()
 {
-  return new TAttribMaterial();
+  return user_arg_type(new TAttribMaterial());
 }
 
 // ---------------------------------------------------------------------------
@@ -508,7 +509,7 @@ template <>
 inline magic_pointer<TAttribute>
 type_to_attrib<const magic_pointer<TMaterial> >(const magic_pointer<TMaterial> p)
 {
-  return new TAttribMaterial(p);
+  return user_arg_type(new TAttribMaterial(p));
 }
 
 template <>
@@ -522,13 +523,13 @@ attrib_to_type<const magic_pointer<TMaterial> >(magic_pointer<TAttribute> atp,
   {
     return mat->tValue;
   }
-  return new TMaterial;
+  return magic_pointer<TMaterial>(new TMaterial);
 }
 
 template <>
 inline magic_pointer<TAttribute> get_attrib<const magic_pointer<TMaterial> >()
 {
-  return new TAttribMaterial();
+  return user_arg_type(new TAttribMaterial());
 }
 
 // ---------------------------------------------------------------------------
@@ -544,7 +545,7 @@ template <>
 inline magic_pointer<TAttribute>
 type_to_attrib<magic_pointer<TRenderer> >(magic_pointer<TRenderer> p)
 {
-  return new TAttribRenderer(p);
+  return user_arg_type(new TAttribRenderer(p));
 }
 
 template <>
@@ -559,13 +560,13 @@ attrib_to_type<magic_pointer<TRenderer> >(magic_pointer<TAttribute> atp,
     return rend->tValue;
   }
   cerr << "attrib_to_type(renderer): Cannot extract renderer!" << endl;
-  return NULL;
+  return magic_pointer<TRenderer>(NULL);
 }
 
 template <>
 inline magic_pointer<TAttribute> get_attrib<magic_pointer<TRenderer> >()
 {
-  return new TAttribRenderer();
+  return user_arg_type(new TAttribRenderer());
 }
 
 // ---------------------------------------------------------------------------
@@ -581,7 +582,7 @@ template <>
 inline magic_pointer<TAttribute>
 type_to_attrib<const magic_pointer<TRenderer> >(const magic_pointer<TRenderer> p)
 {
-  return new TAttribRenderer(p);
+  return user_arg_type(new TAttribRenderer(p));
 }
 
 template <>
@@ -596,13 +597,13 @@ attrib_to_type<const magic_pointer<TRenderer> >(magic_pointer<TAttribute> atp,
     return rend->tValue;
   }
   cerr << "attrib_to_type(renderer): Cannot extract renderer!" << endl;
-  return NULL;
+  return magic_pointer<TRenderer>(NULL);
 }
 
 template <>
 inline magic_pointer<TAttribute> get_attrib<const magic_pointer<TRenderer> >()
 {
-  return new TAttribRenderer();
+  return user_arg_type(new TAttribRenderer());
 }
 
 // ---------------------------------------------------------------------------
@@ -618,7 +619,7 @@ template <>
 inline magic_pointer<TAttribute>
 type_to_attrib<magic_pointer<TObject> >(magic_pointer<TObject> p)
 {
-  return new TAttribObject(p);
+  return user_arg_type(new TAttribObject(p));
 }
 
 template <>
@@ -641,13 +642,13 @@ attrib_to_type<magic_pointer<TObject> >(magic_pointer<TAttribute> atp,
   }  
 
   cerr << "attrib_to_type(object): Cannot extract object!" << endl;
-  return NULL;
+  return magic_pointer<TObject>(NULL);
 }
 
 template <>
 inline magic_pointer<TAttribute> get_attrib<magic_pointer<TObject> >()
 {
-  return new TAttribObject();
+  return user_arg_type(new TAttribObject());
 }
 
 // ---------------------------------------------------------------------------
@@ -663,7 +664,7 @@ template <>
 inline magic_pointer<TAttribute>
 type_to_attrib<const magic_pointer<TObject> >(const magic_pointer<TObject> p)
 {
-  return new TAttribObject(p);
+  return user_arg_type(new TAttribObject(p));
 }
 
 template <>
@@ -678,13 +679,13 @@ attrib_to_type<const magic_pointer<TObject> >(magic_pointer<TAttribute> atp,
     return obj->tValue;
   }
   cerr << "attrib_to_type(object): Cannot extract object!" << endl;
-  return NULL;
+  return magic_pointer<TObject>(NULL);
 }
 
 template <>
 inline magic_pointer<TAttribute> get_attrib<const magic_pointer<TObject> >()
 {
-  return new TAttribObject();
+  return user_arg_type(new TAttribObject());
 }
 
 
@@ -701,7 +702,7 @@ template <>
 inline magic_pointer<TAttribute>
 type_to_attrib<magic_pointer<TImageIO> >(magic_pointer<TImageIO> p)
 {
-  return new TAttribImageIO(p);
+  return user_arg_type(new TAttribImageIO(p));
 }
 
 template <>
@@ -716,13 +717,13 @@ attrib_to_type<magic_pointer<TImageIO> >(magic_pointer<TAttribute> atp,
     return io->tValue;
   }
   cerr << "attrib_to_type(ImageIO): Cannot extract ImageIO!" << endl;
-  return NULL;
+  return magic_pointer<TImageIO>(NULL);
 }
 
 template <>
 inline magic_pointer<TAttribute> get_attrib<magic_pointer<TImageIO> >()
 {
-  return new TAttribImageIO();
+  return user_arg_type(new TAttribImageIO());
 }
 
 // ---------------------------------------------------------------------------
@@ -738,7 +739,7 @@ template <>
 inline magic_pointer<TAttribute>
 type_to_attrib<const magic_pointer<TImageIO> >(const magic_pointer<TImageIO> p)
 {
-  return new TAttribImageIO(p);
+  return user_arg_type(new TAttribImageIO(p));
 }
 
 template <>
@@ -753,13 +754,13 @@ attrib_to_type<const magic_pointer<TImageIO> >(magic_pointer<TAttribute> atp,
     return io->tValue;
   }
   cerr << "attrib_to_type(ImageIO): Cannot extract ImageIO!" << endl;
-  return NULL;
+  return magic_pointer<TImageIO>(NULL);
 }
 
 template <>
 inline magic_pointer<TAttribute> get_attrib<const magic_pointer<TImageIO> >()
 {
-  return new TAttribImageIO();
+  return user_arg_type(new TAttribImageIO());
 }
 
 // ---------------------------------------------------------------------------
@@ -775,7 +776,7 @@ template <>
 inline magic_pointer<TAttribute>
 type_to_attrib<magic_pointer<TScene> >(magic_pointer<TScene> p)
 {
-  return new TAttribScene(p);
+  return user_arg_type(new TAttribScene(p));
 }
 
 template <>
@@ -790,13 +791,13 @@ attrib_to_type<magic_pointer<TScene> >(magic_pointer<TAttribute> atp,
     return scene->tValue;
   }
   cerr << "attrib_to_type(scene): Cannot extract scene!" << endl;
-  return NULL;
+  return magic_pointer<TScene>(NULL);
 }
 
 template <>
 inline magic_pointer<TAttribute> get_attrib<magic_pointer<TScene> >()
 {
-  return new TAttribScene();
+  return user_arg_type(new TAttribScene());
 }
 
 // ---------------------------------------------------------------------------
@@ -812,7 +813,7 @@ template <>
 inline magic_pointer<TAttribute>
 type_to_attrib<const magic_pointer<TScene> >(const magic_pointer<TScene> p)
 {
-  return new TAttribScene(p);
+  return user_arg_type(new TAttribScene(p));
 }
 
 template <>
@@ -827,13 +828,13 @@ attrib_to_type<const magic_pointer<TScene> >(magic_pointer<TAttribute> atp,
     return scene->tValue;
   }
   cerr << "attrib_to_type(scene): Cannot extract scene!" << endl;
-  return NULL;
+  return magic_pointer<TScene>(NULL);
 }
 
 template <>
 inline magic_pointer<TAttribute> get_attrib<const magic_pointer<TScene> >()
 {
-  return new TAttribScene();
+  return user_arg_type(new TAttribScene());
 }
 
 // ---------------------------------------------------------------------------
@@ -849,7 +850,7 @@ template <>
 inline magic_pointer<TAttribute>
 type_to_attrib<magic_pointer<TAggregate> >(magic_pointer<TAggregate> p)
 {
-  return new TAttribAggregate(p);
+  return user_arg_type(new TAttribAggregate(p));
 }
 
 template <>
@@ -870,13 +871,13 @@ attrib_to_type<magic_pointer<TAggregate> >(magic_pointer<TAttribute> atp,
     }
   }
   cerr << "attrib_to_type(aggregate): Cannot extract aggregate!" << endl;
-  return NULL;
+  return magic_pointer<TAggregate>(NULL);
 }
 
 template <>
 inline magic_pointer<TAttribute> get_attrib<magic_pointer<TAggregate> >()
 {
-  return new TAttribAggregate();
+  return user_arg_type(new TAttribAggregate());
 }
 
 // ---------------------------------------------------------------------------
@@ -892,7 +893,7 @@ template <>
 inline magic_pointer<TAttribute>
 type_to_attrib<const magic_pointer<TAggregate> >(const magic_pointer<TAggregate> p)
 {
-  return new TAttribAggregate(p);
+  return user_arg_type(new TAttribAggregate(p));
 }
 
 template <>
@@ -913,13 +914,13 @@ attrib_to_type<const magic_pointer<TAggregate> >(magic_pointer<TAttribute> atp,
     }
   }
   cerr << "attrib_to_type(aggregate): Cannot extract aggregate!" << endl;
-  return NULL;
+  return magic_pointer<TAggregate>(NULL);
 }
 
 template <>
 inline magic_pointer<TAttribute> get_attrib<const magic_pointer<TAggregate> >()
 {
-  return new TAttribAggregate();
+  return user_arg_type(new TAttribAggregate());
 }
 
 /* =================================== */

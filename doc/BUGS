@@ -17,6 +17,12 @@
    that the coordinate references have been globally changed.  This shouldn't
    be that hard to fix. 
 
+ - Making copies of aggregates and then moving (or modifying) them will now
+   modify the original and *all* other copies.  The desired behavior should be
+   to make a copy, instead of sharing the pointer.  See
+   scenes/misc/lamp_point.rt for an example of how this is happening (there
+   should be TWO lamps in the output image).
+
 [_SCENES_]
 
  - Some material scenes do not render correctly.

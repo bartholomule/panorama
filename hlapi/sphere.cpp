@@ -76,7 +76,7 @@ int TSphere::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 #if !defined(NEW_ATTRIBUTES)    
     rnVALUE.dValue = tRadius;
 #else
-    rnVALUE = new TAttribReal (tRadius);
+    rnVALUE = (user_arg_type)new TAttribReal (tRadius);
 #endif
   }
   else

@@ -30,10 +30,10 @@ DEFINE_PLUGIN ("BsdfWard", FX_BSDF_CLASS, TBsdfWard);
 TBsdfWard::TBsdfWard (void)
 {
 
-  ptStandardDeviation_x = new TPattern (0.3);
-  ptStandardDeviation_y = new TPattern (0.3);
+  ptStandardDeviation_x = (magic_pointer<TPattern>)new TPattern (0.3);
+  ptStandardDeviation_y = (magic_pointer<TPattern>)new TPattern (0.3);
 
-  setSpecularColor (new TPattern (TColor::_white()));
+  setSpecularColor ((magic_pointer<TPattern>)new TPattern (TColor::_white()));
 
 }  /* TBsdfWard() */
 
@@ -151,15 +151,15 @@ int TBsdfWard::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 #else
   if ( rktNAME == "roughness_x" )
   {
-    rnVALUE = new TAttribPattern (ptStandardDeviation_x);
+    rnVALUE = (user_arg_type)new TAttribPattern (ptStandardDeviation_x);
   }
   else if ( rktNAME == "roughness_y" )
   {
-    rnVALUE = new TAttribPattern (ptStandardDeviation_y);
+    rnVALUE = (user_arg_type)new TAttribPattern (ptStandardDeviation_y);
   }
   else if ( rktNAME == "specular_color" )
   {
-    rnVALUE = new TAttribPattern (ptSpecularColor);
+    rnVALUE = (user_arg_type)new TAttribPattern (ptSpecularColor);
   }
 #endif
   else

@@ -35,7 +35,7 @@ struct TUGVoxel
 {		   
 
   TUGLatticeCoord         i, j, k;      // Cube key (lattice location of cube)
-  list<const TObject*>    tObjectList;
+  list<magic_pointer<const TObject> > tObjectList;
 
 };  /* struct TUGVoxel */
 
@@ -99,7 +99,7 @@ class TUniformGrid
     bool findFirstIntersection6 (const TRay& rktRAY, TSurfaceData& rtDATA) const;
     bool findFirstIntersection7 (const TRay& rktRAY, TSurfaceData& rtDATA) const;
 
-    void add (TUGLatticeCoord tI, TUGLatticeCoord tJ, TUGLatticeCoord tK, const TObject* pktOBJECT);
+    void add (TUGLatticeCoord tI, TUGLatticeCoord tJ, TUGLatticeCoord tK, magic_pointer<const TObject> pktOBJECT);
 
   public:
 
@@ -139,7 +139,7 @@ class TUniformGrid
     }
     void calculateVoxelSize (const vector<magic_pointer<TObject> >& rktOBJECT_LIST);
 
-    void addObject (const TObject* pktOBJECT);
+    void addObject (const magic_pointer<TObject> pktOBJECT);
 
     bool findFirstIntersection (const TRay& rktRAY, TSurfaceData& rtDATA) const;
     

@@ -139,19 +139,19 @@ int TPatternComposite::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 #else
   if ( rktNAME == "pattern1" )
   {
-    rnVALUE = new TAttribPattern (ptPattern1);
+    rnVALUE = (user_arg_type)new TAttribPattern (ptPattern1);
   }
   else if ( rktNAME == "pattern2" )
   {
-    rnVALUE = new TAttribPattern (ptPattern2);
+    rnVALUE = (user_arg_type)new TAttribPattern (ptPattern2);
   }
   else if ( rktNAME == "amount1" )
   {
-    rnVALUE = new TAttribReal (tPattern1Amount);
+    rnVALUE = (user_arg_type)new TAttribReal (tPattern1Amount);
   }
   else if ( rktNAME == "amount2" )
   {
-    rnVALUE = new TAttribReal (tPattern2Amount);
+    rnVALUE = (user_arg_type)new TAttribReal (tPattern2Amount);
   }  
 #endif  
   else

@@ -197,24 +197,24 @@ int TPatternWood::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 #else
   if ( rktNAME == "color" )
   {
-    rnVALUE = new TAttribColor (tColor);
+    rnVALUE = (user_arg_type)new TAttribColor (tColor);
   }
   else if ( rktNAME == "base_color" )
   {
-    rnVALUE = new TAttribColor (tBaseColor);
+    rnVALUE = (user_arg_type)new TAttribColor (tBaseColor);
   }
   else if ( rktNAME == "ringscale" )
   {
-    rnVALUE = new TAttribReal (tRingScale);
+    rnVALUE = (user_arg_type)new TAttribReal (tRingScale);
   }
   else if ( rktNAME == "grain" )
   {
-    rnVALUE = new TAttribReal (tGrainFactor);
+    rnVALUE = (user_arg_type)new TAttribReal (tGrainFactor);
   }
   else if ( rktNAME == "zoom" )
   {
     TVector inv(1.0 / tZoom.x(), 1.0 / tZoom.y(), 1.0 / tZoom.z());
-    rnVALUE = new TAttribVector (inv);
+    rnVALUE = (user_arg_type)new TAttribVector (inv);
   }  
 #endif
   else

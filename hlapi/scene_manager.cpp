@@ -24,17 +24,17 @@
 
 TSceneFormatMap   TSceneManager::_tSceneFormatMap;
 
-TScene* TSceneManager::_load (const string& rktNAME, const string& rktFORMAT)
+magic_pointer<TScene> TSceneManager::_load (const string& rktNAME, const string& rktFORMAT)
 {
 
-  TScene*   ptScene   = NULL;
+  magic_pointer<TScene> ptScene;// = NULL; by default
   TSceneIO* ptSceneIO = NULL;
   TCreateFunction* cf = NULL;
 
   if ( !_knownFormat (rktFORMAT) )
   {
     cerr << "ERROR: Scene format does not exist" << endl;
-    return NULL;
+    return magic_pointer<TScene>(NULL);
   }
   
   cf = _tSceneFormatMap [rktFORMAT];

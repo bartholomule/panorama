@@ -29,15 +29,16 @@ class TABVH : public TAggregate
   protected:
 
     struct TNode;
+    typedef magic_pointer<TNode> node_ptr;
 
-    mutable TNode*   ptTree;
+    mutable node_ptr   ptTree;
 
-    float costByMethod1 (TNode* ptTREE, TObject* ptOBJ);
-    float costByMethod2 (TNode* ptTREE, TObject* ptOBJ);
-    TNode* applyMethod1 (TNode* ptTREE, TObject* ptOBJ);
-    TNode* applyMethod2 (TNode* ptTREE, TObject* ptOBJ);
-    TNode* applyMethod3 (TNode* ptTREE, TObject* ptOBJ, float fINHERITANCE_COST, float fPARENT_BEST_COST);
-    void insertObject (TObject* ptOBJ);
+    float costByMethod1 (node_ptr ptTREE, magic_pointer<TObject> ptOBJ);
+    float costByMethod2 (node_ptr ptTREE, magic_pointer<TObject> ptOBJ);
+    node_ptr applyMethod1 (node_ptr ptTREE, magic_pointer<TObject> ptOBJ);
+    node_ptr applyMethod2 (node_ptr ptTREE, magic_pointer<TObject> ptOBJ);
+    node_ptr applyMethod3 (node_ptr ptTREE, magic_pointer<TObject> ptOBJ, float fINHERITANCE_COST, float fPARENT_BEST_COST);
+    void insertObject (magic_pointer<TObject> ptOBJ);
                        
   public:
 
@@ -56,11 +57,11 @@ class TABVH : public TAggregate
 struct TABVH::TNode
 {
   
-  TVolume*       ptVolume;
-  list<TNode*>   tChildList;
+  magic_pointer<TVolume> ptVolume;
+  list<node_ptr >   tChildList;
   float          fCost;
 
-  TNode (TVolume* ptVOL, float fCOST)
+  TNode (magic_pointer<TVolume> ptVOL, float fCOST)
   {
     ptVolume = ptVOL;
     fCost    = fCOST;
@@ -70,10 +71,10 @@ struct TABVH::TNode
   {
     if ( ptVolume->classType() == FX_OBJECT_CLASS )
     {
-      return ((TObject*) ptVolume)->boundingBox();
+      return ((TObject*) ptVolume.get_pointer())->boundingBox();
     }
 
-    return *((TBoundingBox*) ptVolume);
+    return *rcp_static_cast<TBoundingBox>(ptVolume);
   }
 
   float cost (void) const
@@ -81,14 +82,14 @@ struct TABVH::TNode
     return fCost;
   }
   
-  void addChild (TNode* ptNODE)
+  void addChild (node_ptr ptNODE)
   {
     tChildList.push_back (ptNODE);
   }
   
-  void addChild (TObject* ptOBJ)
+  void addChild (magic_pointer<TObject> ptOBJ)
   {
-    tChildList.push_back (new TNode (ptOBJ, ptOBJ->boundingBox().cost()));
+    tChildList.push_back ((node_ptr)new TNode (rcp_static_cast<TVolume>(ptOBJ), ptOBJ->boundingBox().cost()));
   }
   
 };  // struct TNode

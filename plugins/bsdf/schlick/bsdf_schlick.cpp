@@ -30,9 +30,9 @@ DEFINE_PLUGIN ("BsdfSchlick", FX_BSDF_CLASS, TBsdfSchlick);
 TBsdfSchlick::TBsdfSchlick (void)
 {
 
-  ptRoughness   = new TPattern (0.3);
-  ptIsotropy    = new TPattern (1.0);
-  ptReflectance = new TPattern (TColor::_white()); 
+  ptRoughness   = (magic_pointer<TPattern>)new TPattern (0.3);
+  ptIsotropy    = (magic_pointer<TPattern>)new TPattern (1.0);
+  ptReflectance = (magic_pointer<TPattern>)new TPattern (TColor::_white()); 
 
 }  /* TBsdfSchlick() */
 
@@ -152,15 +152,15 @@ int TBsdfSchlick::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 #else
   if ( rktNAME == "roughness" )
   {
-    rnVALUE= new TAttribPattern (ptRoughness);
+    rnVALUE = (user_arg_type)new TAttribPattern (ptRoughness);
   }
   else if ( rktNAME == "reflection_color" )
   {
-    rnVALUE= new TAttribPattern (ptReflectance);
+    rnVALUE = (user_arg_type)new TAttribPattern (ptReflectance);
   }
   else if ( rktNAME == "isotropy" )
   {
-    rnVALUE= new TAttribPattern (ptIsotropy);
+    rnVALUE = (user_arg_type)new TAttribPattern (ptIsotropy);
   }
 #endif  
   else

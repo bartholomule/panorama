@@ -100,11 +100,11 @@ int TPerturbationNoise::getAttribute (const string& rktNAME, NAttribute& rnVALUE
 #else
   if ( rktNAME == "bump" )
   {
-    rnVALUE = new TAttribReal (tBumpFactor);
+    rnVALUE = (user_arg_type)new TAttribReal (tBumpFactor);
   }
   else if ( rktNAME == "noise_pattern" )
   {
-    rnVALUE = new TAttribPattern (rcp_static_cast<TPattern>(ptNoisePattern));
+    rnVALUE = (user_arg_type)new TAttribPattern (rcp_static_cast<TPattern>(ptNoisePattern));
   }  
 #endif  
   else

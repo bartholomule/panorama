@@ -61,7 +61,7 @@ int TImageIO::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 #if !defined(NEW_ATTRIBUTES)    
     rnVALUE.pvValue = (char*) tFileName.c_str();
 #else
-    rnVALUE = new TAttribString (tFileName);
+    rnVALUE = (user_arg_type)new TAttribString (tFileName);
 #endif
   }
   else

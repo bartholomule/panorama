@@ -219,23 +219,23 @@ int TPointLight::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 #else
   if ( rktNAME == "falloff" )
   {
-    rnVALUE = new TAttribVector (tFalloff);
+    rnVALUE = (user_arg_type)new TAttribVector (tFalloff);
   }
   else if ( rktNAME == "axis" )
   {
-    rnVALUE = new TAttribVector (tConeAxis);
+    rnVALUE = (user_arg_type)new TAttribVector (tConeAxis);
   }
   else if ( rktNAME == "angle_th" )
   {
-    rnVALUE = new TAttribReal (tCosThreshold);
+    rnVALUE = (user_arg_type)new TAttribReal (tCosThreshold);
   }
   else if ( rktNAME == "distance_th" )
   {
-    rnVALUE = new TAttribReal (tDistanceThreshold);
+    rnVALUE = (user_arg_type)new TAttribReal (tDistanceThreshold);
   }
   else if ( rktNAME == "halo" )
   {
-    rnVALUE = new TAttribReal (tHaloSize);
+    rnVALUE = (user_arg_type)new TAttribReal (tHaloSize);
   }
 #endif
   else

@@ -20,6 +20,7 @@
 #define _RAY__
 
 #include "llapi/llapi_defs.h"
+#include "generic/magic_pointer.h"
 
 class TRay
 {
@@ -90,6 +91,8 @@ class TRay
     bool refract (const TVector& rktNORMAL, TScalar tIOR, bool& gTIR);
 
     TScalar applyTransform (const TMatrix* pktMATRIX);
+    TScalar applyTransform (const magic_pointer<TMatrix>& pktMATRIX);
+    TScalar applyTransform (const TMatrix& rktMATRIX);  
 
     void printDebug (const string& indent) const;
 

@@ -380,7 +380,7 @@ int TPatternTexture::setAttribute (const string& rktNAME, NAttribute nVALUE, EAt
     }
     
     //    ptImage = tImageManager.newImage (str->tValue, FileExtension (str->tValue));
-    ptImage = tImageManager.newImage (str->tValue, "auto");    
+    ptImage = (magic_pointer<TImage>)tImageManager.newImage (str->tValue, "auto");    
 
     if ( !ptImage )
     {
@@ -593,27 +593,27 @@ int TPatternTexture::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 #else
   if ( rktNAME == "color" )
   {
-    rnVALUE = new TAttribColor (tColor);
+    rnVALUE = (user_arg_type)new TAttribColor (tColor);
   }
   else if ( rktNAME == "texture" )
   {
-    rnVALUE = new TAttribImage(ptImage);
+    rnVALUE = (user_arg_type)new TAttribImage(ptImage);
   }
   else if ( rktNAME == "tiling" )
   {
-    rnVALUE = new TAttribVector2 (tTiling);
+    rnVALUE = (user_arg_type)new TAttribVector2 (tTiling);
   }
   else if ( rktNAME == "offset" )
   {
-    rnVALUE = new TAttribVector2 (tOffset);
+    rnVALUE = (user_arg_type)new TAttribVector2 (tOffset);
   }
   else if ( rktNAME == "mirror" )
   {
-    rnVALUE = new TAttribBool (gMirror);
+    rnVALUE = (user_arg_type)new TAttribBool (gMirror);
   }
   else if ( rktNAME == "tile" )
   {
-    rnVALUE = new TAttribBool (gTile);
+    rnVALUE = (user_arg_type)new TAttribBool (gTile);
   }
   else if ( rktNAME == "mapping" )
   {
@@ -632,11 +632,11 @@ int TPatternTexture::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
       mapping_choices.push_back (mapping_strings[FX_TORUS]);
       mapping_choices.push_back (mapping_strings[FX_PLANAR]);      
     }
-    rnVALUE = new TAttribStringList (mapping_choices, mapping_strings[eMapping]);
+    rnVALUE = (user_arg_type)new TAttribStringList (mapping_choices, mapping_strings[eMapping]);
   }
   else if ( rktNAME == "tube_center" )
   {
-    rnVALUE = new TAttribReal (tTubeCenter);
+    rnVALUE = (user_arg_type)new TAttribReal (tTubeCenter);
   }
 #endif
   else

@@ -204,7 +204,7 @@ int main (int argc, char *argv[])
 {
 
   ofstream   tLogFile;
-  TScene*    ptScene;
+  magic_pointer<TScene> ptScene;
   char       acTimeString [30];
   time_t     tBaseTime, tInitTime, tRenderTime, tPostProcessTime;
 

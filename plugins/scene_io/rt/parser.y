@@ -132,16 +132,13 @@ static void FIXME(const string& s) { cerr << "FIXME: " << s << endl; }
 %token <sIdent> T_CAMERA
 %token <sIdent> T_CLASS
 %token <sIdent> T_DEFINE
-%token <sIdent> T_DIFFERENCE
 %token <sIdent> T_EXTENDS
 %token <sIdent> T_FILTER
 %token <sIdent> T_GREEN
-%token <sIdent> T_INTERSECTION
 %token <sIdent> T_LIGHT
 %token <sIdent> T_OUTPUT
 %token <sIdent> T_RED
 %token <sIdent> T_RENDERER
-%token <sIdent> T_UNION
 
 %token <gValue> AND_L
 %token <gValue> OR_L
@@ -313,7 +310,7 @@ prec_8:
                         {
 			  report_reduction("prec_8 <-- prec_8 OR prec_7");
 			  report_reduction("prec_8 <-- " + $1->toString() + " OR " + $3->toString());
-			  $$ = new TAttribBool(check_get_bool($1) ||
+			  $$ = (user_arg_type)new TAttribBool(check_get_bool($1) ||
 					       check_get_bool($3));
 			}
 ;
@@ -329,7 +326,7 @@ prec_7:
                         {
 			  report_reduction("prec_7 <-- prec_7 AND prec_6");
 			  report_reduction("prec_7 <-- " + $1->toString() + " AND " + $3->toString());
-			  $$ = new TAttribBool(check_get_bool($1) &&
+			  $$ = (user_arg_type)new TAttribBool(check_get_bool($1) &&
 					       check_get_bool($3));
 			}
 ;
@@ -352,31 +349,31 @@ prec_6:
 			  }
 			  if( $1->eType == FX_REAL )
 			  {
-			    $$ = new TAttribBool(check_get_real($1) == check_get_real($3));
+			    $$ = (user_arg_type)new TAttribBool(check_get_real($1) == check_get_real($3));
 			  }
 			  else if( $1->eType == FX_BOOL )
 			  {
-			    $$ = new TAttribBool(check_get_bool($1) ==
+			    $$ = (user_arg_type)new TAttribBool(check_get_bool($1) ==
 						 check_get_bool($3));
 			  }
 			  else if( $1->eType == FX_VECTOR )
 			  {
-			    $$ = new TAttribBool(get_vector($1)->tValue ==
+			    $$ = (user_arg_type)new TAttribBool(get_vector($1)->tValue ==
 						 get_vector($3)->tValue);
 			  }
 			  else if( $1->eType == FX_VECTOR2 )
 			  {
-			    $$ = new TAttribBool(get_vector2($1)->tValue ==
+			    $$ = (user_arg_type)new TAttribBool(get_vector2($1)->tValue ==
 						 get_vector2($3)->tValue);
 			  }
 			  else if( $1->eType == FX_STRING || $1->eType == FX_STRING_LIST )
 			  {
-			    $$ = new TAttribBool(check_get_string($1) ==
+			    $$ = (user_arg_type)new TAttribBool(check_get_string($1) ==
 						 check_get_string($3));	  
 			  }
 			  else if( $1->eType == FX_INTEGER )
 			  {
-			    $$ = new TAttribBool(get_int($1)->tValue ==
+			    $$ = (user_arg_type)new TAttribBool(get_int($1)->tValue ==
 						 get_int($3)->tValue);	  
 			  }			  
 			  else
@@ -394,29 +391,29 @@ prec_6:
 			  }
 			  if( $1->eType == FX_REAL )
 			  {
-			    $$ = new TAttribBool(check_get_real($1) !=
+			    $$ = (user_arg_type)new TAttribBool(check_get_real($1) !=
 						 check_get_real($3));
 			  }
 			  else if( $1->eType == FX_BOOL )
 			  {
-			    $$ = new TAttribBool(check_get_bool($1) !=
+			    $$ = (user_arg_type)new TAttribBool(check_get_bool($1) !=
 						 check_get_bool($3));
 			  }
 			  else if( $1->eType == FX_VECTOR )
 			  {
-			    $$ = new TAttribBool(get_vector($1) != get_vector($3));
+			    $$ = (user_arg_type)new TAttribBool(get_vector($1) != get_vector($3));
 			  }
 			  else if( $1->eType == FX_VECTOR2 )
 			  {
-			    $$ = new TAttribBool(get_vector2($1) != get_vector2($3));
+			    $$ = (user_arg_type)new TAttribBool(get_vector2($1) != get_vector2($3));
 			  }
 			  else if( $1->eType == FX_STRING || $1->eType == FX_STRING_LIST )
 			  {
-			    $$ = new TAttribBool(check_get_string($1) != check_get_string($3));	  
+			    $$ = (user_arg_type)new TAttribBool(check_get_string($1) != check_get_string($3));	  
 			  }
 			  else if( $1->eType == FX_INTEGER )
 			  {
-			    $$ = new TAttribBool(get_int($1)->tValue == get_int($3)->tValue);	  
+			    $$ = (user_arg_type)new TAttribBool(get_int($1)->tValue == get_int($3)->tValue);	  
 			  }
 			  else
 			  {
@@ -436,22 +433,22 @@ prec_5:
 			| prec_4 GREATER_EQ prec_4
                         {
 			  report_reduction("prec_4 <-- prec_6 >= prec_5");
-			  $$ = new TAttribBool(check_get_real($1) >= check_get_real($3));
+			  $$ = (user_arg_type)new TAttribBool(check_get_real($1) >= check_get_real($3));
 			}
                         | prec_4 GREATER prec_4
                         {
 			  report_reduction("prec_4 <-- prec_6 > prec_5");
-			  $$ = new TAttribBool(check_get_real($1) > check_get_real($3));
+			  $$ = (user_arg_type)new TAttribBool(check_get_real($1) > check_get_real($3));
 			}
                         | prec_4 LESS_EQ prec_4
                         {
 			  report_reduction("prec_4 <-- prec_6 <= prec_5");
-			  $$ = new TAttribBool(check_get_real($1) <= check_get_real($3));
+			  $$ = (user_arg_type)new TAttribBool(check_get_real($1) <= check_get_real($3));
 			}
                         | prec_4 LESS prec_4
                         {
 			  report_reduction("prec_4 <-- prec_6 < prec_5");
-			  $$ = new TAttribBool(check_get_real($1) < check_get_real($3));
+			  $$ = (user_arg_type)new TAttribBool(check_get_real($1) < check_get_real($3));
 			} 
 ;
 
@@ -533,7 +530,7 @@ prec_2:
 			  report_reduction("prec_2 <-- ! prec_2");
 			  report_reduction("prec_2 <-- ! " + $2->toString());
 
-			  $$ = new TAttribBool(!check_get_bool($2));
+			  $$ = (user_arg_type)new TAttribBool(!check_get_bool($2));
 			}
                         | '+' prec_2
                         {
@@ -547,7 +544,7 @@ prec_2:
 			  report_reduction("prec_2 <-- - prec_2");
 			  report_reduction("prec_2 <-- - " + $2->toString());
 			  
-			  $$ = sub(new TAttribInt(0), $2);
+			  $$ = sub((user_arg_type)new TAttribInt(0), $2);
 			  if( !$$ )
 			  {
 			    rt_error("negation of " + EAttribType_to_str($2->eType) + " failed");
@@ -561,7 +558,7 @@ prec_1:
 			  report_reduction("prec_1 <-- quoted_string");
 			  report_reduction("prec_1 <-- " + string($1));
 			  
-			  $$ = new TAttribString($1);
+			  $$ = (user_arg_type)new TAttribString($1);
 			}
                         | PARAM prec_1
                         {
@@ -575,30 +572,30 @@ prec_1:
 
 			  if( DATAMAP.find($2) != DATAMAP.end() )
 			  {
-			    $$ = new TAttribBool(true);
+			    $$ = (user_arg_type)new TAttribBool(true);
 			  }
 			  else
 			  {
-			    $$ = new TAttribBool(false);
+			    $$ = (user_arg_type)new TAttribBool(false);
 			  }
 			}
                         | T_BOOL
                         {
 			  report_reduction("prec_1 <-- BOOL");
 			  
-			  $$ = new TAttribBool($1);
+			  $$ = (user_arg_type)new TAttribBool($1);
 			}
                         | T_INTEGER
                         {
 			  report_reduction("prec_1 <-- INTEGER");
 			  
-			  $$ = new TAttribInt($1);
+			  $$ = (user_arg_type)new TAttribInt($1);
 			}
                         | T_REAL
                           {
 			    report_reduction("prec_1 <-- REAL");
 			    
-			    $$ = new TAttribReal($1);
+			    $$ = (user_arg_type)new TAttribReal($1);
                           }
 
                         | '(' expression ')'
@@ -611,17 +608,17 @@ prec_1:
                         | color
                         {
 			  report_reduction("prec_1 <-- color");
-			  $$ = new TAttribColor(*$1);
+			  $$ = (user_arg_type)new TAttribColor(*$1);
 			}
                         | vector3
                         {
 			  report_reduction("prec_1 <-- vector3");
-			  $$ = new TAttribVector(*$1);
+			  $$ = (user_arg_type)new TAttribVector(*$1);
 			}
                         | vector2
                         {
 			  report_reduction("prec_1 <-- vector2");
-			  $$ = new TAttribVector2(*$1);
+			  $$ = (user_arg_type)new TAttribVector2(*$1);
 			}
                         | THIS
                         {
@@ -657,7 +654,7 @@ function_call           : potential_name '(' ')'
 			  else
 			  {
 			    rt_error("function " + string($1) + " does not exist");
-			    $$ = new TAttribute();
+			    $$ = (user_arg_type)new TAttribute();
 			  }
 			}
                         | potential_name '(' expression ')'
@@ -684,7 +681,7 @@ function_call           : potential_name '(' ')'
 			  else
 			  {
 			    rt_error("function " + string($1) + " does not exist");
-			    $$ = new TAttribute();
+			    $$ = (user_arg_type)new TAttribute();
 			  }			    
 			}
                         | potential_name '(' expression ',' expression ')'
@@ -712,7 +709,7 @@ function_call           : potential_name '(' ')'
 			  else
 			  {
 			    rt_error("function " + string($1) + " does not exist");
-			    $$ = new TAttribute();
+			    $$ = (user_arg_type)new TAttribute();
 			  }			    
 			}
 ;
@@ -734,7 +731,7 @@ color                   : '{' T_RED expression T_GREEN expression T_BLUE express
 			    cerr << "Here's what was really created: ";
 			    c->printDebug(""); cerr << endl;
 			    
-			    $$ = c;
+			    $$ = magic_pointer<TColor>(c);
 			  }
                        ;
 
@@ -752,7 +749,7 @@ vector3                 : '<' expression ',' expression ',' expression '>'
 				 << z << ")" << endl;
 #endif
 			    tVector.set (x,y,z);
-                            $$ = new TVector(tVector);
+                            $$ = (magic_pointer<TVector>)new TVector(tVector);
 			  }
 			;
 vector2			: '<' expression ',' expression '>'
@@ -760,7 +757,7 @@ vector2			: '<' expression ',' expression '>'
 			    report_reduction("vector2 <-- < expression , expression >");
 			    TVector2 tVector2;
 			    tVector2.set (check_get_real($2), check_get_real($4));
-                            $$ = new TVector2(tVector2);
+                            $$ = (magic_pointer<TVector2>)new TVector2(tVector2);
 			  }
 			;
 
@@ -803,7 +800,7 @@ class			: /* Nothing
 			| T_CLASS T_IDENTIFIER
 			  {
 			    report_reduction("class <-- : CLASS IDENTIFIER");
-			    PARENT_OBJECT = NULL;
+			    PARENT_OBJECT = (magic_pointer<TBaseClass>)NULL;
 			    $$ = $2;
 			  }
 			;
@@ -1035,11 +1032,6 @@ reserved_words          : T_BLUE
 			    report_reduction("reserved_words <-- DEFINE");
 			    $$ = $1;
 			  }
-			| T_DIFFERENCE
-                          {
-			    report_reduction("reserved_words <-- DIFFERENCE");
-			    $$ = $1;
-			  }
 			| T_EXTENDS
                           {
 			    report_reduction("reserved_words <-- EXTENDS");
@@ -1050,11 +1042,6 @@ reserved_words          : T_BLUE
 			    report_reduction("reserved_words <-- GREEN");
 			    $$ = $1;
 			  }
-			| T_INTERSECTION
-                          {
-			    report_reduction("reserved_words <-- INTERSECTION");
-			    $$ = $1;
-			  }
 			| T_RED
                           {
 			    report_reduction("reserved_words <-- RED");
@@ -1063,11 +1050,6 @@ reserved_words          : T_BLUE
 			| T_RENDERER
                           {
 			    report_reduction("reserved_words <-- RENDERER");
-			    $$ = $1;
-			  }
-			| T_UNION
-                          {
-			    report_reduction("reserved_words <-- UNION");
 			    $$ = $1;
 			  }
 			;
@@ -1104,14 +1086,14 @@ void RT_InitParser (void)
 
   while(!DATASTACK.empty()) DATASTACK.pop();
 
-  WORLD = new TAggregate();
-  PARENT_OBJECT = NULL;
+  WORLD = (magic_pointer<TAggregate>)new TAggregate();
+  PARENT_OBJECT = (magic_pointer<TBaseClass>)NULL;
   
   TSceneRT::_ptParsedScene->setWorld (rcp_static_cast<TObject>(WORLD));
 
   // Set the globalmost object to be the scene.  This allows operation on the
   // scene without the need for a dedicated scene section.
-  DATASTACK.push (new TAttribScene(TSceneRT::_ptParsedScene));
+  DATASTACK.push ((user_arg_type)new TAttribScene(TSceneRT::_ptParsedScene));
   
 }  /* RT_InitParser() */
 
@@ -1145,7 +1127,7 @@ magic_pointer<TBaseClass> NewObject (const string& rktCLASS,
     exit (1);
   }
 
-  return ptChild;
+  return magic_pointer<TBaseClass>(ptChild);
 
 }  /* NewObject() */
 
@@ -1164,7 +1146,7 @@ void CreateObject (const string& rktCLASS, const string& rktDEF_CLASS)
   //  cout << "Instance created... " << ptData->className() << endl;
   
   DATASTACK.push (base_to_attr(ptData));
-  PARENT_OBJECT = NULL;
+  PARENT_OBJECT = (magic_pointer<TBaseClass>)NULL;
 
 }  /* CreateObject() */
 

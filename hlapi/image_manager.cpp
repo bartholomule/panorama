@@ -44,7 +44,7 @@ TImage* TImageManager::_load (const string& rktNAME, const string& rktFORMAT)
 #if !defined(NEW_ATTRIBUTES)
   nAttrib.pvValue = (char*) rktNAME.c_str();
 #else
-  nAttrib = new TAttribString(rktNAME);
+  nAttrib = (user_arg_type)new TAttribString(rktNAME);
 #endif
 
   // If a loader could not be found...
@@ -132,7 +132,7 @@ int TImageManager::_save (const string& rktNAME, const string& rktFORMAT, const 
 #if !defined(NEW_ATTRIBUTES)  
   nAttrib.pvValue = (char*) rktNAME.c_str();
 #else
-  nAttrib = new TAttribString(rktNAME);
+  nAttrib = (user_arg_type)new TAttribString(rktNAME);
 #endif
   ptImageIO->setAttribute ("name", nAttrib, FX_STRING);
   

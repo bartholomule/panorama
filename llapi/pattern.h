@@ -60,7 +60,7 @@ protected:
 
 public:
 
-  TPattern (void) 
+  TPattern (void)
   {
     initialize();
   }

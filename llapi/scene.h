@@ -49,7 +49,7 @@ struct SBuffers
 };  /* struct SBuffers */
 
 
-typedef vector<TObject*> TObjectVector;
+typedef vector<magic_pointer<TObject> > TObjectVector;
 
 
 
@@ -69,13 +69,13 @@ class TScene : public TProcedural
     size_t                zHeight;
     SBuffers              sBuffers;
     magic_pointer<TPattern> ptBackgroundColor;
-    vector<TLight*>       tLightList;
-    vector<TObject*>      tAreaLightList;    
-    list<TImageFilter*>   tFilterList;
+    vector<magic_pointer<TLight> >     tLightList;
+    vector<magic_pointer<TObject> >    tAreaLightList;    
+    list<magic_pointer<TImageFilter> > tFilterList;
     magic_pointer<TImageIO>  ptImageIO;
     TProgram              tGlobalData;
 
-    bool recursiveLocateLights(TObject* obj, TObjectVector& light_manip_list, bool addlights = true);
+    bool recursiveLocateLights(magic_pointer<TObject> obj, TObjectVector& light_manip_list, bool addlights = true);
   
   public:
 
@@ -84,8 +84,8 @@ class TScene : public TProcedural
     TColor backgroundColor (const TSurfaceData& rktDATA) const { return ptBackgroundColor->color (rktDATA); }
     magic_pointer<TCamera> camera (void) const { return ptCamera; }
     magic_pointer<TObject> world (void) const { return ptWorld; }
-    vector<TLight*>& lightList (void) { return tLightList; }
-    vector<TObject*>& areaLightList (void) { return tAreaLightList; }  
+    vector<magic_pointer<TLight> >& lightList (void) { return tLightList; }
+    vector<magic_pointer<TObject> >& areaLightList (void) { return tAreaLightList; }  
     SBuffers* buffers (void) { return &sBuffers; }
     Word neededBuffers (void) const { return wNeededBuffers; }
     bool participatingMedia (void) const { return gParticipatingMedia; }
@@ -102,32 +102,42 @@ class TScene : public TProcedural
     void setWorld (magic_pointer<TObject> ptWORLD) { ptWorld = ptWORLD; }
     void setCamera (magic_pointer<TCamera> ptCAMERA) { ptCamera = ptCAMERA; }
     void addObject(magic_pointer<TObject> ptOBJECT);
-    void addLight (TLight* ptLIGHT);
-    void addAreaLight (TObject* ptLIGHT);
+    void addLight (magic_pointer<TLight> ptLIGHT);
+    void addAreaLight (magic_pointer<TObject> ptLIGHT);
     void setRenderer (magic_pointer<TRenderer> ptRENDERER) { ptRenderer = ptRENDERER; }
     void setImageOutput (magic_pointer<TImageIO> ptIMAGE_IO) { ptImageIO = ptIMAGE_IO; }
     void setParticipatingMedia (bool gACTIVE) { gParticipatingMedia = gACTIVE; }
-    void addImageFilter (TImageFilter* ptFILTER);
+    void addImageFilter (magic_pointer<TImageFilter> ptFILTER);
     void setOutputFileName (const string& rktNAME);
 
     void setWidth (size_t zWIDTH)
     {
-      zWidth = zWIDTH;
-
-      if ( !sBuffers.ptImage )
+      if( zWidth != zWIDTH )
       {
-	create_buffers();
+	destroy_buffers();
+
+	zWidth = zWIDTH;
+
+	if( (zWidth > 0) && (zHeight > 0) )
+	{
+	  create_buffers();
+	}
       }
     }
     
     void setHeight (size_t zHEIGHT)
     {
-      zHeight = zHEIGHT;
-      
-      if ( !sBuffers.ptImage )
+      if( zHeight != zHEIGHT )
       {
-	create_buffers();
-      }
+	destroy_buffers();
+
+	zHeight = zHEIGHT;
+
+	if( (zWidth > 0) && (zHeight > 0) )
+	{
+	  create_buffers();
+	}
+      }      
     }
 
     void addBuffer (Word wBUFFER)
@@ -136,6 +146,7 @@ class TScene : public TProcedural
     }
 
     bool create_buffers(void);
+    bool destroy_buffers (void);
     bool initialize (void);
     bool finalize (void);
     bool render (TUserFunction* pfUSER = NULL, void* pvDATA = NULL);

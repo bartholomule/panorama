@@ -36,12 +36,19 @@ class TCsg : public TAggregate
     
   public:
 
+    TCsg();
+    virtual ~TCsg();
+  
     virtual void setOperation (ECsgOp eOP)
     {
       eOperation = eOP;
     }
-
+  
     bool initialize (void);
+
+    int setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
+    int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
+    void getAttributeList (TAttributeList& rtLIST) const;  
 
     bool findFirstIntersection (const TRay& rktRAY, TSurfaceData& rtDATA) const;
     bool findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) const;

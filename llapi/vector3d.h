@@ -25,6 +25,7 @@
 #include "llapi/base_class.h"
 #include "llapi/machine.h"
 #include "llapi/math_tools.h"
+#include "generic/magic_pointer.h"
 
 template <class TItem>
 class TBaseMatrix;
@@ -108,7 +109,8 @@ class TVector3D : public TBaseClass
 
     void normalize (void);
 
-    void applyTransform (const TBaseMatrix<TItem>* pktMATRIX);
+    void applyTransform (const magic_pointer<TBaseMatrix<TItem> > pktMATRIX);
+    void applyTransform (const TBaseMatrix<TItem>& rktMATRIX);  
 
     virtual void printDebug (const string& indent) const;
 
@@ -143,7 +145,7 @@ inline void TVector3D<TItem>::normalize (void)
 
 
 template <class TItem>
-inline void TVector3D<TItem>::applyTransform (const TBaseMatrix<TItem>* pktMATRIX)
+inline void TVector3D<TItem>::applyTransform (const magic_pointer<TBaseMatrix<TItem> > pktMATRIX)
 {
 
   if ( pktMATRIX )
@@ -166,6 +168,30 @@ inline void TVector3D<TItem>::applyTransform (const TBaseMatrix<TItem>* pktMATRI
     vy = ty;
     vz = tz;
   }
+
+}  /* applyTransform() */
+
+template <class TItem>
+inline void TVector3D<TItem>::applyTransform (const TBaseMatrix<TItem>& rktMATRIX)
+{
+  
+  TItem   tx, ty, tz;
+  
+  tx = rktMATRIX.atElement[0][0] * vx +
+       rktMATRIX.atElement[1][0] * vy +
+       rktMATRIX.atElement[2][0] * vz;
+  
+  ty = rktMATRIX.atElement[0][1] * vx +
+       rktMATRIX.atElement[1][1] * vy +
+       rktMATRIX.atElement[2][1] * vz;
+  
+  tz = rktMATRIX.atElement[0][2] * vx +
+       rktMATRIX.atElement[1][2] * vy +
+       rktMATRIX.atElement[2][2] * vz;
+  
+  vx = tx;
+  vy = ty;
+  vz = tz;
 
 }  /* applyTransform() */
 

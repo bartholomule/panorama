@@ -88,7 +88,7 @@ public:
   virtual user_arg_type return_type() const = 0;
   virtual user_arg_type call(const user_arg_vector& args)
   {
-    return new TAttribute();    
+    return user_arg_type(new TAttribute());    
   }
 };
 
@@ -113,7 +113,7 @@ public:
     {
       // [REPORT ERROR HERE]
       cerr << "Incorrect number of arguments (should be 0)" << endl;      
-      return new TAttribute();
+      return user_arg_type(new TAttribute());
     }
     return type_to_attrib(sig());    
   }
@@ -141,10 +141,10 @@ public:
     {
       // [REPORT ERROR HERE]
       cerr << "Incorrect number of arguments (should be 0)" << endl;      
-      return new TAttribute();
+      return user_arg_type(new TAttribute());
     }
     sig();
-    return new TAttribute;
+    return user_arg_type(new TAttribute);
   }
   user_arg_type operator()() { return call(user_arg_vector()); }
 
@@ -177,7 +177,7 @@ public:
     {
       // [REPORT ERROR HERE]
       cerr << "Incorrect number of arguments (should be 0)" << endl;      
-      return new TAttribute();
+      return user_arg_type(new TAttribute());
     }
     return type_to_attrib((instance_ptr->*sig)());    
   }
@@ -213,10 +213,10 @@ public:
     {
       // [REPORT ERROR HERE]
       cerr << "Incorrect number of arguments (should be 0)" << endl;      
-      return new TAttribute();
+      return user_arg_type(new TAttribute());
     }
     (instance_ptr->*sig)();        
-    return new TAttribute();
+    return user_arg_type(new TAttribute());
   }
   user_arg_type operator()() { return call(user_arg_vector()); }
 
@@ -250,7 +250,7 @@ public:
     {
       // [REPORT ERROR HERE]
       cerr << "Incorrect number of arguments (should be 1)" << endl;
-      return new TAttribute();
+      return user_arg_type(new TAttribute());
     }
     // Perform type checking...
     user_arg_vector fn_args = required_args();
@@ -264,7 +264,7 @@ public:
     {
       // [REPORT ERROR HERE]
       cerr << "Types did not match." << endl;
-      return new TAttribute();
+      return user_arg_type(new TAttribute());
     }
   }
   
@@ -301,7 +301,7 @@ public:
     {
       // [REPORT ERROR HERE]
       cerr << "Incorrect number of arguments (should be 1)" << endl;
-      return new TAttribute();
+      return user_arg_type(new TAttribute());
     }
     // Perform type checking...
     user_arg_vector fn_args = required_args();
@@ -310,13 +310,13 @@ public:
       //      cout << "Calling for reals now..." << endl;
       magic_pointer<TAttribute> c;      
       sig(attrib_to_type<fn_arg_type>(args[0],c));
-      return new TAttribute();
+      return user_arg_type(new TAttribute());
     }
     else
     {
       // [REPORT ERROR HERE]
       cerr << "Types did not match." << endl;
-      return new TAttribute();
+      return user_arg_type(new TAttribute());
     }
   }
   
@@ -357,7 +357,7 @@ public:
     {
       // [REPORT ERROR HERE]
       cerr << "Incorrect number of arguments (should be 1)" << endl;      
-      return new TAttribute();
+      return user_arg_type(new TAttribute());
     }
     // Perform type checking...
     user_arg_vector fn_args = required_args();
@@ -371,7 +371,7 @@ public:
     {
       // [REPORT ERROR HERE]
       cerr << "Types did not match." << endl;      
-      return new TAttribute();
+      return user_arg_type(new TAttribute());
     }
   }  
   
@@ -414,7 +414,7 @@ public:
     {
       // [REPORT ERROR HERE]
       cerr << "Incorrect number of arguments (should be 1)" << endl;      
-      return new TAttribute();
+      return user_arg_type(new TAttribute());
     }
     // Perform type checking...
     user_arg_vector fn_args = required_args();
@@ -423,13 +423,13 @@ public:
       //      cout << "Calling for reals now..." << endl;
       magic_pointer<TAttribute> c;      
       (instance_ptr->*sig)(attrib_to_type<fn_arg_type>(args[0],c));      
-      return new TAttribute();
+      return user_arg_type(new TAttribute());
     }
     else
     {
       // [REPORT ERROR HERE]
       cerr << "Types did not match." << endl;      
-      return new TAttribute();
+      return user_arg_type(new TAttribute());
     }
   }  
   
@@ -454,7 +454,7 @@ magic_pointer<user_function> create_user_function(class_type* t,
 						  ret_type (class_type::*f)())
 {
   //  cout << __PRETTY_FUNCTION__ << endl;
-  return new user_member_function_0<class_type,ret_type>(t,f);
+  return magic_pointer<user_function>(new user_member_function_0<class_type,ret_type>(t,f));
 }
 
 // const Member function, 0 args...
@@ -464,8 +464,8 @@ magic_pointer<user_function> create_user_function(const class_type* t,
 						  ret_type (class_type::*f)() const)
 {
   //  cout << __PRETTY_FUNCTION__ << endl;
-  return new user_member_function_0<class_type,ret_type>(const_cast<class_type*>(t),
-							 (ret_type (class_type::*)())f);
+  return magic_pointer<user_function>(new user_member_function_0<class_type,ret_type>(const_cast<class_type*>(t),
+							 (ret_type (class_type::*)())f));
 }
 // void Member function, 0 args...
 template <class class_type>
@@ -474,7 +474,7 @@ magic_pointer<user_function> create_user_function(class_type* t,
 						  void (class_type::*f)())
 {
   //  cout << __PRETTY_FUNCTION__ << endl;
-  return new void_user_member_function_0<class_type>(t,f);
+  return magic_pointer<user_function>(new void_user_member_function_0<class_type>(t,f));
 }
 
 // void const Member function, 0 args...
@@ -484,8 +484,8 @@ magic_pointer<user_function> create_user_function(const class_type* t,
 						  void (class_type::*f)() const)
 {
   //  cout << __PRETTY_FUNCTION__ << endl;
-  return new void_user_member_function_0<class_type>(const_cast<class_type*>(t),
-						     (void (class_type::*)())f);
+  return magic_pointer<user_function>(new void_user_member_function_0<class_type>(const_cast<class_type*>(t),
+										  (void (class_type::*)())f));
 }
 
 // Member, 1 arg (not pointer, non-const-ref, etc)
@@ -495,7 +495,7 @@ magic_pointer<user_function>
 create_user_function(class_type* t, ret_type (class_type::*f)(arg_type))
 {
   //  cout << __PRETTY_FUNCTION__ << endl;
-  return new user_member_function_1<class_type,arg_type,ret_type>(t,f);
+  return magic_pointer<user_function>(new user_member_function_1<class_type,arg_type,ret_type>(t,f));
 }
 
 // const Member, 1 arg (not pointer, non-const-ref, etc)
@@ -508,8 +508,8 @@ create_user_function(const class_type* t,
   typedef ret_type (class_type::*function_type)(arg_type);
 
   //  cout << __PRETTY_FUNCTION__ << endl;
-  return new user_member_function_1<class_type,arg_type,ret_type>(const_cast<class_type*>(t),
-								  (function_type)f);
+  return magic_pointer<user_function>(new user_member_function_1<class_type,arg_type,ret_type>(const_cast<class_type*>(t),
+											       (function_type)f));
 }
 
 // void Member, 1 arg (not pointer, non-const-ref, etc)
@@ -519,7 +519,7 @@ magic_pointer<user_function>
 create_user_function(class_type* t, void (class_type::*f)(arg_type))
 {
   //  cout << __PRETTY_FUNCTION__ << endl;
-  return new void_user_member_function_1<class_type,arg_type>(t,f);
+  return magic_pointer<user_function>(new void_user_member_function_1<class_type,arg_type>(t,f));
 }
 
 // void const Member, 1 arg (not pointer, non-const-ref, etc)
@@ -532,8 +532,8 @@ create_user_function(const class_type* t,
   typedef void (class_type::*function_type)(arg_type);
 
   //  cout << __PRETTY_FUNCTION__ << endl;
-  return new void_user_member_function_1<class_type,arg_type>(const_cast<class_type*>(t),
-							      (function_type)f);
+  return magic_pointer<user_function>(new void_user_member_function_1<class_type,arg_type>(const_cast<class_type*>(t),
+							      (function_type)f));
 }
 
 // Non-member, 0 args
@@ -542,7 +542,7 @@ inline
 magic_pointer<user_function> create_user_function(ret_type (*f)())
 {
   //  cout << __PRETTY_FUNCTION__ << endl;
-  return new user_function_0<ret_type>(f);
+  return magic_pointer<user_function>(new user_function_0<ret_type>(f));
 }
 
 // Non-member, 1 arg
@@ -550,14 +550,14 @@ template <class ret_type, class arg_type>
 inline magic_pointer<user_function> create_user_function(ret_type (*f)(arg_type))
 {
   //  cout << __PRETTY_FUNCTION__ << endl;
-  return new user_function_1<arg_type,ret_type>(f);
+  return magic_pointer<user_function>(new user_function_1<arg_type,ret_type>(f));
 }
 
 // void Non-member, 0 args
 static inline magic_pointer<user_function> create_user_function(void (*f)())
 {
   //  cout << __PRETTY_FUNCTION__ << endl;
-  return new void_user_function_0(f);
+  return magic_pointer<user_function>(new void_user_function_0(f));
 }  
 
 
@@ -566,7 +566,7 @@ template <class arg_type>
 inline magic_pointer<user_function> create_user_function(void (*f)(arg_type))
 {
   //  cout << __PRETTY_FUNCTION__ << endl;
-  return new void_user_function_1<arg_type>(f);
+  return magic_pointer<user_function>(new void_user_function_1<arg_type>(f));
 }
 
 // functions with 2 arguments [ void/non-void [member [const/non], global ] ]

@@ -57,8 +57,6 @@ public:
   virtual int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
   virtual void getAttributeList (TAttributeList& rtLIST) const;
 
-  virtual void setPattern (TPattern* ptPATTERN) { }
-
   virtual string className (void) const { return "PerturbationWave"; }
   virtual TPerturbationWave* clone_new() const { return new TPerturbationWave(*this); }  
 

@@ -60,7 +60,7 @@ int TCircle::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 #if !defined(NEW_ATTRIBUTES)    
     rnVALUE.dValue = sqrt (tRadius2);
 #else
-    rnVALUE = new TAttribReal (sqrt (tRadius2));
+    rnVALUE = (user_arg_type)new TAttribReal (sqrt (tRadius2));
 #endif
   }
   else

@@ -21,7 +21,7 @@
 
 DEFINE_PLUGIN ("ABVH", FX_OBJECT_CLASS, TABVH);
 
-float TABVH::costByMethod1 (TNode* ptTREE, TObject* ptOBJ)
+float TABVH::costByMethod1 (magic_pointer<TNode> ptTREE, magic_pointer<TObject> ptOBJ)
 {
 
   TBoundingBox   tBBox = Union (ptTREE->boundingBox(), ptOBJ->boundingBox());
@@ -31,7 +31,7 @@ float TABVH::costByMethod1 (TNode* ptTREE, TObject* ptOBJ)
 }  /* costByMethod1() */
 
 
-float TABVH::costByMethod2 (TNode* ptTREE, TObject* ptOBJ)
+float TABVH::costByMethod2 (magic_pointer<TNode> ptTREE, magic_pointer<TObject> ptOBJ)
 {
 
   TBoundingBox   tBBox = Union (ptTREE->boundingBox(), ptOBJ->boundingBox());
@@ -41,12 +41,12 @@ float TABVH::costByMethod2 (TNode* ptTREE, TObject* ptOBJ)
 }  /* costByMethod2() */
 
 
-TABVH::TNode* TABVH::applyMethod1 (TNode* ptTREE, TObject* ptOBJ)
+TABVH::node_ptr TABVH::applyMethod1 (magic_pointer<TNode> ptTREE, magic_pointer<TObject> ptOBJ)
 {
 
   TBoundingBox   tNewBBox  = Union (ptOBJ->boundingBox(), ptTREE->boundingBox());
   float          fNewCost  = ptTREE->cost() + 2 * tNewBBox.cost();
-  TNode*         ptNewTree = new TNode (new TBoundingBox (tNewBBox), fNewCost);
+  magic_pointer<TNode> ptNewTree = (node_ptr)new TNode ((magic_pointer<TVolume>)new TBoundingBox (tNewBBox), fNewCost);
 
   ptNewTree->addChild (ptTREE);
   ptNewTree->addChild (ptOBJ);
@@ -56,7 +56,7 @@ TABVH::TNode* TABVH::applyMethod1 (TNode* ptTREE, TObject* ptOBJ)
 }  /* applyMethod1() */
 
 
-TABVH::TNode* TABVH::applyMethod2 (TNode* ptTREE, TObject* ptOBJ)
+TABVH::node_ptr TABVH::applyMethod2 (magic_pointer<TNode> ptTREE, magic_pointer<TObject> ptOBJ)
 {
 
   ptTREE->addChild (ptOBJ);
@@ -66,10 +66,10 @@ TABVH::TNode* TABVH::applyMethod2 (TNode* ptTREE, TObject* ptOBJ)
 }  /* applyMethod2() */
 
 
-TABVH::TNode* TABVH::applyMethod3 (TNode* ptTREE, TObject* ptOBJ, float fINHERITANCE_COST, float fPARENT_BEST_COST)
+TABVH::node_ptr TABVH::applyMethod3 (magic_pointer<TNode> ptTREE, magic_pointer<TObject> ptOBJ, float fINHERITANCE_COST, float fPARENT_BEST_COST)
 {
 
-  return NULL;
+  return (node_ptr)NULL;
   /*
   
   list<TNode*>::iterator   tIter;
@@ -95,13 +95,13 @@ TABVH::TNode* TABVH::applyMethod3 (TNode* ptTREE, TObject* ptOBJ, float fINHERIT
 }  /* applyMethod3() */
 
 
-void TABVH::insertObject (TObject* ptOBJ)
+void TABVH::insertObject (magic_pointer<TObject> ptOBJ)
 {
 
   float          fCost1, fCost2;
   float          fInheritanceCost, fLocalBestCost;
   TBoundingBox   tOldBBox, tNewBBox;
-  TNode*         ptNewTree;
+  magic_pointer<TNode>         ptNewTree;
 
 //  if ( ptTree->ptVolume->classType() == FX_OBJECT_CLASS )
 //  {
@@ -149,7 +149,7 @@ void TABVH::insertObject (TObject* ptOBJ)
 bool TABVH::initialize (void)
 {
   size_t                  zPos;
-  TObject*                ptObj;
+  magic_pointer<TObject>  ptObj;
   TObjectList::iterator   tIter;
   bool val = true;
 
@@ -180,7 +180,7 @@ bool TABVH::initialize (void)
   //
   tIter  = tObjectList.begin();
   ptObj  = *tIter;
-  ptTree = new TNode (ptObj, 1);
+  ptTree = (node_ptr)new TNode (rcp_static_cast<TVolume>(ptObj), 1);
 
   //
   // Insert every object into the tree.
@@ -203,9 +203,9 @@ bool TABVH::initialize (void)
 bool TABVH::findFirstIntersection (const TRay& rktRAY, TSurfaceData& rtDATA) const
 {
 
-  TNode*     ptNode;
-  TObject*   ptObj;
-  TNode*     ptOldTree;
+  magic_pointer<TNode>     ptNode;
+  magic_pointer<TObject>   ptObj;
+  magic_pointer<TNode>     ptOldTree;
   TRay       tRay          = rktRAY;
   bool       gIntersection = false;
 
@@ -216,13 +216,13 @@ bool TABVH::findFirstIntersection (const TRay& rktRAY, TSurfaceData& rtDATA) con
   }
   */
   
-  for (list<TNode*>::const_iterator tIter = ptTree->tChildList.begin(); ( tIter != ptTree->tChildList.end() ) ;tIter++)
+  for (list<magic_pointer<TNode> >::const_iterator tIter = ptTree->tChildList.begin(); ( tIter != ptTree->tChildList.end() ) ;tIter++)
   {
     ptNode = *tIter;
 
     if ( ptNode->ptVolume->classType() == FX_OBJECT_CLASS )
     {
-      ptObj = (TObject*) ptNode->ptVolume;
+      ptObj = rcp_static_cast<TObject>(ptNode->ptVolume);
 
       if ( ptObj->findFirstIntersection (tRay, rtDATA) )
       {

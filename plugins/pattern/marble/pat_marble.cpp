@@ -250,32 +250,32 @@ int TPatternMarble::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 #else
   if ( rktNAME == "color" )
   {
-    rnVALUE = new TAttribColor (tColor);
+    rnVALUE = (user_arg_type)new TAttribColor (tColor);
   }
   else if ( rktNAME == "base_color" )
   {
-    rnVALUE = new TAttribColor (tBaseColor);
+    rnVALUE = (user_arg_type)new TAttribColor (tBaseColor);
   }
   else if ( rktNAME == "zoom" )
   {
     TVector inv(1.0 / tZoom.x(), 1.0 / tZoom.y(), 1.0 / tZoom.z());
-    rnVALUE = new TAttribVector (inv);
+    rnVALUE = (user_arg_type)new TAttribVector (inv);
   }
   else if ( rktNAME == "offset" )
   {
-    rnVALUE = new TAttribReal (tOffset);
+    rnVALUE = (user_arg_type)new TAttribReal (tOffset);
   }
   else if ( rktNAME == "multiplier" )
   {
-    rnVALUE = new TAttribReal (tMultiplier);
+    rnVALUE = (user_arg_type)new TAttribReal (tMultiplier);
   }
   else if ( rktNAME == "lacunarity" )
   {
-    rnVALUE = new TAttribReal (tLacunarity);
+    rnVALUE = (user_arg_type)new TAttribReal (tLacunarity);
   }
   else if ( rktNAME == "octaves" )
   {
-    rnVALUE = new TAttribReal (tNumOctaves);
+    rnVALUE = (user_arg_type)new TAttribReal (tNumOctaves);
   }
 #endif
   else

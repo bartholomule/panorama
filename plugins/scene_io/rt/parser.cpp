@@ -20,27 +20,24 @@
 #define	T_CAMERA	263
 #define	T_CLASS	264
 #define	T_DEFINE	265
-#define	T_DIFFERENCE	266
-#define	T_EXTENDS	267
-#define	T_FILTER	268
-#define	T_GREEN	269
-#define	T_INTERSECTION	270
-#define	T_LIGHT	271
-#define	T_OUTPUT	272
-#define	T_RED	273
-#define	T_RENDERER	274
-#define	T_UNION	275
-#define	AND_L	276
-#define	OR_L	277
-#define	EQUAL	278
-#define	NOT_EQ	279
-#define	GREATER	280
-#define	GREATER_EQ	281
-#define	LESS	282
-#define	LESS_EQ	283
-#define	PARAM	284
-#define	DEFINED	285
-#define	THIS	286
+#define	T_EXTENDS	266
+#define	T_FILTER	267
+#define	T_GREEN	268
+#define	T_LIGHT	269
+#define	T_OUTPUT	270
+#define	T_RED	271
+#define	T_RENDERER	272
+#define	AND_L	273
+#define	OR_L	274
+#define	EQUAL	275
+#define	NOT_EQ	276
+#define	GREATER	277
+#define	GREATER_EQ	278
+#define	LESS	279
+#define	LESS_EQ	280
+#define	PARAM	281
+#define	DEFINED	282
+#define	THIS	283
 
 #line 69 "parser.y"
 
@@ -105,26 +102,26 @@ static void FIXME(const string& s) { cerr << "FIXME: " << s << endl; }
 
 
 
-#define	YYFINAL		144
+#define	YYFINAL		141
 #define	YYFLAG		-32768
-#define	YYNTBASE	47
+#define	YYNTBASE	44
 
-#define YYTRANSLATE(x) ((unsigned)(x) <= 286 ? yytranslate[x] : 73)
+#define YYTRANSLATE(x) ((unsigned)(x) <= 283 ? yytranslate[x] : 70)
 
 static const char yytranslate[] = {     0,
      2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
      2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
      2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-     2,     2,    40,     2,     2,     2,     2,     2,     2,    41,
-    42,    35,    33,    43,    34,     2,    36,     2,     2,     2,
-     2,     2,     2,     2,     2,     2,     2,     2,    37,    44,
-    46,    45,     2,     2,     2,     2,     2,     2,     2,     2,
+     2,     2,    37,     2,     2,     2,     2,     2,     2,    38,
+    39,    32,    30,    40,    31,     2,    33,     2,     2,     2,
+     2,     2,     2,     2,     2,     2,     2,     2,    34,    41,
+    43,    42,     2,     2,     2,     2,     2,     2,     2,     2,
      2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
      2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
      2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
      2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
      2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-     2,     2,    38,     2,    39,     2,     2,     2,     2,     2,
+     2,     2,    35,     2,    36,     2,     2,     2,     2,     2,
      2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
      2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
      2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
@@ -140,7 +137,7 @@ static const char yytranslate[] = {     0,
      2,     2,     2,     2,     2,     1,     3,     4,     5,     6,
      7,     8,     9,    10,    11,    12,    13,    14,    15,    16,
     17,    18,    19,    20,    21,    22,    23,    24,    25,    26,
-    27,    28,    29,    30,    31,    32
+    27,    28,    29
 };
 
 #if YYDEBUG != 0
@@ -152,49 +149,48 @@ static const short yyprhs[] = {     0,
    124,   126,   128,   130,   132,   134,   136,   140,   145,   152,
    161,   169,   175,   177,   179,   182,   185,   188,   192,   196,
    200,   202,   206,   208,   210,   214,   218,   222,   224,   226,
-   228,   230,   232,   234,   236,   238,   240,   242,   244
+   228,   230,   232,   234,   236,   238
 };
 
 static const short yyrhs[] = {    -1,
-    47,    52,    37,     0,    47,    48,     0,    11,    65,    52,
-    37,     0,    11,    72,    65,    49,    37,     0,    65,     0,
-     0,    66,    50,    51,     0,    38,    67,    39,     0,    38,
-    39,     0,    53,     0,    54,     0,    53,    23,    54,     0,
-    55,     0,    54,    22,    55,     0,    56,     0,    55,    24,
-    56,     0,    55,    25,    56,     0,    57,     0,    57,    27,
-    57,     0,    57,    26,    57,     0,    57,    29,    57,     0,
-    57,    28,    57,     0,    58,     0,    57,    33,    58,     0,
-    57,    34,    58,     0,    59,     0,    58,    35,    59,     0,
-    58,    36,    59,     0,    60,     0,    40,    59,     0,    33,
-    59,     0,    34,    59,     0,     7,     0,    30,    60,     0,
-    31,    65,     0,     3,     0,     5,     0,     4,     0,    41,
-    52,    42,     0,    62,     0,    63,     0,    64,     0,    32,
-     0,    49,     0,    61,     0,    71,    41,    42,     0,    71,
-    41,    52,    42,     0,    71,    41,    52,    43,    52,    42,
-     0,    38,    19,    52,    15,    52,     8,    52,    39,     0,
-    44,    52,    43,    52,    43,    52,    45,     0,    44,    52,
-    43,    52,    45,     0,     6,     0,     6,     0,    10,     6,
-     0,    68,    37,     0,     1,    37,     0,    67,    68,    37,
-     0,    67,     1,    37,     0,     6,    46,    52,     0,    52,
-     0,    72,    46,    52,     0,    69,     0,    70,     0,    14,
-    46,    49,     0,    17,    46,    49,     0,    18,    46,    49,
-     0,    65,     0,    72,     0,     8,     0,    10,     0,    11,
-     0,    12,     0,    13,     0,    15,     0,    16,     0,    19,
-     0,    20,     0,    21,     0
+    44,    49,    34,     0,    44,    45,     0,    11,    62,    49,
+    34,     0,    11,    69,    62,    46,    34,     0,    62,     0,
+     0,    63,    47,    48,     0,    35,    64,    36,     0,    35,
+    36,     0,    50,     0,    51,     0,    50,    20,    51,     0,
+    52,     0,    51,    19,    52,     0,    53,     0,    52,    21,
+    53,     0,    52,    22,    53,     0,    54,     0,    54,    24,
+    54,     0,    54,    23,    54,     0,    54,    26,    54,     0,
+    54,    25,    54,     0,    55,     0,    54,    30,    55,     0,
+    54,    31,    55,     0,    56,     0,    55,    32,    56,     0,
+    55,    33,    56,     0,    57,     0,    37,    56,     0,    30,
+    56,     0,    31,    56,     0,     7,     0,    27,    57,     0,
+    28,    62,     0,     3,     0,     5,     0,     4,     0,    38,
+    49,    39,     0,    59,     0,    60,     0,    61,     0,    29,
+     0,    46,     0,    58,     0,    68,    38,    39,     0,    68,
+    38,    49,    39,     0,    68,    38,    49,    40,    49,    39,
+     0,    35,    17,    49,    14,    49,     8,    49,    36,     0,
+    41,    49,    40,    49,    40,    49,    42,     0,    41,    49,
+    40,    49,    42,     0,     6,     0,     6,     0,    10,     6,
+     0,    65,    34,     0,     1,    34,     0,    64,    65,    34,
+     0,    64,     1,    34,     0,     6,    43,    49,     0,    49,
+     0,    69,    43,    49,     0,    66,     0,    67,     0,    13,
+    43,    46,     0,    15,    43,    46,     0,    16,    43,    46,
+     0,    62,     0,    69,     0,     8,     0,    10,     0,    11,
+     0,    12,     0,    14,     0,    17,     0,    18,     0
 };
 
 #endif
 
 #if YYDEBUG != 0
 static const short yyrline[] = { 0,
-   190,   194,   219,   225,   244,   265,   271,   277,   286,   290,
-   296,   305,   312,   321,   328,   337,   345,   387,   428,   436,
-   441,   446,   451,   458,   465,   478,   491,   498,   510,   524,
-   531,   538,   545,   558,   566,   572,   585,   591,   597,   604,
-   611,   616,   621,   626,   631,   636,   639,   663,   690,   721,
-   741,   758,   767,   782,   803,   811,   820,   825,   829,   836,
-   841,   889,   894,   898,   904,   936,   977,  1012,  1016,  1023,
-  1028,  1033,  1038,  1043,  1048,  1053,  1058,  1063,  1068
+   187,   191,   216,   222,   241,   262,   268,   274,   283,   287,
+   293,   302,   309,   318,   325,   334,   342,   384,   425,   433,
+   438,   443,   448,   455,   462,   475,   488,   495,   507,   521,
+   528,   535,   542,   555,   563,   569,   582,   588,   594,   601,
+   608,   613,   618,   623,   628,   633,   636,   660,   687,   718,
+   738,   755,   764,   779,   800,   808,   817,   822,   826,   833,
+   838,   886,   891,   895,   901,   933,   974,  1009,  1013,  1020,
+  1025,  1030,  1035,  1040,  1045,  1050
 };
 #endif
 
@@ -203,26 +199,25 @@ static const short yyrline[] = { 0,
 
 static const char * const yytname[] = {   "$","error","$undefined.","T_BOOL",
 "T_REAL","T_INTEGER","T_IDENTIFIER","T_QUOTED_STRING","T_BLUE","T_CAMERA","T_CLASS",
-"T_DEFINE","T_DIFFERENCE","T_EXTENDS","T_FILTER","T_GREEN","T_INTERSECTION",
-"T_LIGHT","T_OUTPUT","T_RED","T_RENDERER","T_UNION","AND_L","OR_L","EQUAL","NOT_EQ",
-"GREATER","GREATER_EQ","LESS","LESS_EQ","PARAM","DEFINED","THIS","'+'","'-'",
-"'*'","'/'","';'","'{'","'}'","'!'","'('","')'","','","'<'","'>'","'='","everything",
-"definition","instance","@1","param_block","expression","prec_8","prec_7","prec_6",
-"prec_5","prec_4","prec_3","prec_2","prec_1","function_call","color","vector3",
-"vector2","name","class","params","param","object_param","scene_param","potential_name",
-"reserved_words", NULL
+"T_DEFINE","T_EXTENDS","T_FILTER","T_GREEN","T_LIGHT","T_OUTPUT","T_RED","T_RENDERER",
+"AND_L","OR_L","EQUAL","NOT_EQ","GREATER","GREATER_EQ","LESS","LESS_EQ","PARAM",
+"DEFINED","THIS","'+'","'-'","'*'","'/'","';'","'{'","'}'","'!'","'('","')'",
+"','","'<'","'>'","'='","everything","definition","instance","@1","param_block",
+"expression","prec_8","prec_7","prec_6","prec_5","prec_4","prec_3","prec_2",
+"prec_1","function_call","color","vector3","vector2","name","class","params",
+"param","object_param","scene_param","potential_name","reserved_words", NULL
 };
 #endif
 
 static const short yyr1[] = {     0,
-    47,    47,    47,    48,    48,    49,    50,    49,    51,    51,
-    52,    53,    53,    54,    54,    55,    55,    55,    56,    56,
-    56,    56,    56,    57,    57,    57,    58,    58,    58,    59,
-    59,    59,    59,    60,    60,    60,    60,    60,    60,    60,
-    60,    60,    60,    60,    60,    60,    61,    61,    61,    62,
-    63,    64,    65,    66,    66,    67,    67,    67,    67,    68,
-    68,    68,    68,    68,    69,    70,    70,    71,    71,    72,
-    72,    72,    72,    72,    72,    72,    72,    72,    72
+    44,    44,    44,    45,    45,    46,    47,    46,    48,    48,
+    49,    50,    50,    51,    51,    52,    52,    52,    53,    53,
+    53,    53,    53,    54,    54,    54,    55,    55,    55,    56,
+    56,    56,    56,    57,    57,    57,    57,    57,    57,    57,
+    57,    57,    57,    57,    57,    57,    58,    58,    58,    59,
+    60,    61,    62,    63,    63,    64,    64,    64,    64,    65,
+    65,    65,    65,    65,    66,    67,    67,    68,    68,    69,
+    69,    69,    69,    69,    69,    69
 };
 
 static const short yyr2[] = {     0,
@@ -233,143 +228,131 @@ static const short yyr2[] = {     0,
      1,     1,     1,     1,     1,     1,     3,     4,     6,     8,
      7,     5,     1,     1,     2,     2,     2,     3,     3,     3,
      1,     3,     1,     1,     3,     3,     3,     1,     1,     1,
-     1,     1,     1,     1,     1,     1,     1,     1,     1
+     1,     1,     1,     1,     1,     1
 };
 
 static const short yydefact[] = {     1,
      0,    37,    39,    38,    53,    34,    70,    71,    72,    73,
-    74,    75,    76,    77,    78,    79,     0,     0,    44,     0,
-     0,     0,     0,     0,     0,     3,    45,     0,    11,    12,
-    14,    16,    19,    24,    27,    30,    46,    41,    42,    43,
-     6,     7,     0,    69,    55,    53,    71,    72,     0,     0,
-    35,    36,    32,    33,     0,    31,     0,     0,     2,     0,
+    74,    75,    76,     0,     0,    44,     0,     0,     0,     0,
+     0,     0,     3,    45,     0,    11,    12,    14,    16,    19,
+    24,    27,    30,    46,    41,    42,    43,     6,     7,     0,
+    69,    55,    53,    71,    72,     0,     0,    35,    36,    32,
+    33,     0,    31,     0,     0,     2,     0,     0,     0,     0,
      0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-     0,     0,     0,     0,     0,     0,    40,     0,    13,    15,
-    17,    18,    21,    20,    23,    22,    25,    26,    28,    29,
-     0,     8,    47,     0,     4,     0,     0,     6,     0,     0,
-     0,    53,     0,     0,     0,    10,    61,     0,     0,    63,
-    64,    69,    48,     0,     5,     0,     0,    52,    57,     0,
-     0,     0,     0,     0,     9,     0,    56,     0,     0,     0,
-     0,    60,    65,    66,    67,    59,    58,    62,    49,     0,
-    51,    50,     0,     0
+     0,     0,     0,    40,     0,    13,    15,    17,    18,    21,
+    20,    23,    22,    25,    26,    28,    29,     0,     8,    47,
+     0,     4,     0,     0,     6,     0,     0,     0,    53,     0,
+     0,     0,    10,    61,     0,     0,    63,    64,    69,    48,
+     0,     5,     0,     0,    52,    57,     0,     0,     0,     0,
+     0,     9,     0,    56,     0,     0,     0,     0,    60,    65,
+    66,    67,    59,    58,    62,    49,     0,    51,    50,     0,
+     0
 };
 
 static const short yydefgoto[] = {     1,
-    26,    27,    72,    92,   107,    29,    30,    31,    32,    33,
-    34,    35,    36,    37,    38,    39,    40,    41,    42,   108,
-   109,   110,   111,    43,    44
+    23,    24,    69,    89,   104,    26,    27,    28,    29,    30,
+    31,    32,    33,    34,    35,    36,    37,    38,    39,   105,
+   106,   107,   108,    40,    41
 };
 
 static const short yypact[] = {-32768,
-   128,-32768,-32768,-32768,   -21,-32768,-32768,    20,    19,-32768,
--32768,-32768,-32768,-32768,-32768,-32768,   338,    22,-32768,   296,
-   296,    14,   296,   296,   296,-32768,-32768,    12,    24,    29,
-    -3,-32768,   -14,    10,-32768,-32768,-32768,-32768,-32768,-32768,
-    25,-32768,    26,-32768,-32768,-32768,-32768,-32768,   296,    22,
--32768,-32768,-32768,-32768,   296,-32768,    13,    27,-32768,   296,
-   296,   296,   296,   296,   296,   296,   296,   296,   296,   296,
-   296,    30,   254,    32,     1,    48,-32768,   296,    29,    -3,
--32768,-32768,     3,     3,     3,     3,    10,    10,-32768,-32768,
-   170,-32768,-32768,    17,-32768,    20,    34,-32768,   296,   -39,
-    36,   -30,    28,    33,    35,-32768,-32768,   212,    39,-32768,
--32768,    38,-32768,   296,-32768,    70,   296,-32768,-32768,   296,
-     1,     1,     1,    43,-32768,    45,-32768,   296,    44,   296,
-    40,-32768,-32768,-32768,-32768,-32768,-32768,-32768,-32768,    49,
--32768,-32768,    87,-32768
+   125,-32768,-32768,-32768,   -31,-32768,-32768,    10,    16,-32768,
+-32768,-32768,-32768,    32,    19,-32768,   281,   281,   -10,   281,
+   281,   281,-32768,-32768,    -2,    21,    29,    36,-32768,   -13,
+    43,-32768,-32768,-32768,-32768,-32768,-32768,    28,-32768,    30,
+-32768,-32768,-32768,-32768,-32768,   281,    19,-32768,-32768,-32768,
+-32768,   281,-32768,    40,    31,-32768,   281,   281,   281,   281,
+   281,   281,   281,   281,   281,   281,   281,   281,    52,   242,
+    54,    13,    75,-32768,   281,    29,    36,-32768,-32768,    47,
+    47,    47,    47,    43,    43,-32768,-32768,   164,-32768,-32768,
+    42,-32768,    10,    56,-32768,   281,   -11,    57,   -29,    49,
+    50,    51,-32768,-32768,   203,    62,-32768,-32768,    55,-32768,
+   281,-32768,    91,   281,-32768,-32768,   281,    13,    13,    13,
+    66,-32768,    67,-32768,   281,    63,   281,    61,-32768,-32768,
+-32768,-32768,-32768,-32768,-32768,-32768,    68,-32768,-32768,   105,
+-32768
 };
 
 static const short yypgoto[] = {-32768,
--32768,   -65,-32768,-32768,    -1,-32768,    31,    41,     2,   -23,
-    -7,   -18,    72,-32768,-32768,-32768,-32768,     0,-32768,-32768,
-   -16,-32768,-32768,-32768,    -8
+-32768,   -64,-32768,-32768,    -1,-32768,    58,    48,    24,     1,
+    20,   -15,    93,-32768,-32768,-32768,-32768,     0,-32768,-32768,
+     3,-32768,-32768,-32768,    -8
 };
 
 
-#define	YYLAST		382
+#define	YYLAST		322
 
 
-static const short yytable[] = {    28,
-    50,    53,    54,   117,    56,   118,     5,   -54,    49,    97,
-    96,    64,    65,    66,    67,   120,   -54,    52,    68,    69,
-    62,    63,    57,    58,    46,    45,     7,    46,    47,    48,
-    10,    11,    55,    12,    13,    68,    69,    14,    15,    16,
-    83,    84,    85,    86,    70,    71,    60,    74,    59,    75,
-    61,    89,    90,    76,    77,   133,   134,   135,   113,   114,
-    87,    88,    99,    81,    82,   -68,    73,    91,    95,    78,
-   115,    94,   119,   121,    98,   127,   100,   130,   122,   136,
-   123,   137,   112,   128,   141,   139,   144,   142,    51,     0,
-    79,   126,     0,     0,     0,     0,     0,   116,     0,   112,
-     0,    80,     0,     0,     0,     0,     0,     0,     0,     0,
-     0,     0,   129,     0,     0,   131,     0,     0,   132,     0,
-    98,    98,    98,     0,     0,     0,   138,   143,   140,     0,
-     2,     3,     4,     5,     6,     7,     0,     8,     9,    10,
-    11,     0,    12,    13,     0,     0,    14,    15,    16,     0,
-     0,     0,     0,     0,     0,     0,     0,    17,    18,    19,
-    20,    21,     0,     0,     0,    22,     0,    23,    24,     0,
-   101,    25,     2,     3,     4,   102,     6,     7,     0,     8,
-    48,    10,    11,   103,    12,    13,   104,   105,    14,    15,
-    16,     0,     0,     0,     0,     0,     0,     0,     0,    17,
-    18,    19,    20,    21,     0,     0,     0,    22,   106,    23,
-    24,     0,   124,    25,     2,     3,     4,   102,     6,     7,
-     0,     8,    48,    10,    11,   103,    12,    13,   104,   105,
-    14,    15,    16,     0,     0,     0,     0,     0,     0,     0,
-     0,    17,    18,    19,    20,    21,     0,     0,     0,    22,
-   125,    23,    24,     0,     0,    25,     2,     3,     4,     5,
-     6,     7,     0,     8,    48,    10,    11,     0,    12,    13,
-     0,     0,    14,    15,    16,     0,     0,     0,     0,     0,
-     0,     0,     0,    17,    18,    19,    20,    21,     0,     0,
-     0,    22,     0,    23,    24,    93,     0,    25,     2,     3,
-     4,     5,     6,     7,     0,     8,    48,    10,    11,     0,
-    12,    13,     0,     0,    14,    15,    16,     0,     0,     0,
-     0,     0,     0,     0,     0,    17,    18,    19,    20,    21,
-     0,     0,     0,    22,     0,    23,    24,     0,     0,    25,
-     2,     3,     4,     5,     6,     7,     0,     8,    48,    10,
-    11,     0,    12,    13,     0,     0,    14,    15,    16,     0,
-     0,     0,     0,     0,     0,     0,     0,    17,    18,    19,
-     0,     0,     0,     0,     0,    22,     0,     0,    24,     0,
-     0,    25
+static const short yytable[] = {    25,
+    47,    50,    51,   -54,    53,   -54,    52,    94,    46,    61,
+    62,    63,    64,   117,    49,    42,    65,    66,     5,    54,
+    55,    43,    93,     7,    43,    44,    45,    10,   114,    11,
+   115,    56,    12,    13,     2,     3,     4,     5,     6,     7,
+    57,     8,    45,    10,    71,    11,    72,    58,    12,    13,
+    73,    86,    87,   130,   131,   132,    59,    60,    14,    15,
+    16,    80,    81,    82,    83,   -68,    19,    70,    91,    21,
+    75,    95,    22,    97,    67,    68,    65,    66,    74,   109,
+   110,   111,    78,    79,    84,    85,    88,    92,    96,   112,
+   116,   118,   119,   120,   113,   124,   109,   125,   127,   133,
+   134,   136,   138,   139,   141,    77,    48,   123,     0,   126,
+     0,     0,   128,     0,    76,   129,     0,    95,    95,    95,
+     0,     0,     0,   135,   140,   137,     0,     2,     3,     4,
+     5,     6,     7,     0,     8,     9,    10,     0,    11,     0,
+     0,    12,    13,     0,     0,     0,     0,     0,     0,     0,
+     0,    14,    15,    16,    17,    18,     0,     0,     0,    19,
+     0,    20,    21,     0,    98,    22,     2,     3,     4,    99,
+     6,     7,     0,     8,    45,    10,   100,    11,   101,   102,
+    12,    13,     0,     0,     0,     0,     0,     0,     0,     0,
+    14,    15,    16,    17,    18,     0,     0,     0,    19,   103,
+    20,    21,     0,   121,    22,     2,     3,     4,    99,     6,
+     7,     0,     8,    45,    10,   100,    11,   101,   102,    12,
+    13,     0,     0,     0,     0,     0,     0,     0,     0,    14,
+    15,    16,    17,    18,     0,     0,     0,    19,   122,    20,
+    21,     0,     0,    22,     2,     3,     4,     5,     6,     7,
+     0,     8,    45,    10,     0,    11,     0,     0,    12,    13,
+     0,     0,     0,     0,     0,     0,     0,     0,    14,    15,
+    16,    17,    18,     0,     0,     0,    19,     0,    20,    21,
+    90,     0,    22,     2,     3,     4,     5,     6,     7,     0,
+     8,    45,    10,     0,    11,     0,     0,    12,    13,     0,
+     0,     0,     0,     0,     0,     0,     0,    14,    15,    16,
+    17,    18,     0,     0,     0,    19,     0,    20,    21,     0,
+     0,    22
 };
 
 static const short yycheck[] = {     1,
-     9,    20,    21,    43,    23,    45,     6,    38,     9,    75,
-    10,    26,    27,    28,    29,    46,    38,    18,    33,    34,
-    24,    25,    24,    25,     6,     6,     8,     6,    10,    11,
-    12,    13,    19,    15,    16,    33,    34,    19,    20,    21,
-    64,    65,    66,    67,    35,    36,    23,    49,    37,    50,
-    22,    70,    71,    55,    42,   121,   122,   123,    42,    43,
-    68,    69,    15,    62,    63,    41,    41,    38,    37,    43,
-    37,    73,    37,    46,    75,    37,    78,     8,    46,    37,
-    46,    37,    91,    46,    45,    42,     0,    39,    17,    -1,
-    60,   108,    -1,    -1,    -1,    -1,    -1,    99,    -1,   108,
-    -1,    61,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-    -1,    -1,   114,    -1,    -1,   117,    -1,    -1,   120,    -1,
-   121,   122,   123,    -1,    -1,    -1,   128,     0,   130,    -1,
-     3,     4,     5,     6,     7,     8,    -1,    10,    11,    12,
-    13,    -1,    15,    16,    -1,    -1,    19,    20,    21,    -1,
-    -1,    -1,    -1,    -1,    -1,    -1,    -1,    30,    31,    32,
-    33,    34,    -1,    -1,    -1,    38,    -1,    40,    41,    -1,
-     1,    44,     3,     4,     5,     6,     7,     8,    -1,    10,
-    11,    12,    13,    14,    15,    16,    17,    18,    19,    20,
-    21,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    30,
-    31,    32,    33,    34,    -1,    -1,    -1,    38,    39,    40,
-    41,    -1,     1,    44,     3,     4,     5,     6,     7,     8,
-    -1,    10,    11,    12,    13,    14,    15,    16,    17,    18,
-    19,    20,    21,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
-    -1,    30,    31,    32,    33,    34,    -1,    -1,    -1,    38,
-    39,    40,    41,    -1,    -1,    44,     3,     4,     5,     6,
-     7,     8,    -1,    10,    11,    12,    13,    -1,    15,    16,
-    -1,    -1,    19,    20,    21,    -1,    -1,    -1,    -1,    -1,
-    -1,    -1,    -1,    30,    31,    32,    33,    34,    -1,    -1,
-    -1,    38,    -1,    40,    41,    42,    -1,    44,     3,     4,
-     5,     6,     7,     8,    -1,    10,    11,    12,    13,    -1,
-    15,    16,    -1,    -1,    19,    20,    21,    -1,    -1,    -1,
-    -1,    -1,    -1,    -1,    -1,    30,    31,    32,    33,    34,
-    -1,    -1,    -1,    38,    -1,    40,    41,    -1,    -1,    44,
-     3,     4,     5,     6,     7,     8,    -1,    10,    11,    12,
-    13,    -1,    15,    16,    -1,    -1,    19,    20,    21,    -1,
-    -1,    -1,    -1,    -1,    -1,    -1,    -1,    30,    31,    32,
-    -1,    -1,    -1,    -1,    -1,    38,    -1,    -1,    41,    -1,
-    -1,    44
+     9,    17,    18,    35,    20,    35,    17,    72,     9,    23,
+    24,    25,    26,    43,    15,     6,    30,    31,     6,    21,
+    22,     6,    10,     8,     6,    10,    11,    12,    40,    14,
+    42,    34,    17,    18,     3,     4,     5,     6,     7,     8,
+    20,    10,    11,    12,    46,    14,    47,    19,    17,    18,
+    52,    67,    68,   118,   119,   120,    21,    22,    27,    28,
+    29,    61,    62,    63,    64,    38,    35,    38,    70,    38,
+    40,    72,    41,    75,    32,    33,    30,    31,    39,    88,
+    39,    40,    59,    60,    65,    66,    35,    34,    14,    34,
+    34,    43,    43,    43,    96,    34,   105,    43,     8,    34,
+    34,    39,    42,    36,     0,    58,    14,   105,    -1,   111,
+    -1,    -1,   114,    -1,    57,   117,    -1,   118,   119,   120,
+    -1,    -1,    -1,   125,     0,   127,    -1,     3,     4,     5,
+     6,     7,     8,    -1,    10,    11,    12,    -1,    14,    -1,
+    -1,    17,    18,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+    -1,    27,    28,    29,    30,    31,    -1,    -1,    -1,    35,
+    -1,    37,    38,    -1,     1,    41,     3,     4,     5,     6,
+     7,     8,    -1,    10,    11,    12,    13,    14,    15,    16,
+    17,    18,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+    27,    28,    29,    30,    31,    -1,    -1,    -1,    35,    36,
+    37,    38,    -1,     1,    41,     3,     4,     5,     6,     7,
+     8,    -1,    10,    11,    12,    13,    14,    15,    16,    17,
+    18,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    27,
+    28,    29,    30,    31,    -1,    -1,    -1,    35,    36,    37,
+    38,    -1,    -1,    41,     3,     4,     5,     6,     7,     8,
+    -1,    10,    11,    12,    -1,    14,    -1,    -1,    17,    18,
+    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    27,    28,
+    29,    30,    31,    -1,    -1,    -1,    35,    -1,    37,    38,
+    39,    -1,    41,     3,     4,     5,     6,     7,     8,    -1,
+    10,    11,    12,    -1,    14,    -1,    -1,    17,    18,    -1,
+    -1,    -1,    -1,    -1,    -1,    -1,    -1,    27,    28,    29,
+    30,    31,    -1,    -1,    -1,    35,    -1,    37,    38,    -1,
+    -1,    41
 };
 /* -*-C-*-  Note some compilers choke on comments on `#line' lines.  */
 #line 3 "bison.simple"
@@ -864,13 +847,13 @@ yyreduce:
   switch (yyn) {
 
 case 1:
-#line 191 "parser.y"
+#line 188 "parser.y"
 {
 			    report_reduction("everything <-- nothing");
 			  ;
     break;}
 case 2:
-#line 195 "parser.y"
+#line 192 "parser.y"
 {
 			    report_reduction("everything <-- everything expression ';'");
 			    magic_pointer<TAttribObject> ptobj = get_object(yyvsp[-1].ptAttribute);
@@ -897,13 +880,13 @@ case 2:
 			  ;
     break;}
 case 3:
-#line 220 "parser.y"
+#line 217 "parser.y"
 {
 			    report_reduction("everything <-- everything definition");
 			  ;
     break;}
 case 4:
-#line 226 "parser.y"
+#line 223 "parser.y"
 {
 			    report_reduction("definition <-- DEFINE name expression ;");
 			    report_reduction(string("definition <-- DEFINE ") +
@@ -924,7 +907,7 @@ case 4:
 			  ;
     break;}
 case 5:
-#line 245 "parser.y"
+#line 242 "parser.y"
 {
 			    report_reduction("definition <-- DEFINE reserved_words name instance");
 			    cerr << "Warning: definition on line "
@@ -945,7 +928,7 @@ case 5:
 			  ;
     break;}
 case 6:
-#line 266 "parser.y"
+#line 263 "parser.y"
 {
 			    report_reduction("instance <-- name");
 			    report_reduction(string("instance <-- ") + yyvsp[0].sIdent);			    
@@ -953,14 +936,14 @@ case 6:
                           ;
     break;}
 case 7:
-#line 272 "parser.y"
+#line 269 "parser.y"
 {
 			    //			    cout << "Creating object..." << endl;
 			    CreateObject(yyvsp[0].sIdent,"");
                           ;
     break;}
 case 8:
-#line 277 "parser.y"
+#line 274 "parser.y"
 {
 			    report_reduction("instance <--  class { params }");
 			    report_reduction(string("instance <-- ") + DATA->toString());
@@ -970,19 +953,19 @@ case 8:
 			  ;
     break;}
 case 9:
-#line 287 "parser.y"
+#line 284 "parser.y"
 {
 			    report_reduction("param_block <-- { params }");
 			  ;
     break;}
 case 10:
-#line 291 "parser.y"
+#line 288 "parser.y"
 {
 			    report_reduction("param_block <-- { }");
 			  ;
     break;}
 case 11:
-#line 298 "parser.y"
+#line 295 "parser.y"
 {
 			    yyval.ptAttribute = yyvsp[0].ptAttribute;
 			    report_reduction("expression <-- prec_8");
@@ -990,7 +973,7 @@ case 11:
                           ;
     break;}
 case 12:
-#line 307 "parser.y"
+#line 304 "parser.y"
 {
 			  report_reduction("prec_8 <-- prec_7");
 			  report_reduction("prec_8 <-- " + yyvsp[0].ptAttribute->toString());
@@ -998,16 +981,16 @@ case 12:
 			;
     break;}
 case 13:
-#line 313 "parser.y"
+#line 310 "parser.y"
 {
 			  report_reduction("prec_8 <-- prec_8 OR prec_7");
 			  report_reduction("prec_8 <-- " + yyvsp[-2].ptAttribute->toString() + " OR " + yyvsp[0].ptAttribute->toString());
-			  yyval.ptAttribute = new TAttribBool(check_get_bool(yyvsp[-2].ptAttribute) ||
+			  yyval.ptAttribute = (user_arg_type)new TAttribBool(check_get_bool(yyvsp[-2].ptAttribute) ||
 					       check_get_bool(yyvsp[0].ptAttribute));
 			;
     break;}
 case 14:
-#line 323 "parser.y"
+#line 320 "parser.y"
 {
 			  report_reduction("prec_7 <-- prec_6");
 			  report_reduction("prec_7 <-- " + yyvsp[0].ptAttribute->toString());			  
@@ -1015,16 +998,16 @@ case 14:
 			;
     break;}
 case 15:
-#line 329 "parser.y"
+#line 326 "parser.y"
 {
 			  report_reduction("prec_7 <-- prec_7 AND prec_6");
 			  report_reduction("prec_7 <-- " + yyvsp[-2].ptAttribute->toString() + " AND " + yyvsp[0].ptAttribute->toString());
-			  yyval.ptAttribute = new TAttribBool(check_get_bool(yyvsp[-2].ptAttribute) &&
+			  yyval.ptAttribute = (user_arg_type)new TAttribBool(check_get_bool(yyvsp[-2].ptAttribute) &&
 					       check_get_bool(yyvsp[0].ptAttribute));
 			;
     break;}
 case 16:
-#line 340 "parser.y"
+#line 337 "parser.y"
 {
 			  report_reduction("prec_6 <-- prec_5");
 			  report_reduction("prec_6 <-- " + yyvsp[0].ptAttribute->toString());			  
@@ -1032,7 +1015,7 @@ case 16:
 			;
     break;}
 case 17:
-#line 346 "parser.y"
+#line 343 "parser.y"
 {
 			  report_reduction("prec_6 <-- prec_6 EQUAL prec_5");
 			  if( !types_match(yyvsp[-2].ptAttribute, yyvsp[0].ptAttribute ) )
@@ -1042,31 +1025,31 @@ case 17:
 			  }
 			  if( yyvsp[-2].ptAttribute->eType == FX_REAL )
 			  {
-			    yyval.ptAttribute = new TAttribBool(check_get_real(yyvsp[-2].ptAttribute) == check_get_real(yyvsp[0].ptAttribute));
+			    yyval.ptAttribute = (user_arg_type)new TAttribBool(check_get_real(yyvsp[-2].ptAttribute) == check_get_real(yyvsp[0].ptAttribute));
 			  }
 			  else if( yyvsp[-2].ptAttribute->eType == FX_BOOL )
 			  {
-			    yyval.ptAttribute = new TAttribBool(check_get_bool(yyvsp[-2].ptAttribute) ==
+			    yyval.ptAttribute = (user_arg_type)new TAttribBool(check_get_bool(yyvsp[-2].ptAttribute) ==
 						 check_get_bool(yyvsp[0].ptAttribute));
 			  }
 			  else if( yyvsp[-2].ptAttribute->eType == FX_VECTOR )
 			  {
-			    yyval.ptAttribute = new TAttribBool(get_vector(yyvsp[-2].ptAttribute)->tValue ==
+			    yyval.ptAttribute = (user_arg_type)new TAttribBool(get_vector(yyvsp[-2].ptAttribute)->tValue ==
 						 get_vector(yyvsp[0].ptAttribute)->tValue);
 			  }
 			  else if( yyvsp[-2].ptAttribute->eType == FX_VECTOR2 )
 			  {
-			    yyval.ptAttribute = new TAttribBool(get_vector2(yyvsp[-2].ptAttribute)->tValue ==
+			    yyval.ptAttribute = (user_arg_type)new TAttribBool(get_vector2(yyvsp[-2].ptAttribute)->tValue ==
 						 get_vector2(yyvsp[0].ptAttribute)->tValue);
 			  }
 			  else if( yyvsp[-2].ptAttribute->eType == FX_STRING || yyvsp[-2].ptAttribute->eType == FX_STRING_LIST )
 			  {
-			    yyval.ptAttribute = new TAttribBool(check_get_string(yyvsp[-2].ptAttribute) ==
+			    yyval.ptAttribute = (user_arg_type)new TAttribBool(check_get_string(yyvsp[-2].ptAttribute) ==
 						 check_get_string(yyvsp[0].ptAttribute));	  
 			  }
 			  else if( yyvsp[-2].ptAttribute->eType == FX_INTEGER )
 			  {
-			    yyval.ptAttribute = new TAttribBool(get_int(yyvsp[-2].ptAttribute)->tValue ==
+			    yyval.ptAttribute = (user_arg_type)new TAttribBool(get_int(yyvsp[-2].ptAttribute)->tValue ==
 						 get_int(yyvsp[0].ptAttribute)->tValue);	  
 			  }			  
 			  else
@@ -1076,7 +1059,7 @@ case 17:
 			;
     break;}
 case 18:
-#line 388 "parser.y"
+#line 385 "parser.y"
 {
 			  report_reduction("prec_6 <-- prec_6 NOT_EQ prec_5");
 			  if( !types_match(yyvsp[-2].ptAttribute, yyvsp[0].ptAttribute ) )
@@ -1086,29 +1069,29 @@ case 18:
 			  }
 			  if( yyvsp[-2].ptAttribute->eType == FX_REAL )
 			  {
-			    yyval.ptAttribute = new TAttribBool(check_get_real(yyvsp[-2].ptAttribute) !=
+			    yyval.ptAttribute = (user_arg_type)new TAttribBool(check_get_real(yyvsp[-2].ptAttribute) !=
 						 check_get_real(yyvsp[0].ptAttribute));
 			  }
 			  else if( yyvsp[-2].ptAttribute->eType == FX_BOOL )
 			  {
-			    yyval.ptAttribute = new TAttribBool(check_get_bool(yyvsp[-2].ptAttribute) !=
+			    yyval.ptAttribute = (user_arg_type)new TAttribBool(check_get_bool(yyvsp[-2].ptAttribute) !=
 						 check_get_bool(yyvsp[0].ptAttribute));
 			  }
 			  else if( yyvsp[-2].ptAttribute->eType == FX_VECTOR )
 			  {
-			    yyval.ptAttribute = new TAttribBool(get_vector(yyvsp[-2].ptAttribute) != get_vector(yyvsp[0].ptAttribute));
+			    yyval.ptAttribute = (user_arg_type)new TAttribBool(get_vector(yyvsp[-2].ptAttribute) != get_vector(yyvsp[0].ptAttribute));
 			  }
 			  else if( yyvsp[-2].ptAttribute->eType == FX_VECTOR2 )
 			  {
-			    yyval.ptAttribute = new TAttribBool(get_vector2(yyvsp[-2].ptAttribute) != get_vector2(yyvsp[0].ptAttribute));
+			    yyval.ptAttribute = (user_arg_type)new TAttribBool(get_vector2(yyvsp[-2].ptAttribute) != get_vector2(yyvsp[0].ptAttribute));
 			  }
 			  else if( yyvsp[-2].ptAttribute->eType == FX_STRING || yyvsp[-2].ptAttribute->eType == FX_STRING_LIST )
 			  {
-			    yyval.ptAttribute = new TAttribBool(check_get_string(yyvsp[-2].ptAttribute) != check_get_string(yyvsp[0].ptAttribute));	  
+			    yyval.ptAttribute = (user_arg_type)new TAttribBool(check_get_string(yyvsp[-2].ptAttribute) != check_get_string(yyvsp[0].ptAttribute));	  
 			  }
 			  else if( yyvsp[-2].ptAttribute->eType == FX_INTEGER )
 			  {
-			    yyval.ptAttribute = new TAttribBool(get_int(yyvsp[-2].ptAttribute)->tValue == get_int(yyvsp[0].ptAttribute)->tValue);	  
+			    yyval.ptAttribute = (user_arg_type)new TAttribBool(get_int(yyvsp[-2].ptAttribute)->tValue == get_int(yyvsp[0].ptAttribute)->tValue);	  
 			  }
 			  else
 			  {
@@ -1117,7 +1100,7 @@ case 18:
 			;
     break;}
 case 19:
-#line 430 "parser.y"
+#line 427 "parser.y"
 {
 			  report_reduction("prec_5 <-- prec_4");
 			  report_reduction("prec_5 <-- " + yyvsp[0].ptAttribute->toString());			  
@@ -1126,35 +1109,35 @@ case 19:
 			;
     break;}
 case 20:
-#line 437 "parser.y"
+#line 434 "parser.y"
 {
 			  report_reduction("prec_4 <-- prec_6 >= prec_5");
-			  yyval.ptAttribute = new TAttribBool(check_get_real(yyvsp[-2].ptAttribute) >= check_get_real(yyvsp[0].ptAttribute));
+			  yyval.ptAttribute = (user_arg_type)new TAttribBool(check_get_real(yyvsp[-2].ptAttribute) >= check_get_real(yyvsp[0].ptAttribute));
 			;
     break;}
 case 21:
-#line 442 "parser.y"
+#line 439 "parser.y"
 {
 			  report_reduction("prec_4 <-- prec_6 > prec_5");
-			  yyval.ptAttribute = new TAttribBool(check_get_real(yyvsp[-2].ptAttribute) > check_get_real(yyvsp[0].ptAttribute));
+			  yyval.ptAttribute = (user_arg_type)new TAttribBool(check_get_real(yyvsp[-2].ptAttribute) > check_get_real(yyvsp[0].ptAttribute));
 			;
     break;}
 case 22:
-#line 447 "parser.y"
+#line 444 "parser.y"
 {
 			  report_reduction("prec_4 <-- prec_6 <= prec_5");
-			  yyval.ptAttribute = new TAttribBool(check_get_real(yyvsp[-2].ptAttribute) <= check_get_real(yyvsp[0].ptAttribute));
+			  yyval.ptAttribute = (user_arg_type)new TAttribBool(check_get_real(yyvsp[-2].ptAttribute) <= check_get_real(yyvsp[0].ptAttribute));
 			;
     break;}
 case 23:
-#line 452 "parser.y"
+#line 449 "parser.y"
 {
 			  report_reduction("prec_4 <-- prec_6 < prec_5");
-			  yyval.ptAttribute = new TAttribBool(check_get_real(yyvsp[-2].ptAttribute) < check_get_real(yyvsp[0].ptAttribute));
+			  yyval.ptAttribute = (user_arg_type)new TAttribBool(check_get_real(yyvsp[-2].ptAttribute) < check_get_real(yyvsp[0].ptAttribute));
 			;
     break;}
 case 24:
-#line 460 "parser.y"
+#line 457 "parser.y"
 {
 			  report_reduction("prec_4 <-- prec_3");
 			  report_reduction("prec_4 <-- " + yyvsp[0].ptAttribute->toString());			  
@@ -1162,7 +1145,7 @@ case 24:
 			;
     break;}
 case 25:
-#line 466 "parser.y"
+#line 463 "parser.y"
 {
 
 			  report_reduction("prec_4 <-- prec_4 + prec_3");
@@ -1177,7 +1160,7 @@ case 25:
 			;
     break;}
 case 26:
-#line 479 "parser.y"
+#line 476 "parser.y"
 {
 			  report_reduction("prec_4 <-- prec_4 - prec_3");
 			  report_reduction("prec_4 <-- " + yyvsp[-2].ptAttribute->toString() + " - " + yyvsp[0].ptAttribute->toString());			  
@@ -1190,7 +1173,7 @@ case 26:
 			;
     break;}
 case 27:
-#line 493 "parser.y"
+#line 490 "parser.y"
 {
 			  report_reduction("prec_3 <-- prec_2");
 			  report_reduction("prec_3 <-- " + yyvsp[0].ptAttribute->toString());			  
@@ -1198,7 +1181,7 @@ case 27:
 			;
     break;}
 case 28:
-#line 499 "parser.y"
+#line 496 "parser.y"
 {
 			  report_reduction("prec_3 <-- prec_3 * prec_2");
 			  report_reduction("prec_4 <-- " + yyvsp[-2].ptAttribute->toString() + " * " + yyvsp[0].ptAttribute->toString());			  
@@ -1212,7 +1195,7 @@ case 28:
 			;
     break;}
 case 29:
-#line 511 "parser.y"
+#line 508 "parser.y"
 {
 			  report_reduction("prec_3 <-- prec_3 / prec_2");
 			  report_reduction("prec_4 <-- " + yyvsp[-2].ptAttribute->toString() + " / " + yyvsp[0].ptAttribute->toString());			  
@@ -1226,7 +1209,7 @@ case 29:
 			;
     break;}
 case 30:
-#line 526 "parser.y"
+#line 523 "parser.y"
 {
 			  report_reduction("prec_2 <-- prec_1");
 			  report_reduction("prec_2 <-- " + yyvsp[0].ptAttribute->toString());			  
@@ -1234,16 +1217,16 @@ case 30:
 			;
     break;}
 case 31:
-#line 532 "parser.y"
+#line 529 "parser.y"
 {
 			  report_reduction("prec_2 <-- ! prec_2");
 			  report_reduction("prec_2 <-- ! " + yyvsp[0].ptAttribute->toString());
 
-			  yyval.ptAttribute = new TAttribBool(!check_get_bool(yyvsp[0].ptAttribute));
+			  yyval.ptAttribute = (user_arg_type)new TAttribBool(!check_get_bool(yyvsp[0].ptAttribute));
 			;
     break;}
 case 32:
-#line 539 "parser.y"
+#line 536 "parser.y"
 {
 			  report_reduction("prec_2 <-- + prec_2");
 			  report_reduction("prec_2 <-- + " + yyvsp[0].ptAttribute->toString());
@@ -1252,12 +1235,12 @@ case 32:
 			;
     break;}
 case 33:
-#line 546 "parser.y"
+#line 543 "parser.y"
 {
 			  report_reduction("prec_2 <-- - prec_2");
 			  report_reduction("prec_2 <-- - " + yyvsp[0].ptAttribute->toString());
 			  
-			  yyval.ptAttribute = sub(new TAttribInt(0), yyvsp[0].ptAttribute);
+			  yyval.ptAttribute = sub((user_arg_type)new TAttribInt(0), yyvsp[0].ptAttribute);
 			  if( !yyval.ptAttribute )
 			  {
 			    rt_error("negation of " + EAttribType_to_str(yyvsp[0].ptAttribute->eType) + " failed");
@@ -1265,16 +1248,16 @@ case 33:
 			;
     break;}
 case 34:
-#line 560 "parser.y"
+#line 557 "parser.y"
 {
 			  report_reduction("prec_1 <-- quoted_string");
 			  report_reduction("prec_1 <-- " + string(yyvsp[0].sIdent));
 			  
-			  yyval.ptAttribute = new TAttribString(yyvsp[0].sIdent);
+			  yyval.ptAttribute = (user_arg_type)new TAttribString(yyvsp[0].sIdent);
 			;
     break;}
 case 35:
-#line 567 "parser.y"
+#line 564 "parser.y"
 {
 			  report_reduction("prec_1 <-- PARAM prec_1");
 			  
@@ -1282,46 +1265,46 @@ case 35:
 			;
     break;}
 case 36:
-#line 573 "parser.y"
+#line 570 "parser.y"
 {
 			  report_reduction("prec_1 <-- DEFINED name");
 
 			  if( DATAMAP.find(yyvsp[0].sIdent) != DATAMAP.end() )
 			  {
-			    yyval.ptAttribute = new TAttribBool(true);
+			    yyval.ptAttribute = (user_arg_type)new TAttribBool(true);
 			  }
 			  else
 			  {
-			    yyval.ptAttribute = new TAttribBool(false);
+			    yyval.ptAttribute = (user_arg_type)new TAttribBool(false);
 			  }
 			;
     break;}
 case 37:
-#line 586 "parser.y"
+#line 583 "parser.y"
 {
 			  report_reduction("prec_1 <-- BOOL");
 			  
-			  yyval.ptAttribute = new TAttribBool(yyvsp[0].gValue);
+			  yyval.ptAttribute = (user_arg_type)new TAttribBool(yyvsp[0].gValue);
 			;
     break;}
 case 38:
-#line 592 "parser.y"
+#line 589 "parser.y"
 {
 			  report_reduction("prec_1 <-- INTEGER");
 			  
-			  yyval.ptAttribute = new TAttribInt(yyvsp[0].iValue);
+			  yyval.ptAttribute = (user_arg_type)new TAttribInt(yyvsp[0].iValue);
 			;
     break;}
 case 39:
-#line 598 "parser.y"
+#line 595 "parser.y"
 {
 			    report_reduction("prec_1 <-- REAL");
 			    
-			    yyval.ptAttribute = new TAttribReal(yyvsp[0].dValue);
+			    yyval.ptAttribute = (user_arg_type)new TAttribReal(yyvsp[0].dValue);
                           ;
     break;}
 case 40:
-#line 605 "parser.y"
+#line 602 "parser.y"
 {
 			  report_reduction("prec_1 <-- ( expression )");
 			  report_reduction("prec_1 <-- ( " + yyvsp[-1].ptAttribute->toString() + " )");
@@ -1330,42 +1313,42 @@ case 40:
 			;
     break;}
 case 41:
-#line 612 "parser.y"
+#line 609 "parser.y"
 {
 			  report_reduction("prec_1 <-- color");
-			  yyval.ptAttribute = new TAttribColor(*yyvsp[0].ptColor);
+			  yyval.ptAttribute = (user_arg_type)new TAttribColor(*yyvsp[0].ptColor);
 			;
     break;}
 case 42:
-#line 617 "parser.y"
+#line 614 "parser.y"
 {
 			  report_reduction("prec_1 <-- vector3");
-			  yyval.ptAttribute = new TAttribVector(*yyvsp[0].ptVector);
+			  yyval.ptAttribute = (user_arg_type)new TAttribVector(*yyvsp[0].ptVector);
 			;
     break;}
 case 43:
-#line 622 "parser.y"
+#line 619 "parser.y"
 {
 			  report_reduction("prec_1 <-- vector2");
-			  yyval.ptAttribute = new TAttribVector2(*yyvsp[0].ptVector2);
+			  yyval.ptAttribute = (user_arg_type)new TAttribVector2(*yyvsp[0].ptVector2);
 			;
     break;}
 case 44:
-#line 627 "parser.y"
+#line 624 "parser.y"
 {
 			  report_reduction("prec_1 <-- THIS");
 			  yyval.ptAttribute = DATA;
 			;
     break;}
 case 45:
-#line 632 "parser.y"
+#line 629 "parser.y"
 {
 			  report_reduction("prec_1 <-- instance");
 			  yyval.ptAttribute = yyvsp[0].ptAttribute;			  
                         ;
     break;}
 case 47:
-#line 640 "parser.y"
+#line 637 "parser.y"
 {
 			  report_reduction("function_call <-- potential_name ( )");
 			  report_reduction("function_call <-- " + string(yyvsp[-2].sIdent) +  "( )");
@@ -1386,12 +1369,12 @@ case 47:
 			  else
 			  {
 			    rt_error("function " + string(yyvsp[-2].sIdent) + " does not exist");
-			    yyval.ptAttribute = new TAttribute();
+			    yyval.ptAttribute = (user_arg_type)new TAttribute();
 			  }
 			;
     break;}
 case 48:
-#line 664 "parser.y"
+#line 661 "parser.y"
 {
 			  report_reduction("function_call <-- potential_name ( expression )");
 			  report_reduction("function_call <-- " + string(yyvsp[-3].sIdent) + "( " + yyvsp[-1].ptAttribute->toString() + " )");
@@ -1415,12 +1398,12 @@ case 48:
 			  else
 			  {
 			    rt_error("function " + string(yyvsp[-3].sIdent) + " does not exist");
-			    yyval.ptAttribute = new TAttribute();
+			    yyval.ptAttribute = (user_arg_type)new TAttribute();
 			  }			    
 			;
     break;}
 case 49:
-#line 691 "parser.y"
+#line 688 "parser.y"
 {
 			  report_reduction("function_call <-- potential_name ( expression , expression )");
 			  report_reduction("function_call <-- " + string(yyvsp[-5].sIdent) + "( " + yyvsp[-3].ptAttribute->toString() + "," + yyvsp[-1].ptAttribute->toString() + " )");
@@ -1445,12 +1428,12 @@ case 49:
 			  else
 			  {
 			    rt_error("function " + string(yyvsp[-5].sIdent) + " does not exist");
-			    yyval.ptAttribute = new TAttribute();
+			    yyval.ptAttribute = (user_arg_type)new TAttribute();
 			  }			    
 			;
     break;}
 case 50:
-#line 722 "parser.y"
+#line 719 "parser.y"
 {
 			    report_reduction("color <-- { RED expression GREEN expression BLUE expression }");
 			    report_reduction("color <-- { RED " + yyvsp[-5].ptAttribute->toString() +
@@ -1466,11 +1449,11 @@ case 50:
 			    cerr << "Here's what was really created: ";
 			    c->printDebug(""); cerr << endl;
 			    
-			    yyval.ptColor = c;
+			    yyval.ptColor = magic_pointer<TColor>(c);
 			  ;
     break;}
 case 51:
-#line 742 "parser.y"
+#line 739 "parser.y"
 {
 			    report_reduction("vector3 <-- < expression , expression , expression >");
 			    TVector tVector;
@@ -1484,27 +1467,27 @@ case 51:
 				 << z << ")" << endl;
 #endif
 			    tVector.set (x,y,z);
-                            yyval.ptVector = new TVector(tVector);
+                            yyval.ptVector = (magic_pointer<TVector>)new TVector(tVector);
 			  ;
     break;}
 case 52:
-#line 759 "parser.y"
+#line 756 "parser.y"
 {
 			    report_reduction("vector2 <-- < expression , expression >");
 			    TVector2 tVector2;
 			    tVector2.set (check_get_real(yyvsp[-3].ptAttribute), check_get_real(yyvsp[-1].ptAttribute));
-                            yyval.ptVector2 = new TVector2(tVector2);
+                            yyval.ptVector2 = (magic_pointer<TVector2>)new TVector2(tVector2);
 			  ;
     break;}
 case 53:
-#line 776 "parser.y"
+#line 773 "parser.y"
 {
 			    report_reduction("name <-- IDENTIFIER");
 			    yyval.sIdent = yyvsp[0].sIdent;
 			  ;
     break;}
 case 54:
-#line 790 "parser.y"
+#line 787 "parser.y"
 {
 			    report_reduction("class <-- : EXTENDS IDENTIFIER");
                             if ( DATAMAP.find (yyvsp[0].sIdent) == DATAMAP.end() )
@@ -1520,48 +1503,48 @@ case 54:
 			  ;
     break;}
 case 55:
-#line 804 "parser.y"
+#line 801 "parser.y"
 {
 			    report_reduction("class <-- : CLASS IDENTIFIER");
-			    PARENT_OBJECT = NULL;
+			    PARENT_OBJECT = (magic_pointer<TBaseClass>)NULL;
 			    yyval.sIdent = yyvsp[0].sIdent;
 			  ;
     break;}
 case 56:
-#line 817 "parser.y"
+#line 814 "parser.y"
 {
 			  report_reduction("params <-- param ;");
                         ;
     break;}
 case 57:
-#line 821 "parser.y"
+#line 818 "parser.y"
 {
 			  report_reduction("params <-- error ;");
 			  rt_error("expected parameter expression");
                         ;
     break;}
 case 58:
-#line 826 "parser.y"
+#line 823 "parser.y"
 {
 			  report_reduction("params <-- params param ;");
 			;
     break;}
 case 59:
-#line 830 "parser.y"
+#line 827 "parser.y"
 {
 			  report_reduction("params <-- params error ;");
 			  rt_error("expected parameter expression");
 			;
     break;}
 case 60:
-#line 837 "parser.y"
+#line 834 "parser.y"
 {
 			  report_reduction("param <-- IDENTIFIER = expression");
 			  SetParameter (yyvsp[-2].sIdent, yyvsp[0].ptAttribute);
 			;
     break;}
 case 61:
-#line 842 "parser.y"
+#line 839 "parser.y"
 {
 			  report_reduction("param <-- expression");
 			  
@@ -1611,26 +1594,26 @@ case 61:
 			;
     break;}
 case 62:
-#line 890 "parser.y"
+#line 887 "parser.y"
 {
 			  report_reduction("param <-- reserved_words = expression");
 			  SetParameter (yyvsp[-2].sIdent, yyvsp[0].ptAttribute);			    
 			;
     break;}
 case 63:
-#line 895 "parser.y"
+#line 892 "parser.y"
 {
 			  report_reduction("param <-- object_param");
 			;
     break;}
 case 64:
-#line 899 "parser.y"
+#line 896 "parser.y"
 {
 			  report_reduction("param <-- scene_param");
 			;
     break;}
 case 65:
-#line 905 "parser.y"
+#line 902 "parser.y"
 {
 			  // If an object, object->addFilter.
 			  // If a scene, scene->addImageFilter
@@ -1661,7 +1644,7 @@ case 65:
 			;
     break;}
 case 66:
-#line 937 "parser.y"
+#line 934 "parser.y"
 {
 			  report_reduction("scene_param <-- LIGHT = instance");
 			  // This is no longer needed, as there are special
@@ -1704,7 +1687,7 @@ case 66:
 			;
     break;}
 case 67:
-#line 978 "parser.y"
+#line 975 "parser.y"
 {
 			  report_reduction("scene_param <-- OUTPUT = instance");
 			  FIXME("Image output");
@@ -1739,84 +1722,63 @@ case 67:
 			;
     break;}
 case 68:
-#line 1013 "parser.y"
+#line 1010 "parser.y"
 {
 			  report_reduction("potential_name <-- name");
 			;
     break;}
 case 69:
-#line 1017 "parser.y"
+#line 1014 "parser.y"
 {
 			  report_reduction("potential_name <-- reserved_words");
 			;
     break;}
 case 70:
-#line 1024 "parser.y"
+#line 1021 "parser.y"
 {
 			    report_reduction("reserved_words <-- BLUE");
 			    yyval.sIdent = yyvsp[0].sIdent;
 			  ;
     break;}
 case 71:
-#line 1029 "parser.y"
+#line 1026 "parser.y"
 {
 			    report_reduction("reserved_words <-- CLASS");
 			    yyval.sIdent = yyvsp[0].sIdent;
 			  ;
     break;}
 case 72:
-#line 1034 "parser.y"
+#line 1031 "parser.y"
 {
 			    report_reduction("reserved_words <-- DEFINE");
 			    yyval.sIdent = yyvsp[0].sIdent;
 			  ;
     break;}
 case 73:
-#line 1039 "parser.y"
-{
-			    report_reduction("reserved_words <-- DIFFERENCE");
-			    yyval.sIdent = yyvsp[0].sIdent;
-			  ;
-    break;}
-case 74:
-#line 1044 "parser.y"
+#line 1036 "parser.y"
 {
 			    report_reduction("reserved_words <-- EXTENDS");
 			    yyval.sIdent = yyvsp[0].sIdent;
 			  ;
     break;}
-case 75:
-#line 1049 "parser.y"
+case 74:
+#line 1041 "parser.y"
 {
 			    report_reduction("reserved_words <-- GREEN");
 			    yyval.sIdent = yyvsp[0].sIdent;
 			  ;
     break;}
-case 76:
-#line 1054 "parser.y"
-{
-			    report_reduction("reserved_words <-- INTERSECTION");
-			    yyval.sIdent = yyvsp[0].sIdent;
-			  ;
-    break;}
-case 77:
-#line 1059 "parser.y"
+case 75:
+#line 1046 "parser.y"
 {
 			    report_reduction("reserved_words <-- RED");
 			    yyval.sIdent = yyvsp[0].sIdent;
 			  ;
     break;}
-case 78:
-#line 1064 "parser.y"
+case 76:
+#line 1051 "parser.y"
 {
 			    report_reduction("reserved_words <-- RENDERER");
-			    yyval.sIdent = yyvsp[0].sIdent;
-			  ;
-    break;}
-case 79:
-#line 1069 "parser.y"
-{
-			    report_reduction("reserved_words <-- UNION");
 			    yyval.sIdent = yyvsp[0].sIdent;
 			  ;
     break;}
@@ -2042,7 +2004,7 @@ yyerrhandle:
     }
   return 1;
 }
-#line 1075 "parser.y"
+#line 1057 "parser.y"
 
 
 void rt_error (const char* pkcTEXT)
@@ -2075,14 +2037,14 @@ void RT_InitParser (void)
 
   while(!DATASTACK.empty()) DATASTACK.pop();
 
-  WORLD = new TAggregate();
-  PARENT_OBJECT = NULL;
+  WORLD = (magic_pointer<TAggregate>)new TAggregate();
+  PARENT_OBJECT = (magic_pointer<TBaseClass>)NULL;
   
   TSceneRT::_ptParsedScene->setWorld (rcp_static_cast<TObject>(WORLD));
 
   // Set the globalmost object to be the scene.  This allows operation on the
   // scene without the need for a dedicated scene section.
-  DATASTACK.push (new TAttribScene(TSceneRT::_ptParsedScene));
+  DATASTACK.push ((user_arg_type)new TAttribScene(TSceneRT::_ptParsedScene));
   
 }  /* RT_InitParser() */
 
@@ -2116,7 +2078,7 @@ magic_pointer<TBaseClass> NewObject (const string& rktCLASS,
     exit (1);
   }
 
-  return ptChild;
+  return magic_pointer<TBaseClass>(ptChild);
 
 }  /* NewObject() */
 
@@ -2135,7 +2097,7 @@ void CreateObject (const string& rktCLASS, const string& rktDEF_CLASS)
   //  cout << "Instance created... " << ptData->className() << endl;
   
   DATASTACK.push (base_to_attr(ptData));
-  PARENT_OBJECT = NULL;
+  PARENT_OBJECT = (magic_pointer<TBaseClass>)NULL;
 
 }  /* CreateObject() */
 

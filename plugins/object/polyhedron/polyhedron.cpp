@@ -146,7 +146,7 @@ int TPolyhedron::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
       shape_choices.push_back (shape_strings[FX_ICOSAHEDRON]);
       shape_choices.push_back (shape_strings[FX_DODECAHEDRON]);
     }
-    rnVALUE = new TAttribStringList (shape_choices, shape_strings[eShape]);
+    rnVALUE = (user_arg_type)new TAttribStringList (shape_choices, shape_strings[eShape]);
   }
 #endif
   else

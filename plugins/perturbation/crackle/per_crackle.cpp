@@ -105,11 +105,11 @@ int TPerturbationCrackle::getAttribute (const string& rktNAME, NAttribute& rnVAL
 #else
   if ( rktNAME == "bump" )
   {
-    rnVALUE = new TAttribReal (tBumpFactor);
+    rnVALUE = (user_arg_type)new TAttribReal (tBumpFactor);
   }
   else if ( rktNAME == "crackle_pattern" )
   {
-    rnVALUE = new TAttribPattern (rcp_static_cast<TPattern>(ptCracklePattern));
+    rnVALUE = (user_arg_type)new TAttribPattern (rcp_static_cast<TPattern>(ptCracklePattern));
   }
 #endif
   else

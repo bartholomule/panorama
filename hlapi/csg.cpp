@@ -427,3 +427,89 @@ bool TCsg::initialize (void)
   return val;
 
 }  /* initialize() */
+
+
+TCsg::TCsg(): TAggregate(), eOperation(FX_CSG_UNION)
+{
+} // TCsg()
+
+TCsg::~TCsg()
+{
+  // nothing yet
+} // ~TCsg()
+
+// Attribute management
+int TCsg::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
+{
+  if ( rktNAME == "type" )
+  {
+    magic_pointer<TAttribString> str = get_string(nVALUE);
+    if( !str )
+    {
+      return FX_ATTRIB_WRONG_TYPE;      
+    }
+    string tName = str->tValue;
+
+    if( tName == "union" )
+    {
+      eOperation = FX_CSG_UNION;
+    }
+    else if( tName == "intersection" )
+    {
+      eOperation = FX_CSG_INTERSECTION;
+    }
+    else if( tName == "difference" )
+    {
+      eOperation = FX_CSG_DIFFERENCE;
+    }
+    else
+    {
+      TProcedural::_tUserErrorMessage = "unknown csg type : " + tName;
+      
+      return FX_ATTRIB_USER_ERROR;      
+    }
+    
+  }
+  else
+  {
+    return TAggregate::setAttribute (rktNAME, nVALUE, eTYPE);
+  }
+  return FX_ATTRIB_OK;
+} /* setAttribute() */
+
+int TCsg::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
+{
+  if ( rktNAME == "type" )
+  {
+    static map<ECsgOp,string> csg_type_strings;
+    static vector<string> csg_type_choices;
+
+    if( csg_type_strings.empty() )
+    {
+      csg_type_strings[FX_CSG_UNION] = "union";
+      csg_type_strings[FX_CSG_INTERSECTION] = "intersection";
+      csg_type_strings[FX_CSG_DIFFERENCE] = "difference";
+
+      csg_type_choices.erase(csg_type_choices.begin(), csg_type_choices.end());
+      csg_type_choices.push_back (csg_type_strings[FX_CSG_UNION]);
+      csg_type_choices.push_back (csg_type_strings[FX_CSG_INTERSECTION]);
+      csg_type_choices.push_back (csg_type_strings[FX_CSG_DIFFERENCE]);      
+    }
+    rnVALUE = (user_arg_type)new TAttribStringList(csg_type_choices, csg_type_strings[eOperation]);
+
+  }
+  else
+  {
+    return TAggregate::getAttribute (rktNAME, rnVALUE);
+  }
+  
+  return FX_ATTRIB_OK;
+} /* getAttribute() */
+
+void TCsg::getAttributeList (TAttributeList& rtLIST) const
+{
+  TAggregate::getAttributeList(rtLIST);
+
+  rtLIST ["type"] = FX_STRING_LIST;
+  
+} /* getAttributeList() */

@@ -100,11 +100,11 @@ int TPerturbationWorley::getAttribute (const string& rktNAME, NAttribute& rnVALU
 #else
   if ( rktNAME == "bump" )
   {
-    rnVALUE = new TAttribReal (tBumpFactor);
+    rnVALUE = (user_arg_type)new TAttribReal (tBumpFactor);
   }
   else if ( rktNAME == "worley_pattern" )
   {
-    rnVALUE = new TAttribPattern (rcp_static_cast<TPattern>(ptWorleyPattern));
+    rnVALUE = (user_arg_type)new TAttribPattern (rcp_static_cast<TPattern>(ptWorleyPattern));
   }  
 #endif
   else

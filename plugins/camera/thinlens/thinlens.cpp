@@ -140,23 +140,23 @@ int TThinlensCamera::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 #else
   if ( rktNAME == "aperture" )
   {
-    rnVALUE = new TAttribReal (getAperture());
+    rnVALUE = (user_arg_type)new TAttribReal (getAperture());
   }
   else if ( rktNAME == "focal_distance" )
   {
-    rnVALUE = new TAttribReal (getFocalDistance());
+    rnVALUE = (user_arg_type)new TAttribReal (getFocalDistance());
   }
   else if ( rktNAME == "focal_length" )
   {
-    rnVALUE = new TAttribReal (getFocalLength());
+    rnVALUE = (user_arg_type)new TAttribReal (getFocalLength());
   }
   else if ( rktNAME == "film_width" )
   {
-    rnVALUE = new TAttribReal (getFilmWidth());
+    rnVALUE = (user_arg_type)new TAttribReal (getFilmWidth());
   }
   else if ( rktNAME == "film_height" )
   {
-    rnVALUE = new TAttribReal (getFilmHeight());
+    rnVALUE = (user_arg_type)new TAttribReal (getFilmHeight());
   }
 #endif  
   else

@@ -149,11 +149,11 @@ int TIF_Fog::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 #else
   if ( rktNAME == "color" )
   {
-    rnVALUE = new TAttribColor (tFogColor);
+    rnVALUE = (user_arg_type)new TAttribColor (tFogColor);
   }
   else if ( rktNAME == "distance" )
   {
-    rnVALUE = new TAttribReal (tFogDistance);
+    rnVALUE = (user_arg_type)new TAttribReal (tFogDistance);
   }
 #endif
   else

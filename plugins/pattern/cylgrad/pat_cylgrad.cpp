@@ -208,19 +208,19 @@ int TPatternCylGrad::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 #else
   if ( rktNAME == "color" )
   {
-    rnVALUE = new TAttribColor (tColor);
+    rnVALUE = (user_arg_type)new TAttribColor (tColor);
   }
   else if ( rktNAME == "base_color" )
   {
-    rnVALUE = new TAttribColor (tBaseColor);
+    rnVALUE = (user_arg_type)new TAttribColor (tBaseColor);
   }
   else if ( rktNAME == "cycles" )
   {
-    rnVALUE = new TAttribReal (tCycles);
+    rnVALUE = (user_arg_type)new TAttribReal (tCycles);
   }
   else if ( rktNAME == "swirl" )
   {
-    rnVALUE = new TAttribReal (tSwirl);
+    rnVALUE = (user_arg_type)new TAttribReal (tSwirl);
   }  
 #endif
   else

@@ -134,7 +134,7 @@ bool TRaytracer::traceShadowRay (const TRay& rktRAY, const TLight& rktLIGHT, TCo
 {
 
   TColor           tLightColor;
-  TMaterial*       ptMaterial;
+  magic_pointer<TMaterial> ptMaterial;
   TScalar          tTransparency;
   TSurfaceData     tSurfaceData;
   TSpanList        tList;
@@ -213,7 +213,7 @@ bool TRaytracer::traceShadowRay ( const TRay& rktRAY, const TObject& rktALight, 
 {
   TColor           tLightColor;
   TColor           tLightFilter(1,1,1);
-  TMaterial*       ptMaterial;
+  magic_pointer<TMaterial>       ptMaterial;
   TScalar          tTransparency;
   TSurfaceData     tSurfaceData;
   TSpanList        tList;
@@ -769,19 +769,19 @@ int TRaytracer::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 #else
   if ( rktNAME == "ambient" )
   {
-    rnVALUE = new TAttribColor (tAmbientLight);
+    rnVALUE = (user_arg_type)new TAttribColor (tAmbientLight);
   }
   else if ( rktNAME == "depth" )
   {
-    rnVALUE = new TAttribInt (wMaxDepth);
+    rnVALUE = (user_arg_type)new TAttribInt (wMaxDepth);
   }
   else if ( rktNAME == "max_diff" )
   {
-    rnVALUE = new TAttribReal (tMaxColorDiff);
+    rnVALUE = (user_arg_type)new TAttribReal (tMaxColorDiff);
   }
   else if ( rktNAME == "aa_depth" )
   {
-    rnVALUE = new TAttribInt (bMaxAADepth);
+    rnVALUE = (user_arg_type)new TAttribInt (bMaxAADepth);
   }
   else if ( rktNAME == "sampling" )
   {
@@ -802,8 +802,8 @@ int TRaytracer::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
       sampling_choices.push_back (sampling_strings[FX_ADAPTIVE]);
       sampling_choices.push_back (sampling_strings[FX_FALSE_COLOR]);
     }
-    rnVALUE = new TAttribStringList (sampling_choices,
-				     sampling_strings[eSamplingMethod]);
+    rnVALUE = (user_arg_type)new TAttribStringList (sampling_choices,
+						    sampling_strings[eSamplingMethod]);
   }
 #endif
   else
@@ -890,7 +890,7 @@ TColor TRaytracer::mediaRadiance (const TSurfaceData& rktDATA, const TColor& rkt
   TColor   tRad = rktRAD;
   TSurfaceData tsd = rktDATA;
 
-  for (vector<TLight*>::const_iterator tIter = ptScene->lightList().begin();
+  for (vector<magic_pointer<TLight> >::const_iterator tIter = ptScene->lightList().begin();
        ( tIter != ptScene->lightList().end() );
        tIter++)
   {
@@ -914,7 +914,7 @@ TColor TRaytracer::mediaRadiance (const TSurfaceData& rktDATA, const TColor& rkt
 TColor TRaytracer::ambientLight (const TSurfaceData& rktDATA, Word wDEPTH) const
 {
 
-  TMaterial*   ptMat = rktDATA.object()->material();
+  magic_pointer<TMaterial>   ptMat = rktDATA.object()->material();
   TColor       tRad  = tAmbientLight * ptMat->color (rktDATA) * ptMat->ambientReflection (rktDATA);
 
   return tRad;
@@ -925,16 +925,16 @@ TColor TRaytracer::ambientLight (const TSurfaceData& rktDATA, Word wDEPTH) const
 TColor TRaytracer::directLight (const TSurfaceData& rktDATA) const
 {
 
-  const TLight*   ptLight;
+  magic_pointer<TLight> ptLight;
   TColor    tTotalRadiance;
     
-  for (vector<TLight*>::const_iterator tIter1 = ptScene->lightList().begin(); ( tIter1 != ptScene->lightList().end() ) ;tIter1++)
+  for (vector<magic_pointer<TLight> >::const_iterator tIter1 = ptScene->lightList().begin(); ( tIter1 != ptScene->lightList().end() ) ;tIter1++)
   {
     ptLight         = *tIter1;
     tTotalRadiance += directLight (rktDATA, ptLight);
   }
-  const vector<TObject*>& alv = ptScene->areaLightList();
-  for (vector<TObject*>::const_iterator tIter2 = alv.begin(); ( tIter2 != alv.end() ) ;tIter2++)
+  const vector<magic_pointer<TObject> >& alv = ptScene->areaLightList();
+  for (vector<magic_pointer<TObject> >::const_iterator tIter2 = alv.begin(); ( tIter2 != alv.end() ) ;tIter2++)
   {
     tTotalRadiance += directLight (rktDATA, *tIter2);
   }  
@@ -944,7 +944,7 @@ TColor TRaytracer::directLight (const TSurfaceData& rktDATA) const
 }  /* directLight() */
 
 
-TColor TRaytracer::directLight (const TSurfaceData& rktDATA, const TLight* pktLIGHT) const
+TColor TRaytracer::directLight (const TSurfaceData& rktDATA, const magic_pointer<TLight> pktLIGHT) const
 {
 
   TScalar   tCosNL;
@@ -981,7 +981,7 @@ TColor TRaytracer::directLight (const TSurfaceData& rktDATA, const TLight* pktLI
 }  /* directLight() */
 
 
-TColor TRaytracer::directLight (const TSurfaceData& rktDATA, const TObject* pktALIGHT) const
+TColor TRaytracer::directLight (const TSurfaceData& rktDATA, const magic_pointer<TObject> pktALIGHT) const
 {
   TScalar   tCosNL;
   TColor    rho;
@@ -1032,7 +1032,7 @@ TColor TRaytracer::specularReflectedLight (const TSurfaceData& rktDATA, Word wDE
   TSurfaceData   tSurfaceData;
   TVector        tNormal          = rktDATA.normal();
   TVector        tOrigNormal      = rktDATA.unperturbedNormal();
-  TMaterial*     ptMaterial       = rktDATA.object()->material();
+  magic_pointer<TMaterial>     ptMaterial       = rktDATA.object()->material();
 
   if ( wDEPTH-- )
   {
@@ -1073,7 +1073,7 @@ TColor TRaytracer::specularTransmittedLight (const TSurfaceData& rktDATA, Word w
   bool           gTIR       = false;
   TRay           tRay       = rktDATA.ray();
   TVector        tNormal    = rktDATA.normal();
-  TMaterial*     ptMaterial = rktDATA.object()->material();
+  magic_pointer<TMaterial> ptMaterial = rktDATA.object()->material();
 
   if ( wDEPTH-- )
   {

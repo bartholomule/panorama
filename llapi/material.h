@@ -49,9 +49,9 @@ protected:
 public:
 
   TMaterial (void);
-  TMaterial (TMaterial* ptMATERIAL);
+  TMaterial (TMaterial& ptMATERIAL);
 
-  TMaterial& operator = (TMaterial* ptMATERIAL);
+  TMaterial& operator = (TMaterial& ptMATERIAL);
 
   bool transparent (const TSurfaceData& rktDATA) const { return ( opacity (rktDATA) < 1 ); }
   TScalar transparency (const TSpanList& rktLIST) const;

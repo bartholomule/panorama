@@ -30,8 +30,8 @@ DEFINE_PLUGIN ("BsdfPhong", FX_BSDF_CLASS, TBsdfPhong);
 TBsdfPhong::TBsdfPhong (void)
 {
 
-  setPhongExp (new TPattern (0.0));
-  setSpecularColor (new TPattern (TColor::_white()));
+  setPhongExp ((magic_pointer<TPattern>)new TPattern (0.0));
+  setSpecularColor ((magic_pointer<TPattern>)new TPattern (TColor::_white()));
 
 }  /* TBsdfPhong() */
 
@@ -117,11 +117,11 @@ int TBsdfPhong::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 #else
   if ( rktNAME == "exponent" )
   {
-    rnVALUE = new TAttribPattern (ptPhongExp);
+    rnVALUE = (user_arg_type)new TAttribPattern (ptPhongExp);
   }
   else if ( rktNAME == "specular_color" )
   {
-    rnVALUE = new TAttribPattern (ptSpecularColor);    
+    rnVALUE = (user_arg_type)new TAttribPattern (ptSpecularColor);    
   }  
 #endif
   else

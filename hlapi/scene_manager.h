@@ -48,7 +48,7 @@ class TSceneManager
 
   public:
 
-    static TScene* _load (const string& rktNAME, const string& rktFORMAT);
+    static magic_pointer<TScene> _load (const string& rktNAME, const string& rktFORMAT);
     static int _save (const string& rktNAME, const string& rktFORMAT, const TScene* pktSCENE);
     static bool _knownFormat (const string& rktFORMAT);
     static void _addFormat (const string& rktNAME, TCreateFunction* pfLOAD);

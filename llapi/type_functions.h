@@ -125,7 +125,7 @@ inline EAttribType type_to_etype(void)
 //inline magic_pointer<TAttribute> type_to_attrib<void>(void)
 inline magic_pointer<TAttribute> type_to_attrib(void)
 {
-  return new TAttribute;
+  return magic_pointer<TAttribute>(new TAttribute);
 }
 
 template <>
@@ -137,7 +137,7 @@ inline void attrib_to_type<void>(magic_pointer<TAttribute> atp,
 template <>
 inline magic_pointer<TAttribute> get_attrib<void>()
 {
-  return new TAttribute;
+  return magic_pointer<TAttribute>(new TAttribute);
 }
 
 
@@ -169,7 +169,7 @@ attrib_to_type<magic_pointer<TAttribute> >(magic_pointer<TAttribute> atp,
 template <>
 inline magic_pointer<TAttribute> get_attrib<magic_pointer<TAttribute> >()
 {
-  return new TAttribute;
+  return magic_pointer<TAttribute>(new TAttribute);
 }
 
 // ---------------------------------------------------------------------------
@@ -184,7 +184,7 @@ inline EAttribType type_to_etype<int>(int i)
 template <>
 inline magic_pointer<TAttribute> type_to_attrib<int>(int i)
 {
-  return new TAttribInt(i);
+  return magic_pointer<TAttribute>(new TAttribInt(i));
 }
 
 template <>
@@ -202,7 +202,7 @@ inline int attrib_to_type<int>(magic_pointer<TAttribute> atp,
 template <>
 inline magic_pointer<TAttribute> get_attrib<int>()
 {
-  return new TAttribInt(0);
+  return magic_pointer<TAttribute>(new TAttribInt(0));
 }
 
 // ---------------------------------------------------------------------------
@@ -217,7 +217,7 @@ inline EAttribType type_to_etype<unsigned int>(unsigned int i)
 template <>
 inline magic_pointer<TAttribute> type_to_attrib<unsigned int>(unsigned int i)
 {
-  return new TAttribInt(i);
+  return magic_pointer<TAttribute>(new TAttribInt(i));
 }
 
 template <>
@@ -235,7 +235,7 @@ inline unsigned int attrib_to_type<unsigned int>(magic_pointer<TAttribute> atp,
 template <>
 inline magic_pointer<TAttribute> get_attrib<unsigned int>()
 {
-  return new TAttribInt(0);
+  return magic_pointer<TAttribute>(new TAttribInt(0));
 }
 
 // ---------------------------------------------------------------------------
@@ -250,7 +250,7 @@ inline EAttribType type_to_etype<long int>(long int i)
 template <>
 inline magic_pointer<TAttribute> type_to_attrib<long int>(long int i)
 {
-  return new TAttribInt(int(i));
+  return magic_pointer<TAttribute>(new TAttribInt(int(i)));
 }
 
 template <>
@@ -268,7 +268,7 @@ inline long int attrib_to_type<long int>(magic_pointer<TAttribute> atp,
 template <>
 inline magic_pointer<TAttribute> get_attrib<long int>()
 {
-  return new TAttribInt(0);
+  return magic_pointer<TAttribute>(new TAttribInt(0));
 }
 
 // ---------------------------------------------------------------------------
@@ -283,7 +283,7 @@ inline EAttribType type_to_etype<unsigned long>(unsigned long i)
 template <>
 inline magic_pointer<TAttribute> type_to_attrib<unsigned long>(unsigned long i)
 {
-  return new TAttribInt(int(i));
+  return magic_pointer<TAttribute>(new TAttribInt(int(i)));
 }
 
 template <>
@@ -302,7 +302,7 @@ inline unsigned long attrib_to_type<unsigned long>(magic_pointer<TAttribute>
 template <>
 inline magic_pointer<TAttribute> get_attrib<unsigned long>()
 {
-  return new TAttribInt(0);
+  return magic_pointer<TAttribute>(new TAttribInt(0));
 }
 
 // ---------------------------------------------------------------------------
@@ -317,7 +317,7 @@ inline EAttribType type_to_etype<bool>(bool b)
 template <>
 inline magic_pointer<TAttribute> type_to_attrib<bool>(bool b)
 {
-  return new TAttribBool(b);
+  return magic_pointer<TAttribute>(new TAttribBool(b));
 }
 
 template <>
@@ -335,7 +335,7 @@ inline bool attrib_to_type<bool>(magic_pointer<TAttribute> atp,
 template <>
 inline magic_pointer<TAttribute> get_attrib<bool>()
 {
-  return new TAttribBool(false);
+  return magic_pointer<TAttribute>(new TAttribBool(false));
 }
 
 // ---------------------------------------------------------------------------
@@ -350,7 +350,7 @@ inline EAttribType type_to_etype<string>(string s)
 template <>
 inline magic_pointer<TAttribute> type_to_attrib<string>(string s)
 {
-  return new TAttribString(s);
+  return magic_pointer<TAttribute>(new TAttribString(s));
 }
 
 template <>
@@ -368,7 +368,7 @@ inline string attrib_to_type<string>(magic_pointer<TAttribute> atp,
 template <>
 inline magic_pointer<TAttribute> get_attrib<string>()
 {
-  return new TAttribString();
+  return magic_pointer<TAttribute>(new TAttribString());
 }
 
 // ---------------------------------------------------------------------------
@@ -383,7 +383,7 @@ inline EAttribType type_to_etype<const string&>(const string& s)
 template <>
 inline magic_pointer<TAttribute> type_to_attrib<const string&>(const string& s)
 {
-  return new TAttribString(s);
+  return magic_pointer<TAttribute>(new TAttribString(s));
 }
 
 template <>
@@ -404,7 +404,7 @@ inline const string& attrib_to_type<const string&>(magic_pointer<TAttribute> atp
 template <>
 inline magic_pointer<TAttribute> get_attrib<const string&>()
 {
-  return new TAttribString();
+  return magic_pointer<TAttribute>(new TAttribString());
 }
 
 // ---------------------------------------------------------------------------
@@ -419,7 +419,7 @@ inline EAttribType type_to_etype<vector<string> >(vector<string> vs)
 template <>
 inline magic_pointer<TAttribute> type_to_attrib<vector<string> >(vector<string> vs)
 {
-  return new TAttribStringList(vs);
+  return magic_pointer<TAttribute>(new TAttribStringList(vs));
 }
 
 template <>
@@ -437,7 +437,7 @@ inline vector<string> attrib_to_type<vector<string> >(magic_pointer<TAttribute> 
 template <>
 inline magic_pointer<TAttribute> get_attrib<vector<string> >()
 {
-  return new TAttribStringList();
+  return magic_pointer<TAttribute>(new TAttribStringList());
 }
 
 // ---------------------------------------------------------------------------
@@ -452,7 +452,7 @@ inline EAttribType type_to_etype<TColor>(TColor c)
 template <>
 inline magic_pointer<TAttribute> type_to_attrib<TColor>(TColor c)
 {
-  return new TAttribColor(c);
+  return magic_pointer<TAttribute>(new TAttribColor(c));
 }
 
 template <>
@@ -470,7 +470,7 @@ inline TColor attrib_to_type<TColor>(magic_pointer<TAttribute> atp,
 template <>
 inline magic_pointer<TAttribute> get_attrib<TColor>()
 {
-  return new TAttribColor();
+  return magic_pointer<TAttribute>(new TAttribColor());
 }
 
 // ---------------------------------------------------------------------------
@@ -485,7 +485,7 @@ inline EAttribType type_to_etype<const TColor&>(const TColor& v)
 template <>
 inline magic_pointer<TAttribute> type_to_attrib<const TColor&>(const TColor& v)
 {
-  return new TAttribColor(v);
+  return magic_pointer<TAttribute>(new TAttribColor(v));
 }
 
 template <>
@@ -506,7 +506,7 @@ attrib_to_type<const TColor&>(magic_pointer<TAttribute> atp,
 template <>
 inline magic_pointer<TAttribute> get_attrib<const TColor&>()
 {
-  return new TAttribColor();
+  return magic_pointer<TAttribute>(new TAttribColor());
 }
 
 // ---------------------------------------------------------------------------
@@ -521,7 +521,7 @@ inline EAttribType type_to_etype<TVector>(TVector v)
 template <>
 inline magic_pointer<TAttribute> type_to_attrib<TVector>(TVector v)
 {
-  return new TAttribVector(v);
+  return magic_pointer<TAttribute>(new TAttribVector(v));
 }
 
 template <>
@@ -539,7 +539,7 @@ inline TVector attrib_to_type<TVector>(magic_pointer<TAttribute> atp,
 template <>
 inline magic_pointer<TAttribute> get_attrib<TVector>()
 {
-  return new TAttribVector();
+  return magic_pointer<TAttribute>(new TAttribVector());
 }
 
 // ---------------------------------------------------------------------------
@@ -554,7 +554,7 @@ inline EAttribType type_to_etype<const TVector&>(const TVector& v)
 template <>
 inline magic_pointer<TAttribute> type_to_attrib<const TVector&>(const TVector& v)
 {
-  return new TAttribVector(v);
+  return magic_pointer<TAttribute>(new TAttribVector(v));
 }
 
 template <>
@@ -575,7 +575,7 @@ attrib_to_type<const TVector&>(magic_pointer<TAttribute> atp,
 template <>
 inline magic_pointer<TAttribute> get_attrib<const TVector&>()
 {
-  return new TAttribVector();
+  return magic_pointer<TAttribute>(new TAttribVector());
 }
 
 
@@ -591,7 +591,7 @@ inline EAttribType type_to_etype<TVector2>(TVector2 v)
 template <>
 inline magic_pointer<TAttribute> type_to_attrib<TVector2>(TVector2 v)
 {
-  return new TAttribVector2(v);
+  return magic_pointer<TAttribute>(new TAttribVector2(v));
 }
 
 template <>
@@ -609,7 +609,7 @@ inline TVector2 attrib_to_type<TVector2>(magic_pointer<TAttribute> atp,
 template <>
 inline magic_pointer<TAttribute> get_attrib<TVector2>()
 {
-  return new TAttribVector2();
+  return magic_pointer<TAttribute>(new TAttribVector2());
 }
 
 // ---------------------------------------------------------------------------
@@ -624,7 +624,7 @@ inline EAttribType type_to_etype<const TVector2&>(const TVector2& v)
 template <>
 inline magic_pointer<TAttribute> type_to_attrib<const TVector2&>(const TVector2& v)
 {
-  return new TAttribVector2(v);
+  return magic_pointer<TAttribute>(new TAttribVector2(v));
 }
 
 template <>
@@ -645,7 +645,7 @@ attrib_to_type<const TVector2&>(magic_pointer<TAttribute> atp,
 template <>
 inline magic_pointer<TAttribute> get_attrib<const TVector2&>()
 {
-  return new TAttribVector2();
+  return magic_pointer<TAttribute>(new TAttribVector2());
 }
 
 
@@ -661,7 +661,7 @@ inline EAttribType type_to_etype<double>(double d)
 template <>
 inline magic_pointer<TAttribute> type_to_attrib<double>(double d)
 {
-  return new TAttribReal(d);
+  return magic_pointer<TAttribute>(new TAttribReal(d));
 }
 
 template <>
@@ -679,7 +679,7 @@ inline double attrib_to_type<double>(magic_pointer<TAttribute> atp,
 template <>
 inline magic_pointer<TAttribute> get_attrib<double>()
 {
-  return new TAttribReal(0);
+  return magic_pointer<TAttribute>(new TAttribReal(0));
 }
 
 // ---------------------------------------------------------------------------
@@ -694,7 +694,7 @@ inline EAttribType type_to_etype<float>(float f)
 template <>
 inline magic_pointer<TAttribute> type_to_attrib<float>(float f)
 {
-  return new TAttribReal(f);
+  return magic_pointer<TAttribute>(new TAttribReal(f));
 }
 
 template <>
@@ -712,7 +712,7 @@ inline float attrib_to_type<float>(magic_pointer<TAttribute> atp,
 template <>
 inline magic_pointer<TAttribute> get_attrib<float>()
 {
-  return new TAttribReal(0);
+  return magic_pointer<TAttribute>(new TAttribReal(0));
 }
 
 #endif /* !defined(TYPE_FUNCTIONS_H) */

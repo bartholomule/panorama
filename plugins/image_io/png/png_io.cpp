@@ -414,7 +414,7 @@ int TImagePng::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 #if !defined(NEW_ATTRIBUTES)
     rnVALUE.dValue = TImagePng::iCompression;
 #else
-    rnVALUE = new TAttribInt (TImagePng::iCompression);
+    rnVALUE = (user_arg_type)new TAttribInt (TImagePng::iCompression);
 #endif
   }
   else

@@ -116,15 +116,15 @@ int TPatternAmplifier::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 #else
   if ( rktNAME == "source" )
   {
-    rnVALUE = new TAttribPattern (ptPattern);
+    rnVALUE = (user_arg_type)new TAttribPattern (ptPattern);
   }
   else if ( rktNAME == "offset" )
   {
-    rnVALUE = new TAttribReal (tOffset);
+    rnVALUE = (user_arg_type)new TAttribReal (tOffset);
   }
   else if ( rktNAME == "amplification" )
   {
-    rnVALUE = new TAttribReal (tAmplification);
+    rnVALUE = (user_arg_type)new TAttribReal (tAmplification);
   }
 #endif
   else

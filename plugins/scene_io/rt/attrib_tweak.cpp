@@ -49,7 +49,7 @@ magic_pointer<TProcedural> get_procedural_var(magic_pointer<TAttribute> p, bool 
     }
     else
     {
-      return NULL;
+      return (magic_pointer<TProcedural>)NULL;
     }
   }
 
@@ -126,7 +126,7 @@ magic_pointer<TProcedural> get_procedural_var(magic_pointer<TAttribute> p, bool 
   }
   else
   {
-    return NULL;
+    return (magic_pointer<TProcedural>)NULL;
   }
 }
 

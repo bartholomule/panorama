@@ -193,23 +193,23 @@ int TIF_Text::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 #else
   if ( rktNAME == "color" )
   {
-    rnVALUE = new TAttribColor (tColor);
+    rnVALUE = (user_arg_type)new TAttribColor (tColor);
   }
   else if ( rktNAME == "fontfile" )
   {
-    rnVALUE = new TAttribString (tFontFile);
+    rnVALUE = (user_arg_type)new TAttribString (tFontFile);
   }
   else if ( rktNAME == "size" )
   {
-    rnVALUE = new TAttribReal (wSize / 64.0);
+    rnVALUE = (user_arg_type)new TAttribReal (wSize / 64.0);
   }
   else if ( rktNAME == "text" )
   {
-    rnVALUE = new TAttribString (tText);
+    rnVALUE = (user_arg_type)new TAttribString (tText);
   }
   else if ( rktNAME == "xlate" )
   {
-    rnVALUE = new TAttribVector2 (tTranslate);
+    rnVALUE = (user_arg_type)new TAttribVector2 (tTranslate);
   }  
 #endif
   else

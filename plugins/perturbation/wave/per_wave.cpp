@@ -215,23 +215,23 @@ int TPerturbationWave::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 #else
   if ( rktNAME == "sources" )
   {
-    rnVALUE = new TAttribInt ((int)all_wave_sources.size());
+    rnVALUE = (user_arg_type)new TAttribInt ((int)all_wave_sources.size());
   }
   else if ( rktNAME == "min_freq" )
   {
-    rnVALUE = new TAttribReal (tMin_freq);
+    rnVALUE = (user_arg_type)new TAttribReal (tMin_freq);
   }
   else if ( rktNAME == "max_freq" )
   {
-    rnVALUE = new TAttribReal (tMax_freq);
+    rnVALUE = (user_arg_type)new TAttribReal (tMax_freq);
   }
   else if ( rktNAME == "min_coord" )
   {
-    rnVALUE = new TAttribVector (tMin_coord);
+    rnVALUE = (user_arg_type)new TAttribVector (tMin_coord);
   }
   else if ( rktNAME == "max_coord" )
   {
-    rnVALUE = new TAttribVector (tMax_coord);
+    rnVALUE = (user_arg_type)new TAttribVector (tMax_coord);
   }  
 #endif
   else

@@ -33,10 +33,10 @@ magic_pointer<TAttribInt>     get_int(magic_pointer<TAttribute> attr)
       retval = rcp_static_cast<TAttribInt>(attr);
       break;
     case FX_REAL:
-      retval = new TAttribInt(int(rcp_static_cast<TAttribReal>(attr)->tValue));
+      retval = (magic_pointer<TAttribInt>)new TAttribInt(int(rcp_static_cast<TAttribReal>(attr)->tValue));
       break;
     case FX_BOOL:
-      retval = new TAttribInt(int(rcp_static_cast<TAttribBool>(attr)->tValue));
+      retval = (magic_pointer<TAttribInt>)new TAttribInt(int(rcp_static_cast<TAttribBool>(attr)->tValue));
       break;
     case FX_STRING:
     case FX_STRING_LIST:
@@ -51,7 +51,7 @@ magic_pointer<TAttribInt>     get_int(magic_pointer<TAttribute> attr)
 
 	if( (ptr - scp) == int(s.length()) )
 	{
-	  retval = new TAttribInt(value);
+	  retval = (magic_pointer<TAttribInt>)new TAttribInt(value);
 	}
       }
       break;
@@ -71,13 +71,13 @@ magic_pointer<TAttribReal>    get_real(magic_pointer<TAttribute> attr)
     switch(attr->eType)
     {
     case FX_INTEGER:
-      retval = new TAttribReal(TScalar(rcp_static_cast<TAttribInt>(attr)->tValue));
+      retval = (magic_pointer<TAttribReal>)new TAttribReal(TScalar(rcp_static_cast<TAttribInt>(attr)->tValue));
       break;
     case FX_REAL:
-      retval = rcp_static_cast<TAttribReal>(attr);
+      retval = (magic_pointer<TAttribReal>)rcp_static_cast<TAttribReal>(attr);
       break;
     case FX_BOOL:
-      retval = new TAttribReal(TScalar(int(rcp_static_cast<TAttribBool>(attr)->tValue)));
+      retval = (magic_pointer<TAttribReal>)new TAttribReal(TScalar(int(rcp_static_cast<TAttribBool>(attr)->tValue)));
       break;
     case FX_STRING:
     case FX_STRING_LIST:
@@ -92,7 +92,7 @@ magic_pointer<TAttribReal>    get_real(magic_pointer<TAttribute> attr)
 
 	if( (ptr - scp) == int(s.length()) )
 	{
-	  retval = new TAttribReal(value);
+	  retval = (magic_pointer<TAttribReal>)new TAttribReal(value);
 	}
       }
       break;
@@ -115,7 +115,7 @@ magic_pointer<TAttribBool>    get_bool(magic_pointer<TAttribute> attr)
       retval = rcp_static_cast<TAttribBool>(attr);
       break;
     case FX_INTEGER:
-      retval = new TAttribBool(!!(rcp_static_cast<TAttribInt>(attr)->tValue));
+      retval = (magic_pointer<TAttribBool>)new TAttribBool(!!(rcp_static_cast<TAttribInt>(attr)->tValue));
       break;
     case FX_STRING:
     case FX_STRING_LIST:
@@ -128,11 +128,11 @@ magic_pointer<TAttribBool>    get_bool(magic_pointer<TAttribute> attr)
 	
 	if(strcasecmp(scp, "true") == 0)
 	{
-	  retval = new TAttribBool(true);
+	  retval = (magic_pointer<TAttribBool>)new TAttribBool(true);
 	}
 	else if(strcasecmp(scp, "false") == 0)
 	{
-	  retval = new TAttribBool(false);	  
+	  retval = (magic_pointer<TAttribBool>)new TAttribBool(false);	  
 	}
 	else
 	{
@@ -140,7 +140,7 @@ magic_pointer<TAttribBool>    get_bool(magic_pointer<TAttribute> attr)
 	  
 	  if( (ptr - scp) == int(s.length()) )
 	  {
-	    retval = new TAttribBool(!!value);
+	    retval = (magic_pointer<TAttribBool>)new TAttribBool(!!value);
 	  }
 	}
       }
@@ -170,15 +170,15 @@ magic_pointer<TAttribString>  get_string(magic_pointer<TAttribute> attr)
       break;      
     case FX_INTEGER:
       sprintf(junk_buffer,"%d", rcp_static_cast<TAttribInt>(attr)->tValue);
-      retval = new TAttribString(junk_buffer);
+      retval = (magic_pointer<TAttribString>)new TAttribString(junk_buffer);
       break;
     case FX_REAL:
       sprintf(junk_buffer,"%12.7f",rcp_static_cast<TAttribReal>(attr)->tValue);
-      retval = new TAttribString(junk_buffer);      
+      retval = (magic_pointer<TAttribString>)new TAttribString(junk_buffer);      
       break;
     case FX_BOOL:
       sprintf(junk_buffer,"%d", rcp_static_cast<TAttribInt>(attr)->tValue);
-      retval = new TAttribString(junk_buffer);      
+      retval = (magic_pointer<TAttribString>)new TAttribString(junk_buffer);      
       break;      
     default:
       // Retval is NULL!!!
@@ -200,7 +200,7 @@ get_stringlist(const magic_pointer<TAttribute> attr)
       {
 	string value = rcp_static_cast<TAttribString>(attr)->tValue;
 	vector<string> choices(1,value);
-	retval = new TAttribStringList (choices);
+	retval = (magic_pointer<TAttribStringList>)new TAttribStringList (choices);
       }
       break;
     case FX_STRING_LIST:
@@ -222,13 +222,13 @@ magic_pointer<TAttribColor>   get_color(magic_pointer<TAttribute> attr)
     switch(attr->eType)
     {
     case FX_INTEGER:
-      retval = new TAttribColor((double)rcp_static_cast<TAttribInt>(attr)->tValue);
+      retval = (magic_pointer<TAttribColor>)new TAttribColor((double)rcp_static_cast<TAttribInt>(attr)->tValue);
       break;      
     case FX_REAL:
-      retval = new TAttribColor(rcp_static_cast<TAttribReal>(attr)->tValue);
+      retval = (magic_pointer<TAttribColor>)new TAttribColor(rcp_static_cast<TAttribReal>(attr)->tValue);
       break;
     case FX_VECTOR:
-      retval = new TAttribColor(rcp_static_cast<TAttribVector>(attr)->tValue);
+      retval = (magic_pointer<TAttribColor>)new TAttribColor(rcp_static_cast<TAttribVector>(attr)->tValue);
       break;      
     case FX_COLOR:
       retval = rcp_static_cast<TAttribColor>(attr);
@@ -249,10 +249,10 @@ magic_pointer<TAttribVector>  get_vector(magic_pointer<TAttribute> attr)
     switch(attr->eType)
     {
     case FX_INTEGER:
-      retval = new TAttribVector((double)rcp_static_cast<TAttribInt>(attr)->tValue);
+      retval = (magic_pointer<TAttribVector>)new TAttribVector((double)rcp_static_cast<TAttribInt>(attr)->tValue);
       break;      
     case FX_REAL:
-      retval = new TAttribVector(rcp_static_cast<TAttribReal>(attr)->tValue);
+      retval = (magic_pointer<TAttribVector>)new TAttribVector(rcp_static_cast<TAttribReal>(attr)->tValue);
       break;
     case FX_VECTOR:
       retval = rcp_static_cast<TAttribVector>(attr);
@@ -273,10 +273,10 @@ magic_pointer<TAttribVector2> get_vector2(magic_pointer<TAttribute> attr)
     switch(attr->eType)
     {
     case FX_INTEGER:
-      retval = new TAttribVector2((double)rcp_static_cast<TAttribInt>(attr)->tValue);
+      retval = (magic_pointer<TAttribVector2>)new TAttribVector2((double)rcp_static_cast<TAttribInt>(attr)->tValue);
       break;      
     case FX_REAL:
-      retval = new TAttribVector2(rcp_static_cast<TAttribReal>(attr)->tValue);
+      retval = (magic_pointer<TAttribVector2>)new TAttribVector2(rcp_static_cast<TAttribReal>(attr)->tValue);
       break;
     case FX_VECTOR2:
       retval = rcp_static_cast<TAttribVector2>(attr);
@@ -300,21 +300,21 @@ magic_pointer<TAttribPattern> get_pattern(const magic_pointer<TAttribute> attr)
       {
 	TScalar s = rcp_static_cast<TAttribInt>(attr)->tValue;
 	cout << "attr: creating pattern from int " << s << endl;
-	retval = new TAttribPattern(s);
+	retval = (magic_pointer<TAttribPattern>)new TAttribPattern(s);
       }
       break;      
     case FX_REAL:
       {
 	TScalar s = rcp_static_cast<TAttribReal>(attr)->tValue;
 	cout << "attr: creating pattern from real " << s << endl;
-	retval = new TAttribPattern(s);
+	retval = (magic_pointer<TAttribPattern>)new TAttribPattern(s);
       }
       break;
     case FX_VECTOR:
       {
 	TVector v = rcp_static_cast<TAttribVector>(attr)->tValue;
 	cout << "attr: creating pattern from vector" << endl;
-	retval = new TAttribPattern(v);
+	retval = (magic_pointer<TAttribPattern>)new TAttribPattern(v);
       }
       break;      
     case FX_COLOR:
@@ -324,7 +324,7 @@ magic_pointer<TAttribPattern> get_pattern(const magic_pointer<TAttribute> attr)
 	cout << "attr: creating pattern from color"
 	     << " (" << c.red() << "," << c.green() << "," << c.blue() << ")"
 	     << endl;			    			    	
-	retval = new TAttribPattern(c);
+	retval = (magic_pointer<TAttribPattern>)new TAttribPattern(c);
       }
       break;
     case FX_PATTERN:
@@ -426,7 +426,7 @@ get_object(const magic_pointer<TAttribute> attr)
     {
       magic_pointer<TAttribAggregate> agg = rcp_static_cast<TAttribAggregate>(attr);
       magic_pointer<TObject> obj = rcp_static_cast<TObject>(agg->tValue);
-      retval = new TAttribObject(obj);
+      retval = (magic_pointer<TAttribObject>)new TAttribObject(obj);
     }
   }
   return retval;    
@@ -497,9 +497,9 @@ magic_pointer<TBaseClass> attr_to_base(const magic_pointer<TAttribute> attr)
     switch( attr->eType )
     {
     case FX_COLOR:
-      return new TColor(get_color(attr)->tValue);
+      return (magic_pointer<TBaseClass>)new TColor(get_color(attr)->tValue);
     case FX_VECTOR:
-      return new TVector(get_vector(attr)->tValue);
+      return (magic_pointer<TBaseClass>)new TVector(get_vector(attr)->tValue);
     case FX_MATERIAL:
       return rcp_static_cast<TBaseClass>(get_material(attr)->tValue);
     case FX_PATTERN:
@@ -540,43 +540,43 @@ magic_pointer<TAttribute> base_to_attr(const magic_pointer<TBaseClass> base)
     switch( base->classType() )
     {
     case FX_COLOR_CLASS:
-      return new TAttribColor(*rcp_static_cast<TColor>(base));
+      return (user_arg_type)new TAttribColor(*rcp_static_cast<TColor>(base));
       break;
     case FX_VECTOR_CLASS:
-      return new TAttribVector(*rcp_static_cast<TVector>(base));
+      return (user_arg_type)new TAttribVector(*rcp_static_cast<TVector>(base));
       break;
     case FX_PATTERN_CLASS:
-      return new TAttribPattern(rcp_static_cast<TPattern>(base));
+      return (user_arg_type)new TAttribPattern(rcp_static_cast<TPattern>(base));
       break;
     case FX_PERTURBATION_CLASS:
-      return new TAttribPerturbation(rcp_static_cast<TPerturbation>(base));
+      return (user_arg_type)new TAttribPerturbation(rcp_static_cast<TPerturbation>(base));
       break;
     case FX_MATERIAL_CLASS:
-      return new TAttribMaterial(rcp_static_cast<TMaterial>(base));
+      return (user_arg_type)new TAttribMaterial(rcp_static_cast<TMaterial>(base));
       break;
     case FX_LIGHT_CLASS:
-      return new TAttribObject(rcp_static_cast<TObject>(base));
+      return (user_arg_type)new TAttribObject(rcp_static_cast<TObject>(base));
       break;
     case FX_CAMERA_CLASS:
-      return new TAttribCamera(rcp_static_cast<TCamera>(base));
+      return (user_arg_type)new TAttribCamera(rcp_static_cast<TCamera>(base));
       break;
     case FX_OBJECT_CLASS:
-      return new TAttribObject(rcp_static_cast<TObject>(base));
+      return (user_arg_type)new TAttribObject(rcp_static_cast<TObject>(base));
       break;
     case FX_AGGREGATE_CLASS:
-      return new TAttribAggregate(rcp_static_cast<TAggregate>(base));
+      return (user_arg_type)new TAttribAggregate(rcp_static_cast<TAggregate>(base));
       break;      
     case FX_RENDERER_CLASS:
-      return new TAttribRenderer(rcp_static_cast<TRenderer>(base));
+      return (user_arg_type)new TAttribRenderer(rcp_static_cast<TRenderer>(base));
       break;
     case FX_SCENE_CLASS:
-      return new TAttribScene(rcp_static_cast<TScene>(base));
+      return (user_arg_type)new TAttribScene(rcp_static_cast<TScene>(base));
       break;
     case FX_BSDF_CLASS:
-      return new TAttribBsdf(rcp_static_cast<TBsdf>(base));
+      return (user_arg_type)new TAttribBsdf(rcp_static_cast<TBsdf>(base));
       break;
     case FX_IMAGE_IO_CLASS:
-      return new TAttribImageIO(rcp_static_cast<TImageIO>(base));
+      return (user_arg_type)new TAttribImageIO(rcp_static_cast<TImageIO>(base));
       break;
     default:
       break;
@@ -587,11 +587,11 @@ magic_pointer<TAttribute> base_to_attr(const magic_pointer<TBaseClass> base)
     // atm object?
     // scene io?
     cerr << "base_to_attr: Cannot determine classtype of " << base->className() << endl;
-    return new TAttribute();
+    return (user_arg_type)new TAttribute();
   }
   else
   {
     cerr << "base_to_attr: given a null base" << endl;
-    return new TAttribute();
+    return (user_arg_type)new TAttribute();
   }  
 }

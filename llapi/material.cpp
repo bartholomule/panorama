@@ -31,49 +31,49 @@ TMaterial::TMaterial (void) :
   ptBsdf (NULL) 
 {
 
-  ptColor              = new TPattern (0.0);
-  ptOpacity            = new TPattern (1.0);
-  ptAmbientReflection  = new TPattern (0.0);
-  ptDiffuseReflection  = new TPattern (0.0);
-  ptSpecularReflection = new TPattern (0.0);
-  ptIor                = new TPattern (1.0);
-  ptCaustics           = new TPattern (0.0);
-  ptPerturbation       = new TPerturbation();
+  ptColor              = (magic_pointer<TPattern>)new TPattern (0.0);
+  ptOpacity            = (magic_pointer<TPattern>)new TPattern (1.0);
+  ptAmbientReflection  = (magic_pointer<TPattern>)new TPattern (0.0);
+  ptDiffuseReflection  = (magic_pointer<TPattern>)new TPattern (0.0);
+  ptSpecularReflection = (magic_pointer<TPattern>)new TPattern (0.0);
+  ptIor                = (magic_pointer<TPattern>)new TPattern (1.0);
+  ptCaustics           = (magic_pointer<TPattern>)new TPattern (0.0);
+  ptPerturbation       = (magic_pointer<TPerturbation>)new TPerturbation();
  
 }  /* TMaterial() */
 
 
-TMaterial::TMaterial (TMaterial* ptMATERIAL) :
-  TProcedural(*ptMATERIAL),
-  ptColor (ptMATERIAL->ptColor),
-  ptEmission (ptMATERIAL->ptEmission),  
-  ptOpacity (ptMATERIAL->ptOpacity),
-  ptAmbientReflection (ptMATERIAL->ptAmbientReflection),
-  ptDiffuseReflection (ptMATERIAL->ptDiffuseReflection),
-  ptSpecularReflection (ptMATERIAL->ptSpecularReflection),
-  ptIor (ptMATERIAL->ptIor),
-  ptCaustics (ptMATERIAL->ptCaustics),
-  ptPerturbation (ptMATERIAL->ptPerturbation),
-  ptBsdf (ptMATERIAL->ptBsdf) {}
+TMaterial::TMaterial (TMaterial& rtMATERIAL) :
+  TProcedural(rtMATERIAL),
+  ptColor (rtMATERIAL.ptColor),
+  ptEmission (rtMATERIAL.ptEmission),  
+  ptOpacity (rtMATERIAL.ptOpacity),
+  ptAmbientReflection (rtMATERIAL.ptAmbientReflection),
+  ptDiffuseReflection (rtMATERIAL.ptDiffuseReflection),
+  ptSpecularReflection (rtMATERIAL.ptSpecularReflection),
+  ptIor (rtMATERIAL.ptIor),
+  ptCaustics (rtMATERIAL.ptCaustics),
+  ptPerturbation (rtMATERIAL.ptPerturbation),
+  ptBsdf (rtMATERIAL.ptBsdf) {}
 
 
-TMaterial& TMaterial::operator = (TMaterial* ptMATERIAL)
+TMaterial& TMaterial::operator = (TMaterial& rtMATERIAL)
 {
 
-  if( ptMATERIAL != this )
+  if( &rtMATERIAL != this )
   {
-    ptColor              = ptMATERIAL->ptColor;
-    ptEmission           = ptMATERIAL->ptEmission;    
-    ptOpacity            = ptMATERIAL->ptOpacity;
-    ptAmbientReflection  = ptMATERIAL->ptAmbientReflection;
-    ptDiffuseReflection  = ptMATERIAL->ptDiffuseReflection;
-    ptSpecularReflection = ptMATERIAL->ptSpecularReflection;
-    ptIor                = ptMATERIAL->ptIor;
-    ptCaustics           = ptMATERIAL->ptCaustics;
-    ptPerturbation       = ptMATERIAL->ptPerturbation;
-    ptBsdf               = ptMATERIAL->ptBsdf;
+    ptColor              = rtMATERIAL.ptColor;
+    ptEmission           = rtMATERIAL.ptEmission;    
+    ptOpacity            = rtMATERIAL.ptOpacity;
+    ptAmbientReflection  = rtMATERIAL.ptAmbientReflection;
+    ptDiffuseReflection  = rtMATERIAL.ptDiffuseReflection;
+    ptSpecularReflection = rtMATERIAL.ptSpecularReflection;
+    ptIor                = rtMATERIAL.ptIor;
+    ptCaustics           = rtMATERIAL.ptCaustics;
+    ptPerturbation       = rtMATERIAL.ptPerturbation;
+    ptBsdf               = rtMATERIAL.ptBsdf;
     
-    TProcedural::operator= (*ptMATERIAL);
+    TProcedural::operator=(rtMATERIAL);
   }
   
   return *this;
@@ -486,43 +486,43 @@ int TMaterial::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 #else
   if ( rktNAME == "color" )
   {
-    rnVALUE = new TAttribPattern(ptColor);
+    rnVALUE = (user_arg_type)new TAttribPattern(ptColor);
   }
   if ( rktNAME == "emission" )
   {
-    rnVALUE = new TAttribPattern (ptEmission);
+    rnVALUE = (user_arg_type)new TAttribPattern (ptEmission);
   }  
   else if ( rktNAME == "opacity" )
   {
-    rnVALUE = new TAttribPattern (ptOpacity);
+    rnVALUE = (user_arg_type)new TAttribPattern (ptOpacity);
   }
   else if ( rktNAME == "ambient" )
   {
-    rnVALUE = new TAttribPattern (ptAmbientReflection);
+    rnVALUE = (user_arg_type)new TAttribPattern (ptAmbientReflection);
   }
   else if ( rktNAME == "diffuse" )
   {
-    rnVALUE = new TAttribPattern (ptDiffuseReflection);
+    rnVALUE = (user_arg_type)new TAttribPattern (ptDiffuseReflection);
   }
   else if ( rktNAME == "specular" )
   {
-    rnVALUE = new TAttribPattern (ptSpecularReflection);
+    rnVALUE = (user_arg_type)new TAttribPattern (ptSpecularReflection);
   }
   else if ( rktNAME == "ior" )
   {
-    rnVALUE = new TAttribPattern (ptIor);
+    rnVALUE = (user_arg_type)new TAttribPattern (ptIor);
   }
   else if ( rktNAME == "caustics" )
   {
-    rnVALUE = new TAttribPattern (ptCaustics);
+    rnVALUE = (user_arg_type)new TAttribPattern (ptCaustics);
   } 
   else if ( rktNAME == "perturb_func" )
   {
-    rnVALUE = new TAttribPerturbation (ptPerturbation);
+    rnVALUE = (user_arg_type)new TAttribPerturbation (ptPerturbation);
   }
   else if ( rktNAME == "bsdf" )
   {
-    rnVALUE = new TAttribBsdf (ptBsdf);
+    rnVALUE = (user_arg_type)new TAttribBsdf (ptBsdf);
   }  
 #endif
   else

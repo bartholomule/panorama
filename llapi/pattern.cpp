@@ -239,7 +239,7 @@ TColor TPattern::color (const TSurfaceData& rktDATA) const
 
     if ( !gTransformIdentity )
     {
-      tNormal.applyTransform (&tMatrixRotation);
+      tNormal.applyTransform (tMatrixRotation);
     }   
 
     tPoint = *rktDATA.object()->transformMatrix() * tPoint;
@@ -434,15 +434,15 @@ int TPattern::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 #else
   if ( rktNAME == "rotation" )
   {
-    rnVALUE = new TAttribVector (tRotation);
+    rnVALUE = (user_arg_type)new TAttribVector (tRotation);
   }
   else if ( rktNAME == "scaling" )
   {
-    rnVALUE = new TAttribVector (tScaling);
+    rnVALUE = (user_arg_type)new TAttribVector (tScaling);
   }
   else if ( rktNAME == "translation" )
   {
-    rnVALUE = new TAttribVector (tTranslation);
+    rnVALUE = (user_arg_type)new TAttribVector (tTranslation);
   }
   else if ( rktNAME == "warp" )
   {
@@ -451,11 +451,11 @@ int TPattern::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
     choices.push_back (warp_strings[FX_NO_WARP]);
     choices.push_back (warp_strings[FX_SPHERICAL_WARP]);
     choices.push_back (warp_strings[FX_CYLINDRICAL_WARP]);
-    rnVALUE = new TAttribStringList (choices, warp_name);
+    rnVALUE = (user_arg_type)new TAttribStringList (choices, warp_name);
   }
   else if ( rktNAME == "rst_scaling" )
   {
-    rnVALUE = new TAttribVector (tRSTScaling);
+    rnVALUE = (user_arg_type)new TAttribVector (tRSTScaling);
   }  
 #endif
   else

@@ -116,11 +116,11 @@ int TOF_Cartoon::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 #else
   if ( rktNAME == "outline" )
   {
-    rnVALUE = new TAttribColor (tOutlineColor);
+    rnVALUE = (user_arg_type)new TAttribColor (tOutlineColor);
   }
   else if ( rktNAME == "levels" )
   {
-    rnVALUE = new TAttribInt (bColorLevels);
+    rnVALUE = (user_arg_type)new TAttribInt (bColorLevels);
   }  
 #endif
   else

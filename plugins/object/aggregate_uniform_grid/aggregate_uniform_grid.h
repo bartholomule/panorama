@@ -43,7 +43,7 @@ class TAggregateUniformGrid : public TAggregate
       tVoxelSize    = 0;
     }
 
-    void add (TObject* ptOBJ);
+    void add (magic_pointer<TObject> ptOBJ);
       
     bool initialize (void);
 

@@ -78,8 +78,8 @@ class TObject : public TVolume
       
     virtual ~TObject (void)
     {
-      ptMatrix = NULL;
-      ptInverseMatrix = NULL;
+      ptMatrix = magic_pointer<TMatrix>(NULL);
+      ptInverseMatrix = magic_pointer<TMatrix>(NULL);
 
       tObjectFilterList.erase(tObjectFilterList.begin(),
 			      tObjectFilterList.end());
@@ -190,12 +190,12 @@ class TObject : public TVolume
 
     virtual void setTransformMatrix (const TMatrix& rktMATRIX)
     {
-      ptMatrix = new TMatrix(rktMATRIX);
+      ptMatrix = magic_pointer<TMatrix>(new TMatrix(rktMATRIX));
     }
     
     virtual void setInverseTransformMatrix (const TMatrix& rktMATRIX)
     {
-      ptInverseMatrix = new TMatrix(rktMATRIX);
+      ptInverseMatrix = magic_pointer<TMatrix>(new TMatrix(rktMATRIX));
     }
 
     virtual void setTransformMatrix (const magic_pointer<TMatrix>& pktMATRIX)
@@ -244,7 +244,7 @@ inline TVector TObject::normal (const TSurfaceData& rktDATA) const
   TVector   tPoint  = (*ptInverseMatrix) * rktDATA.point();
   TVector   tNormal = localNormal (tPoint);
 
-  tNormal.applyTransform (&*ptInverseMatrix);
+  tNormal.applyTransform (ptInverseMatrix);
   tNormal.normalize();
 
   return tNormal;

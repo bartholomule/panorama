@@ -25,8 +25,8 @@
 void TObject::createMatrices (void)
 {
 
-  ptMatrix        = new TMatrix();
-  ptInverseMatrix = new TMatrix();
+  ptMatrix        = (magic_pointer<TMatrix>)new TMatrix();
+  ptInverseMatrix = (magic_pointer<TMatrix>)new TMatrix();
 
   ptMatrix->setIdentity();
   ptInverseMatrix->setIdentity();
@@ -244,7 +244,7 @@ int TObject::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 #if !defined(NEW_ATTRIBUTES)    
     rnVALUE.pvValue = (void*)ptMaterial.get_pointer();
 #else
-    rnVALUE = new TAttribMaterial (ptMaterial);
+    rnVALUE = (user_arg_type)new TAttribMaterial (ptMaterial);
 #endif
     return FX_ATTRIB_OK;
   }

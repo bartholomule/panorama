@@ -147,7 +147,7 @@ bool TUniformGrid::findIntersectionInsideVoxel (TUGLatticeCoord tVOXEL_X, TUGLat
     {
       if ( ( tIter->i == tVOXEL_X ) && ( tIter->j == tVOXEL_Y ) && ( tIter->k == tVOXEL_Z ) )
       {
-        for (list<const TObject*>::const_iterator tIter1 = tIter->tObjectList.begin(); ( tIter1 != tIter->tObjectList.end() ) ;tIter1++)
+        for (list<magic_pointer<const TObject> >::const_iterator tIter1 = tIter->tObjectList.begin(); ( tIter1 != tIter->tObjectList.end() ) ;tIter1++)
         {
           if ( (*tIter1)->findFirstIntersection (tRayTmp, rtDATA) )
           {
@@ -2038,7 +2038,7 @@ bool TUniformGrid::findFirstIntersection7 (const TRay& rktRAY, TSurfaceData& rtD
 }  /* findFirstIntersection7() */
 
 
-void TUniformGrid::add (TUGLatticeCoord tI, TUGLatticeCoord tJ, TUGLatticeCoord tK, const TObject* pktOBJECT)
+void TUniformGrid::add (TUGLatticeCoord tI, TUGLatticeCoord tJ, TUGLatticeCoord tK, magic_pointer<const TObject> pktOBJECT)
 {
 
   list<TUGVoxel>*   ptBucket;
@@ -2146,7 +2146,7 @@ void TUniformGrid::calculateVoxelSize (const vector<magic_pointer<TObject> >& rk
 }  /* calculateVoxelSize() */
 
 
-void TUniformGrid::addObject (const TObject* pktOBJECT)
+void TUniformGrid::addObject (const magic_pointer<TObject> pktOBJECT)
 {
   
   TUGLatticeCoord   I1, J1, K1;
@@ -2167,7 +2167,7 @@ void TUniformGrid::addObject (const TObject* pktOBJECT)
     {
       for (TUGLatticeCoord K = K1; ( K <= K2 ) ;K++)
       {
-        add (I, J, K, pktOBJECT);
+        add (I, J, K, rcp_static_cast<const TObject>(pktOBJECT));
       }
     }
   }

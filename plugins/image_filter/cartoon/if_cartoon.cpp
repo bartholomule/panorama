@@ -258,19 +258,19 @@ int TIF_Cartoon::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 #else
   if ( rktNAME == "outline" )
   {
-    rnVALUE = new TAttribColor (tOutlineColor);
+    rnVALUE = (user_arg_type)new TAttribColor (tOutlineColor);
   }
   else if ( rktNAME == "levels" )
   {
-    rnVALUE = new TAttribReal (bColorLevels);
+    rnVALUE = (user_arg_type)new TAttribReal (bColorLevels);
   }
   else if ( rktNAME == "distance_th" )
   {
-    rnVALUE = new TAttribReal (fZThreshold);
+    rnVALUE = (user_arg_type)new TAttribReal (fZThreshold);
   }
   else if ( rktNAME == "normal_th" )
   {
-    rnVALUE = new TAttribReal (fNThreshold);
+    rnVALUE = (user_arg_type)new TAttribReal (fNThreshold);
   }  
 #endif
   else

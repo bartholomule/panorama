@@ -126,7 +126,7 @@ int TProjector::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribT
     if( !!str )
     {
       string pcName = str->tValue;
-      ptImage = tImageManager.newImage (pcName, FileExtension (pcName));
+      ptImage = (magic_pointer<TImage>)tImageManager.newImage (pcName, FileExtension (pcName));
       if ( !ptImage )
       {
         TProcedural::_tUserErrorMessage = "could not open texture file " + pcName;
@@ -190,19 +190,19 @@ int TProjector::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 #else
   if ( rktNAME == "point_at" )
   {
-    rnVALUE = new TAttribVector (tPointAt);
+    rnVALUE = (user_arg_type)new TAttribVector (tPointAt);
   }
   else if ( rktNAME == "up" )
   {
-    rnVALUE = new TAttribVector (tUp);    
+    rnVALUE = (user_arg_type)new TAttribVector (tUp);    
   }
   else if ( rktNAME == "angle" )
   {
-    rnVALUE = new TAttribReal ((tAngle * 180.0) / PI);
+    rnVALUE = (user_arg_type)new TAttribReal ((tAngle * 180.0) / PI);
   }
   else if ( rktNAME == "texture" )
   {
-    rnVALUE = new TAttribImage (ptImage);
+    rnVALUE = (user_arg_type)new TAttribImage (ptImage);
   }  
 #endif
   else

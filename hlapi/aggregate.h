@@ -67,8 +67,7 @@ class TAggregate : public TObject
     {
       for (TObjectList::const_iterator iter = rktLIST.begin(); ( iter != rktLIST.end() ); iter++)
       {
-	// This here will create a magic pointer (implicitly)
-        tObjectList.push_back ((TObject*)(TClassManager::_newObject ((*iter)->className(), (TObject*) &*(*iter))));
+        tObjectList.push_back (magic_pointer<TObject>((TObject*)(TClassManager::_newObject ((*iter)->className(), (TObject*) &*(*iter)))));
       }
     }
       

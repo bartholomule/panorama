@@ -123,11 +123,11 @@ int TTorus::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 #else
   if ( rktNAME == "radius_a" )
   {
-    rnVALUE = new TAttribReal (tRadiusA);
+    rnVALUE = (user_arg_type)new TAttribReal (tRadiusA);
   }
   else if ( rktNAME == "radius_b" )
   {
-    rnVALUE = new TAttribReal (sqrt (tRadiusB2));
+    rnVALUE = (user_arg_type)new TAttribReal (sqrt (tRadiusB2));
   }
 #endif
   else

@@ -204,11 +204,11 @@ int TPlane::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 #else
   if ( rktNAME == "normal" )
   {
-   rnVALUE = new TAttribVector(tNormal);
+   rnVALUE = (user_arg_type)new TAttribVector(tNormal);
   }
   else if ( rktNAME == "one_sided" )
   {
-    rnVALUE = new TAttribBool(gOneSided);    
+    rnVALUE = (user_arg_type)new TAttribBool(gOneSided);    
   }  
 #endif
   else

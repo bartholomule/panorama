@@ -31,10 +31,12 @@ TScene::TScene (void) :
   ptRenderer (NULL),
   gParticipatingMedia (false),
   wNeededBuffers (0),
-  ptImageIO (NULL) 
+  zWidth(0),
+  zHeight(0),
+  ptImageIO (NULL)
 {
 
-  ptBackgroundColor = new TPattern (TColor::_black());
+  ptBackgroundColor = (magic_pointer<TPattern>)new TPattern (TColor::_black());
 
 }
 
@@ -55,7 +57,7 @@ void TScene::addObject(magic_pointer<TObject> ptOBJECT)
   }
 }
 
-void TScene::addLight(TLight* ptLIGHT)
+void TScene::addLight(magic_pointer<TLight> ptLIGHT)
 {
   // It is important to make a note here that the light being added should have
   // a correct matrix, but an incorrect location.  This leads to some
@@ -72,8 +74,7 @@ void TScene::addLight(TLight* ptLIGHT)
 
   // Now that we have the two matricies, it's time to make an instance of the
   // object in question...
-  TLight* instance = (TLight*) TClassManager::_newObject
-    (ptLIGHT->className(), ptLIGHT);
+  magic_pointer<TLight> instance = (magic_pointer<TLight>)(TLight*) TClassManager::_newObject (ptLIGHT->className(), ptLIGHT.get_pointer());
   if( ! instance )
   {
     string err = "Cannot instantiate pure light " + ptLIGHT->className();
@@ -94,13 +95,13 @@ void TScene::addLight(TLight* ptLIGHT)
   tLightList.push_back(instance);
 }
 
-void TScene::addAreaLight(TObject* ptALIGHT)
+void TScene::addAreaLight(magic_pointer<TObject> ptALIGHT)
 {
   cout << "Adding area light with shape \"" << ptALIGHT->className() << "\"" << endl;	
   tAreaLightList.push_back(ptALIGHT);
 }
 
-bool TScene::recursiveLocateLights(TObject* obj, TObjectVector& light_manip_list, bool addlights)
+bool TScene::recursiveLocateLights(magic_pointer<TObject> obj, TObjectVector& light_manip_list, bool addlights)
 {
   // FIXME!  This does not work correctly.  Pure lights (halo, etc), do not get
   // translated correctly (esp. when in an aggregate).
@@ -123,7 +124,7 @@ bool TScene::recursiveLocateLights(TObject* obj, TObjectVector& light_manip_list
       if( val && addlights )
       {
 
-	TLight* instance = (TLight*)TClassManager::_newObject(obj->className(), obj);
+	magic_pointer<TLight> instance = (magic_pointer<TLight>)(TLight*)TClassManager::_newObject(obj->className(), obj.get_pointer());
 
 	if( instance )
 	{
@@ -214,7 +215,7 @@ bool TScene::recursiveLocateLights(TObject* obj, TObjectVector& light_manip_list
 	  
 	
 	container = true;
-	TAggregate* tag = (TAggregate*)obj;
+	magic_pointer<TAggregate> tag = rcp_static_cast<TAggregate>(obj);
 	TObjectList* tol = tag->objectList ();
 
 	light_manip_list.push_back(obj);
@@ -291,19 +292,35 @@ bool TScene::create_buffers(void)
   sBuffers.ptNBuffer = NULL;
   
 
-  sBuffers.ptImage = new TImage (zWidth, zHeight);
+  if( (zWidth > 0) && (zHeight > 0) )
+  {
+    sBuffers.ptImage = new TImage (zWidth, zHeight);
 
-  if ( wNeededBuffers & FX_ZBUFFER )
-  {
-    sBuffers.ptZBuffer = new TZBuffer (zWidth, zHeight);
-  }
-  if ( wNeededBuffers & FX_NBUFFER )
-  {
-    sBuffers.ptNBuffer = new TNBuffer (zWidth, zHeight);
+    if ( wNeededBuffers & FX_ZBUFFER )
+    {
+      sBuffers.ptZBuffer = new TZBuffer (zWidth, zHeight);
+    }
+    if ( wNeededBuffers & FX_NBUFFER )
+    {
+      sBuffers.ptNBuffer = new TNBuffer (zWidth, zHeight);
+    }
   }
 
   return true;
-}
+} /* create_buffers() */
+
+bool TScene::destroy_buffers(void)
+{
+  delete sBuffers.ptImage;
+  delete sBuffers.ptZBuffer;
+  delete sBuffers.ptNBuffer;
+
+  sBuffers.ptZBuffer = NULL;
+  sBuffers.ptImage = NULL;
+  sBuffers.ptNBuffer = NULL;
+  
+  return true;
+} /* destroy_buffers() */
 
 bool TScene::initialize (void)
 {
@@ -328,7 +345,7 @@ bool TScene::initialize (void)
   else
   {
     // Initialize the 'pure' lights
-    for (vector<TLight*>::iterator tIter = tLightList.begin();
+    for (vector<magic_pointer<TLight> >::iterator tIter = tLightList.begin();
 	 ( tIter != tLightList.end() );
 	 tIter++)
     {
@@ -397,9 +414,9 @@ bool TScene::render (TUserFunction* pfUSER, void* pvDATA)
 bool TScene::postprocess (void)
 {
 
-  TImageFilter*   ptFilter;
+  magic_pointer<TImageFilter> ptFilter;
 
-  for (list<TImageFilter*>::iterator tIter = tFilterList.begin(); ( tIter != tFilterList.end() ) ;tIter++)
+  for (list<magic_pointer<TImageFilter> >::iterator tIter = tFilterList.begin(); ( tIter != tFilterList.end() ) ;tIter++)
   {
     ptFilter = *tIter;
     assert ( ptFilter );
@@ -439,7 +456,7 @@ bool TScene::saveImage (void)
 }  /* saveImage() */
 
 
-void TScene::addImageFilter (TImageFilter* ptFILTER)
+void TScene::addImageFilter (magic_pointer<TImageFilter> ptFILTER)
 {
 
   tFilterList.push_back (ptFILTER);
@@ -639,31 +656,31 @@ int TScene::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 #else
   if ( rktNAME == "background" )
   {
-    rnVALUE = new TAttribPattern (ptBackgroundColor);
+    rnVALUE = (user_arg_type)new TAttribPattern (ptBackgroundColor);
   }
   else if ( rktNAME == "camera" )
   {
-    rnVALUE = new TAttribCamera(ptCamera);
+    rnVALUE = (user_arg_type)new TAttribCamera(ptCamera);
   }
   else if ( rktNAME == "renderer" )
   {
-    rnVALUE = new TAttribRenderer(ptRenderer);
+    rnVALUE = (user_arg_type)new TAttribRenderer(ptRenderer);
   }
   else if ( rktNAME == "width" )
   {
-    rnVALUE = new TAttribInt (zWidth);
+    rnVALUE = (user_arg_type)new TAttribInt (zWidth);
   }
   else if ( rktNAME == "height" )
   {
-    rnVALUE = new TAttribInt (zHeight);    
+    rnVALUE = (user_arg_type)new TAttribInt (zHeight);    
   }
   else if ( rktNAME == "participating" )
   {
-    rnVALUE = new TAttribBool (gParticipatingMedia);
+    rnVALUE = (user_arg_type)new TAttribBool (gParticipatingMedia);
   }
   else if (rktNAME == "defaultmaterial" )
   {
-    rnVALUE = new TAttribMaterial (ptDefaultMaterial);
+    rnVALUE = (user_arg_type)new TAttribMaterial (ptDefaultMaterial);
   }
 #endif
   else
@@ -702,7 +719,7 @@ void TScene::setOutputFileName (const string& rktNAME)
 #if !defined(NEW_ATTRIBUTES)    
     nAttrib.pvValue = (char*) rktNAME.c_str();
 #else
-    nAttrib = new TAttribString (rktNAME);
+    nAttrib = (user_arg_type)new TAttribString (rktNAME);
 #endif
     ptImageIO->setAttribute ("name", nAttrib, FX_STRING);
   }

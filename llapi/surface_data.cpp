@@ -57,7 +57,7 @@ TVector TSurfaceData::localPoint (void) const
   
   if ( pktObject )
   {
-    TMatrix*   ptMatrix = pktObject->inverseTransformMatrix();
+    magic_pointer<TMatrix> ptMatrix = pktObject->inverseTransformMatrix();
 
     if ( ptMatrix )
     {

@@ -62,7 +62,7 @@ int TPinholeCamera::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 #if !defined(NEW_ATTRIBUTES)
     rnVALUE.dValue = tHalfAngle * 2;
 #else
-    rnVALUE = new TAttribReal (tHalfAngle * 2);    
+    rnVALUE = (user_arg_type)new TAttribReal (tHalfAngle * 2);    
 #endif
   }
   else

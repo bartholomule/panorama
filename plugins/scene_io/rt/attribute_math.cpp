@@ -41,7 +41,7 @@ magic_pointer<TAttribute> add(const magic_pointer<TAttribute> a1,
 
     if( !!s1 && !!s2 )
     {
-      return new TAttribString(s1->tValue + s2->tValue);
+      return (user_arg_type)new TAttribString(s1->tValue + s2->tValue);
     }
     else if( !s1 )
     {
@@ -59,7 +59,7 @@ magic_pointer<TAttribute> add(const magic_pointer<TAttribute> a1,
 
     if( !!v1 && !!v2 )
     {
-      return new TAttribVector(v1->tValue + v2->tValue);
+      return (user_arg_type)new TAttribVector(v1->tValue + v2->tValue);
     }
     else if( !v1 )
     {
@@ -77,7 +77,7 @@ magic_pointer<TAttribute> add(const magic_pointer<TAttribute> a1,
 
     if( !!v1 && !!v2 )
     {
-      return new TAttribVector2(v1->tValue + v2->tValue);
+      return (user_arg_type)new TAttribVector2(v1->tValue + v2->tValue);
     }
     else if( !v1 )
     {
@@ -95,7 +95,7 @@ magic_pointer<TAttribute> add(const magic_pointer<TAttribute> a1,
 
     if( !!v1 && !!v2 )
     {
-      return new TAttribReal(v1->tValue + v2->tValue);
+      return (user_arg_type)new TAttribReal(v1->tValue + v2->tValue);
     }
     else if( !v1 )
     {
@@ -113,7 +113,7 @@ magic_pointer<TAttribute> add(const magic_pointer<TAttribute> a1,
 
     if( !!v1 && !!v2 )
     {
-      return new TAttribInt(v1->tValue + v2->tValue);
+      return (user_arg_type)new TAttribInt(v1->tValue + v2->tValue);
     }
     else if( !v1 )
     {
@@ -128,7 +128,7 @@ magic_pointer<TAttribute> add(const magic_pointer<TAttribute> a1,
   {
     rt_error("add: cannot add a " + a1->AttributeName() + " and a " + a1->AttributeName());
   }
-  return new TAttribute();
+  return (user_arg_type)new TAttribute();
 }
 
 
@@ -152,7 +152,7 @@ magic_pointer<TAttribute> sub(const magic_pointer<TAttribute> a1,
 
     if( !!v1 && !!v2 )
     {
-      return new TAttribVector(v1->tValue - v2->tValue);
+      return (user_arg_type)new TAttribVector(v1->tValue - v2->tValue);
     }
     else if( !v1 )
     {
@@ -170,7 +170,7 @@ magic_pointer<TAttribute> sub(const magic_pointer<TAttribute> a1,
 
     if( !!v1 && !!v2 )
     {
-      return new TAttribVector2(v1->tValue - v2->tValue);
+      return (user_arg_type)new TAttribVector2(v1->tValue - v2->tValue);
     }
     else if( !v1 )
     {
@@ -188,7 +188,7 @@ magic_pointer<TAttribute> sub(const magic_pointer<TAttribute> a1,
 
     if( !!v1 && !!v2 )
     {
-      return new TAttribReal(v1->tValue - v2->tValue);
+      return (user_arg_type)new TAttribReal(v1->tValue - v2->tValue);
     }
     else if( !v1 )
     {
@@ -206,7 +206,7 @@ magic_pointer<TAttribute> sub(const magic_pointer<TAttribute> a1,
 
     if( !!v1 && !!v2 )
     {
-      return new TAttribInt(v1->tValue - v2->tValue);
+      return (user_arg_type)new TAttribInt(v1->tValue - v2->tValue);
     }
     else if( !v1 )
     {
@@ -221,7 +221,7 @@ magic_pointer<TAttribute> sub(const magic_pointer<TAttribute> a1,
   {
     rt_error("sub: cannot subtract a " + a1->AttributeName() + " and a " + a1->AttributeName());
   }
-  return new TAttribute();
+  return (user_arg_type)new TAttribute();
 }
 
 
@@ -243,7 +243,7 @@ magic_pointer<TAttribute> mul(const magic_pointer<TAttribute> a1,
     magic_pointer<TAttribReal> r = get_real(a2);
     if( !!r )
     {
-      return new TAttribVector(get_vector(a1)->tValue * r->tValue);
+      return (user_arg_type)new TAttribVector(get_vector(a1)->tValue * r->tValue);
     }
   }
   else if( e2 == FX_VECTOR )
@@ -251,7 +251,7 @@ magic_pointer<TAttribute> mul(const magic_pointer<TAttribute> a1,
     magic_pointer<TAttribReal> r = get_real(a1);
     if( !!r )
     {
-      return new TAttribVector(get_vector(a2)->tValue * r->tValue);
+      return (user_arg_type)new TAttribVector(get_vector(a2)->tValue * r->tValue);
     }    
   }
   else if( e1 == FX_REAL )
@@ -259,7 +259,7 @@ magic_pointer<TAttribute> mul(const magic_pointer<TAttribute> a1,
     magic_pointer<TAttribReal> r = get_real(a2);
     if( !!r )
     {
-      return new TAttribReal(get_real(a1)->tValue * r->tValue);
+      return (user_arg_type)new TAttribReal(get_real(a1)->tValue * r->tValue);
     }    
   }
   else if( e2 == FX_REAL )
@@ -267,7 +267,7 @@ magic_pointer<TAttribute> mul(const magic_pointer<TAttribute> a1,
     magic_pointer<TAttribReal> r = get_real(a1);
     if( !!r )
     {
-      return new TAttribReal(get_real(a2)->tValue * r->tValue);
+      return (user_arg_type)new TAttribReal(get_real(a2)->tValue * r->tValue);
     }    
   }
   else if( e1 == FX_INTEGER )
@@ -275,7 +275,7 @@ magic_pointer<TAttribute> mul(const magic_pointer<TAttribute> a1,
     magic_pointer<TAttribInt> i = get_int(a2);
     if( !!i )
     {
-      return new TAttribInt(get_int(a1)->tValue * i->tValue);
+      return (user_arg_type)new TAttribInt(get_int(a1)->tValue * i->tValue);
     }    
   }
   else if( e2 == FX_INTEGER )
@@ -283,19 +283,19 @@ magic_pointer<TAttribute> mul(const magic_pointer<TAttribute> a1,
     magic_pointer<TAttribInt> i = get_int(a1);
     if( !!i )
     {
-      return new TAttribInt(get_int(a2)->tValue * i->tValue);
+      return (user_arg_type)new TAttribInt(get_int(a2)->tValue * i->tValue);
     }    
   }  
 
   rt_error("mul: cannot multiply a " + a1->AttributeName() + " and a " + a2->AttributeName());
   
-  return new TAttribute();
+  return (user_arg_type)new TAttribute();
 }
 
 magic_pointer<TAttribute> div(const magic_pointer<TAttribute> a1,
 			      const magic_pointer<TAttribute> a2)
 {
-  static double NEG_INF = log(0);
+  static double NEG_INF = log(0.0);
   static double INF = -NEG_INF;
   
   if( !a1 || !a2 )
@@ -313,7 +313,7 @@ magic_pointer<TAttribute> div(const magic_pointer<TAttribute> a1,
     magic_pointer<TAttribReal> r = get_real(a2);
     if( !!r )
     {
-      return new TAttribVector(get_vector(a1)->tValue / r->tValue);
+      return (user_arg_type)new TAttribVector(get_vector(a1)->tValue / r->tValue);
     }
   }
   else if( e1 == FX_REAL )
@@ -321,7 +321,7 @@ magic_pointer<TAttribute> div(const magic_pointer<TAttribute> a1,
     magic_pointer<TAttribReal> r = get_real(a2);
     if( !!r )
     {
-      return new TAttribReal(get_real(a1)->tValue / r->tValue);
+      return (user_arg_type)new TAttribReal(get_real(a1)->tValue / r->tValue);
     }    
   }
   else if( e2 == FX_REAL )
@@ -329,7 +329,7 @@ magic_pointer<TAttribute> div(const magic_pointer<TAttribute> a1,
     magic_pointer<TAttribReal> r = get_real(a1);
     if( !!r )
     {
-      return new TAttribReal(r->tValue / get_real(a2)->tValue);
+      return (user_arg_type)new TAttribReal(r->tValue / get_real(a2)->tValue);
     }    
   }
   else if( e1 == FX_INTEGER )
@@ -346,22 +346,22 @@ magic_pointer<TAttribute> div(const magic_pointer<TAttribute> a1,
 	// Purposely create an infinite number (with the correct sign).
 	if( i1 > 0 )
 	{
-	  return new TAttribReal(INF);
+	  return (user_arg_type)new TAttribReal(INF);
 	}
 	else
 	{
-	  return new TAttribReal(NEG_INF);
+	  return (user_arg_type)new TAttribReal(NEG_INF);
 	}
-	//	return new TAttribReal(copysign(log(double(0)),i1));
+	//	return (user_arg_type)new TAttribReal(copysign(log(double(0)),i1));
       }
       
       if( i1 % i2 == 0 )
       {
-	return new TAttribInt(i1 / i2);
+	return (user_arg_type)new TAttribInt(i1 / i2);
       }
       else
       {
-	return new TAttribReal(i1 / double(i2));
+	return (user_arg_type)new TAttribReal(i1 / double(i2));
       }
     }    
   }
@@ -379,26 +379,26 @@ magic_pointer<TAttribute> div(const magic_pointer<TAttribute> a1,
 	// Purposely create an infinite number (with the correct sign).
 	if( i1 > 0 )
 	{
-	  return new TAttribReal(INF);
+	  return (user_arg_type)new TAttribReal(INF);
 	}
 	else
 	{
-	  return new TAttribReal(NEG_INF);
+	  return (user_arg_type)new TAttribReal(NEG_INF);
 	}
-	//	return new TAttribReal(copysign(log(double(0)),i1));
+	//	return (user_arg_type)new TAttribReal(copysign(log(double(0)),i1));
       }
       if( i1 % i2 == 0 )
       {
-	return new TAttribInt(i1 / i2);
+	return (user_arg_type)new TAttribInt(i1 / i2);
       }
       else
       {
-	return new TAttribReal(i1 / double(i2));
+	return (user_arg_type)new TAttribReal(i1 / double(i2));
       }
     }    
   }
 
   rt_error("div: cannot divide a " + a1->AttributeName() + " and a " + a2->AttributeName());
   
-  return new TAttribute();
+  return (user_arg_type)new TAttribute();
 }

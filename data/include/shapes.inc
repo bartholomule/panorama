@@ -31,6 +31,9 @@ define torus     class Torus     { };
 define Light     class PointLight { };
 //define camera    class PinholeCamera { };
 define phong_triangle class PhongTriangle { };
+define difference   class Csg { type = "difference"; };
+define intersection class Csg { type = "intersection"; };
+define union        class Csg { type = "union"; };
 
 // A definition of 'scene' that includes a default material.
 define scene     class Scene     

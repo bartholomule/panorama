@@ -236,28 +236,28 @@ int TPatternBrick::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 #else
   if ( rktNAME == "color" )
   {
-    rnVALUE = new TAttribColor (tColor);
+    rnVALUE = (user_arg_type)new TAttribColor (tColor);
   }
   else if ( rktNAME == "base_color" )
   {
-    rnVALUE = new TAttribColor (tBaseColor);
+    rnVALUE = (user_arg_type)new TAttribColor (tBaseColor);
   }
   else if ( rktNAME == "zoom" )
   {
     TVector vec(1 / tZoomOriginal.x(), 1 / tZoomOriginal.y(), 1 / tZoomOriginal.z());
-    rnVALUE = new TAttribColor (vec);
+    rnVALUE = (user_arg_type)new TAttribColor (vec);
   }
   else if ( rktNAME == "width" )
   {
-    rnVALUE = new TAttribReal (tBrickWidth);
+    rnVALUE = (user_arg_type)new TAttribReal (tBrickWidth);
   }
   else if ( rktNAME == "height" )
   {
-    rnVALUE = new TAttribReal (tBrickHeight);
+    rnVALUE = (user_arg_type)new TAttribReal (tBrickHeight);
   }
   else if ( rktNAME == "mortar" )
   {
-    rnVALUE = new TAttribReal (tMortarThickness);
+    rnVALUE = (user_arg_type)new TAttribReal (tMortarThickness);
   }
 #endif
   else

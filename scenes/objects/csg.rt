@@ -3,18 +3,19 @@
 */
 
 #include "materials.inc"
+#include "shapes.inc"
 
-define camera c
+define c class PinholeCamera
 {
-  translate	<200, 500, 300>
-  look_at	<0, 0, 0>
-}
+  translate( <200, 500, 300> );
+  look_at = <0, 0, 0>;
+};
 
-define light l
+define l Light
 {
-  translate	<100, 500, 200>
-  color		CWhite
-}
+  translate( <100, 500, 200> );
+  color	= CWhite;
+};
 
 difference
 {
@@ -22,64 +23,63 @@ difference
   {
     sphere
     {
-      translate	<0, 0, 0>
-      radius	100
-      material : extends MPlastic
+      translate( <0, 0, 0> );
+      radius = 100;
+      material = MPlastic
       {
-        color	CGreen
-      }
-    }
+        color = CGreen;
+      };
+    };
 
     box
     {
-      scale     <200, 100, 200>
-      translate	<0, 0, 0>
-      material : extends MPlastic
+      scale( <200, 100, 200> );
+      translate( <0, 0, 0> );
+      material = MPlastic
       {
-        color	CWhite
-      }
-    }
-  }
+        color = CWhite;
+      };
+    };
+  };
 
   cylinder
   {
-    scale         <50, 200, 50>
-    translate     <0, -100, 0>
-    material : extends MPlastic
+    scale( <50, 200, 50> );
+    translate( <0, -100, 0> );
+    material = MPlastic
     {
-      color	CRed
-    }
-  }
+      color = CRed;
+    };
+  };
 
-  rotate  <40, 0, 0>
-}
+  rotate( <40, 0, 0> );
+};
 
 plane
 {
-  translate     <0, -240, 0>
-  normal        <0, 1, 0>
-  material : extends MChecker
+  translate( <0, -240, 0> );
+  normal = <0, 1, 0>;
+  material = MChecker
   {
-    color : class PatternChecker
+    color = class PatternChecker
     {
-      color       CGreen
-      base_color  CYellow
-      size        30    
-    }
-  }
-}
+      color      = CGreen;
+      base_color = CYellow;
+      size       = 30;
+    };
+  };
+};
 
 scene
 {
-  camera	c
-  light		l
-  width		400
-  height	400
-  background	CSummerSky
-  output
+  camera      = c;
+  light	      = l;
+  width	      = 400;
+  height      = 400;
+  background  = CSummerSky;
+  output = class png
   {
-    type        "png"
-    name        "csg.png"
-  }
-  renderer : class Raytracer {}
-}
+    name = "csg.png";
+  };
+  renderer = class Raytracer {};
+};

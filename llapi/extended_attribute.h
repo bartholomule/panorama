@@ -34,17 +34,17 @@ struct TAttribPattern : public TAttribute
   TAttribPattern (TColor c)
   {
     eType = FX_PATTERN;
-    tValue = new TPattern(c);
+    tValue.set(new TPattern(c));
   }
   TAttribPattern (TScalar s)
   {
     eType = FX_PATTERN;
-    tValue = new TPattern(s);
+    tValue.set(new TPattern(s));
   }
   TAttribPattern (TVector v)
   {
     eType = FX_PATTERN;
-    tValue = new TPattern(TColor(v.x(),v.y(),v.z()));
+    tValue.set(new TPattern(TColor(v.x(),v.y(),v.z())));
   }  
   
   virtual string AttributeName() const { return "pattern"; }

@@ -107,11 +107,11 @@ int TWarnLight::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 #else
   if ( rktNAME == "point_at" )
   {
-    rnVALUE = new TAttribVector (tLightPoint);
+    rnVALUE = (user_arg_type)new TAttribVector (tLightPoint);
   }
   else if ( rktNAME == "exponent" )
   {
-    rnVALUE = new TAttribReal (tExponent);
+    rnVALUE = (user_arg_type)new TAttribReal (tExponent);
   }  
 #endif
   else

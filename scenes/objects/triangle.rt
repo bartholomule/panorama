@@ -25,9 +25,13 @@ class Plane
 
 class Triangle
 {
+  print("Gonna break?");
   addVertex(<  0,100,-50>);
+  print("Gonna break?");
   addVertex(< 50, 50, 50>);
+  print("Gonna break?");
   addVertex(<-50, 50, 50>);
+  print("It should have broken!");
   one_sided = off;
   setMaterial( MPlastic { color = CBlue; });
 };

@@ -86,11 +86,11 @@ int TCamera::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 #else
   if ( rktNAME == "up" )
   {
-    rnVALUE = new TAttribVector (tUp);
+    rnVALUE = (user_arg_type)new TAttribVector (tUp);
   }
   else if ( rktNAME == "look_at" )
   {
-    rnVALUE = new TAttribVector (tLookAt);
+    rnVALUE = (user_arg_type)new TAttribVector (tLookAt);
   }  
 #endif
   else

@@ -3,57 +3,57 @@
 */
 
 #include "materials.inc"
+#include "shapes.inc"
 
-define camera c
+define c class PinholeCamera
 {
-  translate	<600, 0, 600>
-  look_at	<0, 0, 0>
-}
+  translate( <600, 0, 600> );
+  look_at = <0, 0, 0>;
+};
 
-define light l
+define l class PointLight
 {
-  translate	<200, 200, 500>
-  color		CWhite
-}
+  translate( <200, 200, 500> );
+  color = CWhite;
+};
 
-define light l2
+define l2 class PointLight
 {
-  translate	<0, 1000, 0>
-  color		CWhite
-  shadow        off
-}
+  translate( <0, 1000, 0> );
+  color	 = CWhite;
+  shadow = off;
+};
 
 plane
 {
-  translate     <0, -150, 0>
-  normal	<0, 1, 0>
-  material : extends MChecker
+  translate( <0, -150, 0> );
+  normal = <0, 1, 0>;
+  material = MChecker
   {
-    color : class PatternChecker
+    color = class PatternChecker
     {
-      color       CBlack
-      base_color  CWhite
-      size        50    
-    }
-    specular    0
-  }
-}
+      color      = CBlack;
+      base_color = CWhite;
+      size       = 50;
+    };
+    specular = 0;
+  };
+};
 
 scene
 {
-  camera	c
-  light		l
-  light		l2
-  width		300
-  height	300
-  background	CSummerSky
-  output
+  camera     = c;
+  light	     = l;
+  light      = l2;
+  width	     = 300;
+  height     = 300;
+  background = CSummerSky;
+  output = class png
   {
-    type        "png"
-    name	"checker45.png"
-  }
-  renderer : class Raytracer
+    name = "checker45.png";
+  };
+  renderer = class Raytracer
   {
-    sampling    "adaptive"
-  }
-}
+    sampling = "adaptive";
+  };
+};

@@ -144,19 +144,19 @@ int TAtmConst::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 #else
   if ( rktNAME == "extinction" )
   {
-    rnVALUE = new TAttribReal (tSampleData.tExtinction);
+    rnVALUE = (user_arg_type)new TAttribReal (tSampleData.tExtinction);
   }
   else if ( rktNAME == "albedo" )
   {
-    rnVALUE = new TAttribReal (tSampleData.tAlbedo);
+    rnVALUE = (user_arg_type)new TAttribReal (tSampleData.tAlbedo);
   }
   else if ( rktNAME == "from" )
   {
-    rnVALUE = new TAttribVector (tBBFrom);
+    rnVALUE = (user_arg_type)new TAttribVector (tBBFrom);
   }
   else if ( rktNAME == "to" )
   {
-    rnVALUE = new TAttribVector (tBBTo);
+    rnVALUE = (user_arg_type)new TAttribVector (tBBTo);
   }  
 #endif
   else

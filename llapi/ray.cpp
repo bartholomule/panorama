@@ -85,6 +85,41 @@ TScalar TRay::applyTransform (const TMatrix* pktMATRIX)
   
 }  /* applyTransform() */
 
+TScalar TRay::applyTransform (const magic_pointer<TMatrix>& pktMATRIX)
+{
+
+  TVector   tDest;
+  TScalar   tNorm = 1;
+  
+  if ( !!pktMATRIX )
+  {
+    tDest      = tLocation + tDirection;
+    tLocation  = (*pktMATRIX) * tLocation;
+    tDirection = ((*pktMATRIX) * tDest) - tLocation;
+    tNorm      = tDirection.norm();
+    tDirection /= tNorm;
+  }
+
+  return TScalar (1) / tNorm;
+  
+}  /* applyTransform() */
+
+TScalar TRay::applyTransform (const TMatrix& rktMATRIX)
+{
+
+  TVector   tDest;
+  TScalar   tNorm = 1;
+  
+  tDest      = tLocation + tDirection;
+  tLocation  = rktMATRIX * tLocation;
+  tDirection = (rktMATRIX * tDest) - tLocation;
+  tNorm      = tDirection.norm();
+  tDirection /= tNorm;
+
+  return TScalar (1) / tNorm;
+  
+}  /* applyTransform() */
+
 
 void TRay::printDebug (const string& indent) const
 {

@@ -372,11 +372,11 @@ int TImageJpeg::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 #else
   if ( rktNAME == "quality" )
   {
-    rnVALUE = new TAttribReal (fQuality);
+    rnVALUE = (user_arg_type)new TAttribReal (fQuality);
   }
   else if ( rktNAME == "smoothing" )
   {
-    rnVALUE = new TAttribReal (fSmoothing);
+    rnVALUE = (user_arg_type)new TAttribReal (fSmoothing);
   }  
 #endif
   else

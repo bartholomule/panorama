@@ -112,17 +112,14 @@ real			{float}({exponent})?
 blue			RESERVED (T_BLUE);
 class			RESERVED (T_CLASS);
 define			RESERVED (T_DEFINE);
-difference              RESERVED (T_DIFFERENCE);
 extends			RESERVED (T_EXTENDS);
 filter			RESERVED (T_FILTER);
 green			RESERVED (T_GREEN);
-intersection            RESERVED (T_INTERSECTION);
 light			RESERVED (T_LIGHT);
 output                  RESERVED (T_OUTPUT);
 red			RESERVED (T_RED);
 renderer		RESERVED (T_RENDERER);
 this                    RESERVED (THIS);
-union                   RESERVED (T_UNION);
 
 on			{
 			  rt_lval.gValue = true;

@@ -88,11 +88,11 @@ int TParallelCamera::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 #else
   if ( rktNAME == "width" )
   {
-    rnVALUE = new TAttribReal (tWidth);
+    rnVALUE = (user_arg_type)new TAttribReal (tWidth);
   }
   else if ( rktNAME == "height" )
   {
-    rnVALUE = new TAttribReal (tHeight);
+    rnVALUE = (user_arg_type)new TAttribReal (tHeight);
   }  
 #endif
   else

@@ -277,19 +277,19 @@ int TPerturbationBump::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 #else
   if ( rktNAME == "source" )
   {
-    rnVALUE = new TAttribPattern (ptPattern);
+    rnVALUE = (user_arg_type)new TAttribPattern (ptPattern);
   }
   else if ( rktNAME == "grad_disp" )
   {
-    rnVALUE = new TAttribVector2 (tGradientDisplacement);
+    rnVALUE = (user_arg_type)new TAttribVector2 (tGradientDisplacement);
   }
   else if ( rktNAME == "bump" )
   {
-    rnVALUE = new TAttribReal (tBumpFactor);
+    rnVALUE = (user_arg_type)new TAttribReal (tBumpFactor);
   }
   else if ( rktNAME == "samples" )
   {
-    rnVALUE = new TAttribVector2 (tSamples);
+    rnVALUE = (user_arg_type)new TAttribVector2 (tSamples);
   }  
 #endif
   else

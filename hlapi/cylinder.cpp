@@ -341,19 +341,19 @@ int TCylinder::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 #else
   if ( rktNAME == "point1" )
   {
-    rnVALUE = new TAttribVector(tTopPoint);
+    rnVALUE = (user_arg_type)new TAttribVector(tTopPoint);
   }
   else if ( rktNAME == "point2" )
   {
-    rnVALUE = new TAttribVector(tBottomPoint);
+    rnVALUE = (user_arg_type)new TAttribVector(tBottomPoint);
   }
   else if ( rktNAME == "open" )
   {
-    rnVALUE = new TAttribBool(gOpen);
+    rnVALUE = (user_arg_type)new TAttribBool(gOpen);
   }
   else if ( rktNAME == "radius" )
   {
-    rnVALUE = new TAttribReal(tRadius);
+    rnVALUE = (user_arg_type)new TAttribReal(tRadius);
   }  
 #endif
   else

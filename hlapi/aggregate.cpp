@@ -26,8 +26,8 @@ bool TAggregate::initialize (void)
   bool val = TObject::initialize();
   
   TObjectList::iterator   tIter;
-  TObject*                ptObj;
-  TMatrix*                ptMat;
+  magic_pointer<TObject>  ptObj;
+  magic_pointer<TMatrix>  ptMat;
 
   for (tIter = tObjectList.begin(); ( tIter != tObjectList.end() ) ;tIter++)
   {
@@ -57,7 +57,7 @@ bool TAggregate::initialize (void)
 void TAggregate::finalize (void)
 {
 
-  TObject*   ptObj;
+  magic_pointer<TObject> ptObj;
 
   for (TObjectList::iterator tIter = tObjectList.begin(); ( tIter != tObjectList.end() ) ;tIter++)
   {
@@ -177,7 +177,7 @@ int TAggregate::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 #if !defined(NEW_ATTRIBUTES)
     rnVALUE.gValue = !tObjectList.empty();
 #else
-    rnVALUE = new TAttribBool(!tObjectList.empty());
+    rnVALUE = (user_arg_type)new TAttribBool(!tObjectList.empty());
 #endif
   }
   else

@@ -199,7 +199,7 @@ public:
 #endif
   }
   // constructor with pointer and counts
-  magic_pointer(T* ptr, counting_object _counts = counting_object()):
+  explicit magic_pointer(T* ptr, counting_object _counts = counting_object()):
     counts(_counts),data_pointer(ptr)
   {
 #if defined(KH_DEBUG_RCP)
@@ -238,6 +238,16 @@ public:
     }
     return(*this);
   }
+  // Set the pointer to a value, and start some new counts.
+  void set(T* data)
+  {
+    *this = magic_pointer(data);
+  }
+  // Set the pointer to a value, and use the counts given.
+  void set(const magic_pointer& data)
+  {
+    *this = data;
+  }
   // A function which will duplicate the data that this object points to.  This
   // is intended to be used before modifying shared data. 
   magic_pointer<T,unallocator,counter_type> copy_for_write()
@@ -248,7 +258,7 @@ public:
     {
       magic_pointer<T,unallocator,counter_type> ptr = *this;
       
-      *this = new T(*data_pointer);
+      *this = magic_pointer(new T(*data_pointer));
       
       return ptr;
     }
@@ -330,8 +340,8 @@ public:
     return(data_pointer);
   }
   
-#if !defined(NO_AUTO_PTR_CONV)
-  // #warning "AUTO POINTER CONVERSION ENABLED!!!"
+#if defined(ALLOW_AUTO_PTR_CONV)
+  //#warning "AUTO POINTER CONVERSION ENABLED!!!"
   inline operator T*() { return(data_pointer); }
   inline operator const T*() const { return(data_pointer); }
 #endif

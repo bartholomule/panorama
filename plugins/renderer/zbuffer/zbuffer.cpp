@@ -124,7 +124,7 @@ int TZBufferRenderer::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 #else
   if ( rktNAME == "backface" )
   {
-    rnVALUE = new TAttribBool (gBackfaceCulling);
+    rnVALUE = (user_arg_type)new TAttribBool (gBackfaceCulling);
   }
   else if ( rktNAME == "shading" )
   {
@@ -141,7 +141,7 @@ int TZBufferRenderer::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
       shading_choices.push_back (shading_strings[FX_GOURAUD]);
       shading_choices.push_back (shading_strings[FX_PHONG]);
     }
-    rnVALUE = new TAttribStringList (shading_choices, shading_strings[eShading]);
+    rnVALUE = (user_arg_type)new TAttribStringList (shading_choices, shading_strings[eShading]);
   }
 #endif
   else
@@ -582,18 +582,18 @@ void TZBufferRenderer::render (SBuffers& rsBUFFERS)
 TColor TZBufferRenderer::directLight (const TSurfaceData& rktDATA) const
 {
 
-  const TLight* ptLight;
+  magic_pointer<TLight> ptLight;
   TColor        tTotalRadiance;
     
-  for (vector<TLight*>::const_iterator tIter = ptScene->lightList().begin(); ( tIter != ptScene->lightList().end() ) ;tIter++)
+  for (vector<magic_pointer<TLight> >::const_iterator tIter = ptScene->lightList().begin(); ( tIter != ptScene->lightList().end() ) ;tIter++)
   {
     ptLight         = *tIter;
     tTotalRadiance += directLight (rktDATA, ptLight);
   }
 
-  for (vector<TObject*>::const_iterator tIter = ptScene->areaLightList().begin(); ( tIter != ptScene->areaLightList().end() ) ;tIter++)
+  for (vector<magic_pointer<TObject> >::const_iterator tIter = ptScene->areaLightList().begin(); ( tIter != ptScene->areaLightList().end() ) ;tIter++)
   {
-    TObject* ptObject = *tIter;
+    magic_pointer<TObject> ptObject = *tIter;
     tTotalRadiance += directLight (rktDATA, ptObject);
   }  
 
@@ -602,7 +602,7 @@ TColor TZBufferRenderer::directLight (const TSurfaceData& rktDATA) const
 }  /* directLight() */
 
 
-TColor TZBufferRenderer::directLight (const TSurfaceData& rktDATA, const TLight* pktLIGHT) const
+TColor TZBufferRenderer::directLight (const TSurfaceData& rktDATA, const magic_pointer<TLight> pktLIGHT) const
 {
 
   TScalar   tCosNL;
@@ -640,7 +640,7 @@ TColor TZBufferRenderer::directLight (const TSurfaceData& rktDATA, const TLight*
   
 }  /* directLight() */
 
-TColor TZBufferRenderer::directLight (const TSurfaceData& rktDATA, const TObject* pktALIGHT) const
+TColor TZBufferRenderer::directLight (const TSurfaceData& rktDATA, const magic_pointer<TObject> pktALIGHT) const
 {
 
   // [_FIXME_]

@@ -100,11 +100,11 @@ int TPerturbationMarble::getAttribute (const string& rktNAME, NAttribute& rnVALU
 #else
   if ( rktNAME == "bump" )
   {
-    rnVALUE = new TAttribReal (tBumpFactor);
+    rnVALUE = (user_arg_type)new TAttribReal (tBumpFactor);
   }
   else if ( rktNAME == "marble_pattern" )
   {
-    rnVALUE = new TAttribPattern (rcp_static_cast<TPattern>(ptMarblePattern));
+    rnVALUE = (user_arg_type)new TAttribPattern (rcp_static_cast<TPattern>(ptMarblePattern));
   }  
 #endif
   else

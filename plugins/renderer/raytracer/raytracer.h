@@ -92,8 +92,8 @@ class TRaytracer : public TRenderer
 
     TColor mediaRadiance (const TSurfaceData& rktDATA, const TColor& rktRAD) const;
     TColor directLight (const TSurfaceData& rktDATA) const;
-    TColor directLight (const TSurfaceData& rktDATA, const TLight* pktLIGHT) const;
-    TColor directLight (const TSurfaceData& rktDATA, const TObject* pktALIGHT) const;  
+    TColor directLight (const TSurfaceData& rktDATA, const magic_pointer<TLight> pktLIGHT) const;
+    TColor directLight (const TSurfaceData& rktDATA, const magic_pointer<TObject> pktALIGHT) const;  
   
     TColor ambientLight (const TSurfaceData& rktDATA, Word wDEPTH) const;
     TColor specularReflectedLight (const TSurfaceData& rktDATA, Word wDEPTH, size_t* pzOBJ_CODE = NULL) const;

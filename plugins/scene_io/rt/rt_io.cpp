@@ -25,7 +25,7 @@ DEFINE_SCENE_IO_PLUGIN ("rt", TSceneRT);
 
 string    TSceneRT::_tInputFileName = "";
 DWord     TSceneRT::_dwLineNumber   = 1L;
-magic_pointer<TScene> TSceneRT::_ptParsedScene = NULL;
+magic_pointer<TScene> TSceneRT::_ptParsedScene = magic_pointer<TScene>(NULL);
 
 stack<TSceneRT::attrib_type> TSceneRT::_tDataStack;
 TUserFunctionMap TSceneRT::_global_functions;
@@ -40,7 +40,7 @@ magic_pointer<TScene> TSceneRT::load (const string& rktNAME)
 
   int   iResult;
 
-  _ptParsedScene  = new TScene();
+  _ptParsedScene  = (magic_pointer<TScene>)new TScene();
   _tInputFileName = rktNAME;
   
   rt_in = fopen (_tInputFileName.c_str(), "rb");
@@ -48,7 +48,7 @@ magic_pointer<TScene> TSceneRT::load (const string& rktNAME)
   if ( !rt_in )
   {
     cerr << "ERROR: Could not open scene file." << endl;
-    return NULL;
+    return (magic_pointer<TScene>)NULL;
   }
 
   rt_debug = 0;
@@ -64,9 +64,9 @@ magic_pointer<TScene> TSceneRT::load (const string& rktNAME)
   
   if ( iResult != 0 )
   {
-    _ptParsedScene = NULL;    
+    _ptParsedScene = (magic_pointer<TScene>)NULL;    
     //    delete _ptParsedScene;
-    return NULL;
+    return _ptParsedScene;
   }
 
   return _ptParsedScene;

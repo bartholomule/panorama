@@ -172,27 +172,27 @@ int TLight::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 #else
   if ( rktNAME == "color" )
   {
-    rnVALUE = new TAttribColor (tColor);
+    rnVALUE = (user_arg_type)new TAttribColor (tColor);
   }
   else if ( rktNAME == "intensity" )
   {
-    rnVALUE = new TAttribReal (tIntensity);
+    rnVALUE = (user_arg_type)new TAttribReal (tIntensity);
   }
   else if ( rktNAME == "shadow" )
   {
-    rnVALUE = new TAttribBool (tProperties.gShadow);
+    rnVALUE = (user_arg_type)new TAttribBool (tProperties.gShadow);
   }
   else if ( rktNAME == "volumetric" )
   {
-    rnVALUE = new TAttribBool (tProperties.gVolumetric);
+    rnVALUE = (user_arg_type)new TAttribBool (tProperties.gVolumetric);
   }
   else if ( rktNAME == "raytraced" )
   {
-    rnVALUE = new TAttribBool (tProperties.gRaytraced);
+    rnVALUE = (user_arg_type)new TAttribBool (tProperties.gRaytraced);
   }
   else if ( rktNAME == "lightonly" )
   {
-    rnVALUE = new TAttribBool (true);
+    rnVALUE = (user_arg_type)new TAttribBool (true);
   }  
 #endif
   else

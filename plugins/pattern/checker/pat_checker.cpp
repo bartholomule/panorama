@@ -135,19 +135,19 @@ int TPatternChecker::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 #else
   if ( rktNAME == "color" )
   {
-    rnVALUE = new TAttribColor (tColor);
+    rnVALUE = (user_arg_type)new TAttribColor (tColor);
   }
   else if ( rktNAME == "base_color" )
   {
-    rnVALUE = new TAttribColor (tBaseColor);
+    rnVALUE = (user_arg_type)new TAttribColor (tBaseColor);
   }
   else if ( rktNAME == "size" )
   {
-    rnVALUE = new TAttribReal (tCheckerBoard.size());
+    rnVALUE = (user_arg_type)new TAttribReal (tCheckerBoard.size());
   }
   else if ( rktNAME == "border" )
   {
-    rnVALUE = new TAttribReal (tCheckerBoard.border());
+    rnVALUE = (user_arg_type)new TAttribReal (tCheckerBoard.border());
   }  
 #endif
   else
