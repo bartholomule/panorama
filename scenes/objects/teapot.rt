@@ -577,11 +577,15 @@ define TeaPot class BezierSurface
 
 addObject(TeaPot);
 
+// Currently does exactly the same as putting them in the scene portion
+addObject(l);
+addObject(l2);
+
 class Scene
 {
   camera      = c;
-  light       = l;
-  light       = l2;
+//  light       = l;
+//  light       = l2;
   width       = 400;
   height      = 400;
   background  = CSummerSky;
