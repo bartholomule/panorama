@@ -6,12 +6,16 @@ include ${BUILD_TOP}/Makefile.vars
 INSTALL = @INSTALL@
 SRC_DIR = @srcdir@
 
-FILES = checker.rt \
+FILES = brick.rt \
+	checker.rt \
 	checker45.rt \
         crackle.rt \
         leopard.rt \
+        marble.rt \
+        marble2.rt \
         materials.rt \
         water.rt \
+        wood.rt \
         worley.rt
 
 all:
