@@ -202,8 +202,12 @@ void TPointLight::initialize (void)
   // [_ERROR_] This will not work if initialized more than once.
   //
   tConeAxis = (tConeAxis - tLocation);
-  tConeAxis.normalize();
 
+  if ( tConeAxis != TVector (0, 0, 0) )
+  {
+    tConeAxis.normalize();
+  }
+  
 }  /* initialize() */
 
 
