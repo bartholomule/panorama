@@ -18,6 +18,7 @@
 
 #include "hlapi/scene_manager.h"
 #include "plugins/scene_io/rt/rt_io.h"
+#include "plugins/scene_io/psl/psl_io.h"
 
 TSceneFormatMap   TSceneManager::_tSceneFormatMap;
 
@@ -87,6 +88,7 @@ void TSceneManager::_initialize (void)
 
 #if ( STATIC_LINK == 1 )
   _addFormat ("rt", &TSceneRT::_load, &TSceneRT::_save);
+  _addFormat ("psl", &TScenePsl::_load, &TScenePsl::_save);
 #endif
   
 }  /* _initialize() */
