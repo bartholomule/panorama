@@ -56,6 +56,7 @@ TBaseClass* TClassManager::_newObject (const string& rktCLASS, const TBaseClass*
   STATIC_CLASS (TSphere, "Sphere");
   STATIC_CLASS (TTorus, "Torus");
   STATIC_CLASS (TTriangle, "Triangle");
+  STATIC_CLASS (TScene, "Scene");  
 
 #if ( STATIC_LINK == 1 )
   STATIC_CLASS (TAtmConst, "AtmConst");
