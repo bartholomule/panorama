@@ -34,12 +34,12 @@ bool TRay::refract (const TVector& rktNORMAL, TScalar tIOR, bool& gTIR)
     tNormal = rktNORMAL;
     tIndex  = tIor / tIOR;
     gEnter  = true;
-    tIor    = tIOR;
+//    tIor    = tIOR;
   }
   else
   {
     tNormal = -rktNORMAL;
-    tIndex  = tIor;
+    tIndex  = tIor / tIOR;
     gEnter  = false;
   }
 
@@ -47,10 +47,11 @@ bool TRay::refract (const TVector& rktNORMAL, TScalar tIOR, bool& gTIR)
 
   if ( tRad < 0 )
   {
-    assert ( !gEnter );
-    reflect (tNormal);
+    //    assert ( !gEnter );
+//    reflect (tNormal);
     gTIR = true;
-    return !gEnter;
+
+    return gEnter;
   }
   else
   {
