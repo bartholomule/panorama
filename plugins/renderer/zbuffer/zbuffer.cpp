@@ -23,12 +23,14 @@
 
 DEFINE_PLUGIN ("ZBufferRenderer", FX_RENDERER_CLASS, TZBufferRenderer);
 
-void TZBufferRenderer::initialize (TScene& rtSCENE)
+bool TZBufferRenderer::initialize (TScene& rtSCENE)
 {
 
-  TRaytracer::initialize (rtSCENE);
+  bool result = TRaytracer::initialize (rtSCENE);
 
   // >>>>>>>>>>>>>> Front to back ordering
+
+  return result;
   
 }  /* initialize() */
 
