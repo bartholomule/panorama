@@ -1,14 +1,17 @@
 
 include @top_srcdir@/Makefile.vars
 
-FILES = atmosphere.rt
+FILES = ./atmosphere.rt
 
 all:
 
 install:
 		@echo "Installing scenes (atmospheric)..."
 		@@top_srcdir@/mkinstalldirs ${TOPDIR}/scenes/atmospheric
-		@@INSTALL_DATA@ ${FILES} ${TOPDIR}/scenes/atmospheric
+		@set -e; \
+		for i in $(FILES); do \
+		  @INSTALL_DATA@ $$i ${TOPDIR}/scenes/atmospheric; \
+		done
 
 clean:
 

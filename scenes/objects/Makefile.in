@@ -1,14 +1,24 @@
 
 include @top_srcdir@/Makefile.vars
 
-FILES = box.rt circle.rt cone.rt cylinder.rt phong_triangle.rt rectangle.rt torus.rt triangle.rt
+FILES = ./box.rt \
+	./circle.rt \
+        ./cone.rt \
+        ./cylinder.rt \
+        ./phong_triangle.rt \
+        ./rectangle.rt \
+        ./torus.rt \
+        ./triangle.rt
 
 all:
 
 install:
 		@echo "Installing scenes (objects)..."
 		@@top_srcdir@/mkinstalldirs ${TOPDIR}/scenes/objects
-		@@INSTALL_DATA@ ${FILES} ${TOPDIR}/scenes/objects
+		@set -e; \
+		for i in $(FILES); do \
+		  @INSTALL_DATA@ $$i ${TOPDIR}/scenes/objects; \
+		done
 
 clean:
 

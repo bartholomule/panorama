@@ -4,7 +4,15 @@ include @top_srcdir@/Makefile.vars
 DIRS  = ./developers \
         ./users
 
-FILES = AUTHORS BUGS CREDITS FAQ INSTALL LICENSE NEWS README pluginrc
+FILES = ./AUTHORS \
+	./BUGS \
+        ./CREDITS \
+        ./FAQ \
+        ./INSTALL \
+        ./LICENSE \
+        ./NEWS \
+        ./README \
+        ./pluginrc
 
 all:
 		@set -e; \
@@ -13,7 +21,10 @@ all:
                 done
 
 install:        all
-		@@INSTALL_DATA@ ${FILES} ${DOC_DIR}
+		@set -e; \
+		for i in $(FILES); do \
+		  @INSTALL_DATA@ $$i ${DOC_DIR}; \
+		done
 		@@INSTALL_DATA@ pluginrc ${CONFIG_DIR}
 		@@top_srcdir@/mkinstalldirs ${DOC_DIR}/developers ${DOC_DIR}/users
 		@set -e; \

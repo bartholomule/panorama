@@ -1,14 +1,21 @@
 
 include @top_srcdir@/Makefile.vars
 
-FILES = checker.rt checker45.rt materials.rt water.rt worley.rt
+FILES = ./checker.rt \
+	./checker45.rt \
+        ./materials.rt \
+        ./water.rt \
+        ./worley.rt
 
 all:
 
 install:
 		@echo "Installing scenes (materials)..."
 		@@top_srcdir@/mkinstalldirs ${TOPDIR}/scenes/materials
-		@@INSTALL_DATA@ ${FILES} ${TOPDIR}/scenes/materials
+		@set -e; \
+		for i in $(FILES); do \
+		  @INSTALL_DATA@ $$i ${TOPDIR}/scenes/materials; \
+		done
 
 clean:
 
