@@ -28,19 +28,116 @@
 #define FX_ATTRIB_WRONG_VALUE   -3
 #define FX_ATTRIB_USER_ERROR     1
 
+// These flags are reserved for internal use only
+#define FX_RESERVED_FLAG_0       0
+#define FX_RESERVED_FLAG_1       1
+#define FX_RESERVED_FLAG_2       2
+#define FX_RESERVED_FLAG_3       3
+#define FX_RESERVED_FLAG_4       4
+#define FX_RESERVED_FLAG_5       5
+#define FX_RESERVED_FLAG_6       6
+#define FX_RESERVED_FLAG_7       7
+
 typedef map<string, EAttribType, less<string> >   TAttributeList;
+typedef map<string, void*, less<string> >         TUserDataMap;
 
 class TProcedural : public TBaseClass
 {
 
   protected:
 
-    TProgram   tProgram;
+    TProgram       tProgram;
+    string         tIdentifier;
+    DWord          dwFlags;
+    TUserDataMap   tUserDataMap;
     
   public:
 
-    static string _tUserErrorMessage;
+    static string   _tUserErrorMessage;
 
+    // Identifier management
+    void setIdentifier (const string& rktIDENT)
+    {
+      tIdentifier = rktIDENT;
+    }
+
+    string identifier (void) const
+    {
+      return tIdentifier;
+    }
+                       
+    // Flags management
+    DWord flags (void) const
+    {
+      return dwFlags;
+    }
+
+    void setFlags (DWord dwFLAGS)
+    {
+      dwFlags = dwFLAGS;
+    }
+
+    void setFlag (Byte bPOS)
+    {
+      assert ( bPOS < 32 );
+      
+      dwFlags |= (1 << bPOS);
+    }
+    
+    void resetFlag (Byte bPOS)
+    {
+      assert ( bPOS < 32 );
+      
+      dwFlags &= ~(1 << bPOS);
+    }
+
+    bool getFlag (Byte bPOS)
+    {
+      assert ( bPOS < 32 );
+      
+      return ( dwFlags & (1 << bPOS) );
+    }
+    
+    // User data map management
+    void addUserData (const string& rktNAME, void* pDATA)
+    {
+      tUserDataMap[rktNAME] = pDATA;
+    }
+
+    void* removeUserData (const string& rktNAME)
+    {
+      void*                    pRet;
+      TUserDataMap::iterator   iter = tUserDataMap.find (rktNAME);
+
+      if ( iter == tUserDataMap.end() )
+      {
+        return NULL;
+      }
+      else
+      {
+        pRet = (*iter).second;
+
+        tUserDataMap.erase (iter);
+        
+        return pRet;
+      }
+    }
+
+    void* userData (const string& rktNAME) const
+    {
+      TUserDataMap::const_iterator   iter = tUserDataMap.find (rktNAME);
+
+      if ( iter == tUserDataMap.end() )
+      {
+        return NULL;
+      }
+      else
+      {
+        return (*iter).second;
+      }
+    }
+    
+    // Attribute management
     virtual int setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
     {
       return FX_ATTRIB_WRONG_PARAM;
@@ -55,6 +152,7 @@ class TProcedural : public TBaseClass
     }
     virtual void getAttributeList (TAttributeList& rtLIST) const {}
 
+    // Event management
     void sendEvent (const string& rktEVENT);
     void sendEvent (const string& rktEVENT, NAttribute nAttrib);
 
