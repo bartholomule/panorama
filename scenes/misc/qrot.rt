@@ -1,0 +1,67 @@
+#include "materials.inc"
+
+define camera c
+{
+  translate < 0, 0, -12>
+  look_at   < 0, 0,  0> 
+}
+
+light 
+{
+  translate <-1, 1, -8>
+  color CWhite
+}
+
+define torus t
+{
+  radius_a 3
+  radius_b 1
+  material : extends MPlastic
+  {
+    color CBlue
+  }
+}
+
+aggregate
+{
+  torus: extends t { rotate   0,<1,0,1>  } // Rotate   0 degrees around 
+                                           // the vector <1,0,1>
+  torus: extends t { rotate  60,<1,0,1>  } // Rotate  60 degrees 
+  torus: extends t { rotate 120,<1,0,1>  } // Rotate 120 degrees 
+
+  sphere
+  {
+    radius 2
+    material: extends MPlastic
+    {
+      emission : class PatternMarble
+      {
+        color CRed
+        base_color CBlue
+      }
+    }
+  }
+
+ rotate -22.5,<0,1,0>
+ rotate 30,<1,0,0>
+}
+
+
+scene
+{
+  camera	c
+  width		400
+  height	400
+
+  output
+  {
+    type        "png"
+    name	"qrot.png"
+  }
+  renderer : class Raytracer 
+  {
+    aa_depth 8
+    depth 6
+    sampling "stochastic"
+  }
+}
