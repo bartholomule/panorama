@@ -50,7 +50,7 @@ TVoronoi::TVoronoi()
     aiHashTable[J]      = iTemp;
   }
 
-}  /* TVoronoi */ 
+}  /* TVoronoi() */
 
 /*
 inline long TVoronoi::Random()
@@ -77,41 +77,47 @@ inline long TVoronoi::Random1()
 
 long TVoronoi::Random() const
 {
+
   #ifdef USE_NEWRAND
   lRandomSeed = lRandomSeed * 17231723L + 2001L;
   return((lRandomSeed >> 16) & 0x7fff);
   #else
   return rand();
   #endif
-}
+
+}  /* Random() */
 
 
 double TVoronoi::Drandom() const
 {
+
   #ifdef USE_NEWRAND
-  return (double)Random() / 0x7fff;
+  return (double) Random() / 0x7fff;
   #else
-  return (double)Random() / RAND_MAX;
+  return (double) Random() / RAND_MAX;
   #endif
-}
+
+}  /* Drandom() */
 
 
-inline void TVoronoi::SeedRandom(long lSeed) const
+void TVoronoi::SeedRandom(long lSeed) const
 {
+
   #ifdef USE_NEWRAND
   lRandomSeed = lSeed;
   #else
-  srand(lSeed);
+  srand (lSeed);
   #endif
-}
+
+}  /* SeedRandom() */
 
 
-inline int TVoronoi::Hash3d(int iX, int iY, int iZ) const
+int TVoronoi::Hash3d (int iX, int iY, int iZ) const
 {
 
   return aiHashTable[aiHashTable[aiHashTable[iX & HASHMASK] ^ (iY & HASHMASK)] ^ (iZ & HASHMASK)];
 
-}
+}  /* Hash3d() */
 
 // create a point at random coordinates within the same unit cube
 // as the input point
@@ -133,7 +139,8 @@ long TVoronoi::GeneratePointInCube(const TVector& rktPoint, TVector& tNewPoint) 
   
   return lSeed;
 
-}
+}  /* GeneratePointInCube() */
+
 
 // build a cache of displaced points in all unit cubes within a
 // 3D knight's move from the specified point
@@ -166,7 +173,8 @@ void TVoronoi::BuildPointCache(const TVector& rktPOINT) const
   i = 1;
   iPointsInCache = iCount;
 
-}
+}  /* BuildPointCache() */
+
 
 TScalar TVoronoi::GetValueAtPoint (const TVector& rktPOINT, TVector* ptGRADIENT) const
 {
@@ -235,9 +243,10 @@ TScalar TVoronoi::GetValueAtPoint (const TVector& rktPOINT, TVector* ptGRADIENT)
   
   return sqrt (tMinDistSquared2) - sqrt (tMinDistSquared1);
 
-}
+}  /* GetValueAtPoint() */
 
-inline TScalar TPatternCrackle::evaluate (const TVector& rktPOINT, TVector* ptGRADIENT) const
+
+TScalar TPatternCrackle::evaluate (const TVector& rktPOINT, TVector* ptGRADIENT) const
 {
 
   return tVoronoi.GetValueAtPoint (rktPOINT, ptGRADIENT);
@@ -332,4 +341,3 @@ void TPatternCrackle::getAttributeList (TAttributeList& rtLIST) const
   rtLIST ["zoom"]       = FX_VECTOR;
 
 }  /* getAttributeList() */
-
