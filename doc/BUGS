@@ -3,8 +3,6 @@
 
  - Triangle/rectangle intersection has some precision problems.
 
- - Torus intersection has some precision problems.
-
  - There are problems with transformations of aggregates including spheres.
 
  - Cone fails for min_radius == 0 and for min_radius == max_radius.
