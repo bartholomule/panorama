@@ -94,7 +94,7 @@ template <class TItem>
 inline TItem TVector2D<TItem>::norm (void) const
 {
 
-  return sqrt (sqr (vx) + sqr (vy));
+  return sqrt (vx * vx + vy * vy);
 
 }  /* norm() */
 
