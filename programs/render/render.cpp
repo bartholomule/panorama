@@ -99,7 +99,7 @@ void FinishedLine (size_t zLINE, void* pvDATA)
 
 }  /* FinishedLine() */
 
-                   
+
 int main (int argc, char *argv[])
 {
 
