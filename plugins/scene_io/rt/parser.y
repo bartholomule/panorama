@@ -1580,12 +1580,17 @@ void SetParameter (const string& rktATTRIB, EAttribType eTYPE)
 
   if ( iResult == FX_ATTRIB_WRONG_PARAM )
   {
-    yyerror ("object does not have such parameter");
+    yyerror ("object does not have such attribute");
     exit (1);
   }
   else if ( iResult == FX_ATTRIB_WRONG_TYPE )
   {
-    yyerror ("incorrect type in parameter value");
+    yyerror ("incorrect type in attribute value");
+    exit (1);
+  }
+  else if ( iResult == FX_ATTRIB_WRONG_VALUE )
+  {
+    yyerror ("value not accepted for this attribute");
     exit (1);
   }
   else if ( iResult == FX_ATTRIB_USER_ERROR )
