@@ -1,2 +1,0 @@
-PLUGIN_NAME = mat_checker
-OBJ         = mat_checker.o

@@ -1,2 +1,0 @@
-PLUGIN_NAME = mat_brick
-OBJ         = mat_brick.o
