@@ -30,6 +30,7 @@ DEFINE_PLUGIN ("PerturbationBump", FX_PERTURBATION_CLASS, TPerturbationBump);
 TPerturbationBump::TPerturbationBump (void) :
       TPerturbation(),
       ptPattern (NULL),
+      tGradientDisplacement (1, 1),
       tBumpFactor (1),
       tSamples (2, 2) {}
 
