@@ -96,6 +96,7 @@ class TObject : public TVolume
     }
       
     virtual void initialize (void);
+    virtual void finalize (void) {}
 
     virtual bool intersects (const TRay& rktRAY) const
     {

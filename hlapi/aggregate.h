@@ -66,6 +66,7 @@ class TAggregate : public TObject
     void addFilter (const TObjectFilter* pktFILTER);
 
     void initialize (void);
+    void finalize (void);
 
     bool findFirstIntersection (const TRay& rktRAY, TSurfaceData& rtDATA) const;
     bool findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) const;

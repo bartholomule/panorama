@@ -49,6 +49,21 @@ void TAggregate::initialize (void)
 }  /* initialize() */
 
 
+void TAggregate::finalize (void)
+{
+
+  TObject*   ptObj;
+
+  for (vector<TObject*>::iterator tIter = tObjectList.begin(); ( tIter != tObjectList.end() ) ;tIter++)
+  {
+    ptObj = *tIter;
+    
+    ptObj->finalize();
+  }
+
+}  /* finalize() */
+
+
 bool TAggregate::findFirstIntersection (const TRay& rktRAY, TSurfaceData& rtDATA) const
 {
 
