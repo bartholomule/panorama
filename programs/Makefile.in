@@ -1,7 +1,6 @@
 
 BUILD_TOP = ..
 
-DIRS = render \
-       utils
+DIRS = render
 
 include ${BUILD_TOP}/Makefile.targets
