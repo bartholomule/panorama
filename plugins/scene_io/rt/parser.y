@@ -197,6 +197,8 @@ static void InitFunctions (void);
 %type <ptObject> torus_instance
 %type <ptObject> mesh_def
 %type <ptObject> mesh_instance
+%type <ptObject> csg_def
+%type <ptObject> csg_instance
 %type <ptAtmObject> atm_object_def
 %type <ptAtmObject> atm_object_instance
 %type <ptImageIO> image_io_instance
@@ -274,6 +276,12 @@ definition		: T_DEFINE T_COLOR color_def
 			  {}
 			| T_DEFINE T_ATM_OBJECT atm_object_def
 			  {}
+			| T_DEFINE T_UNION csg_def
+			  {}
+			| T_DEFINE T_INTERSECTION csg_def
+			  {}
+			| T_DEFINE T_DIFFERENCE csg_def
+			  {}
 			;
 
 object                  : T_OBJECT object_instance
@@ -326,6 +334,21 @@ object                  : T_OBJECT object_instance
                           }
                         | T_MESH mesh_instance
                           {
+                            $$ = $2;
+                          }
+                        | T_UNION csg_instance
+			  {
+                            ((TCsg*) $2)->setOperation (FX_CSG_UNION);
+                            $$ = $2;
+                          }
+                        | T_INTERSECTION csg_instance
+			  {
+                            ((TCsg*) $2)->setOperation (FX_CSG_INTERSECTION);
+                            $$ = $2;
+                          }
+                        | T_DIFFERENCE csg_instance
+			  {
+                            ((TCsg*) $2)->setOperation (FX_CSG_DIFFERENCE);
                             $$ = $2;
                           }
 			;
@@ -1366,6 +1389,30 @@ mesh_param		: T_TRIANGLE triangle_instance
                             delete $2;
 			  }
 			| object_param
+			;
+
+csg_def	  		: name class
+			  {
+			    DefineObject ($1, $2, "Csg");
+			  }
+			  '{' aggregate_params '}'
+			  {
+			    $$ = (TCsg*) UpdateObject ($1);
+			  }
+			;
+
+csg_instance     	: name
+			  {
+			    $$ = (TCsg*) InstanceObject ($1);
+			  }
+			| class
+			  {
+			    CreateObject ($1, "Csg");
+			  }
+			  '{' aggregate_params '}'
+			  {
+			    $$ = (TCsg*) _tDataStack.POP();
+			  }
 			;
 
 %%
