@@ -1,0 +1,42 @@
+/*
+*  Polyhedron test
+*/
+
+#include "materials.inc"
+
+define camera c
+{
+  translate	<0, 200, 600>
+  look_at	<0, 0, 0>
+}
+
+define light l
+{
+  translate	<0, 500, 200>
+  color		CWhite
+}
+
+object : class Polyhedron
+{
+  translate     <0, 0, 0>
+  rotate        <45, 45, 0>
+  scale         <100, 100, 100>
+  material : extends MPlastic
+  {
+    color	CRed
+  }
+}
+
+scene
+{
+  camera	c
+  light		l
+  width		400
+  height	400
+  background	CSummerSky
+  output
+  {
+    name	"polyhedron.tga"
+  }
+  renderer : class Raytracer {}
+}
