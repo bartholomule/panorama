@@ -49,6 +49,7 @@ TScene* TSceneRT::_load (const string& rktNAME)
   iResult = rt_parse();
 
   RT_CloseParser();
+
   
   fclose (rt_in);
   

@@ -455,13 +455,12 @@ color                   : '{' T_RED real_expr T_GREEN real_expr T_BLUE real_expr
 			  }
                        ;
 
-vector3			: '<' real_expr ',' real_expr ',' real_expr '>'
+vector3                 : '<' real_expr ',' real_expr ',' real_expr '>'
 			  {
 			    _tVector.set ($2, $4, $6);
 			    $$ = &_tVector;
 			  }
 			;
-
 vector2			: '<' real_expr ',' real_expr '>'
 			  {
 			    _tVector2.set ($2, $4);
@@ -654,6 +653,10 @@ entity_param		: T_TRANSLATE vector3
 			  {
 			    ENTITY->rotate (*$2);
 			  }
+			| T_ROTATE real_expr ',' vector3
+                          {
+			    ENTITY->rotate (makeUnitQuaternion ($2, *$4));
+                          }
 			| T_TRANSLATE vector_instance
 			  {
 			    ENTITY->translate (*$2);
@@ -662,6 +665,10 @@ entity_param		: T_TRANSLATE vector3
 			  {
 			    ENTITY->rotate (*$2);
 			  }
+			| T_ROTATE real_expr ',' vector_instance
+                          {
+			    ENTITY->rotate (makeUnitQuaternion ($2, *$4));
+                          }
 			| param
 			;
 
@@ -1625,6 +1632,11 @@ void RT_InitParser (void)
   InitObjects();
   InitFunctions();
 
+  _tColorMap.clear();
+  _tVectorMap.clear();
+  _tTypeMap.clear();  
+  while(!_tDataStack.empty()) _tDataStack.pop();
+
   _ptWorld = new TAggregate();
   
   TSceneRT::_ptParsedScene->setWorld (_ptWorld);
@@ -1642,14 +1654,14 @@ void RT_CloseParser (void)
 
 void InitFunctions (void)
 {
-
+  _tFunctionMap.clear();
   _tFunctionMap ["rand"] = (double(*)(void)) &frand;
-
 }  /* InitFunctions() */
 
 
 void InitObjects (void)
 {
+  _tObjectMap.clear();
 }  /* InitObjects() */
 
 
