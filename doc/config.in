@@ -1,0 +1,18 @@
+#
+# Panorama configuration file
+#
+
+# Plugin list
+PluginConfigFile=@prefix@/etc/pluginrc
+
+# Path to the plugins directory
+PluginPath=@prefix@/lib/plugins
+
+# Path to the gradients directory
+GradientPath=@prefix@/lib/gradients
+
+# Path to the textures directory
+TexturePath=@prefix@/lib/texture
+
+# Path to the includes directory
+IncludePath=@prefix@/include
