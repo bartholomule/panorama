@@ -23,6 +23,14 @@
 *                  correct but multiple roots might be reported more
 *                  than once.
 *  Sep  3, 1998    Cleanup to use as C++ code [Angel Jimenez]
+*  Aug 11, 2000    Addition of 'safe' solvers, which make sure they aren't
+*                  doing a divide by zero to make the high order term 1.
+*                  Addition of a generic SolveEquation function (using c++
+*                  vectors) for any order equations (not for anything above the
+*                  already provided 4 for now. [Kevin Harris]
+*  Aug 13, 2000    Changed the SolveEquation function to now work with higher
+*                  order equations (using the generic solvers in
+*                  solvers.h). [Kevin Harris] 
 */
 
 #include <cmath>
@@ -258,3 +266,127 @@ int SolveQuartic(double c[5], double s[4])
   return num;
   
 }  /* SolveQuartic() */
+
+
+
+int SafeSolveLinear (double c[2], double s[1] )
+{
+  if( fabs(c[1]) >= EQN_EPS )
+  {
+    s[0] = -c[0] / c[1];
+    return 1;
+  }
+  return 0;
+} /* SafeSolveLinear() */
+
+int SafeSolveQuadric (double c[3], double s[2])
+{
+  if( fabs(c[2]) >= EQN_EPS )
+  {
+    return SolveQuadric(c,s);
+  }
+  return SafeSolveLinear(c,s);
+} /* SafeSolveQuadric() */
+
+int SafeSolveCubic   (double c[4], double s[3])
+{
+  if( fabs(c[3]) >= EQN_EPS )
+  {
+    return SolveCubic(c,s);
+  }
+  return SafeSolveQuadric(c,s);  
+} /* SafeSolveCubic() */
+
+int SafeSolveQuartic (double c[5], double s[4])
+{
+  if( fabs(c[4]) >= EQN_EPS )
+  {
+    return SolveQuartic(c,s);
+  }
+  return SafeSolveCubic(c,s);  
+} /* SafeSolveQuartic() */
+
+#include <cstdio>
+#include <cassert>
+
+// Include the solvers.h file to solve the polynomial equations of order > 4
+#include "llapi/solvers.h"
+
+// Solve a polynomial equation of any size.  Note that it is not guaranteed
+// (although this would be nice) to find *all* zeros of the polynomial.  For
+// polynomials with order <= 4, it will call one of the above defined solvers.
+// [KH 11Aug2000, 13Aug2000]
+int SolveEquation (const vector<double>& coefs, vector<double>& solutions)
+{
+  int order = coefs.size() - 1;
+  while( order >= 1 )
+  {
+    if( fabs(coefs[order]) < EQN_EPS )
+    {
+      // The highest order term is zero
+      --order;
+      continue;
+    }
+    if( order > 4 )
+    {
+      // Call the generic poly_solve function (solvers.h) to get the roots.
+      solutions = poly_solve(vector<double>(coefs.begin(),
+					    coefs.begin() +
+					    order + 1));
+      break;
+    }
+    else
+    {
+      double c_coefs[5];
+      double c_solutions[4];
+      for( int coef = 0; coef < order + 1; ++coef )
+      {
+	c_coefs[coef] = coefs[coef];
+      }
+#define SIMPLE_COPY_SOLUTIONS(function)        \
+int num = (function)(c_coefs, c_solutions);    \
+solutions.resize(num);                         \
+for(int sol = 0; sol < num; ++sol)             \
+{                                              \
+  solutions[sol] = c_solutions[sol];           \
+}                                              \
+return num
+
+      if( order == 4 )
+      {
+	SIMPLE_COPY_SOLUTIONS(SolveQuartic);
+	break;
+      }
+      else if( order == 3 )
+      {
+	SIMPLE_COPY_SOLUTIONS(SolveCubic);
+	break;
+      }
+      else if( order == 2 )
+      {
+	SIMPLE_COPY_SOLUTIONS(SolveQuadric);
+	break;
+      }
+      else if( order == 1 )
+      {
+	// We already know that coefs[1] is not zero, so we are safe to do:
+	solutions.resize(1);
+	solutions[0] = -coefs[0] / coefs[1];
+	break;
+      }
+      else
+      {
+	fprintf(stderr, "SolveEquation: Unexpected execution path\n");
+	fflush(stdout);
+	assert (false);
+      }
+    } // order <= 4
+  } // while(order > 1)
+  if(order < 1)
+  {
+    solutions.resize(0);
+  }
+  return solutions.size();
+
+#undef SIMPLE_COPY_SOLUTIONS
+} /* SolveEquation() */
