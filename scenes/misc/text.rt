@@ -11,21 +11,21 @@ define camera c
 
 scene
 {
-  camera				c
+  camera	c
   width         640
   height        480
   background    CBlack
   output
   {
     type        "png"
-    name				"text.png"
+    name	"text.png"
   }
   renderer : class Raytracer {}
   filter : class IF_Text {
-    color				CWhite
-    size				50
-    text				"Panorama text plugin!"
-    xlate				<0,240>
+    color	CWhite
+    size	50
+    text	"Panorama text plugin!"
+    xlate	<0,240>
     
     // Replace font path according to local location of True Type Fonts
     fontfile    "/mnt/tivoli/windows/fonts/cour.ttf"
