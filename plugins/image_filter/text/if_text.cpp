@@ -19,8 +19,11 @@
 #include <cmath>
 #include <string.h>
 #include <freetype.h>
+#include "llapi/file.h"
 #include "llapi/scene.h"
 #include "if_text.h"
+
+extern multimap<string, string>   tConfigData;
 
 DEFINE_PLUGIN ("IF_Text", FX_IMAGE_FILTER_CLASS, TIF_Text);
 
@@ -51,8 +54,9 @@ void TIF_Text::filter (SBuffers& rsBUFFERS)
   TT_Outline           tOutline;
   TT_Raster_Map        tPixmap;
   int                  iError;
-  Byte                 abPalette[] = {0, 63, 127, 191, 255};
-    
+  Byte                 abPalette[]   = {0, 63, 127, 191, 255};
+  bool                 gAbsolutePath = ( tFontFile[0] == '/' );
+
   iError = TT_Init_FreeType (&tEngine);
   if ( iError )
   {
@@ -60,7 +64,29 @@ void TIF_Text::filter (SBuffers& rsBUFFERS)
     return;
   }
   
-  iError = TT_Open_Face (tEngine, tFontFile.c_str(), &tFace);
+  iError = 1;
+  if ( gAbsolutePath )
+  {
+    iError = TT_Open_Face (tEngine, tFontFile.c_str(), &tFace);
+  }
+  else
+  {
+    multimap<string, string>::const_iterator   iter;
+
+    iter = tConfigData.find ("FontPath");
+    while ( ( iter != tConfigData.end() ) && ( (*iter).first == "FontPath" ) )
+    {
+      string   tAux ((*iter).second + "/" + tFontFile);
+      
+      if ( FileExists (tAux) )
+      {
+        iError = TT_Open_Face (tEngine, tAux.c_str(), &tFace);
+        break;
+      }
+      iter++;
+    }
+  }
+
   if ( iError )
   {
     cerr << "Could not open file '" << tFontFile << "'." << endl;
