@@ -1,4 +1,8 @@
 
+ - Updated C++ coding style.
+ 
+ - Added MaterialLeopard (done by Peter Barnett).
+ 
  - Added bicubic Bezier patches (done by Matt Kimball).
  
  - Fixed problem with built-in 'install-sh' in SGI (thanks to Ezra Peisach for
