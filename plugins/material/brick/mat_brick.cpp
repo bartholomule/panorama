@@ -17,7 +17,7 @@
 */
 
 #include <stdlib.h>
-#include <stream.h>
+#include <iostream>
 #include <time.h>
 #include "mat_brick.h"
 
