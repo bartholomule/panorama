@@ -32,12 +32,10 @@ Status    : Not started
 -- IMAGE I/O --------------------------------------------------------
 
 Project   : PNG image I/O plugin
-Status    : In development
-Author(s) : Ken Geis (kgeis@cchemnt.cchem.berkeley.edu)
+Status    : Not started
 
 Project   : GIF image I/O plugin (only load due to patent problems)
-Status    : In development
-Author(s) : Ken Geis (kgeis@cchemnt.cchem.berkeley.edu)
+Status    : Not started
 
 Project   : Extend TGA plugin to support full TGA format
 Status    : Not started
@@ -49,11 +47,11 @@ Project   : Implement CSG object intersection
 Status    : Not started
 
 Project   : Height field
-Status    : In development
+Status    : Experimental (included in distribution).
 Author(s) : Angel Jimenez (ajimenez@vnet.es)
 
 Project   : Polyhedron
-Status    : In development
+Status    : Experimental (included in distribution).
 Author(s) : Angel Jimenez (ajimenez@vnet.es)
 
 Project   : NURBS surfaces
@@ -68,7 +66,7 @@ Status    : In development
 Author(s) : Angel Jimenez (ajimenez@vnet.es)
 
 Project   : LightWave object import
-Status    : In development
+Status    : Experimental (included in distribution).
 Author(s) : Angel Jimenez (ajimenez@vnet.es)
 
 Project   : Caligari Truespace object import
@@ -79,7 +77,8 @@ Project   : Uniform grid spatial subdivision
 Status    : Not started
 
 Project   : Automatic Bounding Volume Hierarchy (Salmon & Goldsmith)
-Status    : Not started
+Status    : Experimental (included in distribution).
+Author(s) : Angel Jimenez (ajimenez@vnet.es)
 
 Project   : Surfaces of revolution
 Status    : Not started
@@ -92,7 +91,7 @@ Author(s) : Matt Kimball (mkimball@xmission.com)
 -- RENDERER ---------------------------------------------------------
 
 Project   : ZBuffer renderer
-Status    : In development
+Status    : Experimental (included in distribution).
 Author(s) : Angel Jimenez (ajimenez@vnet.es)
             Carlos Jimenez (carlos@leader.es)
 
@@ -100,6 +99,5 @@ Author(s) : Angel Jimenez (ajimenez@vnet.es)
 -- SCENE I/O --------------------------------------------------------
 
 Project   : POVRay scene loader
-Status    : In development
-Author(s) : Ken Geis (kgeis@cchemnt.cchem.berkeley.edu)
+Status    : Not started
 
