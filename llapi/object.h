@@ -53,6 +53,7 @@ class TObject : public TVolume
   public:
 
     TObject (void) :
+      TVolume (),
       ptMaterial (NULL),
       ptMatrix (NULL),
       ptInverseMatrix (NULL)
@@ -66,7 +67,7 @@ class TObject : public TVolume
       delete ptInverseMatrix;
     }
       
-    TObject (const TObject& rktOBJ)
+    TObject (const TObject& rktOBJ) : TVolume(rktOBJ)
     {
       createMatrices();
       
@@ -163,6 +164,18 @@ class TObject : public TVolume
     virtual void addFilter (const TObjectFilter* pktFILTER) { tObjectFilterList.push_back (pktFILTER); }
       
     virtual void getMesh (list<TMesh*>& rtMESH_LIST) const {}
+
+    // Return a random point on the surface (preferred to be uniform).  This
+    // point may not be required to actually be on the surface, but it is
+    // required to hit the object when a ray is sent toward the point from
+    // *almost* any origin (as there is always the near-tangent possibility).
+    // Note that this point is to be in local coordinates (based on whatever
+    // center of the object is defined as normal).  Use of this point should be
+    // applied to the transform matrix before being used for anything other
+    // than local operations.  
+    // This will be most commonly used for things such as area lights.
+    virtual TVector RandomPointOnSurface() const { return TVector(0,0,0); }
+  
     
     void printDebug (void) const;
 
