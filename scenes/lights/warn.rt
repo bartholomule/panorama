@@ -10,13 +10,6 @@ define camera c
   look_at	<0, 0, 0>
 }
 
-define light l_ambient
-{
-  translate	<200, 200, 200>
-  volumetric    off
-  shadow        off
-}
-
 define light l : class WarnLight
 {
   translate	<200, 200, 200>
@@ -49,26 +42,9 @@ plane
   }
 }
 
-/*
-plane
-{
-  translate	<0, 0, -100>
-  normal	<0, 0, 1>
-  material : extends MChecker
-  {
-    color	CWhite
-    base_color  CBlue
-    size        50
-    specular    0
-    diffuse     0.8
-  }
-}
-*/
-
 scene
 {
   camera	c
-//  light         l_ambient
   light         l
   width		400
   height	400

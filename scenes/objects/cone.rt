@@ -32,7 +32,7 @@ cone
 {
   scale         <50, 100, 50>
   translate     <0, 100, 0>
-  rotate        <3.1416, 0, 0>
+  rotate        <180, 0, 0>
   material : extends MPlastic
   {
     color	CWhite

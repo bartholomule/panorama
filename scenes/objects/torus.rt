@@ -31,7 +31,7 @@ plane
 torus
 {
   translate     <0, 0, 200>
-  rotate        <3.1415 / 4, 0, 0>
+  rotate        <45, 0, 0>
   radius_a      75
   radius_b      35
   material : extends MPlastic

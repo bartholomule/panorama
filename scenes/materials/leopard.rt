@@ -1,0 +1,98 @@
+/*
+*  Leopard material test
+*/
+
+#include "materials.inc"
+
+define camera c
+{
+  translate	<0, 400, 600>
+  look_at	<0, 0, 0>
+}
+
+define light l_ambient
+{
+  translate	<-400, 500, 1000>
+  volumetric    off
+  shadow        off
+}
+
+define light l : class WarnLight
+{
+  translate	<-40, 500, 1000>
+  point_at	<0, 0, 0>
+  exponent      20
+  axis          <0, 0, 0>
+  angle_th      15
+  intensity     1
+}
+
+box
+{
+  scale         <150, 150, 150>
+  rotate        <0, 20, 0>
+  translate     <0, 75, -50>
+  material : extends MLeopard
+  {
+    color       CYellow
+    base_color  CRed
+    zoom        <10, 10, 10>
+    bump        0
+  }
+}
+
+sphere
+{
+  translate     <120, 75, 150>
+  radius        75
+  material : extends MLeopard
+  {
+    color       CRed
+    base_color  CBlack
+    zoom        <5, 5, 5>
+    bump        0.25
+  }
+}
+
+torus
+{
+  translate     <-120, 35, 150>
+  radius_a      75
+  radius_b      35
+  material : extends MLeopard
+  {
+    color       CBlue
+    base_color  CBlue
+    zoom        <5, 5, 5>
+    bump        -0.25
+  }
+}
+
+plane
+{
+  translate     <0, 0, 0>
+  normal	<0, 1, 0>
+  material : extends MChecker
+  {
+    color       CBlack
+    base_color  CWhite
+    size        50
+    specular    0
+    border      0
+  }
+}
+
+scene
+{
+  camera	c
+  light		l
+  light		l_ambient
+  width		600
+  height	400
+  background	CSummerSky
+  output
+  {
+    name	"leopard.tga"
+  }
+  renderer : class Raytracer {}
+}
