@@ -130,6 +130,29 @@ magic_pointer<TProcedural> get_procedural_var(magic_pointer<TAttribute> p, bool 
   }
 }
 
+magic_pointer<TAttribute> GetParameter (const string& rktATTRIB)
+{
+  magic_pointer<TProcedural> data = get_procedural_var(DATA);
+
+  if( !data )
+  {
+    rt_error("Cannot extract procedural (to get parameter)");
+    exit(1);
+  }
+  else
+  {
+    // cout << "Data (as procedural) was apparently non-null" << endl;
+  }
+  magic_pointer<TAttribute> tattr;
+
+  if(data->getAttribute(rktATTRIB, tattr) != FX_ATTRIB_OK)
+  {
+    rt_error("Item has no such attribute");
+    exit(1);
+  }
+  return tattr;
+}
+
 void SetParameter (const string& rktATTRIB, magic_pointer<TAttribute> attr)
 {
   if( !attr )

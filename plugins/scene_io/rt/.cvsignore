@@ -1,3 +1,4 @@
 *.plg
 Makefile
 *.d
+parser.output

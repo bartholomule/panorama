@@ -66,9 +66,10 @@
     it was an intersection.
  */
 
+%name-prefix="rt_" 
 %{
 
-  //#define REDUCTION_REPORTING
+  //  #define REDUCTION_REPORTING
   
 #include <map>
 #include <string>
@@ -86,8 +87,16 @@
 #include "language_functions.h"
 #include "attrib_tweak.h"
 
-#define YYDEBUG 1
+#define YYDEBUG 0
 #define YYERROR_VERBOSE 1
+
+  
+// Fixes to allow bison v1.?? to work (the use of bison.simple has been lost).
+typedef YYSTYPE yystype;
+//typedef YYSTYPE yyltype;
+typedef char yysigned_char;
+extern int rt_lex(yystype *p);
+namespace yy { int yylex(yystype *p); }
 
 //---------------------------------------------------------------------------
 typedef TSceneRT::BASE_OBJECT_TYPE BASE_OBJECT_TYPE;
@@ -107,17 +116,18 @@ extern void rt_warning (const string& rksTEXT);
 //---------------------------------------------------------------------------
 
   
-static BASE_OBJECT_TYPE NewObject (const string& rktCLASS, const BASE_OBJECT_TYPE& pktPARENT);
+BASE_OBJECT_TYPE NewObject (const string& rktCLASS, const BASE_OBJECT_TYPE& pktPARENT);
 
-static void CreateObject (const string& rktCLASS, const string& rktDEF_CLASS);
+void CreateObject (const string& rktCLASS, const string& rktDEF_CLASS);
 
-static magic_pointer<TAttribute> Instance(const string& s);
+magic_pointer<TAttribute> Instance(const string& s);
  
-static void InitObjects (void);
+void InitObjects (void);
 
-static void report_reduction(const string& s);
+void report_reduction(const string& s);
 
-static void FIXME(const string& s) { cerr << "FIXME: " << s << endl; }
+static void FIXME(const string& s) { cout << "FIXME: " << s << endl; }
+
 %}
 
 %token <gValue> T_BOOL
@@ -129,7 +139,6 @@ static void FIXME(const string& s) { cerr << "FIXME: " << s << endl; }
 /* "Reserved word" tokens.
    Modified to all act the same as identifiers (KH--07Aug2000)  */
 %token <sIdent> T_BLUE
-%token <sIdent> T_CAMERA
 %token <sIdent> T_CLASS
 %token <sIdent> T_DEFINE
 %token <sIdent> T_EXTENDS
@@ -162,9 +171,9 @@ static void FIXME(const string& s) { cerr << "FIXME: " << s << endl; }
 %type <sIdent> name
 %type <sIdent> class
 %type <ptColor> color
-%type <ptVector> vector3
-%type <ptVector2> vector2
 
+%type <ptAttribute> any_vector; // really an array..
+%type <ptAttribute> vector_insides;
 %type <ptAttribute> function_call;
 %type <ptAttribute> expression;
 %type <ptAttribute> prec_8;
@@ -176,8 +185,8 @@ static void FIXME(const string& s) { cerr << "FIXME: " << s << endl; }
 %type <ptAttribute> prec_2;
 %type <ptAttribute> prec_1;
 
-%left '+' '-'
-%left '*' '/'
+%left '+' '-' OR_L
+%left '*' '/' AND_L
 //%right UNARY_MINUS
 
 %start everything
@@ -543,14 +552,29 @@ prec_2:
                         {
 			  report_reduction("prec_2 <-- - prec_2");
 			  report_reduction("prec_2 <-- - " + $2->toString());
-			  
-			  $$ = sub((user_arg_type)new TAttribInt(0), $2);
-			  if( !$$ )
+
+			  if( $2->eType != FX_ARRAY )
 			  {
-			    rt_error("negation of " + EAttribType_to_str($2->eType) + " failed");
-			  }			  
+			    $$ = sub((user_arg_type)new TAttribInt(0), $2);
+			    if( !$$ )
+			    {
+			      rt_error("negation of " + EAttribType_to_str($2->eType) + " failed");
+			    }
+			  }
+			  else
+			  {
+			    magic_pointer<TAttribArray> tar = rcp_static_cast<TAttribArray>($2);
+			    vector<TScalar> barf(tar->tValue);
+
+			    for(unsigned i = 0; i < barf.size(); ++i)
+			    {
+			      barf[i] = -barf[i];
+			    }
+			    $$ = (user_arg_type)new TAttribArray(barf);
+			  }
 			}
 ;
+
 
 prec_1:
 			T_QUOTED_STRING
@@ -559,7 +583,7 @@ prec_1:
 			  report_reduction("prec_1 <-- " + string($1));
 			  
 			  $$ = (user_arg_type)new TAttribString($1);
-			}
+			}			  
                         | PARAM prec_1
                         {
 			  report_reduction("prec_1 <-- PARAM prec_1");
@@ -610,16 +634,6 @@ prec_1:
 			  report_reduction("prec_1 <-- color");
 			  $$ = (user_arg_type)new TAttribColor(*$1);
 			}
-                        | vector3
-                        {
-			  report_reduction("prec_1 <-- vector3");
-			  $$ = (user_arg_type)new TAttribVector(*$1);
-			}
-                        | vector2
-                        {
-			  report_reduction("prec_1 <-- vector2");
-			  $$ = (user_arg_type)new TAttribVector2(*$1);
-			}
                         | THIS
                         {
 			  report_reduction("prec_1 <-- THIS");
@@ -631,6 +645,12 @@ prec_1:
 			  $$ = $1;			  
                         }
                         | function_call
+			| any_vector
+                        {
+			  report_reduction("prec_1 <-- any_vector");
+                        }
+/*			| prec_0 */
+
 ;
 
 function_call           : potential_name '(' ')'
@@ -728,38 +748,47 @@ color                   : '{' T_RED expression T_GREEN expression T_BLUE express
 
 			    cout << "r=" << r << " g=" << g << " b=" << b << endl;
 			    TColor* c = new TColor(r,g,b);
-			    cerr << "Here's what was really created: ";
+			    cout << "Here's what was really created: ";
 			    c->printDebug(""); cerr << endl;
 			    
 			    $$ = magic_pointer<TColor>(c);
 			  }
                        ;
 
-vector3                 : '<' expression ',' expression ',' expression '>'
-			  {
-			    report_reduction("vector3 <-- < expression , expression , expression >");
-			    TVector tVector;
-			    double x = check_get_real($2);
-			    double y = check_get_real($4);
-			    double z = check_get_real($6);
-#if defined(DEBUG_IT)
-			    cout << "Creating vector ("
-				 << x << ","
-				 << y << ","
-				 << z << ")" << endl;
-#endif
-			    tVector.set (x,y,z);
-                            $$ = (magic_pointer<TVector>)new TVector(tVector);
+any_vector              :  '<' vector_insides '>'
+                          {
+			    report_reduction("any_vector <-- '<' vector_insides '>'");
+			    $$ = $2;
+                          }
+/*                          | '<' '>'
+                          {
+			    report_reduction("any_vector <-- '< >'");
+			    $$ = (user_arg_type)new TAttribArray();
+                          }
+*/
+                        ;
+
+vector_insides          : expression
+                          {
+			    report_reduction("vector_insides <-- expression");
+			    double e = check_get_real($1);
+			    $$ = (user_arg_type)new TAttribArray(e);
 			  }
-			;
-vector2			: '<' expression ',' expression '>'
-			  {
-			    report_reduction("vector2 <-- < expression , expression >");
-			    TVector2 tVector2;
-			    tVector2.set (check_get_real($2), check_get_real($4));
-                            $$ = (magic_pointer<TVector2>)new TVector2(tVector2);
+                          | vector_insides ',' expression
+                          {
+			    report_reduction("vector_insides <-- vector_insides ',' expression");
+			    if( $1->eType == FX_ARRAY )
+			    {
+			      double e = check_get_real($3);
+			      rcp_static_cast<TAttribArray>($1)->tValue.push_back(e);
+			      $$ = $1;
+			    }
+			    else
+			    {
+			      rt_error("lhs of ',' was not part of an array.");
+			    }
 			  }
-			;
+                        ;
 
 name			:
                         /*
@@ -788,7 +817,7 @@ class			: /* Nothing
 			    report_reduction("class <-- : EXTENDS IDENTIFIER");
                             if ( DATAMAP.find ($1) == DATAMAP.end() )
                             {
-			      yyerror ("trying to extend from non existing object");
+			      rt_error ("trying to extend from non existing object");
 			      exit (1);
                             }
 
@@ -941,11 +970,11 @@ scene_param		: T_LIGHT '=' instance
 			    
 			    if(!gave_warning)
 			    {
-			      cerr << "Note for light instance on line "
+			      cout << "Note for light instance on line "
 				   << TSceneRT::_dwLineNumber
 				   << endl;
-			      cerr << "  Usage of lights in the 'scene' section is no longer required" << endl;
-			      cerr << "  They may now be added to aggregates, csg, etc., or used "
+			      cout << "  Usage of lights in the 'scene' section is no longer required" << endl;
+			      cout << "  They may now be added to aggregates, csg, etc., or used "
 				   << endl
 				   << "  external to the scene section (same syntax)." 
 				   << endl;
@@ -1059,21 +1088,21 @@ reserved_words          : T_BLUE
 void rt_error (const char* pkcTEXT)
 {
 
-  cerr << endl << TSceneRT::_tInputFileName << "(" << TSceneRT::_dwLineNumber << ") Error: " << pkcTEXT << endl;
+  cout << endl << TSceneRT::_tInputFileName << "(" << TSceneRT::_dwLineNumber << ") Error: " << pkcTEXT << endl;
 
 }  /* rt_error() */
 
 void rt_error (const string& rksTEXT)
 {
 
-  cerr << endl << TSceneRT::_tInputFileName << "(" << TSceneRT::_dwLineNumber << ") Error: " << rksTEXT << endl;
+  cout << endl << TSceneRT::_tInputFileName << "(" << TSceneRT::_dwLineNumber << ") Error: " << rksTEXT << endl;
 
 }  /* rt_error() */
 
 void rt_warning (const string& rksTEXT)
 {
 
-  cerr << TSceneRT::_tInputFileName << "(" << TSceneRT::_dwLineNumber << ") Warning: " << rksTEXT << endl;
+  cout << TSceneRT::_tInputFileName << "(" << TSceneRT::_dwLineNumber << ") Warning: " << rksTEXT << endl;
 
 }  /* rt_error() */
 
@@ -1123,7 +1152,7 @@ magic_pointer<TBaseClass> NewObject (const string& rktCLASS,
   if ( !ptChild )
   {
     string   tMessage = string ("class ") + rktCLASS + " does not exist";
-    yyerror (tMessage.c_str());
+    rt_error (tMessage.c_str());
     exit (1);
   }
 
@@ -1185,4 +1214,22 @@ magic_pointer<TAttribute> Instance(const string& s)
     exit(1);
   }
 }
+
+namespace yy
+{
+  void Parser::error_()
+  {
+    rt_error("Unknown parser error occurred (it called error_())");
+  }
+  void Parser::print_()
+  {
+    //    rt_warning("Parser::print_() called... What is it?");
+  }  
+  // The stupid bison appears to be ignoring the yyprefix
+  int yylex(yystype *p)
+  {
+    return rt_lex(p);
+  }
+}
+
 

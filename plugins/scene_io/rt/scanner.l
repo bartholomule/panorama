@@ -25,7 +25,9 @@
 #include "parser_defs.h"
 #include "rt_io.h"
 #include "parsed_types.h"
-#include "parser.h"
+#include "parser.hpp"
+
+#define YY_DECL int yylex(yystype *p)
 
 #undef yywrap
 
@@ -84,8 +86,8 @@ static Byte               _bIncludeLevel = 0;
 // strings at some point in the parser.
 #define RESERVED(x)                 \
 {                                   \
-  rt_lval.sIdent.assign(yytext, yyleng); \
-/*  cout << "scanner returning: \"" << rt_lval.sIdent << "\"" << endl; */ \
+  p->sIdent.assign(yytext, yyleng); \
+/*  cout << "scanner returning: \"" << p->sIdent << "\"" << endl; */ \
   return x;                         \
 } 
  
@@ -122,22 +124,22 @@ renderer		RESERVED (T_RENDERER);
 this                    RESERVED (THIS);
 
 on			{
-			  rt_lval.gValue = true;
+			  p->gValue = true;
 			  return T_BOOL;
 			}
  
 off			{
-			  rt_lval.gValue = false;
+			  p->gValue = false;
 			  return T_BOOL;
 			}
 
 true			{
-			  rt_lval.gValue = true;
+			  p->gValue = true;
 			  return T_BOOL;
 			}
  
 false			{
-			  rt_lval.gValue = false;
+			  p->gValue = false;
 			  return T_BOOL;
 			}
 
@@ -171,8 +173,8 @@ false			{
 \n			TSceneRT::_dwLineNumber++;
 
 {identifier}		{
-                          rt_lval.sIdent.assign(yytext, yyleng);
-			  /*			  cout << "scanner returning: \"" << rt_lval.sIdent << "\"" << endl; */
+                          p->sIdent.assign(yytext, yyleng);
+			  /*			  cout << "scanner returning: \"" << p->sIdent << "\"" << endl; */
 			  return T_IDENTIFIER;
 			}
 
@@ -183,18 +185,18 @@ false			{
 #include		ProcessInclude();
 
 {integer}		{
-			  rt_lval.iValue = atoi (yytext);
+			  p->iValue = atoi (yytext);
 			  return T_INTEGER;
 			}
 
 {real}			{
-			  rt_lval.dValue = atof (yytext);
+			  p->dValue = atof (yytext);
 			  return T_REAL;
 			}
 
 {quoted_string}		{
-                          rt_lval.sIdent.assign(yytext+1, yyleng-2);
-			  /*			  cout << "scanner returning: \"" << rt_lval.sIdent << "\"" << endl;			   */
+                          p->sIdent.assign(yytext+1, yyleng-2);
+			  /*			  cout << "scanner returning: \"" << p->sIdent << "\"" << endl;			   */
 			  return T_QUOTED_STRING;
 			}
 

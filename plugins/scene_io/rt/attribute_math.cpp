@@ -51,7 +51,7 @@ magic_pointer<TAttribute> add(const magic_pointer<TAttribute> a1,
     {
       rt_error("add: cannot convert a " + a2->AttributeName() + " to a string");
     }    
-  }  
+  }
   else if( (e1 == FX_VECTOR) || (e2 == FX_VECTOR) )
   {
     magic_pointer<TAttribVector> v1 = get_vector(a1);
@@ -124,6 +124,36 @@ magic_pointer<TAttribute> add(const magic_pointer<TAttribute> a1,
       rt_error("add: cannot convert a " + a2->AttributeName() + " to an integer");
     }    
   }
+  else if( (e1 == FX_ARRAY) || (e2 == FX_ARRAY) )
+  {
+    magic_pointer<TAttribArray> v1 = get_array(a1);
+    magic_pointer<TAttribArray> v2 = get_array(a2);
+
+    if( v1 && v2 )
+    {
+      if( v1->tValue.size() == v2->tValue.size() )
+      {
+	vector<TScalar> ret_vec(v1->tValue.size());
+	for(unsigned i = 0; i < v1->tValue.size(); ++i)
+	{
+	  ret_vec[i] = v1->tValue[i] + v2->tValue[i];
+	}
+	return (user_arg_type)new TAttribArray(ret_vec);
+      }
+      else
+      {
+	rt_error("add: array sizes do not match");
+      }
+    }
+    else if( !v1 )
+    {
+      rt_error("add: cannot convert a " + a1->AttributeName() + " to an array");
+    }
+    else 
+    {
+      rt_error("add: cannot convert a " + a2->AttributeName() + " to an array");
+    }    
+  }    
   else
   {
     rt_error("add: cannot add a " + a1->AttributeName() + " and a " + a1->AttributeName());
@@ -217,6 +247,36 @@ magic_pointer<TAttribute> sub(const magic_pointer<TAttribute> a1,
       rt_error("sub: cannot convert a " + a2->AttributeName() + " to an integer");
     }    
   }
+  else if( (e1 == FX_ARRAY) || (e2 == FX_ARRAY) )
+  {
+    magic_pointer<TAttribArray> v1 = get_array(a1);
+    magic_pointer<TAttribArray> v2 = get_array(a2);
+
+    if( v1 && v2 )
+    {
+      if( v1->tValue.size() == v2->tValue.size() )
+      {
+	vector<TScalar> ret_vec(v1->tValue.size());
+	for(unsigned i = 0; i < v1->tValue.size(); ++i)
+	{
+	  ret_vec[i] = v1->tValue[i] - v2->tValue[i];
+	}
+	return (user_arg_type)new TAttribArray(ret_vec);
+      }
+      else
+      {
+	rt_error("sub: array sizes do not match");
+      }
+    }
+    else if( !v1 )
+    {
+      rt_error("sub: cannot convert a " + a1->AttributeName() + " to an array");
+    }
+    else 
+    {
+      rt_error("sub: cannot convert a " + a2->AttributeName() + " to an array");
+    }    
+  }  
   else
   {
     rt_error("sub: cannot subtract a " + a1->AttributeName() + " and a " + a1->AttributeName());
@@ -238,12 +298,38 @@ magic_pointer<TAttribute> mul(const magic_pointer<TAttribute> a1,
   EAttribType e1 = a1->eType;
   EAttribType e2 = a2->eType;
 
-  if( e1 == FX_VECTOR )
+  if( e1 == FX_ARRAY )
+  {
+    magic_pointer<TAttribReal> r = get_real(a2);
+    if( r )
+    {
+      vector<TScalar> barf = rcp_static_cast<TAttribArray>(a1)->tValue;
+      for(unsigned i = 0; i < barf.size(); ++i)
+      {
+	barf[i] *= r->tValue;
+      }
+      return (user_arg_type)new TAttribArray(barf);
+    }
+  }
+  else if( e1 == FX_VECTOR )
   {
     magic_pointer<TAttribReal> r = get_real(a2);
     if( !!r )
     {
       return (user_arg_type)new TAttribVector(get_vector(a1)->tValue * r->tValue);
+    }
+  }
+  else if( e2 == FX_ARRAY )
+  {
+    magic_pointer<TAttribReal> r = get_real(a1);
+    if( r )
+    {
+      vector<TScalar> barf = rcp_static_cast<TAttribArray>(a2)->tValue;
+      for(unsigned i = 0; i < barf.size(); ++i)
+      {
+	barf[i] *= r->tValue;
+      }
+      return (user_arg_type)new TAttribArray(barf);
     }
   }
   else if( e2 == FX_VECTOR )
@@ -308,7 +394,20 @@ magic_pointer<TAttribute> div(const magic_pointer<TAttribute> a1,
   EAttribType e1 = a1->eType;
   EAttribType e2 = a2->eType;
 
-  if( e1 == FX_VECTOR )
+  if( e1 == FX_ARRAY )
+  {
+    magic_pointer<TAttribReal> r = get_real(a2);
+    if( r )
+    {
+      vector<TScalar> barf = rcp_static_cast<TAttribArray>(a1)->tValue;
+      for(unsigned i = 0; i < barf.size(); ++i)
+      {
+	barf[i] /= r->tValue;
+      }
+      return (user_arg_type)new TAttribArray(barf);
+    }
+  }
+  else if( e1 == FX_VECTOR )
   {
     magic_pointer<TAttribReal> r = get_real(a2);
     if( !!r )

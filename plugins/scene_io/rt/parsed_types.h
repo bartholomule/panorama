@@ -54,6 +54,7 @@ struct yy_data_type
 #if defined(NEW_ATTRIBUTES)
   magic_pointer<TAttribute>           ptAttribute;
 #endif
+
 };
 
 

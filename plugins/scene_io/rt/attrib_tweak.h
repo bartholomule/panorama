@@ -25,6 +25,7 @@
 magic_pointer<TProcedural> get_procedural_var(magic_pointer<TAttribute> p,
 					      bool active = true);
 void SetParameter (const string& rktATTRIB, magic_pointer<TAttribute> attr);
+magic_pointer<TAttribute> GetParameter (const string& rktATTRIB);
 
 bool    check_get_bool(const magic_pointer<TAttribute> t);
 string  check_get_string(const magic_pointer<TAttribute> t);

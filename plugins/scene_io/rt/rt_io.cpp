@@ -35,6 +35,8 @@ TSceneRT::BASE_OBJECT_TYPE   TSceneRT::_ptParent;
 magic_pointer<TAggregate>    TSceneRT::_ptWorld;
 magic_pointer<TImageIO>      TSceneRT::_ptImageIO;  
 
+#include "parser.hpp"
+
 magic_pointer<TScene> TSceneRT::load (const string& rktNAME)
 {
 
@@ -51,11 +53,13 @@ magic_pointer<TScene> TSceneRT::load (const string& rktNAME)
     return (magic_pointer<TScene>)NULL;
   }
 
-  rt_debug = 0;
+  //  rt_debug = 0;
 
   RT_InitParser();
+
+  yy::Parser rt_parser(true);
   
-  iResult = rt_parse();
+  iResult = rt_parser.parse();//rt_parse();
 
   RT_CloseParser();
 
