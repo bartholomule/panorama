@@ -83,6 +83,7 @@ camera			return T_CAMERA;
 circle			return T_CIRCLE;
 class			return T_CLASS;
 color			return T_COLOR;
+colour			return T_COLOR;
 cone                    return T_CONE;
 cylinder		return T_CYLINDER;
 define			return T_DEFINE;

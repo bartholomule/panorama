@@ -83,6 +83,7 @@ Real                    return T_TYPE_REAL;
 Bool                    return T_TYPE_BOOL;
 String                  return T_TYPE_STRING;
 Color                   return T_TYPE_COLOR;
+Colour                  return T_TYPE_COLOR;
 Vector                  return T_TYPE_VECTOR;
 Vector2                 return T_TYPE_VECTOR2;
 
