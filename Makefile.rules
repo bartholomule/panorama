@@ -9,5 +9,5 @@
 
 %.cpp: %.y
 		@echo Generating parser...
-		@${YACC} -do $(basename $@).c $<
+		@${YACC} ${BISONFLAGS} -do $(basename $@).c $<
 		@mv $(basename $@).c $@
