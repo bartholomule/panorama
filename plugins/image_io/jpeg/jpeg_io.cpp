@@ -22,8 +22,8 @@
 
 extern "C" {
 #include <jpeglib.h> //jpeg library
-#include "jpeg_io.h"
 }
+#include "jpeg_io.h"
 
 DEFINE_IMAGE_IO_PLUGIN ("jpeg", TImageJpeg);
 
@@ -41,14 +41,14 @@ int TImageJpeg::save (const TImage* pktIMAGE)
   
   if ( !tOutFile )
   {
-    return NULL;
+    return -1;
   }
 
   pbScanline = new Byte[pktIMAGE->width()*3];
 
   if ( !pbScanline )
   {
-    return NULL;
+    return -1;
   }
 
   /* Set the standard error routine and some other parameters */
