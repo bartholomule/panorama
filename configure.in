@@ -59,7 +59,7 @@ else
   dnl This is the original test, which I am leaving in here for backwards 
   dnl compatibility (if it still works).
 
-  AC_CHECK_HEADER(freetype/freetype.h, [AC_CHECK_LIB(ttf,main,text_val=yes)])
+  AC_CHECK_HEADER([freetype/ft2build.h freetype/freetype.h], [AC_CHECK_LIB(ttf,main,text_val=yes)])
   if test $text_val = "yes"
   then
     TEXT_FILTER="text"
@@ -343,3 +343,4 @@ AC_OUTPUT(\
 dnl AC_CONFIG_LINKS(Makefile.deps:Makefile.deps)
 ln -s $ac_aux_dir/Makefile.deps . 2>/dev/null
 ln -s $ac_aux_dir/install-sh . 2>/dev/null
+exit 0
