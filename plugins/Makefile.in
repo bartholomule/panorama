@@ -7,7 +7,6 @@ DIRS = atm_object \
        image_filter \
        image_io \
        light \
-       material \
        object \
        object_filter \
        pattern \
