@@ -59,7 +59,7 @@ int TPolyhedron::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttrib
   {
     if ( eTYPE == FX_REAL )
     {
-      eShape = (EShape) nVALUE.dValue;
+      eShape = (EShape) ((int) nVALUE.dValue);
     }
     else
     {
