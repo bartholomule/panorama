@@ -1,0 +1,2 @@
+PLUGIN_NAME = pat_cylgrad
+OBJ         = pat_cylgrad.o

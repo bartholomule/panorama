@@ -1,0 +1,2 @@
+PLUGIN_NAME = pat_marble
+OBJ         = pat_marble.o

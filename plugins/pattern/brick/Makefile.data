@@ -1,0 +1,2 @@
+PLUGIN_NAME = pat_brick
+OBJ         = pat_brick.o

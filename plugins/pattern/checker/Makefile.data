@@ -1,0 +1,2 @@
+PLUGIN_NAME = pat_checker
+OBJ         = pat_checker.o

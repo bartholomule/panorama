@@ -1,0 +1,2 @@
+PLUGIN_NAME = pat_parquet
+OBJ         = pat_parquet.o

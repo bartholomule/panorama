@@ -1,0 +1,2 @@
+PLUGIN_NAME = pat_amplifier
+OBJ         = pat_amplifier.o
