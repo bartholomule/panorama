@@ -1162,9 +1162,9 @@ fi
 
 
 text_val=no
-ac_safe=`echo "freetype.h" | sed 'y%./+-%__p_%'`
-echo $ac_n "checking for freetype.h""... $ac_c" 1>&6
-echo "configure:1168: checking for freetype.h" >&5
+ac_safe=`echo "freetype/freetype.h" | sed 'y%./+-%__p_%'`
+echo $ac_n "checking for freetype/freetype.h""... $ac_c" 1>&6
+echo "configure:1168: checking for freetype/freetype.h" >&5
 if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
