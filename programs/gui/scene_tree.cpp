@@ -230,7 +230,6 @@ gint TSceneTree::manageButtonPress (GdkEventButton* ptEVENT, TProcedural* ptOBJE
   if ( ( ptEVENT->type == GDK_2BUTTON_PRESS ) && ( ptEVENT->button == 1 ) )
   {
     ptDlg = new TObjectPropertiesDialog (ptOBJECT);
-    cout << "Setting up the Ok button..." << endl;
     ptDlg->getOk().clicked.connect(bind(slot(&accept_properties), ptDlg));
     ptDlg->show();
   }

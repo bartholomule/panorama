@@ -74,7 +74,6 @@ void imageFilterCB2(cb2_item cb_data, TImageFilter* ptFilter)
 {
   TImageWindow* ptWnd = cb_data.first;  
   TObjectPropertiesDialog* dialog = cb_data.second;
-  cout << "Accepting changes" << endl;
   dialog->accept_changes();
   dialog->hide();
   delete dialog;
@@ -84,10 +83,7 @@ void imageFilterCB2(cb2_item cb_data, TImageFilter* ptFilter)
 void imageFilterCB (TImageWindow* ptWND, const char* filter_name)
 {
 
-  cout << "Need to apply filter \"" << filter_name << "\"" << endl;
-
   TImageFilter* ptFilter = (TImageFilter*)tPluginManager.newObject(filter_name);
-  cout << "Pointer=" << ptFilter << endl;
 
   TObjectPropertiesDialog* dialog = new TObjectPropertiesDialog(ptFilter);
   dialog->getOk().clicked.connect(bind(slot(imageFilterCB2),cb2_item(ptWND,dialog),ptFilter));

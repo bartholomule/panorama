@@ -67,7 +67,6 @@ void TColorPreview::setColorCB (void)
 TColorPreview::TColorPreview (const TColor& rktCOLOR) :
   Gtk::Preview (GTK_PREVIEW_COLOR)
 {
-  cout << "Constructor..." << endl;
   ptColorDlg = NULL;
   tColor     = rktCOLOR;
 
@@ -81,8 +80,9 @@ TColorPreview::TColorPreview (const TColor& rktCOLOR) :
 
 void TColorPreview::drawColorCB (GtkAllocation* ptALLOC)
 {
-
+#if DEBUG_IT
   cout << "drawColor called" << endl;
+#endif
 
   TColor   tColor24;
   size_t   zWidth   = width();
@@ -100,7 +100,6 @@ void TColorPreview::drawColorCB (GtkAllocation* ptALLOC)
     pbBuffer [J * 3 + 1] = (Byte) tColor24.green();
     pbBuffer [J * 3 + 2] = (Byte) tColor24.blue();
   }
-  cout << "pbBuffer[0]=" << (int)pbBuffer[0] << "pbBuffer[1]=" << (int)pbBuffer[1] << "pbBuffer[2]=" << (int)pbBuffer[2] << endl;
   
   for (size_t J = 0; ( J < zHeight ) ;J++)
   {

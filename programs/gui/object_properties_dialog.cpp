@@ -124,17 +124,14 @@ TObjectPropertiesDialog::createValueWidget (const string& name,
   case FX_COLOR:
     {
       ptPreview = new TColorPreview (*((TColor*) nVALUE.pvValue));
-      cout << "Showing" << endl;
       ptPreview->show();
 
       ptFrame = new Gtk::Frame;
       ptFrame->show();
 
-      cout << "Adding" << endl;
       //      ptFrame->add (*ptPreview);
       //      ptFrame->show();
 
-      cout << "a2" << endl;
       Gtk::Window* tmp_wnd = manage(new Gtk::Window());
       Gtk::VBox* tmp_box = manage(new Gtk::VBox());
       Gtk::Label* tmp_label = manage(new Gtk::Label("BARF"));
@@ -148,8 +145,6 @@ TObjectPropertiesDialog::createValueWidget (const string& name,
       tmp_box->show();
       tmp_wnd->show();
 
-      cout << "Returning" << endl;
-      
       ptWidget = ptFrame;
     }
     break;
@@ -427,7 +422,6 @@ TObjectPropertiesDialog::TObjectPropertiesDialog (TProcedural* ptOBJECT)
 
   // Make a copy of the object so that it can be changed, and the values will
   // not be updated in the original until 'ok' is pressed...
-  cout << "Making a copy of a " << ptOBJECT->className() << endl;
   ptObjectCopy = (TProcedural*)TClassManager::_newObject(ptOBJECT->className(),NULL);
   // Copy the attributes from the original to the working copy.
   attribute_copy(ptOBJECT, ptObjectCopy);  
@@ -506,8 +500,6 @@ static void attribute_copy(TProcedural* source, TProcedural* dest)
     cout << "Null dest for attribute copy." << endl;
     return;
   }  
-  cout << "Copying Attributes from " << source->className()
-       << " to " << dest->className() << endl;
   
   TAttributeList aList;
   NAttribute     nValue;
@@ -532,7 +524,6 @@ static void attribute_copy(TProcedural* source, TProcedural* dest)
 
 static void property_change_callback(property_callback_data tPCD)
 {
-  cout << __FUNCTION__ << endl;
   NAttribute nValue;
   TProcedural* dest_object = tPCD.destObject;
   static const char* unsup_title = "Not yet supported";
@@ -550,7 +541,6 @@ static void property_change_callback(property_callback_data tPCD)
   case FX_STRING:
     {
       nValue.pvValue = (void*)((Gtk::Entry*)tPCD.dataContainer)->get_text().c_str();
-      cout << "Setting string value to " << (char*)nValue.pvValue << endl;
       dest_object->setAttribute(tPCD.attributeName, nValue, tPCD.eType);
     }
     break;
@@ -558,7 +548,6 @@ static void property_change_callback(property_callback_data tPCD)
   case FX_REAL:
     {
       nValue.dValue = ((Gtk::SpinButton*)tPCD.dataContainer)->get_value_as_float();
-      cout << "Setting float value to " << nValue.dValue << endl;
       dest_object->setAttribute(tPCD.attributeName, nValue, tPCD.eType);      
     }
     break;
@@ -572,7 +561,6 @@ static void property_change_callback(property_callback_data tPCD)
   case FX_BOOL:
     {
       nValue.gValue = ((Gtk::ToggleButton*)tPCD.dataContainer)->get_active();
-      cout << "Setting bool value to " << nValue.gValue << endl;
       dest_object->setAttribute(tPCD.attributeName, nValue, tPCD.eType);
     }
     break;

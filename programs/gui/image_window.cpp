@@ -60,12 +60,16 @@ Gtk::Menu* TImageWindow::createFilterMenu (void)
     }
     else
     {
+#if DEBUG_IT
       cout << "Plugin list is empty" << endl;
+#endif
     }
   }
   else
   {
+#if DEBUG_IT
     cout << "No image filters found" << endl;
+#endif
   }
 
   return filter_menu;
@@ -283,7 +287,9 @@ void TImageWindow::filterImage(TImageFilter* ptFilter)
 
   ptFilter->setScene(ptScene);
   ptFilter->filter(*rendered_buffers);
+#if DEBUG_IT
   cout << "Done with filter..." << endl;
+#endif
   // Refresh the screen here...
   drawImage();
 }
