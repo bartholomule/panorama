@@ -1,0 +1,98 @@
+/*
+*  Catmull-Clark subdivision test
+*/
+
+#include "materials.inc"
+
+define camera c
+{
+  translate	<0, 400, 500>
+  look_at	<0, 0, 0>
+}
+
+define light l
+{
+  translate	<-500, 300, 500>
+  color		CWhite
+}
+
+object : class SubdivisionSurface
+{
+  method "Catmull-Clark"
+
+  vert "o0 <0.000, 1.000, 0.000>"
+  vert "o1 <0.000, -0.500, 0.866>"
+  vert "o2 <0.750, -0.500, -0.433>"
+  vert "o3 <-0.750, -0.500, -0.433>"
+
+  vert "f0p1 <0.000, -0.500, 0.346>"
+  vert "f0p2 <0.300, -0.500, -0.173>"
+  vert "f0p3 <-0.300, -0.500, -0.173>"
+
+  vert "f1p0 <0.000, 0.400, -0.173>"
+  vert "f1p2 <0.300, -0.200, -0.346>"
+  vert "f1p3 <-0.300, -0.200, -0.346>"
+
+  vert "f2p0 <-0.150, 0.400, 0.087>"
+  vert "f2p1 <-0.150, -0.200, 0.433>"
+  vert "f2p3 <-0.450, -0.200, -0.087>"
+
+  vert "f3p0 <0.150, 0.400, 0.087>"
+  vert "f3p1 <0.150, -0.200, 0.433>"
+  vert "f3p2 <0.450, -0.200, -0.087>"
+
+
+  face "f1p0 f2p0 f3p0"
+  face "f0p1 f2p1 f3p1"
+  face "f0p2 f1p2 f3p2"
+  face "f0p3 f1p3 f2p3"
+
+  face "f0p2 f0p3 f1p3 f1p2"
+  face "f0p3 f0p1 f2p1 f2p3"
+  face "f0p1 f0p2 f3p2 f3p1"
+  face "f1p3 f1p0 f2p0 f2p3"
+  face "f1p0 f1p2 f3p2 f3p0"
+  face "f2p0 f2p1 f3p1 f3p0"
+
+  face "o2 o3 f0p3 f0p2"
+  face "o3 o1 f0p1 f0p3"
+  face "o1 o2 f0p2 f0p1"
+
+  face "o2 o3 f1p3 f1p2"
+  face "o3 o0 f1p0 f1p3"
+  face "o0 o2 f1p2 f1p0"
+
+  face "o1 o3 f2p3 f2p1"
+  face "o3 o0 f2p0 f2p3"
+  face "o0 o1 f2p1 f2p0"
+
+  face "o1 o2 f3p2 f3p1"
+  face "o2 o0 f3p0 f3p2"
+  face "o0 o1 f3p1 f3p0"
+
+  scale         <400, 400, 400>
+  rotate        <0, 60, 0>
+
+  material : extends MLambertian
+  {
+    color CBlue
+  }
+}
+
+scene
+{
+  camera	c
+  light		l
+  width		400
+  height	400
+  background	CWhite
+  output
+  {
+    type        "png"
+    name	"subdiv.png"
+  }
+  renderer : class Raytracer {}
+}
+
+
+
