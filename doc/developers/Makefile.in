@@ -7,7 +7,6 @@ INSTALL = @INSTALL@
 SRC_DIR = @srcdir@
 
 FILES = C++_Coding_Style \
-        CHANGES_0.9.1-0.10.0 \
 	General \
         PROJECTS \
         README
