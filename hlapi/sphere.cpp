@@ -316,6 +316,6 @@ void TSphere::printDebug (const string& indent) const
 
   TObject::printDebug(indent);
 
-  cerr << TDebug::Indent(indent) << "Radius : " << tRadius << endl;
+  GOM.debug() << TDebug::Indent(indent) << "Radius : " << tRadius << endl;
 
 }  /* printDebug() */

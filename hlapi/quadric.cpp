@@ -193,16 +193,16 @@ bool TQuadric::findFirstIntersection (const TRay& rktRAY, TSurfaceData& rtDATA)
     
     if( rktRAY.range().inside(t1 * tFactor) )
     {
-      //      cout << "origin " << o << " direction " << v << " factor " << tFactor <<" range " << rktRAY.range() << endl;
-      //      cout << identifier() << ": t1=" << tFactor * t1 << endl;
+      //      GOM.debug() << "origin " << o << " direction " << v << " factor " << tFactor <<" range " << rktRAY.range() << endl;
+      //      GOM.debug() << identifier() << ": t1=" << tFactor * t1 << endl;
       rtDATA.setPoint (tFactor * t1);
       return true;
     }
     t2 = (-B + sqrtd) / (2 * A);
     if( rktRAY.range().inside(t2 * tFactor) )
     {
-      //      cout << "origin " << o << " direction " << v << " factor " << tFactor << " range " << rktRAY.range() << endl;
-      //      cout << identifier() << ": t2=" << tFactor * t2 << endl;    
+      //      GOM.debug() << "origin " << o << " direction " << v << " factor " << tFactor << " range " << rktRAY.range() << endl;
+      //      GOM.debug() << identifier() << ": t2=" << tFactor * t2 << endl;    
       rtDATA.setPoint (tFactor * t2);
       return true;    
     }
@@ -309,19 +309,19 @@ bool TQuadric::findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST)
 void TQuadric::printDebug (const string& indent) const
 {
   TObject::printDebug(indent);
-  cerr << TDebug::Indent(indent)
-       << "Function : "
-       << QA << "X^2 + "
-       << QB << "Y^2 + "
-       << QC << "Z^2 + "
-       << QD << "X*Y + "
-       << QE << "X*Z + "
-       << QF << "Y*Z + "
-       << QG << "X + "
-       << QH << "Y + "
-       << QI << "Z + "
-       << QJ
-       << endl;
+  GOM.debug() << TDebug::Indent(indent)
+	      << "Function : "
+	      << QA << "X^2 + "
+	      << QB << "Y^2 + "
+	      << QC << "Z^2 + "
+	      << QD << "X*Y + "
+	      << QE << "X*Z + "
+	      << QF << "Y*Z + "
+	      << QG << "X + "
+	      << QH << "Y + "
+	      << QI << "Z + "
+	      << QJ
+	      << endl;
 }
 
 TScalar TQuadric::operator[](size_t index) const
@@ -349,7 +349,7 @@ void TQuadric::set_coefs(unsigned index, const TVector& values)
 
 void TQuadric::set_coefs(const std::vector<TScalar>& values)
 {
-  //  cout << "set_coefs was given " << values.size() << " coefficients, but wanted " << CQ_NUM_COEFS << endl;
+  //  GOM.debug() << "set_coefs was given " << values.size() << " coefficients, but wanted " << CQ_NUM_COEFS << endl;
   
   for(unsigned i = 0; i < CQ_NUM_COEFS; ++i)
   {

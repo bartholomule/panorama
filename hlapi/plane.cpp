@@ -26,7 +26,7 @@ void TPlane::update (void)
 {
 
 #if defined(DEBUG)
-  cerr << "TPlane::update() called!" << endl;
+  GOM.debug() << "TPlane::update() called!" << endl;
 #endif
   
   tNormal.normalize();
@@ -245,7 +245,7 @@ void TPlane::printDebug (const string& indent) const
 
   string new_indent = TDebug::Indent(indent);
 
-  cerr << new_indent << "Normal   : "; tNormal.printDebug(new_indent); cerr << endl;
-  cerr << new_indent << "OneSided : " << gOneSided << endl;
+  GOM.debug() << new_indent << "Normal   : "; tNormal.printDebug(new_indent); GOM.debug() << endl;
+  GOM.debug() << new_indent << "OneSided : " << gOneSided << endl;
 
 }  /* printDebug() */

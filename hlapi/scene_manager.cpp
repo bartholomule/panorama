@@ -33,7 +33,7 @@ magic_pointer<TScene> TSceneManager::_load (const string& rktNAME, const string&
 
   if ( !_knownFormat (rktFORMAT) )
   {
-    cerr << "ERROR: Scene format does not exist" << endl;
+    GOM.error() << "ERROR: Scene format does not exist" << endl;
     return magic_pointer<TScene>(NULL);
   }
   
@@ -62,7 +62,7 @@ int TSceneManager::_save (const string& rktNAME, const string& rktFORMAT, const 
 
   if ( !_knownFormat (rktFORMAT) )
   {
-    cerr << "ERROR: Scene format does not exist" << endl;
+    GOM.error() << "ERROR: Scene format does not exist" << endl;
     return -1;
   }
   

@@ -141,15 +141,15 @@ void TRectangle::getMesh (list<TMesh*>& rtMESH_LIST) const
 void TRectangle::printDebug (const string& indent) const
 {
 
-  cerr << indent << "[_Rectangle_]" << endl;
+  GOM.debug() << indent << "[_Rectangle_]" << endl;
 
   string new_indent = TDebug::Indent(indent);
   
-  cerr << new_indent << "Vertex 1 : " << endl; atVertex[0].printDebug(new_indent); cerr << endl;
-  cerr << new_indent << "Vertex 2 : " << endl; atVertex[1].printDebug(new_indent); cerr << endl;
-  cerr << new_indent << "Vertex 3 : " << endl; atVertex[2].printDebug(new_indent); cerr << endl;
-  cerr << new_indent << "Vertex 4 : " << endl; atVertex[3].printDebug(new_indent); cerr << endl;
-  cerr << new_indent << "Normal   : " << endl; tNormal.printDebug(new_indent); cerr << endl;
+  GOM.debug() << new_indent << "Vertex 1 : " << endl; atVertex[0].printDebug(new_indent); GOM.debug() << endl;
+  GOM.debug() << new_indent << "Vertex 2 : " << endl; atVertex[1].printDebug(new_indent); GOM.debug() << endl;
+  GOM.debug() << new_indent << "Vertex 3 : " << endl; atVertex[2].printDebug(new_indent); GOM.debug() << endl;
+  GOM.debug() << new_indent << "Vertex 4 : " << endl; atVertex[3].printDebug(new_indent); GOM.debug() << endl;
+  GOM.debug() << new_indent << "Normal   : " << endl; tNormal.printDebug(new_indent); GOM.debug() << endl;
   
 }  /* printDebug() */
 

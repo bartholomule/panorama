@@ -524,8 +524,8 @@ void TCsg::printDebug (const string& indent) const
   }
   
   TAggregate::printDebug(indent);
-  cerr << TDebug::Indent(indent)
-       << "CSG Type : " << csg_type_strings[eOperation] << endl;
+  GOM.debug() << TDebug::Indent(indent)
+	      << "CSG Type : " << csg_type_strings[eOperation] << endl;
 }
 
 map<ECsgOp,string> TCsg::csg_type_strings;

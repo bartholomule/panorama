@@ -28,12 +28,12 @@
 
 bool accel_grid::initialize()
 {
-  fprintf(stderr,"Initializing %d objects in accel grid\n", objects_in_grid.size());
-  fflush(stderr);
+  char buffer[1024];
+  sprintf(buffer,"Initializing %d objects in accel grid\n", objects_in_grid.size());
+  GOM.debug() << buffer << endl;
   static const TVector eps_vector(FX_EPSILON, FX_EPSILON, FX_EPSILON);
 
   bool result = true;
-  cout.flush();
 
   for(vector<base_ptr>::iterator obj_ptr = objects_in_grid.begin();
       obj_ptr != objects_in_grid.end();
@@ -47,7 +47,7 @@ bool accel_grid::initialize()
       (*obj_ptr)->setMaterial(material());
     }
   }
-  cout << "accel grid: re-griding things." << endl;
+  GOM.debug() << "accel grid: re-griding things." << endl;
   create_self_sized_grid();
   
   tBoundingBox.set (min_coord - eps_vector,
@@ -186,12 +186,12 @@ void accel_grid::create_self_sized_grid(int subgrids)
       nz = my_max(int((fixed_grid_size.z() / s) + 0.5), 1);
 
 
-      cout << "Creating " << nx << "x" << ny << "x" << nz << " grid for " << n << " objects." << endl;
+      GOM.debug() << "Creating " << nx << "x" << ny << "x" << nz << " grid for " << n << " objects." << endl;
 #if defined(DEBUG_IT)
-      cout << "Min and max=" << min_coord << "," << max_coord << endl;
-      cout << "#objects=" << n << endl;
-      cout << "Grid size=" << grid_size << " S=" << s << endl;
-      cout << "Needed dimensions=" << grid_size / s << endl;
+      GOM.debug() << "Min and max=" << min_coord << "," << max_coord << endl;
+      GOM.debug() << "#objects=" << n << endl;
+      GOM.debug() << "Grid size=" << grid_size << " S=" << s << endl;
+      GOM.debug() << "Needed dimensions=" << grid_size / s << endl;
 #endif
 
       // Resize the grid, removing any previous entries in any grid entry.
@@ -246,7 +246,7 @@ void accel_grid::create_self_sized_grid(int subgrids)
 	      completion_string += '.';
 	    }
 	  }
-	  cout << completion_string + "\r" << flush;
+	  GOM.debug() << completion_string + "\r" << flush;
 	  //	  printf("%s\r",completion_string.c_str());
 	  //	  fflush(stdout);
 	} // percentage changed..
@@ -395,8 +395,8 @@ void accel_grid::add_object(const magic_pointer<base_object>& obj)
     TScalar z_step = grid_size.z() / TScalar(nz);
     
 #if defined(DEBUG_IT2)
-    cout << "grid size=" << grid_size << endl;
-    cout << "grid divisions=" << nx << ", " << ny << ", " << nz << endl;
+    GOM.debug() << "grid size=" << grid_size << endl;
+    GOM.debug() << "grid divisions=" << nx << ", " << ny << ", " << nz << endl;
 #endif
     
     // Calculate the min and max values for the boxes...
@@ -430,9 +430,9 @@ void accel_grid::add_object(const magic_pointer<base_object>& obj)
     
     // Clamp the ranges, so they are only added inside the grid...
 #if defined(DEBUG_IT2)
-    cout << "x bins range from " << x_bin_min << " to " << x_bin_max << endl;
-    cout << "y bins range from " << y_bin_min << " to " << y_bin_max << endl;
-    cout << "z bins range from " << z_bin_min << " to " << z_bin_max << endl;
+    GOM.debug() << "x bins range from " << x_bin_min << " to " << x_bin_max << endl;
+    GOM.debug() << "y bins range from " << y_bin_min << " to " << y_bin_max << endl;
+    GOM.debug() << "z bins range from " << z_bin_min << " to " << z_bin_max << endl;
 #endif
     
     
@@ -447,7 +447,7 @@ void accel_grid::add_object(const magic_pointer<base_object>& obj)
 	for(int x = x_bin_min; x <= x_bin_max; ++x)
 	{
 #if defined(DEBUG_IT2)	  
-	  cout << "Adding object " << obj->className()
+	  GOM.debug() << "Adding object " << obj->className()
 	       << " to bin ("
 	       << x << ","
 	       << y << ","
@@ -466,7 +466,7 @@ void accel_grid::add_object(const magic_pointer<base_object>& obj)
 
 bool accel_grid::findFirstIntersection(const TRay& ray, TSurfaceData& hit_info) const
 {
-  //  cout << "accel_grid::findFirstIntersection()" << endl;
+  //  GOM.debug() << "accel_grid::findFirstIntersection()" << endl;
   bool hit_something = false;
   TSurfaceData inf_data, grid_data;
   bool hit_inf = false;
@@ -502,7 +502,7 @@ bool accel_grid::findFirstIntersection(const TRay& ray, TSurfaceData& hit_info) 
 
 bool accel_grid::findAllGridIntersections(const TRay& ray, TSpanList& spl) const
 {
-  cout << "accel_grid::findAllGridIntersections()" << endl;  
+  GOM.debug() << "accel_grid::findAllGridIntersections()" << endl;  
   // This is a long and complex function.  The bulk of it is from Peter
   // Shirley's "Realist Raytracing" (section 11.1 -- almost 3 pages worth)
 
@@ -520,7 +520,7 @@ bool accel_grid::findAllGridIntersections(const TRay& ray, TSpanList& spl) const
 
 bool accel_grid::findFirstGridIntersection(const TRay& ray, TSurfaceData& hit_info) const
 {
-  //  cout << "accel_grid::findFirstGridIntersection()" << endl;
+  //  GOM.debug() << "accel_grid::findFirstGridIntersection()" << endl;
   // This is a long and complex function.  The bulk of it is from Peter
   // Shirley's "Realist Raytracing" (section 11.1 -- almost 3 pages worth)
 
@@ -598,7 +598,7 @@ bool accel_grid::findFirstGridIntersection(const TRay& ray, TSurfaceData& hit_in
   if(t0 > t1)
   {
 #if defined(DEBUG_IT2)    
-    cout << "Bailing due to failure to hit grid." << endl;
+    GOM.debug() << "Bailing due to failure to hit grid." << endl;
 #endif
     // No hit with the grid.
     return false;
@@ -699,18 +699,18 @@ bool accel_grid::findFirstGridIntersection(const TRay& ray, TSurfaceData& hit_in
   
 
 #if defined(DEBUG_IT2)  
-  cout << __FUNCTION__ << ":" << endl;
-  cout << "min=" << t_min
+  GOM.debug() << __FUNCTION__ << ":" << endl;
+  GOM.debug() << "min=" << t_min
        << " max=" << t_max
        << endl;
-  cout << "range=" << ray.range() << endl;
-  cout << "dx=" << d.x() << " dtx=" << dtx << " tx_next=" << tx_next << endl;
-  cout << "dy=" << d.y() << " dty=" << dty << " ty_next=" << ty_next << endl;
-  cout << "dz=" << d.z() << " dtz=" << dtz << " tz_next=" << tz_next << endl;
-  cout << "tx_min=" << tx_min << " tx_max=" << tx_max << endl;
-  cout << "ty_min=" << ty_min << " ty_max=" << ty_max << endl;
-  cout << "tz_min=" << tz_min << " tz_max=" << tz_max << endl;  
-  cout << "ix=" << ix << " iy=" << iy << " iz=" << iz << endl;
+  GOM.debug() << "range=" << ray.range() << endl;
+  GOM.debug() << "dx=" << d.x() << " dtx=" << dtx << " tx_next=" << tx_next << endl;
+  GOM.debug() << "dy=" << d.y() << " dty=" << dty << " ty_next=" << ty_next << endl;
+  GOM.debug() << "dz=" << d.z() << " dtz=" << dtz << " tz_next=" << tz_next << endl;
+  GOM.debug() << "tx_min=" << tx_min << " tx_max=" << tx_max << endl;
+  GOM.debug() << "ty_min=" << ty_min << " ty_max=" << ty_max << endl;
+  GOM.debug() << "tz_min=" << tz_min << " tz_max=" << tz_max << endl;  
+  GOM.debug() << "ix=" << ix << " iy=" << iy << " iz=" << iz << endl;
 #endif
   
   while(1)
@@ -720,7 +720,7 @@ bool accel_grid::findFirstGridIntersection(const TRay& ray, TSurfaceData& hit_in
       // X grid boundary is next...
       sub_ray.setRange(t_min, tx_next);
 #if defined(DEBUG_IT2)      
-      cout << " (X) range=" << sub_ray.range() << endl;
+      GOM.debug() << " (X) range=" << sub_ray.range() << endl;
 #endif
       
       // Check to see if there was a hit in the proper range.
@@ -728,7 +728,7 @@ bool accel_grid::findFirstGridIntersection(const TRay& ray, TSurfaceData& hit_in
 	 (entry(ix,iy,iz).findFirstIntersection(sub_ray, hit_info)))
       {
 #if defined(DEBUG_IT2)	  
-	cout << " Hit object " << hit_info.object()->className()
+	GOM.debug() << " Hit object " << hit_info.object()->className()
 	     << " at T=" << hit_info.distance() << endl;
 #endif
 	return true;
@@ -740,14 +740,14 @@ bool accel_grid::findFirstGridIntersection(const TRay& ray, TSurfaceData& hit_in
       if(ix == ix_stop)
       {
 #if defined(DEBUG_IT2)	
-	cout << "ix (" << ix << ") hit its limit" << endl;
+	GOM.debug() << "ix (" << ix << ") hit its limit" << endl;
 #endif
 	return false;
       }
       else if(t_min >= t_max)
       {
 #if defined(DEBUG_IT2)	
-	cout << "T hit its limit (" << t_max << ")" << endl;
+	GOM.debug() << "T hit its limit (" << t_max << ")" << endl;
 #endif
 	return false;
       }
@@ -757,7 +757,7 @@ bool accel_grid::findFirstGridIntersection(const TRay& ray, TSurfaceData& hit_in
       // Y grid boundary is next...
       sub_ray.setRange(t_min, ty_next);
 #if defined(DEBUG_IT2)      
-      cout << " (Y) range=" << sub_ray.range() << endl;
+      GOM.debug() << " (Y) range=" << sub_ray.range() << endl;
 #endif
       
       // Check to see if there was a hit in the proper range.      
@@ -765,7 +765,7 @@ bool accel_grid::findFirstGridIntersection(const TRay& ray, TSurfaceData& hit_in
 	 (entry(ix,iy,iz).findFirstIntersection(sub_ray, hit_info)))
       {
 #if defined(DEBUG_IT2)	  
-	cout << " Hit object " << hit_info.object()->className()
+	GOM.debug() << " Hit object " << hit_info.object()->className()
 	     << " at T=" << hit_info.distance() << endl;
 #endif
 	return true;
@@ -777,14 +777,14 @@ bool accel_grid::findFirstGridIntersection(const TRay& ray, TSurfaceData& hit_in
       if(iy == iy_stop)
       {
 #if defined(DEBUG_IT2)	
-	cout << "iy (" << ix << ") hit its limit" << endl;
+	GOM.debug() << "iy (" << ix << ") hit its limit" << endl;
 #endif
 	return false;
       }
       else if(t_min >= t_max)
       {
 #if defined(DEBUG_IT2)	
-	cout << "T hit its limit (" << t_max << ")" << endl;
+	GOM.debug() << "T hit its limit (" << t_max << ")" << endl;
 #endif
 	return false;
       }      
@@ -794,7 +794,7 @@ bool accel_grid::findFirstGridIntersection(const TRay& ray, TSurfaceData& hit_in
       // Z grid boundary is next...
       sub_ray.setRange(t_min, tz_next);
 #if defined(DEBUG_IT2)      
-      cout << " (Z) range=" << sub_ray.range() << endl;
+      GOM.debug() << " (Z) range=" << sub_ray.range() << endl;
 #endif
 
       // Check to see if there was a hit in the proper range.      
@@ -802,7 +802,7 @@ bool accel_grid::findFirstGridIntersection(const TRay& ray, TSurfaceData& hit_in
 	 (entry(ix,iy,iz).findFirstIntersection(sub_ray, hit_info)))
       {
 #if defined(DEBUG_IT2)	  
-	cout << " Hit object " << hit_info.object()->className()
+	GOM.debug() << " Hit object " << hit_info.object()->className()
 	     << " at T=" << hit_info.distance() << endl;
 #endif
 	return true;
@@ -814,14 +814,14 @@ bool accel_grid::findFirstGridIntersection(const TRay& ray, TSurfaceData& hit_in
       if(iz == iz_stop)
       {
 #if defined(DEBUG_IT2)	
-	cout << "iz (" << ix << ") hit its limit" << endl;
+	GOM.debug() << "iz (" << ix << ") hit its limit" << endl;
 #endif
 	return false;
       }
       else if(t_min >= t_max)
       {
 #if defined(DEBUG_IT2)	
-	cout << "T hit its limit (" << t_max << ")" << endl;
+	GOM.debug() << "T hit its limit (" << t_max << ")" << endl;
 #endif
 	return false;
       }      
@@ -831,14 +831,14 @@ bool accel_grid::findFirstGridIntersection(const TRay& ray, TSurfaceData& hit_in
 
 bool accel_grid::findAllIntersections(const TRay& ray, TSpanList& spl) const
 {
-  cout << "accel_grid::findAllIntersections()" << endl;  
+  GOM.debug() << "accel_grid::findAllIntersections()" << endl;  
   return ( findAllInfiniteObjectIntersections(ray, spl) ||
 	   findAllGridIntersections(ray, spl) );
 } // accel_grid::findAllIntersections
 
 bool accel_grid::grid_entry::findAllIntersections(const TRay& ray, TSpanList& spl) const
 {
-  //  cout << "accel_grid::grid_entry::findallIntersections()" << endl;  
+  //  GOM.debug() << "accel_grid::grid_entry::findallIntersections()" << endl;  
   bool hit_something = false;
   if(!!sub_grid)
   {
@@ -865,21 +865,21 @@ bool accel_grid::grid_entry::findAllIntersections(const TRay& ray, TSpanList& sp
 
 bool accel_grid::grid_entry::findFirstIntersection(const TRay& ray, TSurfaceData& hit_info) const
 {
-  cout << "accel_grid::grid_entry::findFirstIntersection()" << endl;  
+  GOM.debug() << "accel_grid::grid_entry::findFirstIntersection()" << endl;  
   if(sub_grid)
   {
-    cout << "accel_grid::grid_entry has a sub grid." << endl;
+    GOM.debug() << "accel_grid::grid_entry has a sub grid." << endl;
     bool sub_hit = sub_grid->findFirstIntersection(ray,hit_info);
-    //    cout << "sub hit=" << sub_hit << endl;
+    //    GOM.debug() << "sub hit=" << sub_hit << endl;
     return sub_hit;
   }
   else
   {
     // No sub grid... We have to do the messy work.
-    cout << "accel_grid::grid_entry has no sub grid." << endl;
-    cout << "accel_grid::grid_entry contains " << objects_in_entry.size() << " objects." << endl;
-    cout << "The range of the ray is " << ray.range() << endl;
-    cout << "from " << ray.location() + ray.direction() * ray.range().min()
+    GOM.debug() << "accel_grid::grid_entry has no sub grid." << endl;
+    GOM.debug() << "accel_grid::grid_entry contains " << objects_in_entry.size() << " objects." << endl;
+    GOM.debug() << "The range of the ray is " << ray.range() << endl;
+    GOM.debug() << "from " << ray.location() + ray.direction() * ray.range().min()
 	 << " to " <<  ray.location() + ray.direction() * ray.range().max()
 	 << endl;
 
@@ -889,21 +889,21 @@ bool accel_grid::grid_entry::findFirstIntersection(const TRay& ray, TSurfaceData
 	i != objects_in_entry.end();
 	++i)
     {
-      cout << "checking object at " << (*i)->location();
+      GOM.debug() << "checking object at " << (*i)->location();
       if((*i)->findFirstIntersection(ray, hr))
       {
-	cout << "Hit!" << endl;
+	GOM.debug() << "Hit!" << endl;
 	first_hits.add(hr);
       }
       else
       {
-	cout << "Missed!" << endl;
+	GOM.debug() << "Missed!" << endl;
       }
     } // for each object.
     if(first_hits.size() > 0)
     {
       hit_info = first_hits.first();
-      //      cout << "No sub... Hit anyways." << endl;
+      //      GOM.debug() << "No sub... Hit anyways." << endl;
       return true;
     } // contains hits.
   } // no sub grid
@@ -913,7 +913,7 @@ bool accel_grid::grid_entry::findFirstIntersection(const TRay& ray, TSurfaceData
 
 bool accel_grid::findInfiniteObjectIntersection(const TRay& rktRAY, TSurfaceData& rtDATA) const
 {
-  //  cout << "accel_grid::findInfiniteObjectIntersection()" << endl;  
+  //  GOM.debug() << "accel_grid::findInfiniteObjectIntersection()" << endl;  
   TSpanList hits;
 
   for(vector<base_ptr>::const_iterator i = infinite_objects.begin(); i != infinite_objects.end(); ++i)
@@ -934,7 +934,7 @@ bool accel_grid::findInfiniteObjectIntersection(const TRay& rktRAY, TSurfaceData
 
 bool accel_grid::findAllInfiniteObjectIntersections(const TRay& rktRAY, TSpanList& rtLIST) const
 {
-  cout << "accel_grid::findAllInfiniteObjectIntersections()" << endl;  
+  GOM.debug() << "accel_grid::findAllInfiniteObjectIntersections()" << endl;  
   bool hit_something = false;
 
   for(vector<base_ptr>::const_iterator i = infinite_objects.begin(); i != infinite_objects.end(); ++i)

@@ -201,19 +201,19 @@ void TAggregate::getAttributeList (TAttributeList& rtLIST) const
 void TAggregate::printDebug (const string& indent) const
 {
 
-  cerr << indent << "[_" << className() << "_]" << endl;
+  GOM.debug() << indent << "[_" << className() << "_]" << endl;
 
   string new_indent = TDebug::Indent(indent);
   
-  cerr << new_indent << "Bounding box = ";
+  GOM.debug() << new_indent << "Bounding box = ";
   tBoundingBox.printDebug(new_indent);
-  cerr << endl;
+  GOM.debug() << endl;
   
   for (TObjectList::const_iterator tIter = tObjectList.begin(); ( tIter != tObjectList.end() ) ;tIter++)
   {
     (*tIter)->printDebug(new_indent);
   }
-  cerr << indent << "." << endl;
+  GOM.debug() << indent << "." << endl;
   
 }  /* printDebug() */
 

@@ -70,8 +70,8 @@ int TPluginManager::loadPlugin (const string& rktNAME)
   
   if ( !pvHandle )
   {
-    cerr << "Cannot open plugin " << rktNAME << endl;
-    cerr << dlerror() << endl;
+    GOM.error() << "Cannot open plugin " << rktNAME << endl;
+    GOM.error() << dlerror() << endl;
   }
   else
   {
@@ -80,7 +80,7 @@ int TPluginManager::loadPlugin (const string& rktNAME)
     pkcError = dlerror();
     if ( pkcError )
     {
-      cerr << "ERROR: " << pkcError << endl;
+      GOM.error() << "ERROR: " << pkcError << endl;
       dlclose (pvHandle);
     }
     else
@@ -99,12 +99,12 @@ int TPluginManager::loadPlugin (const string& rktNAME)
     
       if ( iError )
       {
-        cerr << "Error registering plugin" << endl;
+        GOM.error() << "Error registering plugin" << endl;
         dlclose (pvHandle);
       }
       else
       {
-	cerr << "Loading plugin "
+	GOM.error() << "Loading plugin "
 	     << rktNAME
 	     << filler.substr(0,max(filler.length() - rktNAME.length(),(size_t)1))
 	     << "\r"
@@ -126,9 +126,9 @@ bool TPluginManager::initialize (const string& rktCONFIG_FILE, DWord dwVERSION)
 
 #if defined(DEBUG)
 #if defined(__PRETTY_FUNCTION__)
-  cout << __PRETTY_FUNCTION__ << endl;
+  GOM.debug() << __PRETTY_FUNCTION__ << endl;
 #elif defined(__FUNCTION__)
-  cout << __FUNCTION__ << endl;
+  GOM.debug() << __FUNCTION__ << endl;
 #elif defined(__FUNCTION)
 #endif /* defined(__PRETTY_FUNCTION__) */
 #endif /* defined(DEBUG) */
@@ -171,7 +171,7 @@ int TPluginManager::registerPlugin (TPluginData* ptDATA)
   
   if ( tPluginDataMap.find (ptDATA->tPluginName) != tPluginDataMap.end() )
   {
-    cerr << "ERROR: Plugin already loaded : \"" << ptDATA->tPluginName << "\""<< endl;
+    GOM.error() << "ERROR: Plugin already loaded : \"" << ptDATA->tPluginName << "\""<< endl;
     return -1;
   }
 

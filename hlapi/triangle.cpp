@@ -123,7 +123,7 @@ void TTriangle::setVertex (const TVector& rktVERTEX)
   }
   else
   {
-    cerr << "setVertex: Too many vertices (need exactly 3)" << endl;
+    GOM.error() << "setVertex: Too many vertices (need exactly 3)" << endl;
   }
 }  /* setVertex() */
 
@@ -152,14 +152,14 @@ TVector TTriangle::RandomPointOnSurface() const
 void TTriangle::printDebug (const string& indent) const
 {
 
-  cerr << indent << "[_Triangle_]" << endl;
+  GOM.debug() << indent << "[_Triangle_]" << endl;
 
   string new_indent = TDebug::Indent(indent);
   
-  cerr << new_indent << "Vertex 1 : "; atVertex[0].printDebug(new_indent); cerr << endl;
-  cerr << new_indent << "Vertex 2 : "; atVertex[1].printDebug(new_indent); cerr << endl;
-  cerr << new_indent << "Vertex 3 : "; atVertex[2].printDebug(new_indent); cerr << endl;
-  cerr << new_indent << "Normal   : ";     tNormal.printDebug(new_indent); cerr << endl;
+  GOM.debug() << new_indent << "Vertex 1 : "; atVertex[0].printDebug(new_indent); GOM.debug() << endl;
+  GOM.debug() << new_indent << "Vertex 2 : "; atVertex[1].printDebug(new_indent); GOM.debug() << endl;
+  GOM.debug() << new_indent << "Vertex 3 : "; atVertex[2].printDebug(new_indent); GOM.debug() << endl;
+  GOM.debug() << new_indent << "Normal   : ";     tNormal.printDebug(new_indent); GOM.debug() << endl;
 
 }  /* printDebug() */
 

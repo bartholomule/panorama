@@ -474,7 +474,7 @@ int TCone::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType e
     {
       tMinRadius = FX_EPSILON * 2;
       
-      cerr << "[FIXME!] Hacking cone to prevent zero-radius." << endl;
+      GOM.error() << "[FIXME!] Hacking cone to prevent zero-radius." << endl;
     } // end [fixme]    
   }
   else
