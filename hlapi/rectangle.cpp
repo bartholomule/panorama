@@ -18,7 +18,7 @@
 
 #include <cmath>
 #include "llapi/math_tools.h"
-#include "llapi/vector.h"
+#include "llapi/vector_tools.h"
 #include "hlapi/rectangle.h"
 
 void TRectangle::update (void)

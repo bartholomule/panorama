@@ -18,7 +18,7 @@
 
 #include "llapi/math_tools.h"
 #include "llapi/perlin_noise.h"
-#include "llapi/vector.h"
+#include "llapi/vector_tools.h"
 
 inline static TScalar Hermite (TScalar X0, TScalar X1, TScalar T0, TScalar T1, TScalar X)
 {

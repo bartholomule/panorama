@@ -22,7 +22,7 @@
 #include "llapi/bsdf.h"
 #include "llapi/material.h"
 #include "llapi/math_tools.h"
-#include "llapi/vector.h"
+#include "llapi/vector_tools.h"
 #include "hlapi/plugin_manager.h"
 
 class TBsdfCookTorrance : public TBsdf
