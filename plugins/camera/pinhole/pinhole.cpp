@@ -77,7 +77,12 @@ void TPinholeCamera::initialize (void)
   tDirection = (tLookAt - tLocation);
   tDirection.normalize();
 
-  // [_ERROR_] This method fails when tDirection and tUp are parallel.
+  if ( dotProduct (tDirection, tUp) == 1 )
+  {
+    cout << "Error: Camera direction and up vectors cannot be parallel" << endl;
+    exit (1);
+  }
+  
   I = crossProduct (tDirection, tUp);
   J = crossProduct (I, tDirection);
   I.normalize();
