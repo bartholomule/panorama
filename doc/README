@@ -55,9 +55,8 @@ Panorama README
      cartoon-like object in a photorealistic scene).
 
    - Materials have a BSDF (Bidirectional Scattering Distribution Function)
-     that encapsulates its properties with respect to the light. Now, only
-     Lambertian and Phong BSDF's are implemented, but more sophisticated ones
-     will follow, like Schlick's, Ward's, etc.
+     that encapsulates its properties with respect to the light. There are
+     several models: Lambertian, Phong, Ward, Schlick, Cook-Torrance, etc.
 
    - Many others I don't remember right now :)
    
