@@ -1,4 +1,4 @@
-/*
+ /*
 *  Copyright (C) 1998, 1999 Angel Jimenez Jimenez, Carlos Jimenez Moreno and Pete Barnett
 *
 *  This program is free software; you can redistribute it and/or modify
@@ -29,6 +29,7 @@ class TMaterialBrick : public TMaterial
   protected:
 
     TColor    tBaseColor;
+    TVector   tZoomOriginal;
     TVector   tZoom;
     TScalar   tBumpFactor;
     TScalar   tBrickWidth;

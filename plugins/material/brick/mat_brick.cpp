@@ -23,37 +23,56 @@
 
 DEFINE_PLUGIN ("MaterialBrick", FX_MATERIAL_CLASS, TMaterialBrick);
 
+
 inline TScalar TMaterialBrick::step (TScalar a, TScalar x) const
 {
-  return (TScalar) (x >= a);
+  return (TScalar) ( x >= a );
 }
+
 
 inline TScalar TMaterialBrick::smoothstep (TScalar a, TScalar b, TScalar x) const
 {
-  if (x < a)  return 0.0;
-  if (x >= b) return 1.0;
+  if (x < a) 
+  {
+    return 0.0;
+  }
+  if (x >= b) 
+  {
+    return 1.0;
+  }
+
   x = (x - a) / (b - a); // normalize x 
+
   return x * x * (3 - 2 * x);
 }
 
+
 inline TScalar TMaterialBrick::smoothstepdiff (TScalar a, TScalar b, TScalar x) const
 {
-  if (x < a)  return 0.0;
-  if (x >= b) return 0.0;
+  if (x < a) 
+  {
+    return 0.0;
+  }
+  if (x >= b)
+  {
+    return 0.0;
+  }
+  
   x = (x - a) / (b - a); // normalize x 
+
   return 4.0 * x * (1.0 - x);
 }
 
+
 inline TScalar TMaterialBrick::evaluate (const TVector& rktPOINT, TVector* ptGRADIENT) const
 {
+  TScalar tValue, tX, tY, tZ, tWX, tWY, tWZ;
   TScalar tTotalWidth  = tBrickWidth + tMortarThickness;
   TScalar tTotalHeight = tBrickHeight + tMortarThickness;
   TScalar tMortarW     = tMortarThickness * 0.5 / tTotalWidth;
   TScalar tMortarH     = tMortarThickness * 0.5 / tTotalHeight;
-  TScalar tValue, tX, tY, tZ, tWX, tWY, tWZ;
   
-  // scale coordinates into the interval 0..1
-  
+  // scale coordinates into the interval 0..1  
   tX = rktPOINT.x() / tTotalWidth;
   tY = rktPOINT.y() / tTotalHeight;
   tZ = rktPOINT.z() / tTotalWidth;
@@ -65,8 +84,7 @@ inline TScalar TMaterialBrick::evaluate (const TVector& rktPOINT, TVector* ptGRA
     tZ += 0.5;
   }
   
-  // get x, y, and z as offsets into scaled brick
-  
+  // get x, y, and z as offsets into scaled brick  
   tX -= floor (tX);
   tY -= floor (tY);
   tZ -= floor (tZ);
@@ -89,24 +107,30 @@ inline TScalar TMaterialBrick::evaluate (const TVector& rktPOINT, TVector* ptGRA
   }
   
   return tValue;
+
 }  /* evaluate() */
+
 
 inline TVector TMaterialBrick::perturbNormal (const TSurfaceData& rktDATA) const
 {
   TVector   tNewNormal = rktDATA.normal();
 
-  if (fabs(tBumpFactor) > FX_EPSILON)
+  if ( fabs(tBumpFactor) > FX_EPSILON )
   {
     TVector   tGradient;
     TVector   tPoint = rktDATA.localPoint() * tZoom;
+
     tPoint = tPoint + tNewNormal * evaluate (tPoint);
+
     evaluate(tPoint, &tGradient);
+
     tNewNormal = rktDATA.normal() + tGradient * tBumpFactor;
     tNewNormal.normalize();
   }
   
   return tNewNormal;  
-}  /* peturbNormal() */
+
+}  /* perturbNormal() */
 
 
 int TMaterialBrick::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
@@ -127,8 +151,8 @@ int TMaterialBrick::setAttribute (const string& rktNAME, NAttribute nVALUE, EAtt
   {
     if ( eTYPE == FX_VECTOR )
     {
-      tZoom = *((TVector*) nVALUE.pvValue);
-      tZoom.set (1.0 / tZoom.x(), 1.0 / tZoom.y(), 1.0 / tZoom.z());
+      tZoomOriginal = *((TVector*) nVALUE.pvValue);
+      tZoom.set (1.0 / tZoomOriginal.x(), 1.0 / tZoomOriginal.y(), 1.0 / tZoomOriginal.z());
     }
     else
     {
@@ -198,8 +222,7 @@ int TMaterialBrick::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
   }
   else if ( rktNAME == "zoom" )
   {
-    // [_ERROR_] It should return the inverse of this vector.
-    rnVALUE.pvValue = &tZoom;
+    rnVALUE.pvValue = &tZoomOriginal;
   }
   else if ( rktNAME == "bump" )
   {
