@@ -1,0 +1,3 @@
+PLUGIN_NAME = jpeg_io
+OBJ         = jpeg_io.o
+LIB         = -ljpeg
