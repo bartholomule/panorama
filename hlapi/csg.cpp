@@ -334,11 +334,11 @@ bool TCsg::findFirstIntersection (const TRay& rktRAY, TSurfaceData& rtDATA) cons
 bool TCsg::findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) const
 {
 
-  TSpanList                          tList;
-  vector<TObject*>::const_iterator   tIter              = tObjectList.begin();
-  bool                               gIntersection      = false;
-  bool                               gLeftIntersection  = false;
-  bool                               gRightIntersection = false;
+  TSpanList                     tList;
+  TObjectList::const_iterator   tIter              = tObjectList.begin();
+  bool                          gIntersection      = false;
+  bool                          gLeftIntersection  = false;
+  bool                          gRightIntersection = false;
 
   if ( !tBoundingBox.intersects (rktRAY) )
   {
@@ -391,7 +391,7 @@ bool TCsg::findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) const
 void TCsg::initialize (void)
 {
 
-  vector<TObject*>::iterator   tIter;
+  TObjectList::iterator   tIter;
 
   assert ( tObjectList.size() >= 2 );
 
