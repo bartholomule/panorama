@@ -2717,7 +2717,7 @@ EOF
 fi
 
 echo -e "checking for GTK--... \c"
-if  `gtkmm-config --cflags >&/dev/null`
+if  `gtkmm-config --cflags >/dev/null 2>/dev/null`
 then
   GUI_PROGRAM="gui"
   echo "yes"
@@ -2730,7 +2730,7 @@ fi
 
 text_val=no
 echo -e "checking for modern freetype... \c"
-if  `freetype-config --cflags >& /dev/null`
+if  `freetype-config --cflags >/dev/null 2>/dev/null`
 then
   TEXT_FILTER="text"
   PLUGIN_TEXT="if_text.plg"

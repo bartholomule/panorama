@@ -24,7 +24,7 @@ dnl Check for special libraries
 
 echo -e "checking for GTK--... \c"
 dnl AC_CHECK_PROG(gtkmm_val,"gtkmm-config --cflags","yes","no")
-if [ `gtkmm-config --cflags >&/dev/null` ]
+if [ `gtkmm-config --cflags >/dev/null 2>/dev/null` ]
 then
   GUI_PROGRAM="gui"
   echo "yes"
@@ -38,7 +38,7 @@ AC_SUBST(GUI_PROGRAM)
 
 text_val=no
 echo -e "checking for modern freetype... \c"
-if [ `freetype-config --cflags >& /dev/null` ]
+if [ `freetype-config --cflags >/dev/null 2>/dev/null` ]
 then
   TEXT_FILTER="text"
   PLUGIN_TEXT="if_text.plg"
