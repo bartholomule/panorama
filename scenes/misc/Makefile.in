@@ -8,7 +8,8 @@ SRC_DIR = @srcdir@
 
 FILES = cornell_box.rt \
 	plastic_cornell_box.rt \
-        projector_cartoon.rt
+        projector_cartoon.rt \
+        xmas-tree.rt
 
 all:
 

@@ -1,0 +1,320 @@
+/*
+ * A Xmas tree for Panorama 0.10.1
+ * By GSR, 1999
+ * Distribute under GPL
+ */
+
+
+#include "materials.inc"
+
+
+/*
+ * Materials
+ */
+
+define material MTree : extends MLambertian
+{
+  color CGreen
+}
+
+define material MTrunk : extends MLambertian
+{
+  color CBrown
+  ambient 0.05
+}
+
+define material MBall : extends MMirror
+{
+  color    CRed
+  diffuse  0.6
+  ambient  0.1
+  specular 0.3
+}
+
+define material MPot : extends MPlastic
+{
+  color CBlack
+}
+
+
+/*
+ * Pot
+ */
+
+cone
+{
+  max_circle_point <0, 15, 0>
+  min_circle_point <0, 0, 0>
+  max_radius       40
+  min_radius       30
+  material : extends MPot {}
+}
+
+
+/*
+ * Da Log
+ */
+
+cone
+{
+  max_circle_point <0, 0, 0>
+  min_circle_point <0, 170, 0>
+  max_radius       5
+  min_radius       1
+  material : extends MTrunk {}
+}
+
+
+/*
+ * Group 1
+ */
+
+cone
+{
+  max_circle_point <0, 20, 0>
+  min_circle_point <0, 40, 0>
+  max_radius       60
+  min_radius       50
+  material : extends MTree {}
+}
+
+sphere
+{
+  translate <60, 15.5, 0>
+  radius    4.5
+  material : extends MBall {}
+}
+
+sphere
+{
+  translate <-60, 15.5, 0>
+  radius    4.5
+  material : extends MBall {}
+}
+
+
+/*
+ * Group 2
+ */
+
+cone
+{
+  max_circle_point <0, 50, 0>
+  min_circle_point <0, 70, 0>
+  max_radius       50
+  min_radius       40
+  material : extends MTree {}
+}
+
+sphere
+{
+  translate <0, 45.5, 50>
+  radius    4.5
+  material : extends MBall {}
+}
+
+sphere
+{
+  translate <0, 45.5, -50>
+  radius    4.5
+  material : extends MBall {}
+}
+
+
+/*
+ * Group 3
+ */
+
+cone
+{
+  max_circle_point <0, 80, 0>
+  min_circle_point <0, 100, 0>
+  max_radius       40
+  min_radius       30
+  material : extends MTree {}
+}
+
+sphere
+{
+  translate <40, 75.5, 0>
+  radius    4.5
+  material : extends MBall {}
+}
+
+sphere
+{
+  translate <-40, 75.5, 0>
+  radius    4.5
+  material : extends MBall {}
+}
+
+
+/*
+ * Group 4
+ */
+
+cone
+{
+  max_circle_point <0, 110, 0>
+  min_circle_point <0, 130, 0>
+  max_radius       30
+  min_radius       20
+  material : extends MTree {}
+}
+
+sphere
+{
+  translate <0, 105.5, 30>
+  radius    4.5
+  material : extends MBall {}
+}
+
+sphere
+{
+  translate <0, 105.5, -30>
+  radius    4.5
+  material : extends MBall {}
+}
+
+
+/*
+ * Group 5
+ */
+
+cone
+{
+  max_circle_point <0, 140, 0>
+  min_circle_point <0, 160, 0>
+  max_radius       20
+  min_radius       10
+  material : extends MTree {}
+}
+
+sphere
+{
+  translate <20, 135.5, 0>
+  radius    4.5
+  material : extends MBall {}
+}
+
+sphere
+{
+  translate <-20, 135.5, 0>
+  radius    4.5
+  material : extends MBall {}
+}
+
+
+/*
+ * Group 6
+ */
+
+cone
+{
+  max_circle_point <0, 170, 0>
+  min_circle_point <0, 190, 0>
+  max_radius       10
+  min_radius       1
+  material : extends MTree {}
+}
+
+sphere
+{
+  translate <0, 165.5, 10>
+  radius    4.5
+  material : extends MBall {}
+}
+
+sphere
+{
+  translate <0, 165.5, -10>
+  radius    4.5
+  material : extends MBall {}
+}
+
+
+/*
+ * Top, change to something more interesting soon
+ */
+
+sphere
+{
+  translate <0, 195, 0>
+  radius    5
+  material : extends MBall {}
+}
+
+
+/*
+ * Ground
+ */
+
+rectangle
+{
+  vertex <100, 0, 100>
+  vertex <-100, 0, 100>
+  vertex <-100, 0, -100>
+  vertex <100, 0, -100>
+  material : extends MChecker
+  {
+    color      CWhite
+    base_color CBlack
+    size       25
+    specular   0.1
+  }
+}
+
+
+/*
+ * Set
+ */
+
+define camera XmasCamera
+{
+  translate <150, 90, 150>
+  look_at   <0, 90, 0>
+}
+
+define light XmasLight1 : class WarnLight
+{
+  translate <300, 250, 500>
+  point_at  <0, 100, 0>
+  exponent  30
+  axis      <0, 0, 0>
+  angle_th  30
+  intensity 1
+  color     CWhite
+}
+
+define light XmasLight2
+{
+  translate <-300, 250, -500>
+  color     { red 0.1 green 0.1 blue 0.1 }
+}
+
+
+/*
+ * Action! 
+ */
+
+scene
+{
+  camera     XmasCamera
+  light      XmasLight1
+  light      XmasLight2
+  width      400
+  height     600
+  background CMidnight
+  output
+  {
+    name "xmas-tree.tga"
+  }
+  renderer : class Raytracer
+  {
+//    sampling "adaptive"
+  }
+  filter : class IF_Cartoon
+  {
+    levels      5
+  }
+}
