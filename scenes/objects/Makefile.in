@@ -6,7 +6,8 @@ include ${BUILD_TOP}/Makefile.vars
 INSTALL = @INSTALL@
 SRC_DIR = @srcdir@
 
-FILES = box.rt \
+FILES = aggregate.rt \
+	box.rt \
 	circle.rt \
         cone.rt \
         cylinder.rt \
