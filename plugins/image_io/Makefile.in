@@ -1,8 +1,8 @@
 
 BUILD_TOP = ../..
 
-DIRS = jpeg \
-       png \
+DIRS = @JPEG_FILTER@ \
+       @PNG_FILTER@ \
        tga
 
 include ${BUILD_TOP}/Makefile.targets
