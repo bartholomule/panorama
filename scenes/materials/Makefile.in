@@ -8,6 +8,7 @@ SRC_DIR = @srcdir@
 
 FILES = checker.rt \
 	checker45.rt \
+        crackle.rt \
         leopard.rt \
         materials.rt \
         water.rt \

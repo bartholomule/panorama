@@ -1,0 +1,86 @@
+/*
+*  Brick material test
+*/
+
+#include "materials.inc"
+
+define material MBrick : class MaterialBrick
+{
+  bsdf : class BsdfPhong
+  {
+    exponent 10 //50
+  }
+  ambient	0.2
+  diffuse	0.8
+  specular	0.0
+}
+
+define camera c
+{
+  translate	<-80, 160, 240>
+  look_at	<0, 50, 0>
+}
+
+define light l_ambient
+{
+  translate	<-400, 500, 1000>
+  volumetric    off
+  shadow        off
+}
+
+define light l : class WarnLight
+{
+  translate	<-500, 500, 500>
+  point_at	<0, 50, 0>
+  exponent      20
+  axis          <0, 0, 0>
+  angle_th      15
+  intensity     1
+}
+
+box
+{
+  scale         <100, 100, 100>
+  translate     <0, 50, 0>
+  material : extends MBrick
+  {
+    //color       CDimGrey 
+    color       CFirebrick
+    base_color  { red 0.50	green 0.50	blue 0.50 }
+    zoom        <20, 20, 20>
+    bump        1.0
+    width       2.5
+    height      0.9 //0.8
+    mortar      0.2
+  }
+}
+
+plane
+{
+  translate     <0, 0, 0>
+  normal	<0, 1, 0>
+  material : extends MChecker
+  {
+    color       CBlack
+    base_color  CWhite
+    size        50
+    specular    0
+    border      0
+  }
+}
+
+scene
+{
+  camera	c
+  light		l
+  light		l_ambient
+  width		600
+  height	400
+  background	CSummerSky
+  output
+  {
+    name	"brick.tga"
+  }
+  renderer : class Raytracer {}
+}
+

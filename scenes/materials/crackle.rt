@@ -1,8 +1,30 @@
 /*
-*  Leopard material test
+*  Crackle material test
 */
 
 #include "materials.inc"
+
+define material MCrackle : class MaterialCrackle
+{
+  bsdf : class BsdfPhong
+  {
+    exponent 50
+  }
+  ambient	0.2
+  diffuse	0.8
+  specular	0.0
+}
+
+define material MirrorCrackle : class MaterialCrackle
+{
+  bsdf : class BsdfPhong
+  {
+    exponent 50
+  }
+  ambient	0.2
+  diffuse	0.2
+  specular	0.6
+}
 
 define camera c
 {
@@ -30,13 +52,13 @@ define light l : class WarnLight
 box
 {
   scale         <150, 150, 150>
-  rotate        <0, 20, 0>
+  //rotate        <0, 1.2, 0>
   translate     <0, 75, -50>
-  material : extends MLeopard
+  material : extends MCrackle
   {
     color       CYellow
-    base_color  CRed
-    zoom        <.1, .1, .1>
+    base_color  CBlue
+    zoom        <20, 20, 20>
     bump        0
   }
 }
@@ -45,26 +67,27 @@ sphere
 {
   translate     <120, 75, 150>
   radius        75
-  material : extends MLeopard
+  material : extends MCrackle
   {
     color       CRed
     base_color  CBlack
-    zoom        <5, 5, 5>
-    bump        0.25
+    zoom        <20, 20, 20>
+    bump        -1.0
   }
 }
 
 torus
 {
   translate     <-120, 35, 150>
+  rotate        <0, 0, 0>
   radius_a      75
   radius_b      35
-  material : extends MLeopard
+  material : extends MirrorCrackle
   {
     color       CBlue
     base_color  CBlue
-    zoom        <5, 5, 5>
-    bump        -0.25
+    zoom        <20, 20, 20>
+    bump        0.5
   }
 }
 
@@ -87,12 +110,13 @@ scene
   camera	c
   light		l
   light		l_ambient
-  width		600
-  height	400
+  width		300
+  height	200
   background	CSummerSky
   output
   {
-    name	"leopard.tga"
+    name	"crackle.tga"
   }
   renderer : class Raytracer {}
 }
+

@@ -1,8 +1,20 @@
 /*
-*  Leopard material test
+*  marble material test
 */
 
 #include "materials.inc"
+
+define material M : class MaterialMarble
+{
+  bsdf : class BsdfPhong
+  //bsdf : class BsdfLambertian
+  {
+    exponent 50 
+  }
+  ambient  0.2
+  diffuse  0.6
+  specular 0.2
+}
 
 define camera c
 {
@@ -12,7 +24,7 @@ define camera c
 
 define light l_ambient
 {
-  translate	<-400, 500, 1000>
+  translate	<-400, 1000, 0>
   volumetric    off
   shadow        off
 }
@@ -24,19 +36,19 @@ define light l : class WarnLight
   exponent      20
   axis          <0, 0, 0>
   angle_th      15
-  intensity     1
+  intensity     1.0
 }
 
 box
 {
   scale         <150, 150, 150>
-  rotate        <0, 20, 0>
+  //rotate        <0, 20, 0>
   translate     <0, 75, -50>
-  material : extends MLeopard
+  material : extends M
   {
-    color       CYellow
-    base_color  CRed
-    zoom        <.1, .1, .1>
+    color       CBlack
+    base_color  CWhite
+    zoom        <10, 10, 10>
     bump        0
   }
 }
@@ -45,12 +57,12 @@ sphere
 {
   translate     <120, 75, 150>
   radius        75
-  material : extends MLeopard
+  material : extends M
   {
-    color       CRed
+    color       CWhite
     base_color  CBlack
-    zoom        <5, 5, 5>
-    bump        0.25
+    zoom        <10, 10, 10>
+    bump        0
   }
 }
 
@@ -59,12 +71,12 @@ torus
   translate     <-120, 35, 150>
   radius_a      75
   radius_b      35
-  material : extends MLeopard
+  material : extends M
   {
     color       CBlue
-    base_color  CBlue
-    zoom        <5, 5, 5>
-    bump        -0.25
+    base_color  CWhite
+    zoom        <10, 10, 10>
+    bump        -1
   }
 }
 
@@ -92,7 +104,11 @@ scene
   background	CSummerSky
   output
   {
-    name	"leopard.tga"
+    name	"marble.tga"
   }
-  renderer : class Raytracer {}
+  renderer : class Raytracer 
+  {
+    //sampling "adaptive"
+  }
 }
+

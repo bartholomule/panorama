@@ -1,0 +1,163 @@
+/*
+*  marble material test
+*/
+
+#include "materials.inc"
+
+define color CMySea { red 0 green 0.15 blue 0.30 }
+
+define material Marble : class MaterialMarble
+{
+  bsdf : class BsdfPhong
+  {
+    exponent 50 
+  }
+  ambient  0.2
+  diffuse  0.6
+  specular 0.2
+}
+
+define camera c
+{
+  translate	<0, 70, 400>
+  look_at	  <0, 70,   0>
+}
+
+define light l_ambient
+{
+  translate	<-400, 1000, 0>
+  volumetric    off
+  shadow        off
+}
+
+define light l //: class WarnLight
+{
+  translate	<-40, 500, 1000>
+  //point_at	<0, 0, 0>
+  //exponent      20
+  //axis          <0, 0, 0>
+  //angle_th      15
+  intensity     1.0
+}
+
+plane
+{
+  translate     <0, 0, 0>
+  normal	<0, 1, 0>
+  material : extends MNoise
+  {
+    color       CMySea
+    base_color  CMySea
+    zoom        <5, 5, 5>
+    bump        0.1
+    ambient     0.1
+    diffuse     0.4
+    specular    0.6
+  }
+}
+
+define aggregate column
+{
+  box
+  {
+    scale      < 60, 20, 60>
+    translate  <-75, 10,  0>
+  }
+  torus
+  {
+    radius_a  20
+    radius_b   6
+    translate <-75, 20, 0>
+  }
+  cone
+  {
+    max_circle_point <-75,  10, 0>
+    min_circle_point <-75, 200, 0>
+    max_radius       20
+    min_radius       14
+  }
+  torus
+  {
+    radius_a  14
+    radius_b   6
+    translate <-75, 200, 0>
+  }
+  box
+  {
+    scale      <50,  10, 50>
+    translate  <-75, 205,  0>
+  }
+  material : extends Marble
+  {
+    color       CWhite
+    base_color  CBlack
+    zoom        <5, 5, 5>
+    bump        0
+  }
+  // this has no effect
+  // translate <-50, 0, 200>
+}
+
+aggregate : extends column 
+{ 
+  //translate <-50, 0,   0>
+}
+
+// this doesn't work for some reason
+// aggregate : extends column
+// { 
+//   translate <-50, 0, -50>
+// }
+
+sphere
+{
+  translate <1000, 2000,-9000>
+  radius    1000
+  material : extends Marble
+  {
+    color       CLightGrey
+    base_color  CWhite
+    zoom        <200, 200, 200>
+    ambient     0.2
+    diffuse     0.5
+    specular    0.1
+    bump       -0.3
+    start_freq  0.6
+    octaves     3
+  }
+}
+
+sphere
+{
+  translate     <0, 0, 0>
+  radius        10000
+  material : extends Marble
+  {
+    color       CBlack
+    base_color  CWhite
+    zoom        <10, 10, 10>
+    ambient     1
+    diffuse     0
+    specular    0
+    start_freq  0.1
+    octaves     3
+  }
+}
+
+scene
+{
+  camera	c
+  light		l
+  light		l_ambient
+  width		300
+  height	300
+  background	CSummerSky
+  output
+  {
+    name	"marble2.tga"
+  }
+  renderer : class Raytracer 
+  {
+    sampling "adaptive"
+  }
+}
