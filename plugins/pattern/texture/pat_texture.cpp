@@ -41,7 +41,19 @@ TPatternTexture::TPatternTexture (void) :
 int TPatternTexture::correctTexel (int iVALUE, const size_t& rkzMAX) const
 {
 
-  return ( iVALUE <= 0 ) ? -iVALUE : (rkzMAX - iVALUE);
+  int  i = -iVALUE;
+
+  if ( iVALUE >= 0 )
+  {
+    i += (rkzMAX - 1);
+
+    if ( i < 0 )
+    {
+      i += rkzMAX;
+    }
+  }
+
+  return i;
 
 }  /* correctTexel() */
 
@@ -64,7 +76,16 @@ TColor TPatternTexture::lerpTexel (const TVector2& rktUVCOORD) const
   tmv = fmod (v, 1.0) * (double) zTextureHeight;
 
   fu = modf (tmu, &iiu);
+  if ( fu < 0.0 ) 
+  {
+    fu += 1.0;
+  }
+
   fv = modf (tmv, &iiv);
+  if ( fv < 0.0 ) 
+  {
+    fv += 1.0;
+  }
 
   // values in u and v
   iu = (int) iiu;
