@@ -103,7 +103,7 @@ class TObject : public TVolume
       return *this;
     }
       
-    virtual void initialize (void);
+    virtual bool initialize (void);
     virtual void finalize (void) {}
 
     virtual bool intersects (const TRay& rktRAY) const
@@ -177,7 +177,6 @@ class TObject : public TVolume
     // This will be most commonly used for things such as area lights.
     virtual TVector RandomPointOnSurface() const { return TVector(0,0,0); }
   
-    
     void printDebug (void) const;
 
     EClass classType (void) const { return FX_OBJECT_CLASS; }

@@ -24,12 +24,25 @@ enum EAttribType
 
   FX_NONE,
 
-  FX_REAL,
-  FX_BOOL,
-  FX_STRING,
-  FX_COLOR,
-  FX_VECTOR,
-  FX_VECTOR2,
+  FX_INTEGER, // int       (iValue)
+  FX_REAL,    // double    (dValue)
+  FX_BOOL,    // bool      (gValue)
+  FX_STRING,  // char*     (pvValue)
+  FX_COLOR,   // &TColor   (pvValue)
+  FX_VECTOR,  // &TVector  (pvValue)
+  FX_VECTOR2, // &TVector2 (pvValue)
+
+  // These next ones are for returning from something, to show a list of
+  // possible options.  The results are read-only!!!  When making a selection,
+  // send the value back as its normal type (without the _LIST).
+  // They will be returned as a pointer to a vector of the type (pvValue).
+  FX_INTEGER_LIST, // &vector<int>
+  FX_REAL_LIST,    // &vector<TScalar>
+  FX_BOOL_LIST,    // &vector<bool>
+  FX_STRING_LIST,  // &vector<string>
+  FX_COLOR_LIST,   // &vector<TColor>
+  FX_VECTOR_LIST,  // &vector<TVector>
+  FX_VECTOR2_LIST, // &vector<TVector2>
 
   FX_IMAGE,
 
@@ -52,6 +65,7 @@ union NAttribute
 
   bool     gValue;
   double   dValue;
+  int      iValue;
   void*    pvValue;
 
 };  /* union NAttribute */

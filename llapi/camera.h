@@ -37,7 +37,7 @@ class TCamera : public TEntity
       TEntity(),
       tUp (0, 1, 0) {}
       
-    virtual void initialize (void) {}
+    virtual bool initialize (void) { return TEntity::initialize(); }
     
     int setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
     int getAttribute (const string& rktNAME, NAttribute& rnVALUE);

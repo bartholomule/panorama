@@ -43,6 +43,8 @@ OBJ = atmosphere.o \
       wood.o \
       worley_basis.o
 
+ALL_FILES = $(strip $(wildcard $(OBJ:%.o=%.cpp)))
+
 all:		${LLAPI_LIB} ${STATIC_LLAPI_LIB}
 
 install:        all
@@ -69,4 +71,6 @@ clean:
 		@rm -f *~ *.bak core
 
 distclean:      clean
-		@rm -f Makefile
+		@rm -f Makefile *.d
+
+include ${BUILD_TOP}/Makefile.deps

@@ -55,6 +55,8 @@ class TProcedural : public TBaseClass
 
     static string   _tUserErrorMessage;
 
+    virtual bool initialize (void) { return true; }
+  
     // Identifier management
     void setIdentifier (const string& rktIDENT)
     {
@@ -138,19 +140,15 @@ class TProcedural : public TBaseClass
     }
     
     // Attribute management
-    virtual int setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
-    {
-      return FX_ATTRIB_WRONG_PARAM;
-    }
-    virtual int setAttribute (const string& rktNAME, const list<NAttribute>& rktLIST, EAttribType eTYPE)
-    {
-      return setAttribute (rktNAME, rktLIST.front(), eTYPE);
-    }
-    virtual int getAttribute (const string& rktNAME, NAttribute& rnVALUE)
-    {
-      return FX_ATTRIB_WRONG_PARAM;
-    }
-    virtual void getAttributeList (TAttributeList& rtLIST) const {}
+  virtual int setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
+  
+  virtual int setAttribute (const string& rktNAME, const list<NAttribute>& rktLIST, EAttribType eTYPE)
+  {
+    return setAttribute (rktNAME, rktLIST.front(), eTYPE);
+  }
+  
+  virtual int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
+  virtual void getAttributeList (TAttributeList& rtLIST) const;
 
     // Event management
     void sendEvent (const string& rktEVENT);

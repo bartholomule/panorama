@@ -39,7 +39,10 @@ class TRenderer : public TProcedural
     
   public:
 
-    virtual void initialize (TScene& rtSCENE) {}
+  virtual bool initialize (TScene& rtSCENE)
+  {
+    return TProcedural::initialize();
+  }
     virtual void finalize (void) {}
     virtual void render (SBuffers& rsBUFFERS) = 0;
 

@@ -34,3 +34,34 @@ void TProcedural::sendEvent (const string& rktEVENT, NAttribute nAttrib)
   cout << "Object <" << className() << "> send event <" << rktEVENT << "> with argument" << endl;
 
 }  /* sendEvent() */
+
+
+int TProcedural::setAttribute (const string& rktNAME, NAttribute nVALUE,
+			       EAttribType eTYPE)
+{
+  if(rktNAME == "name")
+  {
+    if(eTYPE == FX_STRING)
+    {
+      setIdentifier((char*)nVALUE.pvValue);
+      return FX_ATTRIB_OK;
+    }
+    return FX_ATTRIB_WRONG_TYPE;
+  }  
+  return FX_ATTRIB_WRONG_PARAM;
+}
+
+int TProcedural::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
+{
+  if(rktNAME == "name")
+  {
+    rnVALUE.pvValue = (void*)tIdentifier.c_str();
+    return FX_ATTRIB_OK;
+  }
+  return FX_ATTRIB_WRONG_PARAM;
+}
+
+void TProcedural::getAttributeList (TAttributeList& rtLIST) const
+{
+  rtLIST ["name"] = FX_STRING;
+}

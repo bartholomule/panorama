@@ -35,7 +35,7 @@ class TBsdf : public TProcedural
 
     virtual void getRayDirection (const TSurfaceData& rktDATA, const TVector& rktREFLECTED, TVector& rtDIR) const = 0;
       
-    virtual void initialize (void) {}
+    virtual bool initialize (void) { return TProcedural::initialize(); }
     
     EClass classType (void) const { return FX_BSDF_CLASS; }
     

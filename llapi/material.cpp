@@ -143,6 +143,32 @@ TScalar TMaterial::transparency (const TSpanList& rktLIST) const
 }  /* transparency() */
 
 
+bool TMaterial::initialize (void)
+{
+  bool val = true;
+  assert ( ptBsdf );
+
+  val = val && ptBsdf->initialize();
+
+#define INIT_MAT_PTR_STUFF(x) \
+  if ( val && ( (x) != NULL ) ) \
+  {                             \
+    val = val && (x)->initialize();   \
+  }
+ 
+  INIT_MAT_PTR_STUFF(ptColor);
+  INIT_MAT_PTR_STUFF(ptEmission);
+  INIT_MAT_PTR_STUFF(ptOpacity);
+  INIT_MAT_PTR_STUFF(ptAmbientReflection);
+  INIT_MAT_PTR_STUFF(ptDiffuseReflection);
+  INIT_MAT_PTR_STUFF(ptSpecularReflection);
+  INIT_MAT_PTR_STUFF(ptIor);
+  INIT_MAT_PTR_STUFF(ptCaustics);
+  INIT_MAT_PTR_STUFF(ptPerturbation);
+#undef INIT_MAT_PTR_STUFF
+  return val && TProcedural::initialize();
+}
+
 int TMaterial::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
 

@@ -75,9 +75,10 @@ class TAtmosphericObject : public TProcedural
     virtual TColor filterRadiance (const TSurfaceData& rktDATA, const TColor& rktRAD) const;
     virtual TScalar transparency (const TVector& rktPOINT1, const TVector& rktPOINT2) const = 0;
     
-    virtual void initialize (TScene* ptSCENE)
+    virtual bool initialize (TScene* ptSCENE)
     {
       ptScene = ptSCENE;
+      return (ptScene != NULL) && TProcedural::initialize();
     }
 
     EClass classType (void) const { return FX_ATM_OBJECT_CLASS; }

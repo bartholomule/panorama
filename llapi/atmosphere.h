@@ -43,7 +43,7 @@ class TAtmosphere
       tAtmObjectList.push_back (ptATM_OBJ);
     }
 
-    void initialize (TScene* ptSCENE);
+    bool initialize (TScene* ptSCENE);
     
 };  /* class TAtmosphere */
 

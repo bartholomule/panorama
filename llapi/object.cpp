@@ -32,15 +32,39 @@ void TObject::createMatrices (void)
 }  /* createMatrices() */
 
 
-void TObject::initialize (void)
+bool TObject::initialize (void)
 {
+  bool val = TProcedural::initialize();
+  if ( ptMaterial == NULL )
+  {
+    bool is_light_only = false;
+    bool contains_objects = false;
+    TAttributeList tal;
+    getAttributeList(tal);
 
-  assert ( ptMaterial );
-
-  ptMaterial->initialize();
+    if(tal.find("lightonly") != tal.end())
+    {
+      is_light_only = true;
+    }
+    if(tal.find("containsobjects") != tal.end())
+    {
+      contains_objects = true;
+    }
+    
+    if(!contains_objects && !is_light_only)
+    {
+      val = false;
+      cerr << "Object of type " << className() << " has no material." << endl;
+    }
+  }
+  else
+  {
+    val = val && ptMaterial->initialize();
+  }
 
 //  tLocation = (*ptMatrix) * tLocation;
-  
+
+  return val;
 }  /* initialize() */
 
 

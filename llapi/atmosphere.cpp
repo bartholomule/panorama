@@ -52,14 +52,16 @@ TScalar TAtmosphere::transparency (const TVector& rktPOINT1, const TVector& rktP
 }  /* transparency() */
 
 
-void TAtmosphere::initialize (TScene* ptSCENE)
+bool TAtmosphere::initialize (TScene* ptSCENE)
 {
-
+  bool val = true;
+  
   ptScene = ptSCENE;
   
   for (vector<TAtmosphericObject*>::iterator tIter = tAtmObjectList.begin(); ( tIter != tAtmObjectList.end() ) ;tIter++)
   {
-    (*tIter)->initialize (ptScene);
+    val = val && (*tIter)->initialize (ptScene);
   }
-  
+
+  return val;
 }  /* initialize() */

@@ -32,7 +32,7 @@ class TImageIO : public TProcedural
     
   public:
 
-    virtual void initialize (void) {}
+    virtual bool initialize (void) { return TProcedural::initialize(); }
     
     int setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
     int getAttribute (const string& rktNAME, NAttribute& rnVALUE);

@@ -19,9 +19,8 @@
 #include "llapi/pattern.h"
 
 
-void TPattern::initialize (void)
+bool TPattern::initialize (void)
 {
-
   tScaling    = TVector (1.0, 1.0, 1.0);
   tRSTScaling = TVector (1.0, 1.0, 1.0);
 
@@ -31,6 +30,7 @@ void TPattern::initialize (void)
 
   gTransformIdentity = true;
 
+  return TProcedural::initialize();
 }  /* initialize() */
 
 

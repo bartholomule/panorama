@@ -51,8 +51,6 @@ class TPattern : public TProcedural
 
     bool             gTransformIdentity;
 
-    void initialize (void);
-    
     void recalculateMatrix (void);
 
     void sphericalWarp (TVector& rtPOINT) const;
@@ -105,6 +103,7 @@ class TPattern : public TProcedural
     EClass classType (void) const { return FX_PATTERN_CLASS; }
     string className (void) const { return "Pattern"; }
 
+    virtual bool initialize (void);
 };  /* class TPattern */
 
 #endif  /* _PATTERN__ */

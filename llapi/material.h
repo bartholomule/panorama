@@ -62,12 +62,7 @@ class TMaterial : public TProcedural
 
     TBsdf* bsdf (void) const { return ptBsdf; }
 
-    virtual void initialize (void)
-    {
-      assert ( ptBsdf );
-
-      ptBsdf->initialize();
-    }
+  virtual bool initialize (void);
     
     int setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
     int getAttribute (const string& rktNAME, NAttribute& rnVALUE);

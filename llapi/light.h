@@ -65,7 +65,7 @@ class TLight : public TObject
     void setColor (const TColor& rktCOLOR) { tColor = rktCOLOR; }
     void setIntensity (TScalar tINTENSITY) { tIntensity = tINTENSITY; }
 
-    virtual void initialize (void) {}
+    virtual bool initialize (void) { return TObject::initialize(); }
   
     virtual TColor color (const TVector& rktPOINT) const
     {
