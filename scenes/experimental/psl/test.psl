@@ -2,11 +2,9 @@
 *  test
 */
 
-#include "materials.inc"
-
 Bool a = false;
 
-define Camera c
+Object : class Sphere
 {
   Bool b = true;
 
@@ -14,7 +12,7 @@ define Camera c
   {
     Real d;
 
-    function_call (0);
+    d = function_call (0, 1, 2);
   }
 }
 
