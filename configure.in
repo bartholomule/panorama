@@ -20,6 +20,47 @@ AC_CHECK_LIB(dl, dlopen)
 dnl Checks for header files.
 AC_HEADER_STDC
 
+dnl Check for special libraries
+text_val=no
+AC_CHECK_HEADER(freetype.h, [AC_CHECK_LIB(ttf,main,text_val=yes)])
+if test $text_val = "yes"; then
+	TEXT_FILTER="text"
+	PLUGIN_TEXT="if_text.plg"
+else
+	TEXT_FILTER=""
+	PLUGIN_TEXT=""
+	AC_MSG_WARN(Freetype library not available so text filter not compiled)
+fi
+AC_SUBST(TEXT_FILTER)
+AC_SUBST(PLUGIN_TEXT)
+
+jpeg_val=no
+AC_CHECK_HEADER(jpeglib.h, [AC_CHECK_LIB(jpeg,main,jpeg_val=yes)])
+if test $jpeg_val = "yes"; then
+	JPEG_FILTER="jpeg"
+	PLUGIN_JPEG="jpeg_io.plg"
+else
+	JPEG_FILTER=""
+	PLUGIN_JPEG=""
+	AC_MSG_WARN(JPEG library not available so jpeg filter not compiled)
+fi
+AC_SUBST(JPEG_FILTER)
+AC_SUBST(PLUGIN_JPEG)
+
+png_val=no
+AC_CHECK_HEADER(png.h, [AC_CHECK_LIB(png,main,dnl
+AC_CHECK_LIB(z,main,png_val=yes))])
+if test $png_val = "yes"; then
+	PNG_FILTER="png"
+	PLUGIN_PNG="png_io.plg"
+else
+	PNG_FILTER=""
+	PLUGIN_PNG=""
+	AC_MSG_WARN(Either png or zlib library not available so png filter not compiled)
+fi
+AC_SUBST(PNG_FILTER)
+AC_SUBST(PLUGIN_PNG)
+
 dnl Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
 AC_C_BIGENDIAN
@@ -125,6 +166,7 @@ AC_OUTPUT(\
         data/texture/Makefile \
         doc/Makefile \
         doc/config \
+	doc/pluginrc \
         doc/developers/Makefile \
         doc/users/Makefile \
         doc/api/Makefile \
