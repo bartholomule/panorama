@@ -6,7 +6,8 @@ include ${BUILD_TOP}/Makefile.vars
 INSTALL = @INSTALL@
 SRC_DIR = @srcdir@
 
-FILES = anisotropic.rt \
+FILES = amplifier.rt \
+        anisotropic.rt \
 	anisotropic2.rt \
         brick.rt \
         bump.rt \
@@ -26,6 +27,7 @@ FILES = anisotropic.rt \
         schlick_double.rt \
         texture.rt \
         ward.rt \
+        warping.rt \
         water.rt \
         wood.rt \
         worley.rt
