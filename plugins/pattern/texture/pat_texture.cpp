@@ -41,15 +41,13 @@ TPatternTexture::TPatternTexture (void) :
 int TPatternTexture::correctTexel (int iVALUE, const size_t& rkzMAX) const
 {
 
-  int  i = -iVALUE;
+  int  i = iVALUE % rkzMAX;
 
-  if ( iVALUE >= 0 )
-  {
-    i += (rkzMAX - 1);
-
-    if ( i < 0 )
+  if ( gMirror )
+  { 
+    if ( ((iVALUE / rkzMAX) & 1) )
     {
-      i += rkzMAX;
+      i = (rkzMAX - 1) - i;
     }
   }
 
@@ -63,47 +61,34 @@ TColor TPatternTexture::lerpTexel (const TVector2& rktUVCOORD) const
  
   TColor   tLerpColor;
   TScalar  u, v;  
-  int      iu, iv;
+  int      iu, iv, iu2, iv2;
   float    uv, iuv, uiv, iuiv;
-  float    tmu, tmv;
   double   iiu, iiv;
   double   fu, fv;
 
-  u = rktUVCOORD.x();
-  v = rktUVCOORD.y();  
+  u = rktUVCOORD.x() * (double) zTextureWidth;
+  v = rktUVCOORD.y() * (double) zTextureHeight;  
+ 
+  // fractional part in fu and fv
+  fu = modf (u, &iiu);
+  fv = modf (v, &iiv);
 
-  tmu = fmod (u, 1.0) * (double) zTextureWidth;
-  tmv = fmod (v, 1.0) * (double) zTextureHeight;
+  // integral part in iu and iv
+  iu = (int) iiu;
+  iv = (int) iiv;
 
-  fu = modf (tmu, &iiu);
+  iu2 = correctTexel (iu + 1, zTextureWidth );
+  iv2 = correctTexel (iv + 1, zTextureHeight);
+  iu  = correctTexel (iu, zTextureWidth );
+  iv  = correctTexel (iv, zTextureHeight);
+
   if ( fu < 0.0 ) 
   {
     fu += 1.0;
   }
-
-  fv = modf (tmv, &iiv);
   if ( fv < 0.0 ) 
   {
     fv += 1.0;
-  }
-
-  // values in u and v
-  iu = (int) iiu;
-  iv = (int) iiv;
-
-  if ( gMirror )
-  {
-    if ( ((int) floor (u)) & 1 )
-    {
-      iu = -iu;
-      fu = 1.0 - fu;
-    }
-
-    if ( ((int) floor (v)) & 1 )
-    {
-      iv = -iv;
-      fv = 1.0 - fv;
-    }
   }
 
   uv   = fu * fv;
@@ -111,14 +96,10 @@ TColor TPatternTexture::lerpTexel (const TVector2& rktUVCOORD) const
   uiv  = fu * (1.0 - fv);
   iuiv = (1.0 - fu) * (1.0 - fv);
 
-  tLerpColor  = ptImage->getPixel (correctTexel (iu    , zTextureWidth), 
-                                   correctTexel (iv    , zTextureHeight)) * iuiv;
-  tLerpColor += ptImage->getPixel (correctTexel (iu + 1, zTextureWidth), 
-                                   correctTexel (iv    , zTextureHeight)) * uiv;
-  tLerpColor += ptImage->getPixel (correctTexel (iu    , zTextureWidth),
-                                   correctTexel (iv + 1, zTextureHeight)) * iuv;
-  tLerpColor += ptImage->getPixel (correctTexel (iu + 1, zTextureWidth), 
-                                   correctTexel (iv + 1, zTextureHeight)) * uv;
+  tLerpColor  = ptImage->getPixel (iu , iv ) * iuiv;
+  tLerpColor += ptImage->getPixel (iu2, iv ) * uiv;
+  tLerpColor += ptImage->getPixel (iu , iv2) * iuv;
+  tLerpColor += ptImage->getPixel (iu2, iv2) * uv;
 
   return tLerpColor;
 
