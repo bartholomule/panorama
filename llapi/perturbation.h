@@ -27,7 +27,7 @@ class TPerturbation : public TProcedural
  
   public:
 
-    virtual TVector perturbNormal (const TSurfaceData& rktDATA) const { return rktDATA.normal(); }
+    virtual TVector perturbNormal (const TSurfaceData& rktDATA) const { return rktDATA.unperturbedNormal(); }
 
     EClass classType (void) const { return FX_PERTURBATION_CLASS; }
     string className (void) const { return "Perturbation"; }
