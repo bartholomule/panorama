@@ -9,7 +9,8 @@ SRC_DIR = @srcdir@
 FILES = C++_Coding_Style \
 	General \
         PROJECTS \
-        README
+        README \
+        WRITING_A_PLUGIN
         
 all:
 
