@@ -29,5 +29,6 @@
 #include "plugins/material/checker/mat_checker.h"
 #include "plugins/material/noise/mat_noise.h"
 #include "plugins/material/worley/mat_worley.h"
+#include "plugins/object/bezier/bezier.h"
 #include "plugins/object_filter/cartoon/of_cartoon.h"
 #include "plugins/renderer/raytracer/raytracer.h"

@@ -67,6 +67,7 @@ TBaseClass* TClassManager::_newObject (const string& rktCLASS, const TBaseClass*
   STATIC_CLASS (TMaterialChecker, "MaterialChecker");
   STATIC_CLASS (TMaterialNoise, "MaterialNoise");
   STATIC_CLASS (TMaterialWorley, "MaterialWorley");
+  STATIC_CLASS (TBezierSurface, "BezierSurface");
   STATIC_CLASS (TOF_Cartoon, "OF_Cartoon");
   STATIC_CLASS (TRaytracer, "Raytracer");
 #endif
