@@ -5,6 +5,8 @@ include $(BUILD_TOP)/Makefile.vars
 include @srcdir@/$(BUILD_TOP)/Makefile.rules
 include @srcdir@/Makefile.data
 
+CXXFLAGS += -fPIC
+
 VPATH = @srcdir@
 SRC_DIR = @srcdir@
 
