@@ -73,9 +73,14 @@ TBaseClass* TClassManager::_newObject (const string& rktCLASS, const TBaseClass*
   STATIC_CLASS (TMaterialParquet, "MaterialParquet");
   STATIC_CLASS (TMaterialWood, "MaterialWood");
   STATIC_CLASS (TMaterialWorley, "MaterialWorley");
+  STATIC_CLASS (TABVH, "ABVH");
   STATIC_CLASS (TBezierSurface, "BezierSurface");
+  STATIC_CLASS (THeightField, "HeightField");
+  STATIC_CLASS (TLightWaveObject, "LightWaveObject");
+  STATIC_CLASS (TPolyhedron, "Polyhedron");
   STATIC_CLASS (TOF_Cartoon, "OF_Cartoon");
   STATIC_CLASS (TRaytracer, "Raytracer");
+  STATIC_CLASS (TZBufferRenderer, "ZBufferRenderer");
 #endif
 
   return tPluginManager.newObject (rktCLASS, pktPARENT);
