@@ -41,9 +41,6 @@ Status    : Not started
 
 -- OBJECT -----------------------------------------------------------
 
-Project   : Implement CSG object intersection
-Status    : Not started
-
 Project   : Height field
 Status    : Experimental (included in distribution).
 Author(s) : Angel Jimenez (ajimenez@vnet.es)
