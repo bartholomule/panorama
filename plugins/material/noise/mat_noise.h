@@ -69,16 +69,20 @@ class TMaterialNoise : public TMaterial
 inline TVector TMaterialNoise::perturbNormal (const TSurfaceData& rktDATA) const
 {
 
-  TVector   tGradient;
-  TVector   tNewNormal;
-  TVector   tPoint      = rktDATA.localPoint() * tZoom;
-  TScalar   tNoiseValue = tNoise.noise (tPoint);
+  TVector   tNewNormal = rktDATA.normal();
 
-  tPoint      = tPoint + rktDATA.normal() * tNoiseValue;
-  tNoiseValue = tNoise.noise (tPoint, &tGradient);
+  if ( tBumpFactor )
+  {
+    TVector   tGradient;
+    TVector   tPoint      = rktDATA.localPoint() * tZoom;
+    TScalar   tNoiseValue = tNoise.noise (tPoint);
 
-  tNewNormal = rktDATA.normal() + tGradient * tBumpFactor;
-  tNewNormal.normalize();
+    tPoint      = tPoint + rktDATA.normal() * tNoiseValue;
+    tNoiseValue = tNoise.noise (tPoint, &tGradient);
+
+    tNewNormal = rktDATA.normal() + tGradient * tBumpFactor;
+    tNewNormal.normalize();
+  }
   
   return tNewNormal;
   
