@@ -6,8 +6,11 @@ include ${BUILD_TOP}/Makefile.vars
 INSTALL = @INSTALL@
 SRC_DIR = @srcdir@
 
-FILES = halo_lights.rt \
+FILES = area_light1.rt \
+	area_light2.rt \
+	halo_lights.rt \
 	night.rt \
+	night2.rt \
 	projector.rt \
 	warn.rt
 
