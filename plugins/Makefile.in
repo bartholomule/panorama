@@ -10,6 +10,8 @@ DIRS = atm_object \
        material \
        object \
        object_filter \
+       pattern \
+       perturbation \
        renderer \
        scene_io
 
