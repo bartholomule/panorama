@@ -56,6 +56,28 @@ bool TPointLight::visible (const TVector& rktPOINT) const
 }  /* visible() */
 
 
+TColor TPointLight::scatteredLight (const TSurfaceData& rktDATA) const
+{
+
+  TScalar   t0, d0;
+
+  if ( tHaloSize != 0 )
+  {
+    // Calculate t0 for the point in ray closest to light.
+    t0 = dotProduct ((tLocation - rktDATA.ray().location()), rktDATA.ray().direction());
+
+    // Calculate minimum distance from ray to light.
+    d0 = (tLocation - (rktDATA.ray().location() + (rktDATA.ray().direction() * t0))).norm();
+
+    // [_TODO_] Take into account light attenuation function.
+    return tColor * (atan ((rktDATA.distance() - t0) / d0) - atan (-t0 / d0)) / ((1.0 / tHaloSize) * d0);
+  }
+
+  return TColor::_null();
+  
+}  /* scatteredLight() */
+
+
 int TPointLight::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
 
@@ -103,6 +125,17 @@ int TPointLight::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttrib
       return FX_ATTRIB_WRONG_TYPE;
     }
   }
+  else if ( rktNAME == "halo" )
+  {
+    if ( eTYPE == FX_REAL )
+    {
+      tHaloSize = nVALUE.dValue;
+    }
+    else
+    {
+      return FX_ATTRIB_WRONG_TYPE;
+    }
+  }
   else
   {
     return TLight::setAttribute (rktNAME, nVALUE, eTYPE);
@@ -132,6 +165,10 @@ int TPointLight::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
   {
     rnVALUE.dValue = tDistanceThreshold;
   }
+  else if ( rktNAME == "halo" )
+  {
+    rnVALUE.dValue = tHaloSize;
+  }
   else
   {
     return TLight::getAttribute (rktNAME, rnVALUE);
@@ -151,6 +188,7 @@ void TPointLight::getAttributeList (TAttributeList& rtLIST) const
   rtLIST ["axis"]        = FX_VECTOR;
   rtLIST ["angle_th"]    = FX_REAL;
   rtLIST ["distance_th"] = FX_REAL;
+  rtLIST ["halo"]        = FX_REAL;
 
 }  /* getAttributeList() */
 

@@ -29,6 +29,7 @@ class TPointLight : public TLight
 
     TScalar   tDistanceThreshold;
     TScalar   tCosThreshold;
+    TScalar   tHaloSize;
     TVector   tFalloff;
     TVector   tConeAxis;
 
@@ -48,7 +49,8 @@ class TPointLight : public TLight
     TPointLight (void) :
       TLight(),
       tDistanceThreshold (0),
-      tCosThreshold (0) {}
+      tCosThreshold (0),
+      tHaloSize (0) {}
     
     void initialize (void);
 
@@ -82,6 +84,8 @@ class TPointLight : public TLight
 
       return tColor * tIntensity * attenuation (rktPOINT);
     }
+
+    TColor scatteredLight (const TSurfaceData& rktDATA) const;
     
     string className (void) const { return "PointLight"; }
  
