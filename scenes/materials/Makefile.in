@@ -24,6 +24,7 @@ FILES = amplifier.rt \
         marble2.rt \
         materials.rt \
         painted_crystal.rt \
+        pattern_demo.rt \
         schlick.rt \
         schlick_double.rt \
         texture.rt \
