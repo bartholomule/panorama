@@ -1,0 +1,167 @@
+/*
+*  cylindrical gradient demo scene
+*/
+
+#include "materials.inc"
+
+define material MWood : class MaterialWood
+{
+  bsdf : class BsdfPhong
+  {
+    exponent 50
+  }
+  ambient	0.2
+  diffuse	0.6
+  specular	0.25
+}
+
+define material MCylGrad : class MaterialCylGrad
+{
+  bsdf : class BsdfPhong
+  {
+    exponent 50
+  }
+  ambient	0.2
+  diffuse	0.6
+  specular	0.25
+}
+
+define material MMarble : class MaterialMarble
+{
+  bsdf : class BsdfPhong
+  {
+    exponent 50 
+  }
+  ambient  0.2
+  diffuse  0.6
+  specular 0.25
+}
+
+define material MCrackle : class MaterialCrackle
+{
+  bsdf : class BsdfPhong
+  {
+    exponent 50
+  }
+  ambient	0.2
+  diffuse	0.6
+  specular	0.0
+}
+
+define camera c
+{
+  translate	<0, 600, 1200>
+  //translate	<0, 1200,1200>
+  //look_at	<0, 0, 0>
+  look_at	<0, 150, 0>
+}
+/*
+define light l_ambient
+{
+  translate	< 0, 1500, 700>
+//  translate	<0, 600, 1200>
+//  translate	< 400, 500, 1000>
+  volumetric    off
+  shadow        off
+  intensity 0.25
+}
+*/
+define light l_ambient
+{
+  translate	< -500, 500, 700>
+//  translate	<0, 600, 1200>
+//  translate	< 400, 500, 1000>
+//  volumetric    off
+//  shadow        off
+  intensity 0.75
+}
+
+define light l : class WarnLight
+{
+  translate	< 700, 1500, 700>
+  point_at	<0, 0, 0>
+  exponent      50
+  axis          <0, 0, 0>
+  angle_th      25
+  intensity     0.8 //1
+}
+
+plane
+{
+  translate     <0, 0, 0>
+  normal	<0, 1, 0>
+  material : extends MWood
+  {
+    color       COrange
+    base_color  CBlack
+    zoom        <100, 100, 100>
+  }
+  rotate <0,90,0>
+}
+
+sphere
+{
+  radius 150
+  translate < 0, 150, 0 >
+  material : extends MCylGrad
+  {
+    cycles     8
+    swirl      0
+    //color CWhite
+    //base_color CBlack
+    base_color "marble1"
+  }
+  translate < -350, 0, 0 >
+  rotate < 30, 0, -30 >
+}
+
+sphere
+{
+  radius 150
+  translate < 0, 150, 0 >
+  material : extends MCylGrad
+  {
+    cycles      8
+    swirl     150
+    //color CWhite
+    //base_color CBlack
+    base_color "tropical"
+  }
+}
+
+sphere
+{
+  radius 150
+  translate < 0, 150, 0 >
+  material : extends MCylGrad
+  {
+    cycles      16
+    swirl      150
+    //color CWhite
+    //base_color CBlack
+    base_color "wood1"
+  }
+  translate <  350, 0, 0 >
+  rotate < 45, 0, 30 > 
+}
+
+
+scene
+{
+  camera	c
+  light		l
+  light		l_ambient
+  width		400 //1024
+  height	300 // 768
+  background	CBlack
+  output
+  {
+    type        "png"
+    name	"cylgrad.png"
+  }
+  renderer : class Raytracer 
+  {
+    //sampling "adaptive"
+  }
+}
+
