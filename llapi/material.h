@@ -32,6 +32,7 @@ class TMaterial : public TProcedural
   protected:
 
     TPattern*       ptColor;
+    TPattern*       ptEmission;  
     TPattern*       ptOpacity;
     TPattern*       ptAmbientReflection;
     TPattern*       ptDiffuseReflection;
@@ -39,7 +40,6 @@ class TMaterial : public TProcedural
     TPattern*       ptIor;
     TPattern*       ptCaustics;
     TPerturbation*  ptPerturbation;
-    TScalar         tSelfEmission;
     TBsdf*          ptBsdf;
 
   public:
@@ -51,14 +51,14 @@ class TMaterial : public TProcedural
 
     bool transparent (const TSurfaceData& rktDATA) const { return ( opacity (rktDATA) < 1 ); }
     TScalar transparency (const TSpanList& rktLIST) const;
-    TColor color (const TSurfaceData& rktDATA) const { return ptColor->color (rktDATA); }
+    TColor color (const TSurfaceData& rktDATA) const;
+    TColor emission (const TSurfaceData& rktDATA) const;
     TScalar opacity (const TSurfaceData& rktDATA) const { return ptOpacity->scalar (rktDATA); }
     TScalar ambientReflection (const TSurfaceData& rktDATA) const { return ptAmbientReflection->scalar (rktDATA); }
     TScalar diffuseReflection (const TSurfaceData& rktDATA) const { return ptDiffuseReflection->scalar (rktDATA); }
     TScalar specularReflection (const TSurfaceData& rktDATA) const { return ptSpecularReflection->scalar (rktDATA); }
     TScalar ior (const TSurfaceData& rktDATA) const { return ptIor->scalar (rktDATA); }
     TScalar causticExponent (const TSurfaceData& rktDATA) const { return ptCaustics->scalar (rktDATA); }
-    TScalar selfEmission (void) { return tSelfEmission; }
 
     TBsdf* bsdf (void) const { return ptBsdf; }
 
@@ -74,6 +74,7 @@ class TMaterial : public TProcedural
     void getAttributeList (TAttributeList& rtLIST) const;
 
     TPattern* color (void) const { return ptColor; }
+    TPattern* emission (void) const { return ptEmission; }  
     TPattern* opacity (void) const { return ptOpacity; }
     TPattern* ambientReflection (void) const { return ptAmbientReflection; }
     TPattern* diffuseReflection (void) const { return ptDiffuseReflection; }
@@ -83,6 +84,7 @@ class TMaterial : public TProcedural
     TPerturbation* perturbation (void) const { return ptPerturbation; }
 
     void setColor (TPattern* ptPATTERN) { ptColor = ptPATTERN; }
+    void setEmission (TPattern* ptPATTERN) { ptEmission = ptPATTERN; }  
     void setOpacity (TPattern* ptPATTERN) { ptOpacity = ptPATTERN; }
     void setAmbientReflection (TPattern* ptPATTERN) { ptAmbientReflection = ptPATTERN; }
     void setDiffuseReflection (TPattern* ptPATTERN) { ptDiffuseReflection = ptPATTERN; }
@@ -90,7 +92,6 @@ class TMaterial : public TProcedural
     void setIor (TPattern* ptPATTERN) { ptIor = ptPATTERN; }
     void setCaustics (TPattern* ptPATTERN) { ptCaustics = ptPATTERN; }
     void setPerturbation (TPerturbation* ptPERTURBATION) { ptPerturbation = ptPERTURBATION; }
-    void setSelfEmission (TScalar tSELF_EMISSION) { tSelfEmission = tSELF_EMISSION; }
     void setBsdf (TBsdf* ptBSDF) { ptBsdf = ptBSDF; }
 
     TVector perturbNormal (const TSurfaceData& rktDATA) const { return ptPerturbation->perturbNormal (rktDATA); }
