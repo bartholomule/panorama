@@ -53,10 +53,6 @@ Project   : Caligari Truespace object import
 Status    : In development
 Author(s) : Angel Jimenez (ajimenez@vnet.es)
 
-Project   : Uniform grid spatial subdivision
-Status    : In development
-Author(s) : Carlos Jimenez (carlos@leader.es)
-
 Project   : Automatic Bounding Volume Hierarchy (Salmon & Goldsmith)
 Status    : Experimental (included in distribution).
 Author(s) : Angel Jimenez (ajimenez@vnet.es)
