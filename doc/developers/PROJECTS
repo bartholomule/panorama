@@ -23,16 +23,14 @@ Status    : Not started
 
 Project   : An image filter to write text into the image (maybe using
             freetype library)
-Status    : Not started
+Status    : In development
+Author(s) : Ken Geis (kgeis@cchemnt.cchem.berkeley.edu)
 
 Project   : Lens flare
 Status    : Not started
 
 
 -- IMAGE I/O --------------------------------------------------------
-
-Project   : PNG image I/O plugin
-Status    : Not started
 
 Project   : GIF image I/O plugin (only load due to patent problems)
 Status    : Not started
@@ -100,4 +98,3 @@ Author(s) : Angel Jimenez (ajimenez@vnet.es)
 
 Project   : POVRay scene loader
 Status    : Not started
-
