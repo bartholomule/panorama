@@ -6,6 +6,8 @@ if_cartoon.plg
 if_convert_to_grey.plg
 if_fog.plg
 tga_io.plg
+png_io.plg
+jpeg_io.plg
 point_light.plg
 projector.plg
 warn_light.plg

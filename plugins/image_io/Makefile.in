@@ -1,6 +1,8 @@
 
 BUILD_TOP = ../..
 
-DIRS = tga
+DIRS = jpeg \
+       png \
+       tga
 
 include ${BUILD_TOP}/Makefile.targets

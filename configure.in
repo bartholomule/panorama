@@ -127,6 +127,8 @@ AC_OUTPUT(\
         plugins/image_filter/convert_to_grey/Makefile:Makefile.plugin.in \
         plugins/image_filter/fog/Makefile:Makefile.plugin.in \
         plugins/image_io/Makefile \
+        plugins/image_io/jpeg/Makefile:Makefile.plugin.in \
+        plugins/image_io/png/Makefile:Makefile.plugin.in \
         plugins/image_io/tga/Makefile:Makefile.plugin.in \
         plugins/light/Makefile \
         plugins/light/point_light/Makefile:Makefile.plugin.in \
