@@ -81,7 +81,7 @@ class TRay
 
       tDirection -= rktNORMAL * (2.0 * dotProduct (rktNORMAL, tDirection));
 
-      if ( dotProduct (rktORIGINAL, tDirection) <= FX_EPSILON )
+      if ( dotProduct (rktORIGINAL, tDirection) <= 0.1 )
       {
 	tDirection = tOldDirection - rktORIGINAL * (2.0 * dotProduct (tOldDirection, rktORIGINAL));
       }
