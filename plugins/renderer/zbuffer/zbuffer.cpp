@@ -124,6 +124,7 @@ void TZBufferRenderer::initBuffers (SBuffers& rsBUFFERS) const
   TRay          tRay;
   TSurfaceData  tData;
   TVector       tDirection;
+  TVector       tNormal;
 
   for (size_t J = 0; ( J < rsBUFFERS.ptImage->height() ) ;J++)
   {
@@ -133,8 +134,12 @@ void TZBufferRenderer::initBuffers (SBuffers& rsBUFFERS) const
 
       tDirection = tRay.direction();
 
-      tData.setPoint  ( tDirection);
-      tData.setNormal (-tDirection);
+      tData.setPoint (tDirection);
+
+      tNormal = -tDirection;
+      tNormal.normalize();
+
+      tData.setNormal (tNormal);
 
       rsBUFFERS.ptImage->setPixel (I, J, ptScene->backgroundColor(tData));
       rsBUFFERS.ptZBuffer->setPixel (I, J, SCALAR_MAX);
