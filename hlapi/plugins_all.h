@@ -35,6 +35,7 @@
 #include "plugins/material/brick/mat_brick.h"
 #include "plugins/material/checker/mat_checker.h"
 #include "plugins/material/crackle/mat_crackle.h"
+#include "plugins/material/cylgrad/mat_cylgrad.h"
 #include "plugins/material/leopard/mat_leopard.h"
 #include "plugins/material/marble/mat_marble.h"
 #include "plugins/material/noise/mat_noise.h"
