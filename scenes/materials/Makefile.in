@@ -9,6 +9,7 @@ SRC_DIR = @srcdir@
 FILES = amplifier.rt \
         anisotropic.rt \
 	anisotropic2.rt \
+        background_mapping.rt \
         brick.rt \
         bump.rt \
 	checker.rt \
