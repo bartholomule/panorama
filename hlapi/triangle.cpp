@@ -132,6 +132,15 @@ void TTriangle::getMesh (list<TMesh*>& rtMESH_LIST) const
   
 }  /* getMesh() */
 
+TVector TTriangle::RandomPointOnSurface() const
+{
+  TVector u = atVertex[1] - atVertex[0];
+  TVector v = atVertex[2] - atVertex[0];
+
+  return  (double(frand()) * u) + (double(frand()) * v) + atVertex[0];
+  
+}
+
 
 void TTriangle::printDebug (void) const
 {

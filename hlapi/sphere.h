@@ -55,6 +55,9 @@ class TSphere : public TObject
     bool findFirstIntersection (const TRay& rktRAY, TSurfaceData& rtDATA) const;
     bool findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) const;
 
+
+    TVector RandomPointOnSurface() const;
+  
     void printDebug (void) const;
     string className (void) const { return "Sphere"; }
 

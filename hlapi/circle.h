@@ -49,6 +49,8 @@ class TCircle : public TPlane
       return ( dotProduct (tVector, tVector) <= tRadius2 );
     }
 
+    TVector RandomPointOnSurface() const;
+  
     string className (void) const { return "Circle"; }
 
 };  /* class TCircle */

@@ -112,6 +112,8 @@ class TBox : public TObject
     */
     void getAttributeList (TAttributeList& rtLIST) const;
 
+    TVector RandomPointOnSurface() const;
+  
   protected:
 
     /**

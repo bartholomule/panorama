@@ -259,6 +259,32 @@ bool TSphere::findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) const
 }  /* findAllIntersections() */
 
 
+TVector TSphere::RandomPointOnSurface() const
+{
+  TScalar x,y,z;
+  TScalar length;
+
+  do
+  {
+    x = 1 - 2*frand ();
+    y = 1 - 2*frand ();
+    z = 1 - 2*frand ();
+    length = sqrt(x * x + y * y + z * z);
+  }
+  while( (length > 1) || (length < FX_EPSILON) );
+
+  x /= length;
+  y /= length;
+  z /= length;
+
+  // Now, we have a uniformly random unit vector in the sphere...
+  TVector vec(x,y,z);
+  
+  // A random point on the surface is just a matter of multiplying by the
+  // radius.  
+  return (vec * tRadius);
+}
+
 void TSphere::printDebug (void) const
 {
 

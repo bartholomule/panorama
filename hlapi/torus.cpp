@@ -201,3 +201,33 @@ bool TTorus::findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) const
   return gIntersection;
 
 }  /* findAllIntersections() */
+
+
+TVector TTorus::RandomPointOnSurface() const
+{
+  // For a torus, there are 2 angles, a theta, specifying how far around the z
+  // axis to go, and a phi specifying how far around the tube to go.
+  // FIXME!! This is not a uniformly random point.
+
+  // The radius of the tube
+  TScalar tube_rad = sqrt(tRadiusB2);
+
+  // Randomly pick a theta in [0,2pi]
+  TScalar theta = frand() * 2 * PI;
+
+  // Randomly pick a phi in [0,2pi]
+  TScalar phi = frand() * 2 * PI;
+
+  // Find the y component (based on phi)
+  TScalar y = tube_rad * sin(phi);
+
+  // find the radius of the surface at the plane given by y
+  TScalar rad1 = tRadiusA + tube_rad * cos(phi);
+
+  // Find the x and z portions now (x = r * cos(theta), z = r * sin(theta) )
+
+  TScalar x = rad1 * cos(theta);
+  TScalar z = rad1 * sin(theta);
+    
+  return TVector(x,y,z);
+}

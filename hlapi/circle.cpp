@@ -67,3 +67,14 @@ void TCircle::getAttributeList (TAttributeList& rtLIST) const
   rtLIST ["radius"] = FX_REAL;
 
 }  /* getAttributeList() */
+
+
+TVector TCircle::RandomPointOnSurface() const
+{
+  // theta = 2 * PI * rand1
+  // r = R * sqrt(rand2)
+  TScalar r = sqrt(frand() * tRadius2);
+  TScalar theta = 2 * PI * frand();
+
+  return TVector(r * cos(theta), r * sin(theta), 0);
+}

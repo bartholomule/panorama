@@ -430,3 +430,9 @@ void TBox::getAttributeList (TAttributeList& rtLIST) const
 
 }  /* getAttributeList() */
 
+TVector TBox::RandomPointOnSurface() const
+{
+  return TVector(frand() * (tXmax - tXmin),
+		 frand() * (tYmax - tYmin),
+		 frand() * (tZmax - tZmin));
+}

@@ -59,6 +59,8 @@ class TTriangle : public TPlane
 
     void getMesh (list<TMesh*>& rtMESH_LIST) const;
     
+    TVector RandomPointOnSurface() const;
+
     void printDebug (void) const;
     string className (void) const { return "Triangle"; }
     

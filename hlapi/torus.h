@@ -51,6 +51,8 @@ class TTorus : public TObject
     
     bool findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) const;
 
+    TVector RandomPointOnSurface() const;
+  
     string className (void) const { return "Torus"; }
 
 };  /* class TTorus */
