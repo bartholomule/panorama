@@ -1,0 +1,4 @@
+PLUGIN_NAME = bsdf_cook_torrance
+OBJ         = bsdf_cook_torrance.o
+
+bsdf_cook_torrance.o: bsdf_cook_torrance.h
