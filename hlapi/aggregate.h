@@ -35,17 +35,23 @@ class TAggregate : public TObject
   public:
 
     TAggregate (void) :
-      TObject() {}
+      TObject()
+    {
+      sCapabilities.gInfinite = false;
+    }
       
     TAggregate (const TAggregate& rktAGGREGATE) :
       TObject()
     {
       copy (rktAGGREGATE.tObjectList);
+      sCapabilities.gInfinite = rktAGGREGATE.capabilities().gInfinite;
     }
 
     TAggregate& operator = (const TAggregate& rktAGGREGATE)
     {
       copy (rktAGGREGATE.tObjectList);
+
+      sCapabilities.gInfinite = rktAGGREGATE.capabilities().gInfinite;
 
       return *this;
     }
@@ -60,6 +66,10 @@ class TAggregate : public TObject
       
     virtual void add (TObject* ptOBJ)
     {
+      if ( ptOBJ->capabilities().gInfinite == true )
+      {
+        sCapabilities.gInfinite = true;
+      }
       tObjectList.push_back (ptOBJ);
     }
 
