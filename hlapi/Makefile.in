@@ -17,6 +17,7 @@ OBJ = aggregate.o \
       box.o \
       circle.o \
       cone.o \
+      csg.o \
       class_manager.o \
       cylinder.o \
       image_manager.o \
