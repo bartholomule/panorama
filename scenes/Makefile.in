@@ -1,0 +1,8 @@
+
+DIRS = ./atmospheric \
+       ./lights \
+       ./materials \
+       ./misc \
+       ./objects
+
+include @top_srcdir@/Makefile.targets

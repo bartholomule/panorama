@@ -1,0 +1,53 @@
+/*
+*  Triangle test
+*/
+
+#include "materials.inc"
+
+define camera c
+{
+  translate	<0, 100, 600>
+  look_at	<0, 100, 0>
+}
+
+define light l
+{
+  translate	<500, 1000, 500>
+  color		CWhite
+}
+
+plane
+{
+  translate	<0, -10, 0>
+  normal	<0, 1, 0>
+  material : extends MLambertian
+  {
+    color	CWhite
+  }
+}
+
+triangle
+{
+  vertex	<0, 100, -50>
+  vertex	<50, 50, 50>
+  vertex	<-50, 50, 50>
+  one_sided	off
+  material : extends MPlastic
+  {
+    color	CBlue
+  }
+}
+
+scene
+{
+  camera	c
+  light		l
+  width		400
+  height	400
+  background	CBlack
+  output
+  {
+    name	"triangle.tga"
+  }
+  renderer : class Raytracer {}
+}

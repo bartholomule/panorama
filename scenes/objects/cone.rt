@@ -1,0 +1,54 @@
+/*
+*  Cone test
+*/
+
+#include "materials.inc"
+
+define camera c
+{
+  translate	<0, 200, 600>
+  look_at	<0, 100, 0>
+}
+
+define light l
+{
+  translate	<-500, 300, 500>
+  color		CWhite
+}
+
+circle
+{
+  translate	<0, 0, 0>
+  normal	<0, 1, 0>
+  radius	200
+  one_sided	off
+  material : extends MPlastic
+  {
+    color	CGreen
+  }
+}
+
+cone
+{
+  scale         <50, 100, 50>
+  translate     <0, 100, 0>
+  rotate        <3.1416, 0, 0>
+  material : extends MPlastic
+  {
+    color	CWhite
+  }
+}
+
+scene
+{
+  camera	c
+  light		l
+  width		600
+  height	400
+  background	CSummerSky
+  output
+  {
+    name	"cone.tga"
+  }
+  renderer : class Raytracer {}
+}

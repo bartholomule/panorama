@@ -1,0 +1,35 @@
+
+include @top_srcdir@/Makefile.vars
+
+DIRS  = ./developers \
+        ./users
+
+FILES = AUTHORS BUGS CREDITS FAQ INSTALL LICENSE NEWS README pluginrc
+
+all:
+		@set -e; \
+		for i in $(DIRS); do \
+                  $(MAKE) -C $$i all; \
+                done
+
+install:        all
+		@@INSTALL_DATA@ ${FILES} ${DOC_DIR}
+		@@INSTALL_DATA@ pluginrc ${CONFIG_DIR}
+		@@top_srcdir@/mkinstalldirs ${DOC_DIR}/developers ${DOC_DIR}/users
+		@set -e; \
+		for i in $(DIRS); do \
+                  $(MAKE) -C $$i install; \
+                done
+
+clean:
+		@set -e
+		@for i in $(DIRS); do \
+                  $(MAKE) -C $$i clean; \
+                done
+
+distclean:
+		@set -e
+		@for i in $(DIRS); do \
+                  $(MAKE) -C $$i distclean; \
+                done
+		@rm -f ./Makefile

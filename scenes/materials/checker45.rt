@@ -1,0 +1,55 @@
+/*
+*  Checkerboard test
+*/
+
+#include "materials.inc"
+
+define camera c
+{
+  translate	<600, 0, 600>
+  look_at	<0, 0, 0>
+}
+
+define light l
+{
+  translate	<200, 200, 500>
+  color		CWhite
+}
+
+define light l2
+{
+  translate	<0, 1000, 0>
+  color		CWhite
+  shadow        off
+}
+
+plane
+{
+  translate     <0, -150, 0>
+  normal	<0, 1, 0>
+  material : extends MChecker
+  {
+    color       CBlack
+    base_color  CWhite
+    size        50
+    specular    0
+  }
+}
+
+scene
+{
+  camera	c
+  light		l
+  light		l2
+  width		300
+  height	300
+  background	CSummerSky
+  output
+  {
+    name	"checker45.tga"
+  }
+  renderer : class Raytracer
+  {
+    sampling    "adaptive"
+  }
+}

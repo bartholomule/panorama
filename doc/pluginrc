@@ -1,0 +1,17 @@
+atm_const.plg
+bsdf_lambertian.plg
+bsdf_phong.plg
+pinhole.plg
+if_cartoon.plg
+if_convert_to_grey.plg
+if_fog.plg
+tga_io.plg
+point_light.plg
+projector.plg
+warn_light.plg
+mat_checker.plg
+mat_noise.plg
+mat_worley.plg
+of_cartoon.plg
+raytracer.plg
+rt_io.plg

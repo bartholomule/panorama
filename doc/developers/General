@@ -1,0 +1,25 @@
+
+  The highest level structure is the scene (TScene). A scene is a collection of
+ the elements needed to produce an image (TImage) of a given "world". This
+ "world" is simply a set of geometrical objects (TObject) in a hierarchical
+ structure. The scene also contains a camera definition (TCamera), a list of
+ lights (TLight) and a renderer definition (TRenderer) that will be used to
+ make this image.
+
+  The element in charge of generating this final image is the renderer. It is
+ independent of the rest of the elements, so that ray tracing, path tracing,
+ radiosity, scanline, or any other rendering method implemented can be used
+ with the same scene.
+
+  Besides the geometrical definition, objects have other attributes that helps
+ the renderer when calculating illumination. An object has a material
+ (TMaterial), that define physical properties, like color, transparency,
+ reflectivity, etc. An object can also have a list of object filters
+ (TObjectFilter). These are applied to the color obtained during illumination
+ calculation by the renderer.
+ 
+  Once the whole image has been calculated, a postprocessing pass will apply a
+ list of image filters (TImageFilter) to this image, if they are given. This
+ filters can be used to get special effects on the whole image (fog,
+ cartoon-like, etc). After that, image is saved to a file, in the format
+ chosen.

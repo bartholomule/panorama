@@ -1,0 +1,40 @@
+
+include @top_srcdir@/Makefile.vars
+
+DIRS = ./data \
+       ./doc \
+       ./hlapi \
+       ./llapi \
+       ./plugins \
+       ./programs \
+       ./scenes
+
+all:
+		@set -e; \
+		for i in $(DIRS); do \
+                  $(MAKE) -C $$i all; \
+                done
+
+install:        all installdirs
+		@set -e; \
+		for i in $(DIRS); do \
+                  $(MAKE) -C $$i install; \
+                done
+
+clean:
+		@set -e
+		@for i in $(DIRS); do \
+                  $(MAKE) -C $$i clean; \
+                done
+
+distclean:
+		@set -e
+		@for i in $(DIRS); do \
+                  $(MAKE) -C $$i distclean; \
+                done
+		@rm -f ./Makefile ./Makefile.targets ./Makefile.vars
+		@rm -f ./config.cache ./config.log ./config.status
+
+installdirs:
+		@echo Creating directories...
+		@@top_srcdir@/mkinstalldirs ${TOP_DIR} ${BIN_DIR} ${LIB_DIR} ${DOC_DIR} ${CONFIG_DIR} ${INCLUDE_DIR} ${PLUGIN_DIR} ${TEXTURE_DIR}

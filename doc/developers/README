@@ -1,0 +1,30 @@
+
+  In this directory you will find information about the internals of the
+ project. I know it's very limited, but I will be adding more info as I have
+ time.
+
+  If you need additional info on some topic, email me at ajimenez@vnet.es. I
+ will answer the best I can, and may be add this info to this directory. So
+ this is the way for you to tell me which parts of documentation do I have to
+ extend.
+
+  The little C++ style guide included has been used in sources of this project.
+ All the sources in this project follow this rules, and I expect every code
+ added to the main distribution to follow them too. If you send me code to add
+ to the project, I will manually modify it to follow this rules, but it would
+ be better if you use them yourself.
+
+  Of course I'm not infallible, so there may be places in the sources where I
+ didn't followed them, so tell me and I'll fix it. If you think these rules are
+ wrong, or you want to add something, tell me about it.
+
+  Finally, if you want to help with this project, read file 'PROJECTS' in this
+ directory.
+
+  For more information, point your browser at:
+  
+    http://www.gnu.org/software/panorama/developers.html
+
+======
+
+  Angel Jimenez (ajimenez@vnet.es)

@@ -1,0 +1,48 @@
+
+include @top_srcdir@/Makefile.vars
+include @top_srcdir@/Makefile.rules
+
+OBJ = ./aggregate.o \
+      ./atmosphere.o \
+      ./atmospheric_object.o \
+      ./base_class.o \
+      ./bounding_box.o \
+      ./bsdf.o \
+      ./camera.o \
+      ./debug.o \
+      ./file.o \
+      ./image.o \
+      ./image_io.o \
+      ./light.o \
+      ./material.o \
+      ./mesh.o \
+      ./object.o \
+      ./perlin_noise.o \
+      ./ray.o \
+      ./root_solver.o \
+      ./scene.o \
+      ./span_list.o \
+      ./surface_data.o \
+      ./transform_object.o \
+      ./worley_basis.o
+
+all:		${LLAPI_LIB} ${STATIC_LLAPI_LIB}
+
+install:        all
+		@echo Installing llapi lib...
+		@@INSTALL@ ${LLAPI_LIB} ${LIB_DIR}
+
+${LLAPI_LIB}:	${OBJ}
+		@echo Making library ${LLAPI_LIB}...
+		@${CXX} -fPIC -shared ${CXXFLAGS} -o ${LLAPI_LIB} ${OBJ}
+
+${STATIC_LLAPI_LIB}:    ${OBJ}
+		@echo Making static library ${STATIC_LLAPI_LIB}...
+		@ar rcs ${STATIC_LLAPI_LIB} ${OBJ}
+
+clean:
+		@rm -f ${OBJ} ${LLAPI_LIB} ${STATIC_LLAPI_LIB}
+		@rm -f *~ *.bak core
+
+distclean:      clean
+		@rm -f Makefile

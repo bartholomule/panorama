@@ -1,0 +1,4 @@
+
+DIRS = ./cartoon
+
+include @top_srcdir@/Makefile.targets

@@ -1,0 +1,26 @@
+@SET_MAKE@
+
+all:
+		@set -e; \
+		for i in $(DIRS); do \
+                  $(MAKE) -C $$i all; \
+                done
+
+install:
+		@set -e; \
+		for i in $(DIRS); do \
+                  $(MAKE) -C $$i install; \
+                done
+
+clean:
+		@set -e
+		@for i in $(DIRS); do \
+                  $(MAKE) -C $$i clean; \
+                done
+
+distclean:
+		@set -e
+		@for i in $(DIRS); do \
+                  $(MAKE) -C $$i distclean; \
+                done
+		@rm -f Makefile

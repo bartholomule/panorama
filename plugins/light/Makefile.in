@@ -1,0 +1,6 @@
+
+DIRS = ./point_light \
+       ./projector \
+       ./warn_light
+
+include @top_srcdir@/Makefile.targets

@@ -1,0 +1,2 @@
+PLUGIN_NAME = atm_const
+OBJ         = atm_const.o

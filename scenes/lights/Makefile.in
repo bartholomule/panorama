@@ -1,0 +1,17 @@
+
+include @top_srcdir@/Makefile.vars
+
+FILES = projector.rt warn.rt
+
+all:
+
+install:
+		@echo "Installing scenes (lights)..."
+		@@top_srcdir@/mkinstalldirs ${TOPDIR}/scenes/lights
+		@@INSTALL_DATA@ ${FILES} ${TOPDIR}/scenes/lights
+
+clean:
+
+distclean:
+		@rm -f Makefile
+		@rm -f *.tga

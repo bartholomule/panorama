@@ -1,0 +1,4 @@
+
+DIRS = ./raytracer
+
+include @top_srcdir@/Makefile.targets

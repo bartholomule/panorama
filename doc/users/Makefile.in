@@ -1,0 +1,17 @@
+
+include @top_srcdir@/Makefile.vars
+
+FILES = README \
+	classes.html \
+        language.html
+        
+all:
+
+install:
+		@echo Installing user documentation files...
+		@@INSTALL_DATA@ ${FILES} ${DOC_DIR}/users
+
+clean:
+
+distclean:
+		@rm -f Makefile

@@ -1,0 +1,5 @@
+
+DIRS = ./lambertian \
+       ./phong
+
+include @top_srcdir@/Makefile.targets

@@ -1,0 +1,6 @@
+
+DIRS = ./cartoon \
+       ./convert_to_grey \
+       ./fog
+
+include @top_srcdir@/Makefile.targets

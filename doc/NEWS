@@ -1,0 +1,57 @@
+
+>> Version 0.10.0 released.
+
+ - Added options in configure script to choose between static and dynamic
+   linking, and to optionally add debug information.
+   
+ - Objects can now have multiple object filters.
+ 
+ - Fixed normal transformation.
+ 
+ - Fixed raytracer illumination model.
+ 
+ - Added atmospheric objects.
+ 
+ - Added anti-aliasing methods to raytracer.
+ 
+ - Added torus object.
+ 
+ - Added quartic root solver.
+
+ - Several speedups.
+ 
+ - Several bug fixes.
+
+ - Several internal changes (see CHANGES_0.9.1-0.10.0 file in doc/developers).
+ 
+>> Version 0.9.1 released.
+
+ - Code clean up.
+ 
+ - Changes in makefiles to help portability.
+ 
+ - Bug fixes.
+ 
+>> Version 0.9.0 released.
+
+ - Minor changes in several classes.
+ 
+ - Added new material plugin for Worley basis function.
+ 
+ - Added Worley cellular texture basis function.
+ 
+ - Added a priority queue class to libcommon.
+ 
+ - Added a method to TRTPluginManager to get plugin list.
+ 
+ - Added a method to all descendants of TBaseClass to get values of attributes.
+ 
+ - Added a method to all descendants of TBaseClass to get attribute list.
+ 
+ - Added automatic detection of scene type.
+
+ - Added kd-tree acceleration object.
+
+ - Updated developers documentation.
+ 
+>> Version 0.8.0a released.

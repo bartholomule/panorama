@@ -1,0 +1,4 @@
+
+DIRS = ./rt
+
+include @top_srcdir@/Makefile.targets

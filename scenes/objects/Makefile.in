@@ -1,0 +1,17 @@
+
+include @top_srcdir@/Makefile.vars
+
+FILES = box.rt circle.rt cone.rt cylinder.rt phong_triangle.rt rectangle.rt torus.rt triangle.rt
+
+all:
+
+install:
+		@echo "Installing scenes (objects)..."
+		@@top_srcdir@/mkinstalldirs ${TOPDIR}/scenes/objects
+		@@INSTALL_DATA@ ${FILES} ${TOPDIR}/scenes/objects
+
+clean:
+
+distclean:
+		@rm -f Makefile
+		@rm -f *.tga

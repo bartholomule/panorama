@@ -1,0 +1,13 @@
+
+DIRS = ./atm_object \
+       ./bsdf \
+       ./camera \
+       ./image_filter \
+       ./image_io \
+       ./light \
+       ./material \
+       ./object_filter \
+       ./renderer \
+       ./scene_io
+
+include @top_srcdir@/Makefile.targets

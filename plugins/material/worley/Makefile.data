@@ -1,0 +1,2 @@
+PLUGIN_NAME = mat_worley
+OBJ         = mat_worley.o

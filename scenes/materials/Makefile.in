@@ -1,0 +1,17 @@
+
+include @top_srcdir@/Makefile.vars
+
+FILES = checker.rt checker45.rt materials.rt water.rt worley.rt
+
+all:
+
+install:
+		@echo "Installing scenes (materials)..."
+		@@top_srcdir@/mkinstalldirs ${TOPDIR}/scenes/materials
+		@@INSTALL_DATA@ ${FILES} ${TOPDIR}/scenes/materials
+
+clean:
+
+distclean:
+		@rm -f Makefile
+		@rm -f *.tga

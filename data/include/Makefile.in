@@ -1,0 +1,15 @@
+
+include @top_srcdir@/Makefile.vars
+
+FILES = ./colors.inc ./materials.inc
+        
+all:
+
+install:
+		@echo Installing include files...
+		@@INSTALL_DATA@ ${FILES} ${INCLUDE_DIR}
+
+clean:
+
+distclean:
+		@rm -f Makefile

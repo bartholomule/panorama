@@ -1,0 +1,13 @@
+
+%.o: %.cpp
+		@echo Compiling $<...
+		@${CXX} -c ${CXXFLAGS} $< -o $@
+
+%.cpp: %.l
+		@echo Generating scanner...
+		@${LEX} ${LEXFLAGS} $< > $@
+
+%.cpp: %.y
+		@echo Generating parser...
+		@${YACC} -do $(basename $@).c $<
+		@mv $(basename $@).c $@

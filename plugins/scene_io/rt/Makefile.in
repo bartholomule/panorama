@@ -1,0 +1,28 @@
+
+include @top_srcdir@/Makefile.vars
+include @top_srcdir@/Makefile.rules
+include @srcdir@/Makefile.data
+
+PLUGIN = ${PLUGIN_NAME}.plg
+
+all:		${PLUGIN}
+
+install:        all
+		@echo Installing plugin ${PLUGIN_NAME}...
+		@@INSTALL@ ${PLUGIN} ${PLUGIN_DIR}
+
+${PLUGIN}:	${OBJ}
+		@echo Making plugin ${PLUGIN_NAME}...
+		@${CXX} -shared -o ${PLUGIN} ${OBJ} -lstdc++
+
+render.o:	render.cpp parser.cpp
+
+scanner.cpp:	scanner.l parser.cpp
+
+parser.cpp:	parser.y
+
+clean: 
+		@rm -f ${OBJ} ${PLUGIN} core *~ *.bak
+
+distclean:      clean
+		@rm -f Makefile

@@ -1,0 +1,62 @@
+/*
+*  Box test
+*/
+
+#include "materials.inc"
+
+define camera c
+{
+  translate	<0, 200, 500>
+  look_at	<0, 100, 0>
+}
+
+define light l
+{
+  translate	<-500, 300, 500>
+  color		CWhite
+}
+
+define light l2
+{
+  translate	<0, 1000, 0>
+  color		CWhite
+}
+
+plane
+{
+  translate	<0, 0, 0>
+  normal	<0, 1, 0>
+  material : extends MChecker
+  {
+    color	CBlue
+    base_color  CYellow
+    size        50
+    specular    0
+  }
+}
+
+box
+{
+  scale         <100, 100, 100>
+  translate	<0, 50, 0>
+  rotate        <0, 3.14 / 8, 0>
+  material : extends MPlastic
+  {
+    color	CRed
+  }
+}
+
+scene
+{
+  camera	c
+  light		l
+  light		l2
+  width		400
+  height	400
+  background	CSummerSky
+  output
+  {
+    name	"box.tga"
+  }
+  renderer : class Raytracer {}
+}

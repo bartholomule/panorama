@@ -1,0 +1,52 @@
+/*
+*  Circle test
+*/
+
+#include "materials.inc"
+
+define camera c
+{
+  translate	<0, 200, 600>
+  look_at	<0, 100, 0>
+}
+
+define light l
+{
+  translate	<-500, 300, 500>
+  color		CWhite
+}
+
+circle
+{
+  translate	<0, 0, 0>
+  normal	<0, 1, 0>
+  radius	200
+  material : extends MPlastic
+  {
+    color	CGreen
+  }
+}
+
+sphere
+{
+  translate	<0, 50, 0>
+  radius	50
+  material : extends MPlastic
+  {
+    color	CWhite
+  }
+}
+
+scene
+{
+  camera	c
+  light		l
+  width		600
+  height	400
+  background	CSummerSky
+  output
+  {
+    name        "circle.tga"
+  }
+  renderer : class Raytracer {}
+}

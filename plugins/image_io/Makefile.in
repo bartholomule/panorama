@@ -1,0 +1,4 @@
+
+DIRS = ./tga
+
+include @top_srcdir@/Makefile.targets

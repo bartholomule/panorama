@@ -1,0 +1,17 @@
+
+include @top_srcdir@/Makefile.vars
+
+FILES = atmosphere.rt
+
+all:
+
+install:
+		@echo "Installing scenes (atmospheric)..."
+		@@top_srcdir@/mkinstalldirs ${TOPDIR}/scenes/atmospheric
+		@@INSTALL_DATA@ ${FILES} ${TOPDIR}/scenes/atmospheric
+
+clean:
+
+distclean:
+		@rm -f Makefile
+		@rm -f *.tga

@@ -1,0 +1,2 @@
+PLUGIN_NAME = if_cartoon
+OBJ         = if_cartoon.o

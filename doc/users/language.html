@@ -1,0 +1,88 @@
+<HTML>
+<HEAD>
+   <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+   <META NAME="GENERATOR" CONTENT="Mozilla/4.04 [en] (X11; I; Linux 2.1.122 i586) [Netscape]">
+</HEAD>
+<BODY>
+
+<CENTER>
+<H1>
+Language specification (draft 0.2)</H1></CENTER>
+
+<H4>
+0. INTRODUCTION</H4>
+[to be done...]
+<H4>
+1. BASICS</H4>
+&nbsp;Panorama scene language is based in objects. Objects are instances
+of a class, the same way a variable is an instance of its type. Each object
+has some attributes that differentiates it from every other object. This
+attribute will always have the form of a keyword followed by an instance
+of the right type:
+<UL><TT>translate&nbsp; &lt;0, 0, 0>&nbsp;&nbsp;&nbsp; </TT>(Type is vector)
+<BR><TT>radius&nbsp;&nbsp;&nbsp;&nbsp; 10&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</TT>(Type is real)</UL>
+&nbsp; Objects can be created in any of these three ways:
+<OL>
+<LI>
+From scratch:</LI>
+<TT></TT>
+
+<P><TT>light light_name</TT>
+<BR><TT>{</TT>
+<BR><TT>&nbsp; translate&nbsp; &lt;0, 1, 0></TT>
+<BR><TT>&nbsp; color&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CRed</TT>
+<BR><TT>}</TT><TT></TT>
+
+<P>This way, object will be an instance of the default class for the family
+(e.g. PointLight in the light family). Some families of classes has no
+default, so they cannot be instantiated this way.
+<BR>&nbsp;
+<LI>
+As an instance of a given class:</LI>
+<TT></TT>
+
+<P><TT>light light_name : class WarnLight</TT>
+<BR><TT>{</TT>
+<BR><TT>&nbsp; translate&nbsp; &lt;0, 1, 0></TT>
+<BR><TT>&nbsp; point_at&nbsp;&nbsp; &lt;0, 0, 0></TT>
+<BR><TT>&nbsp; color&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CWhite</TT>
+<BR><TT>}</TT>
+
+<P>Referred class should be a built-in class, or a registered plugin.
+<BR>&nbsp;
+<LI>
+Copying from another object:</LI>
+
+
+<P><TT>light light_name : extends another_light_name</TT>
+<BR><TT>{</TT>
+<BR><TT>&nbsp; intensity&nbsp; 100</TT>
+<BR><TT>}</TT>
+
+<P>New object will be a copy of referred object, with aditional changes
+given. Obviously, it will be an object of the same class as referred object,
+that must have been defined previously.
+<BR>&nbsp;</OL>
+This three methods can be used to create (instantiate) a new object. You
+can assign a name to the new object (as in previous examples), or left
+it unnamed.
+<UL><TT>light : class WarnLight</TT>
+<BR><TT>{</TT>
+<BR><TT>&nbsp; ...</TT>
+<BR><TT>}</TT></UL>
+If you don't want to instantiate a new object, but just use it as a template
+to make copies of it, you can make a definition. To do this, you can use
+any of the previous methods, preceded by the word 'define':
+<UL><TT>define light light_name : class WarnLight</TT>
+<BR><TT>{</TT>
+<BR><TT>&nbsp; ...</TT>
+<BR><TT>}</TT></UL>
+In a definition, an object cannot be unnamed (a definition that cannot
+be referred would be useless).
+<H4>
+2. SCENE FILE STRUCTURE</H4>
+[to be done...]
+<BR>&nbsp;
+</BODY>
+</HTML>

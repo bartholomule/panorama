@@ -1,0 +1,4 @@
+
+DIRS = ./pinhole
+
+include @top_srcdir@/Makefile.targets

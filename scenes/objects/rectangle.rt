@@ -1,0 +1,54 @@
+/*
+*  Rectangle test
+*/
+
+#include "materials.inc"
+
+define camera c
+{
+  translate	<-400, 200, 500>
+  look_at	<0, 100, 0>
+}
+
+define light l
+{
+  translate	<-500, 300, 500>
+  color		CWhite
+}
+
+rectangle
+{
+  <-200, 0, -200>
+  < 200, 0, -200>
+  < 200, 0,  200>
+  <-200, 0,  200>
+  one_sided	off
+  material : extends MPlastic
+  {
+    color	CGreen
+  }
+}
+
+sphere
+{
+  translate	<0, 50, 0>
+  radius	50
+  material : extends MPlastic
+  {
+    color	CWhite
+  }
+}
+
+scene
+{
+  camera	c
+  light		l
+  width		600
+  height	400
+  background	CSummerSky
+  output
+  {
+    name	"rectangle.tga"
+  }
+  renderer : class Raytracer {}
+}

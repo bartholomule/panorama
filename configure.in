@@ -1,0 +1,106 @@
+dnl Process this file with autoconf to produce a configure script.
+
+AC_INIT(llapi/base_class.h)
+
+AC_PREFIX_DEFAULT(/opt/panorama)
+
+AC_CONFIG_AUX_DIR(`pwd`)
+
+dnl Checks for programs.
+AC_PROG_CXX
+AC_PROG_INSTALL
+AC_PROG_LEX
+AC_PROG_YACC
+AC_PROG_MAKE_SET
+
+dnl Checks for libraries.
+AC_CHECK_LIB(dl, dlopen)
+
+dnl Checks for header files.
+AC_HEADER_STDC
+
+dnl Checks for typedefs, structures, and compiler characteristics.
+AC_C_CONST
+AC_C_BIGENDIAN
+AC_TYPE_SIZE_T
+
+SRC_DIR=`pwd`
+AC_SUBST(SRC_DIR)
+
+dnl Checks for static-link option.
+AC_MSG_CHECKING(whether to link statically or not)
+AC_ARG_ENABLE(static-link,
+[  --enable-static-link    Link everything statically, with profile information],
+STATIC_VAL=$enableval, STATIC_VAL="no")
+if test $STATIC_VAL = "yes"; then
+  STATIC_LINK=1
+else
+  STATIC_VAL="no";
+  STATIC_LINK=0
+fi
+AC_SUBST(STATIC_LINK)
+AC_MSG_RESULT($STATIC_VAL)
+
+dnl Checks for debug option.
+AC_MSG_CHECKING(whether to enable debug info or not)
+AC_ARG_ENABLE(debug,
+[  --enable-debug          Generate debug information when compiling],
+DEBUG_VAL=$enableval, DEBUG_VAL="no")
+if test $DEBUG_VAL = "yes"; then
+  DEBUG_INFO=1
+else
+  DEBUG_VAL="no";
+  DEBUG_INFO=0
+fi
+AC_SUBST(DEBUG_INFO)
+AC_MSG_RESULT($DEBUG_VAL)
+
+AC_OUTPUT(\
+	Makefile \
+	Makefile.vars \
+	Makefile.targets \
+        data/Makefile \
+        data/include/Makefile \
+        data/texture/Makefile \
+        doc/Makefile \
+        doc/developers/Makefile \
+        doc/users/Makefile \
+        llapi/Makefile \
+        hlapi/Makefile \
+        plugins/Makefile \
+        plugins/atm_object/Makefile \
+        plugins/atm_object/atm_const/Makefile:Makefile.plugin.in \
+        plugins/bsdf/Makefile \
+        plugins/bsdf/lambertian/Makefile:Makefile.plugin.in \
+        plugins/bsdf/phong/Makefile:Makefile.plugin.in \
+        plugins/camera/Makefile \
+        plugins/camera/pinhole/Makefile:Makefile.plugin.in \
+        plugins/image_filter/Makefile \
+        plugins/image_filter/cartoon/Makefile:Makefile.plugin.in \
+        plugins/image_filter/convert_to_grey/Makefile:Makefile.plugin.in \
+        plugins/image_filter/fog/Makefile:Makefile.plugin.in \
+        plugins/image_io/Makefile \
+        plugins/image_io/tga/Makefile:Makefile.plugin.in \
+        plugins/light/Makefile \
+        plugins/light/point_light/Makefile:Makefile.plugin.in \
+        plugins/light/projector/Makefile:Makefile.plugin.in \
+        plugins/light/warn_light/Makefile:Makefile.plugin.in \
+        plugins/material/Makefile \
+        plugins/material/checker/Makefile:Makefile.plugin.in \
+        plugins/material/noise/Makefile:Makefile.plugin.in \
+        plugins/material/worley/Makefile:Makefile.plugin.in \
+        plugins/object_filter/Makefile \
+        plugins/object_filter/cartoon/Makefile:Makefile.plugin.in \
+        plugins/renderer/Makefile \
+        plugins/renderer/raytracer/Makefile:Makefile.plugin.in \
+        plugins/scene_io/Makefile \
+        plugins/scene_io/rt/Makefile:Makefile.plugin.in \
+        programs/Makefile \
+        programs/render/Makefile \
+        scenes/Makefile \
+        scenes/atmospheric/Makefile \
+        scenes/lights/Makefile \
+        scenes/materials/Makefile \
+        scenes/misc/Makefile \
+        scenes/objects/Makefile
+)

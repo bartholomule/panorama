@@ -1,0 +1,2 @@
+PLUGIN_NAME = tga_io
+OBJ         = tga_io.o

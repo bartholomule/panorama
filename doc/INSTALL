@@ -1,0 +1,59 @@
+
+ To install this program, type:
+
+ $ tar xvfz panorama-X.X.X.tar.gz
+
+   Unpacks sources.
+
+ $ cd panorama-X.X.X
+
+   Enter project directory.
+ 
+ $ ./configure [--prefix=<project_directory>] [--enable-static-link]
+   [--enable-debug]
+
+   This generates all makefiles, setting project main directory to
+  <project_directory>. If you don't specify this parameter, it will default to
+  /opt/panorama.
+
+   If '--enable-static-link' option is given, all the source files in the
+  project will be compiled with profiling information, and they will all be
+  statically linked, including plugins.
+
+   If '--enable-debug' option is given, all the source files will be compiled
+  with debug information for GNU debugger (gdb). This option can be used with
+  dynamic or static linking.
+
+ $ make
+
+   Builds the project.
+
+ $ make install
+
+   Create directories (if they don't exist) and copy files onto them. If you
+  are installing onto /opt/panorama, you will need to be root.
+
+ $ mkdir ~/.panorama && cp doc/pluginrc ~/.panorama     (Optional)
+
+   Creates a local config directory in user directory. This is recomended if
+  you want to change something in the plugin configuration file (pluginrc).
+
+  Before running the program, you will also have to add Panorama library
+ directory to the library path:
+
+ $ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/panorama/lib
+
+ (substitute /opt/panorama with the right directory).
+ 
+
+ Notes:
+ ------
+
+ * If you are using GNU C++ compiler, you need version 2.8.1 or newer and
+ libstdc++ 2.8.1 or newer to build this project. It will not build under GNU
+ C++ 2.7.2 (read the FAQ).
+ 
+ * If you are using GNU libc 2, you may have problems during program execution,
+ when trying to open plugin files. This is because of a bug in glibc's dynamic
+ linking code, fixed in 2.0.7. (If you are using RedHat distribution, you must
+ have glibc-2.0.7-6 RPM or newer).

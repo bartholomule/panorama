@@ -1,0 +1,31 @@
+
+include @top_srcdir@/Makefile.vars
+include @top_srcdir@/Makefile.rules
+include @srcdir@/Makefile.data
+
+PLUGIN = @srcdir@/${PLUGIN_NAME}.plg
+
+all:		${PLUGIN}
+
+install:        all
+ifneq (1,@STATIC_LINK@)
+		@echo Installing plugin ${PLUGIN_NAME}...
+		@@INSTALL@ ${PLUGIN} ${PLUGIN_DIR}
+endif
+
+ifeq (1,@STATIC_LINK@)
+${PLUGIN}:	${OBJ}
+		@echo Adding plugin code to hlapi library
+		@ar rcs ${STATIC_HLAPI_LIB} ${OBJ}
+		@touch ${PLUGIN}
+else
+${PLUGIN}:	${OBJ}
+		@echo Making plugin ${PLUGIN_NAME}...
+		@${CXX} -fPIC -shared -o ${PLUGIN} ${OBJ} ${LIB}
+endif
+
+clean: 
+		@rm -f ${OBJ} ${PLUGIN} core *~ *.bak
+
+distclean:      clean
+		@rm -f Makefile

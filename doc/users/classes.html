@@ -1,0 +1,645 @@
+<HTML>
+<HEAD>
+   <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+   <META NAME="GENERATOR" CONTENT="Mozilla/4.04 [en] (X11; I; Linux 2.1.123 i586) [Netscape]">
+</HEAD>
+<BODY>
+
+<CENTER>
+<H1>
+CLASSES (Panorama v0.10.0)</H1></CENTER>
+
+<UL>
+<LI>
+<A HREF="#atmospheric_object">Atmospheric object</A></LI>
+
+<UL>
+<LI>
+<A HREF="#AtmConst">AtmConst</A></LI>
+</UL>
+
+<LI>
+<A HREF="#bsdf">BSDF</A></LI>
+
+<UL>
+<LI>
+<A HREF="#BsdfLambertian">BsdfLambertian</A></LI>
+
+<LI>
+<A HREF="#BsdfPhong">BsdfPhong</A></LI>
+</UL>
+
+<LI>
+<A HREF="#camera">Camera</A></LI>
+
+<UL>
+<LI>
+<A HREF="#PinholeCamera">PinholeCamera</A></LI>
+</UL>
+
+<LI>
+<A HREF="#camera">Image filter</A></LI>
+
+<UL>
+<LI>
+<A HREF="#IF_Cartoon">IF_Cartoon</A></LI>
+
+<LI>
+<A HREF="#IF_ConvertToGrey">IF_ConvertToGrey</A></LI>
+
+<LI>
+<A HREF="#IF_Fog">IF_Fog</A></LI>
+</UL>
+
+<LI>
+<A HREF="#image_io">Image&nbsp;I/O</A></LI>
+
+<UL>
+<LI>
+<A HREF="#tga">tga</A></LI>
+</UL>
+
+<LI>
+<A HREF="#light">Light</A></LI>
+
+<UL>
+<LI>
+<A HREF="#PointLight">PointLight</A></LI>
+
+<UL>
+<LI>
+<A HREF="#Projector">Projector</A></LI>
+
+<LI>
+<A HREF="#WarnLight">WarnLight</A></LI>
+</UL>
+</UL>
+
+<LI>
+<A HREF="#material">Material</A></LI>
+
+<UL>
+<LI>
+<A HREF="#MaterialChecker">MaterialChecker</A></LI>
+
+<LI>
+<A HREF="#MaterialNoise">MaterialNoise</A></LI>
+
+<LI>
+<A HREF="#MaterialWorley">MaterialWorley</A></LI>
+</UL>
+
+<LI>
+<A HREF="#object">Object</A></LI>
+
+<UL>
+<LI>
+<A HREF="#Aggregate">Aggregate</A></LI>
+
+<LI>
+<A HREF="#Box">Box</A></LI>
+
+<LI>
+<A HREF="#Cone">Cone</A></LI>
+
+<LI>
+<A HREF="#Cylinder">Cylinder</A></LI>
+
+<LI>
+<A HREF="#Mesh">Mesh</A></LI>
+
+<LI>
+<A HREF="#Plane">Plane</A></LI>
+
+<UL>
+<LI>
+<A HREF="#Circle">Circle</A></LI>
+
+<LI>
+<A HREF="#Triangle">Triangle</A></LI>
+
+<UL>
+<LI>
+<A HREF="#PhongTriangle">PhongTriangle</A></LI>
+</UL>
+
+<LI>
+<A HREF="#Rectangle">Rectangle</A></LI>
+</UL>
+
+<LI>
+<A HREF="#Sphere">Sphere</A></LI>
+
+<LI>
+<A HREF="#Torus">Torus</A></LI>
+</UL>
+
+<LI>
+<A HREF="#renderer">Renderer</A></LI>
+
+<UL>
+<LI>
+<A HREF="#Raytracer">Raytracer</A></LI>
+</UL>
+
+<LI>
+<A HREF="#scene">Scene</A></LI>
+</UL>
+
+<HR WIDTH="100%">
+<H2>
+<A NAME="atmospheric_object"></A>ATMOSPHERIC OBJECT</H2>
+Keyword: atm_object
+<BR>Default class: AtmConst
+<BR>Common attributes: samples [REAL] . . . Initial number of samples
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+min_step_size [REAL] . . . Minimum allowed step size for ray marching
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+transp_th [REAL] . . .Transparency threshold
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+slope_th [REAL] . . . Slope threshold for adaptive sampling
+
+<P>Example:
+<UL><TT>atm_object : class AtmConst</TT>
+<BR><TT>{</TT>
+<BR><TT>&nbsp; extinction&nbsp; 0.001</TT>
+<BR><TT>&nbsp; albedo&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0.001</TT>
+<BR><TT>}</TT></UL>
+
+<H4>
+Atmospheric object classes</H4>
+
+<UL>
+<LI>
+<A NAME="AtmConst"></A>Name: 'AtmConst'</LI>
+
+<BR>Attributes: 'extinction' [REAL]
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'albedo' [REAL]</UL>
+
+<H2>
+<A NAME="bsdf"></A>BSDF</H2>
+Keyword: bsdf
+<BR>Default class: BsdfPhong
+<BR>Common attributes: None
+
+<P>Example:
+<UL><TT>bsdf : class BsdfPhong</TT>
+<BR><TT>{</TT>
+<BR><TT>&nbsp; exponent&nbsp; 10</TT>
+<BR><TT>}</TT></UL>
+
+<H4>
+BSDF classes</H4>
+
+<UL>
+<LI>
+<A NAME="BsdfLambertian"></A>Name : 'BsdfLambertian'</LI>
+
+<BR>Attributes : none
+<BR>&nbsp;
+<LI>
+<A NAME="BsdfPhong"></A>Name : 'BsdfPhong'</LI>
+
+<BR>Attributes : 'exponent' [REAL] . . . . Phong exponent.</UL>
+
+<H1>
+<A NAME="camera"></A>CAMERA</H1>
+Keyword: camera
+<BR>Default class: PinholeCamera
+<BR>Common attributes: 'translate' [VECTOR] . . . Move camera to another
+location
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'rotate' [VECTOR] . . . Rotate camera.
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'up' [VECTOR] . . . . . . .Vector defining vertical direction (default
+is &lt;0, 1, 0>).
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'look_at' [VECTOR] . . . Point where camera is looking at.
+
+<P>Example:
+<UL><TT>camera : class PinholeCamera</TT>
+<BR><TT>{</TT>
+<BR><TT>&nbsp; translate&nbsp; &lt;0, 0, 600></TT>
+<BR><TT>&nbsp; look_at&nbsp;&nbsp;&nbsp; &lt;0, 0, 0></TT>
+<BR><TT>&nbsp; up&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;0,
+1, 0></TT>
+<BR><TT>}</TT></UL>
+
+<H4>
+Camera classes</H4>
+
+<UL>
+<LI>
+<A NAME="PinholeCamera"></A>Name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+: 'PinholeCamera'</LI>
+
+<BR>Attributes : 'angle' [REAL] . . . . . . (default is 45 degree).
+<BR>&nbsp;</UL>
+
+<H2>
+<A NAME="image_filter"></A>IMAGE FILTER</H2>
+Keyword: filter (only inside scene definition)
+<BR>Default class: None
+<BR>Common attributes: None
+
+<P>Example:
+<UL><TT>filter : class IF_Cartoon</TT>
+<BR><TT>{</TT>
+<BR><TT>&nbsp; outline&nbsp; CBlack</TT>
+<BR><TT>&nbsp; levels&nbsp;&nbsp; 4</TT>
+<BR><TT>}</TT>
+<BR>&nbsp;</UL>
+
+<H4>
+<TT>Image filter classes</TT></H4>
+
+<UL>
+<LI>
+<A NAME="IF_Cartoon"></A>Name : 'IF_Cartoon'</LI>
+
+<BR>Attributes : 'outline' [COLOR] . . . . Outline color (default is black).
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'levels' [REAL] . . . . . Color levels for each channel (default is 2).
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'distance_th' [REAL] . . . Threshold value for Z buffer (default is 50).
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'normal_th' [REAL] . . . Threshold value for N buffer. Draw outline color
+if normal difference is bigger than this value (default is 0.6).
+<BR>&nbsp;
+<LI>
+<A NAME="IF_ConvertToGrey"></A>Name : 'IF_ConvertToGrey'</LI>
+
+<BR>Attributes : none
+<BR>&nbsp;
+<LI>
+<A NAME="IF_Fog"></A>Name : 'IF_Fog'</LI>
+
+<BR>Attributes : 'color' [COLOR] . . . . . Fog color (default is white).
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'distance' [REAL] . . . . Fog distance (default is 1000).</UL>
+
+<H2>
+<A NAME="image_io"></A>IMAGE I/O</H2>
+Keyword:&nbsp;output&nbsp;(can only be used inside scene definition)
+<BR>Default class:&nbsp;tga
+<BR>Common attributes: 'type' [STRING] . . . Name of a format type.
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'name' [STRING] . . . Name of the file.
+
+<P>Example:
+<UL><TT>scene</TT>
+<BR><TT>{</TT>
+<BR><TT>&nbsp; . . .</TT>
+<BR><TT>&nbsp; output</TT>
+<BR><TT>&nbsp; {</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp; type&nbsp;&nbsp; "tga"</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp; name&nbsp;&nbsp; "test.tga"</TT>
+<BR><TT>&nbsp; }</TT>
+<BR><TT>&nbsp; . . .</TT>
+<BR><TT>}</TT>
+<BR><TT></TT>&nbsp;</UL>
+
+<H4>
+Image I/O&nbsp;classes</H4>
+
+<UL>
+<LI>
+<A NAME="tga"></A>Name:&nbsp;"tga"</LI>
+
+<BR>Attributes:&nbsp;none</UL>
+
+<H2>
+<A NAME="light"></A>LIGHT</H2>
+Keyword: light
+<BR>Default class: PointLight
+<BR>Common attributes: 'translate' [VECTOR] . . . Move light to another
+location.
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'rotate' [VECTOR] . . . . Rotate light.
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'color' [COLOR] . . . . . (default is white).
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'intensity' [REAL] . . . . (default is 1).
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'shadow' [BOOL] . . . . . Generate shadow (default is on)
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'volumetric' [BOOL] . . . Light is taken into account in volumetric sampling
+(when participating media is active) (default is on).
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'raytraced' [BOOL] . . . Shadows are raytraced&nbsp;(used by ZBuffer renderer)
+
+<P>Example:
+<UL><TT>light : class PointLight</TT>
+<BR><TT>{</TT>
+<BR><TT>&nbsp; translate&nbsp; &lt;0, 200, 0></TT>
+<BR><TT>&nbsp; color&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CRed</TT>
+<BR><TT>&nbsp; intensity&nbsp; 1</TT>
+<BR><TT>}</TT>
+<BR><TT></TT>&nbsp;</UL>
+
+<H4>
+Light classes</H4>
+
+<UL>
+<LI>
+<A NAME="PointLight"></A>Name : 'PointLight'</LI>
+
+<BR>Attributes : 'falloff' [VECTOR] . . . . Falloff coefficients &lt;a,
+b, c> used in the way: attn = 1 - min (1, 1 / (ar^2 + br + c)) where r
+is light-object distance.
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'axis' [VECTOR] . . . . . Destination point of threshold cone axis.
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'angle_th' [REAL] . . . . Angle for threshold cone (default is 0 = none).
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'distance_th' [REAL] . . . Distance threshold (default is 0 = none).
+<BR>&nbsp;
+<LI>
+<A NAME="WarnLight"></A>Name : 'WarnLight' (inherits from PointLight).</LI>
+
+<BR>Attributes : 'point_at' [VECTOR] . . . Destination point of Warn light
+axis.
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'exponent' [REAL] . . . . Warn exponent (the bigger this value, the more
+concentrated light will be on axis) (default is 1).
+<BR>&nbsp;
+<LI>
+<A NAME="Projector"></A>Name : 'Projector' (inherits from PointLight).</LI>
+
+<BR>Attributes : 'point_at' [VECTOR] . . . Destination point of light axis.
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'up' [VECTOR] . . . . . . Vector defining vertical direction (default is
+&lt;0, 1, 0>).
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'angle' [REAL] . . . . . . (default is 45 degree).
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'texture' [STRING] . . . . Texture file for projection.
+<BR>&nbsp;</UL>
+
+<H2>
+<A NAME="material"></A>MATERIAL</H2>
+Keyword: material
+<BR>Default class: Material
+<BR>Common attributes: 'color' [COLOR] . . . . . Diffuse color of the material.
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'opacity' [REAL] . . . . . Opacity coefficient (0..1) (default is 1 = opaque).
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'ambient' [REAL] . . . . . Ambient coefficient for illumination.
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'diffuse' [REAL] . . . . . Diffuse coefficient for illumination.
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'specular' [REAL] . . . . Specular coefficient for illumination.
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'ior' [REAL] . . . . . . . Index of refraction of the material (default
+is 1).
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'caustics' [REAL] . . . . Fake caustics exponent for transparent objects
+(default is 0).
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'emission' [REAL] . . . Light emmited by this material&nbsp;(currently
+unused in raytracing).
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'bsdf' [BSDF] . . . . . . Bsdf function of this material.
+
+<P>Example:
+<UL><TT>material</TT>
+<BR><TT>{</TT>
+<BR><TT>&nbsp; bsdf : class BsdfPhong</TT>
+<BR><TT>&nbsp; {</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp;&nbsp; exponent&nbsp; 10</TT>
+<BR><TT>&nbsp; }</TT>
+<BR><TT>&nbsp; color&nbsp;&nbsp;&nbsp;&nbsp; CWhite</TT>
+<BR><TT>&nbsp; ambient&nbsp;&nbsp; 0.1</TT>
+<BR><TT>&nbsp; diffuse&nbsp;&nbsp; 0.6</TT>
+<BR><TT>&nbsp; specular&nbsp; 0.2</TT>
+<BR><TT>}</TT>
+<BR>&nbsp;</UL>
+
+<H4>
+Material classes</H4>
+
+<UL>
+<LI>
+<A NAME="MaterialNoise"></A>Name : 'MaterialNoise'</LI>
+
+<BR>Attributes : 'base_color' [COLOR] . . . Gives alternative color.
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'zoom' [VECTOR] . . . . . Zoom factor for each axis.
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'bump' [REAL] . . . . . . Bump factor (default is 1).
+<BR>&nbsp;
+<LI>
+<A NAME="MaterialChecker"></A>Name : 'MaterialChecker'</LI>
+
+<BR>Attributes : 'base_color' [COLOR] . . . Gives alternative color for
+checkers.
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'size' [REAL] . . . . . . Size of the checkers.
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'border' [REAL] . . . . . Size of the border (default is 0 = none).
+<BR>&nbsp;
+<LI>
+<A NAME="MaterialWorley"></A>Name : 'MaterialWorley'</LI>
+
+<BR>Attributes : 'base_color' [COLOR] . . . Gives alternative color.
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'zoom' [VECTOR] . . . . . Zoom factor for each axis.
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'bump' [REAL] . . . . . . Bump factor (default is 1).
+<BR>&nbsp;</UL>
+
+<H2>
+<A NAME="object"></A>OBJECT</H2>
+Keyword: object (Common objects can also be defined or instantiated by
+its name. They are: box, circle, cone, cylinder, phong_triangle, plane,
+sphere, triangle)
+<BR>Default class: None
+<BR>Common attributes: 'translate' [VECTOR] . . . Move object to another
+location.
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'rotate' [VECTOR] . . . . Rotate object.
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'scale' [VECTOR] . . . . . Scale object.
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'material' [MATERIAL] . . Set material.
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'filter' [OBJECT_FILTER] . (default is none) Several object filters can
+be given.
+
+<P>Example:
+<UL><TT>sphere</TT>
+<BR><TT>{</TT>
+<BR><TT>&nbsp; translate&nbsp; &lt;0, 100, 0></TT>
+<BR><TT>&nbsp; radius&nbsp;&nbsp;&nbsp;&nbsp; 100</TT>
+<BR><TT>&nbsp; material : extends MPlastic</TT>
+<BR><TT>&nbsp; {</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp; color&nbsp;&nbsp; CRed</TT>
+<BR><TT>&nbsp; }</TT>
+<BR><TT>}</TT>
+<BR>&nbsp;</UL>
+
+<H4>
+Object classes</H4>
+
+<UL>
+<LI>
+<A NAME="Aggregate"></A>Name : 'Aggregate'</LI>
+
+<BR>Attributes : none
+<BR>&nbsp;
+<LI>
+<A NAME="Box"></A>Name : 'Box'</LI>
+
+<BR>Attributes : none
+<BR>&nbsp;
+<LI>
+<A NAME="Circle"></A>Name : 'Circle' (inherits from 'Plane').</LI>
+
+<BR>Attributes : 'radius' [REAL] . . . . .
+<BR>&nbsp;
+<LI>
+<A NAME="Cone"></A>Name : 'Cone'</LI>
+
+<BR>Attributes : none
+<BR>&nbsp;
+<LI>
+<A NAME="Cylinder"></A>Name : 'Cylinder'</LI>
+
+<BR>Attributes : none
+<BR>&nbsp;
+<LI>
+<A NAME="Mesh"></A>Name : 'Mesh'</LI>
+
+<BR>Attributes: none
+<BR>&nbsp;
+<LI>
+<A NAME="PhongTriangle"></A>Name : 'PhongTriangle' (inherits from 'Triangle').</LI>
+
+<BR>Attributes : 'vertex' [VECTOR] . . . . . Keyword 'vertex' may be omitted.
+Three vertices must be specified.
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'normal' [VECTOR] . . . . . Three normals must be specified. This normal
+vectors will be associated with vertices in the same ordinal position (first
+vertex with first normal, and so on).
+<BR>&nbsp;
+<LI>
+<A NAME="Plane"></A>Name : 'Plane'</LI>
+
+<BR>Attributes : 'one_sided' [BOOL] . . . . If active, only the 'outer'
+side of the plane (where the normal vector points) will be visible (default
+is off).
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'normal' [VECTOR] . . . . . Normal vector of the plane. If one_sided is
+false, both sides of the plane will be visible, and normal will be modified
+to match that.
+<BR>&nbsp;
+<LI>
+<A NAME="Rectangle"></A>Name : 'Rectangle' (inherits from 'Plane').</LI>
+
+<BR>Attributes : 'vertex' [VECTOR] . . . . . Keyword 'vertex' may be omitted.
+Four vertices must be specified.
+<BR>&nbsp;
+<LI>
+<A NAME="Sphere"></A>Name : 'Sphere'</LI>
+
+<BR>Attributes : 'radius' [REAL] . . . . .
+<BR>&nbsp;
+<LI>
+<A NAME="Torus"></A>Name : 'Torus'</LI>
+
+<BR>Attributes : 'radius_a' [REAL]
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'radius_b' [REAL]
+<BR>&nbsp;
+<LI>
+<A NAME="Triangle"></A>Name : 'Triangle' (inherits from 'Plane').</LI>
+
+<BR>Attributes : 'vertex' [VECTOR] . . . . . Keyword 'vertex' may be omitted.
+Three vertices must be specified.
+<BR>&nbsp;</UL>
+
+<H2>
+<A NAME="renderer"></A>RENDERER</H2>
+Keyword: renderer
+<BR>Default class: Raytracer
+<BR>Common attributes: None
+
+<P>Example:
+<UL><TT>renderer : class Raytracer</TT>
+<BR><TT>{</TT>
+<BR><TT>&nbsp; ambient&nbsp;&nbsp; CWhite</TT>
+<BR><TT>&nbsp; depth&nbsp;&nbsp;&nbsp;&nbsp; 10</TT>
+<BR><TT>&nbsp; sampling&nbsp; "single"</TT>
+<BR><TT>}</TT></UL>
+
+<H4>
+Renderer classes</H4>
+
+<UL>
+<LI>
+<A NAME="Raytracer"></A>Name : 'Raytracer'</LI>
+
+<BR>Attributes : 'ambient' [COLOR] . . . . Ambient term for lighting calculation
+(default is black).
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'depth' [REAL] . . . . . . Maximum depth for recursive ray tracing (default
+is 10).
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'sampling [STRING] . . . Type of sampling for each pixel.&nbsp;'single'
+is the default. Other values are used for anti-aliasing:&nbsp;'uniform',
+'stochastic', 'adaptive'.
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'max_diff' [REAL] . . . Maximum difference in color allowed in adaptive
+algorithm.
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'aa_depth' [REAL] . . . This sets the maximum recursion level for adaptive,
+the number of uniform samples&nbsp;(total number is aa_depth&nbsp;*&nbsp;aa_depth)
+or the number of stochastic samples.
+<BR>&nbsp;</UL>
+
+<H2>
+<A NAME="scene"></A>SCENE</H2>
+Keyword: scene
+<BR>Default class: Scene (There is only one class in this family)
+<BR>Notes: One and only one scene instance must be defined in an scene
+file.
+<BR>Common attributes: 'background' [COLOR] . . . Background color of image
+(default is black).
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'width' [REAL] . . . . . . Width of generated image.
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'height' [REAL] . . . . . Height of generated image.
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'output' [IMAGE_IO] . . It must be a registered image IO class (default
+is "tga").
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'camera' [CAMERA] . . . . Camera instance.
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'light' [LIGHT] . . . . . Light instance (may be many of them).
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'renderer' [RENDERER] . . Renderer instance.
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'filter' [IMAGE_FILTER] . Image filter. Several filters can be defined,
+and they will be executed in the same order after the render.
+<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+'participating' [BOOL] . . Participating media flag.
+
+<P>Example:
+<UL><TT>scene</TT>
+<BR><TT>{</TT>
+<BR><TT>&nbsp; camera&nbsp;&nbsp; camera_instance</TT>
+<BR><TT>&nbsp; light&nbsp;&nbsp;&nbsp; light_instance</TT>
+<BR><TT>&nbsp; width&nbsp;&nbsp;&nbsp; 640</TT>
+<BR><TT>&nbsp; height&nbsp;&nbsp; 400</TT>
+<BR><TT>&nbsp; output</TT>
+<BR><TT>&nbsp; {</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp; type&nbsp;&nbsp; "tga"</TT>
+<BR><TT>&nbsp;&nbsp;&nbsp; name&nbsp;&nbsp; "test.tga"</TT>
+<BR><TT>&nbsp; }</TT>
+<BR><TT>&nbsp; renderer : class Raytracer {}</TT>
+<BR><TT>}</TT>
+<BR>&nbsp;</UL>
+
+</BODY>
+</HTML>

@@ -1,0 +1,100 @@
+
+ This is a list of things to be done for Panorama.
+
+ If you have an idea for a new project, or you want to try one of the "not
+started" project, please send mail to bug-panorama@gnu.org.
+
+-- BSDF -------------------------------------------------------------
+
+Project   : Implementation of the Cook-Torrance model
+Status    : Not started
+
+
+-- CAMERA -----------------------------------------------------------
+
+Project   : Simulation of a real camera model
+Status    : Not started
+
+Project   : Parallel projection camera
+Status    : Not started
+
+
+-- IMAGE FILTER -----------------------------------------------------
+
+Project   : An image filter to write text into the image (maybe using
+            freetype library)
+Status    : Not started
+
+Project   : Lens flare
+Status    : Not started
+
+
+-- IMAGE I/O --------------------------------------------------------
+
+Project   : PNG image I/O plugin
+Status    : In development
+Author(s) : Ken Geis (kgeis@cchemnt.cchem.berkeley.edu)
+
+Project   : GIF image I/O plugin (only load due to patent problems)
+Status    : In development
+Author(s) : Ken Geis (kgeis@cchemnt.cchem.berkeley.edu)
+
+Project   : Extend TGA plugin to support full TGA format
+Status    : Not started
+
+
+-- OBJECT -----------------------------------------------------------
+
+Project   : Implement CSG object intersection
+Status    : Not started
+
+Project   : Height field
+Status    : In development
+Author(s) : Angel Jimenez (ajimenez@vnet.es)
+
+Project   : Polyhedron
+Status    : In development
+Author(s) : Angel Jimenez (ajimenez@vnet.es)
+
+Project   : NURBS surfaces
+Status    : Not started
+
+Project   : Implicit surfaces (metaballs)
+Status    : In development
+Author(s) : Carlos Jimenez (carlos@leader.es)
+
+Project   : 3DS object import
+Status    : In development
+Author(s) : Angel Jimenez (ajimenez@vnet.es)
+
+Project   : LightWave object import
+Status    : In development
+Author(s) : Angel Jimenez (ajimenez@vnet.es)
+
+Project   : Caligari Truespace object import
+Status    : In development
+Author(s) : Angel Jimenez (ajimenez@vnet.es)
+
+Project   : Uniform grid spatial subdivision
+Status    : Not started
+
+Project   : Automatic Bounding Volume Hierarchy (Salmon & Goldsmith)
+Status    : Not started
+
+Project   : Surfaces of revolution
+Status    : Not started
+
+
+-- RENDERER ---------------------------------------------------------
+
+Project   : ZBuffer renderer
+Status    : In development
+Author(s) : Angel Jimenez (ajimenez@vnet.es)
+
+
+-- SCENE I/O --------------------------------------------------------
+
+Project   : POVRay scene loader
+Status    : In development
+Author(s) : Ken Geis (kgeis@cchemnt.cchem.berkeley.edu)
+

@@ -1,0 +1,2 @@
+PLUGIN_NAME = point_light
+OBJ         = point_light.o

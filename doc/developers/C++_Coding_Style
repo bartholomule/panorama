@@ -1,0 +1,166 @@
+
+  C++ Programming Style Guide
+  ---------------------------
+
+ 1 .- GENERAL
+
+   - Indentation
+
+     Every indentation step must be 2 spaces, NEVER filling with a tab
+     character, even if possible, as the tab character could be missasigned
+     in another platform.
+
+   - Algebraic expresions
+
+     In expressions, every operator must have a space at each side, as in
+     the next example:
+
+       (a + b) * (c / d) / (e * (f * (g + h)))
+
+     Parenthesis will enclose its content without any space (boolean
+     expressions being the exception, as next point explains).
+
+   - Boolean expressions
+
+     Boolean expressions must have one space between every parenthesis and
+     its content, as in this example:
+
+       ( expression == value ) ? a : b;
+
+
+ 2 .- IDENTIFIER SYNTAX
+
+   - Variables
+
+     Format:
+
+       <VARIABLE> ::= <SCOPE_ID><TYPE_ID><DESCRIPTION>
+
+     · <SCOPE_ID>
+
+       A character that denotes scope of this identifier.
+
+         '_'    --> static
+         (none) --> auto
+
+     · <TYPE_ID>
+
+       k --> const
+       p --> * (pointer)
+       r --> & (reference)
+       a --> []
+       e --> enum
+       d --> double
+       f --> float
+       l --> long
+       u --> unsigned
+       i --> int
+       n --> union
+       c --> char
+       t --> class
+       s --> struct
+       b --> Byte
+       w --> Word
+       dw -> DWord
+       g --> bool
+       z --> size_t
+
+       This identifiers will be concatenated until the full type is descripted.
+       For example, an array of pointers to Byte will be:
+
+         Byte*   apbData[];
+       
+     · <DESCRIPTION>
+
+       A word or a group of words, in mixed format (ThisIsMixedFormat) that
+       gives a clear idea what the use of this variable is. This string must
+       begin with a capital letter. As an exception to this rule, if some
+       word cannot be in mixed format (e.g. acronyms), a '_' character will
+       be used as separator.
+
+   - Class names
+
+     A class name will always begin with a capital 'T', optionally followed
+     by one or more capital letters as a code for a given project and a
+     mixed format description string (e.g. TCamera).
+
+   - Member function names
+
+     Member function names will be a mixed format description string. This
+     string must begin with a lower case (e.g. getArrayLength).
+
+   - Class attributes
+
+     Class attribute names will have the same format as normal variables.
+
+
+ 3 .- CODE FORMATTING
+
+   - Class declaration:
+
+     Class declaration will be aligned in the following way:
+
+        :
+        :
+        class TSon : public TMother, virtual public TFather
+        {
+        };  /* class TSon */
+        :
+        :
+
+     Every class declaration will be followed by two spaces, and a comment
+     with the words class and the class name, as in the example (a closed
+     comment will be used to preserve C visual style).
+
+   - Preprocessor directives.
+
+     Preprocessor directives will always begin in the first column. As an
+     exception to this rule, directives that are local to another scope
+     (e.g. inside a function body) will be indented at the same level as
+     this scope.
+
+   - Comments:
+
+     Comment text will be in English language whenever possible. Multiline
+     comments will be formatted as in the next example:
+
+       :
+       :
+       //
+       //  This is an example of comment,
+       //  and this is the second part of the line.
+       //  This is the second line of comments.
+       //
+       :
+       :
+
+     That is, text begins two spaces after the '//'.
+
+     Warnings will be labeled as such, in this way:
+
+       :
+       :
+       //
+       //  Warning: This is an example of comment with
+       //           two lines length.
+       //           This is the second line of comments.
+       //
+       :
+       :
+
+   - Variable declaration:
+
+     Variable declaration will be at the top of the scope (whenever
+     possible). Type begins at normal indentation (2 spaces). Pointers and
+     references will have the '*' or '&' symbol attached as a sufix to the type.
+     Between this type (including this symbol) and variable identifier, there
+     will be at least 3 spaces, with all variable names left aligned.
+     Explicitly assigned variables will always be at the bottom, with
+     equal signs preferably aligned at the same column:
+
+       int*          piExample1;
+       char*         pcExample2;
+       const char*   pkcExample3;
+       iostream      tExample4Iostream = cin;
+       long int      liExample5        = 5;
+       FILE*         ptInputFILE       = NULL;

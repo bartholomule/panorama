@@ -1,0 +1,55 @@
+/*
+*  Torus test
+*/
+
+#include "materials.inc"
+
+define camera c
+{
+  translate	<0, 0, 600>
+  look_at	<0, 0, 0>
+}
+
+define light l
+{
+  translate	<500, 500, 500>
+  color		CWhite
+}
+
+plane
+{
+  translate     <0, -100, 0>
+  normal	<0, 1, 0>
+  material : extends MChecker
+  {
+    color       CBlue
+    base_color  CNavyBlue
+    size        50
+  }
+}
+
+torus
+{
+  translate     <0, 0, 200>
+  rotate        <3.1415 / 4, 0, 0>
+  radius_a      75
+  radius_b      35
+  material : extends MPlastic
+  {
+    color       CWhite
+  }
+}
+
+scene
+{
+  camera	c
+  light		l
+  width		400
+  height	400
+  background	CBlack
+  output
+  {
+    name	"torus.tga"
+  }
+  renderer : class Raytracer {}
+}

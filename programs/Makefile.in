@@ -1,0 +1,4 @@
+
+DIRS = ./render
+
+include @top_srcdir@/Makefile.targets

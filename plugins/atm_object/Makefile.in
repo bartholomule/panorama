@@ -1,0 +1,4 @@
+
+DIRS = ./atm_const
+
+include @top_srcdir@/Makefile.targets
