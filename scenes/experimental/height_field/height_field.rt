@@ -1,0 +1,48 @@
+/*
+*  Height field test
+*/
+
+#include "materials.inc"
+
+define camera c
+{
+  translate	<0, 200, 500>
+  look_at	<0, 0, 0>
+}
+
+define light l
+{
+  translate	<-500, 500, 500>
+  color		CWhite
+}
+
+define light l2
+{
+  translate	<0, 1000, 0>
+  color		CWhite
+}
+
+object : class HeightField
+{
+  scale         <2, 40, 2>
+  image         "supernova.tga"
+  material : extends MLambertian
+  {
+    color	CBlue
+  }
+}
+
+scene
+{
+  camera	c
+  light		l
+  light		l2
+  width		300
+  height	300
+  background	CSummerSky
+  output
+  {
+    name	"height_field.tga"
+  }    
+  renderer : class Raytracer {}
+}
