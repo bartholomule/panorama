@@ -74,12 +74,12 @@ class TBezierSubsurface
     TVector getTangentS (const TVector2 &rktPOS);
     TVector getTangentT (const TVector2 &rktPOS);
 
-   bool findFlatIntersection (const TRay& rktRAY, const TScalar& rktSCALE,
-                              const TRay& rktORIG_RAY, 
-                              TSpanList& rtLIST,
-                              const TVector& rktVECA, const TVector2& rktPOSA,
-                              const TVector& rktVECB, const TVector2& rktPOSB,
-                              const TVector& rktVECC, const TVector2& rktPOSC);
+    bool findFlatIntersection (const TRay& rktRAY, const TScalar& rktSCALE,
+                               const TRay& rktORIG_RAY, 
+                               TSpanList& rtLIST,
+                               const TVector& rktVECA, const TVector2& rktPOSA,
+                               const TVector& rktVECB, const TVector2& rktPOSB,
+                               const TVector& rktVECC, const TVector2& rktPOSC);
     bool findFlatIntersection (const TRay& rktRAY, const TScalar& rktSCALE,
                                const TRay& rktORIG_RAY, 
                                TSpanList& rtLIST);
