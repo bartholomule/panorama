@@ -151,6 +151,42 @@ void TAggregate::addFilter (const TObjectFilter* pktFILTER)
 }  /* addFilter() */
 
 
+// Attribute management
+int TAggregate::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
+{
+  if ( rktNAME == "containsobjects" )
+  {
+    return FX_ATTRIB_USER_ERROR;
+  }
+  else
+  {
+    return TObject::setAttribute (rktNAME, nVALUE, eTYPE);
+  }
+  return FX_ATTRIB_OK;
+} /* setAttribute() */
+
+int TAggregate::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
+{
+  if ( rktNAME == "containsobjects" )
+  {
+    rnVALUE.gValue = !tObjectList.empty();
+  }
+  else
+  {
+    return TObject::getAttribute (rktNAME, rnVALUE);
+  }
+  
+  return FX_ATTRIB_OK;
+} /* getAttribute() */
+
+void TAggregate::getAttributeList (TAttributeList& rtLIST) const
+{
+  TObject::getAttributeList(rtLIST);
+
+  rtLIST ["containsobjects"] = FX_BOOL;
+  
+} /* getAttributeList() */
+
 void TAggregate::printDebug (void) const
 {
 
@@ -168,3 +204,17 @@ void TAggregate::printDebug (void) const
   TDebug::_pop();
   
 }  /* printDebug() */
+
+bool TAggregate::containsObject (const TObject* pktObject)
+{
+  for( TObjectList::const_iterator i = tObjectList.begin();
+       i != tObjectList.end();
+       ++i )
+  {
+    if( *i == pktObject )
+    {
+      return true;
+    }
+  }
+  return false;
+}

@@ -124,6 +124,8 @@ class TAggregate : public TObject
       return &tObjectList;
     }
 
+    bool containsObject (const TObject* pktObject);
+  
     void getMesh (list<TMesh*>& rtMESH_LIST) const
     {
       for (TObjectList::const_iterator tIter = tObjectList.begin(); ( tIter != tObjectList.end() ) ;tIter++)
@@ -131,7 +133,12 @@ class TAggregate : public TObject
         (*tIter)->getMesh (rtMESH_LIST);
       }
     }
-    
+
+    // Attribute management
+    virtual int setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
+    virtual int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
+    virtual void getAttributeList (TAttributeList& rtLIST) const;
+  
     void printDebug (void) const;
 
     EClass classType (void) const { return FX_AGGREGATE_CLASS; }
