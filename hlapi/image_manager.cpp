@@ -23,6 +23,7 @@
 #include "plugins/image_io/tga/tga_io.h"
 #include "plugins/image_io/jpeg/jpeg_io.h"
 #include "plugins/image_io/png/png_io.h"
+#include "plugins/image_io/gif/gif_io.h"
 
 extern multimap<string, string>   tConfigData;
 
@@ -122,6 +123,7 @@ void TImageManager::_initialize (void)
   _addFormat ("tga", &TImageTga::_create);
   _addFormat ("jpeg", &TImageJpeg::_create);
   _addFormat ("png", &TImagePng::_create);
+  _addFormat ("gif", &TImageGif::_create);
 #endif
   
 }  /* _initialize() */

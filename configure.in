@@ -61,6 +61,19 @@ fi
 AC_SUBST(PNG_FILTER)
 AC_SUBST(PLUGIN_PNG)
 
+gif_val=no
+AC_CHECK_HEADER(gif_lib.h, [AC_CHECK_LIB(ungif,main,gif_val=yes)])
+if test $gif_val = "yes"; then
+	GIF_FILTER="gif"
+	PLUGIN_GIF="gif_io.plg"
+else
+	GIF_FILTER=""
+	PLUGIN_GIF=""
+	AC_MSG_WARN(UNGIF library not available so gif filter not compiled)
+fi
+AC_SUBST(GIF_FILTER)
+AC_SUBST(PLUGIN_GIF)
+
 dnl Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
 AC_C_BIGENDIAN
@@ -187,6 +200,7 @@ AC_OUTPUT(\
         plugins/image_filter/fog/Makefile:Makefile.plugin.in \
         plugins/image_filter/text/Makefile:Makefile.plugin.in \
         plugins/image_io/Makefile \
+        plugins/image_io/gif/Makefile:Makefile.plugin.in \
         plugins/image_io/jpeg/Makefile:Makefile.plugin.in \
         plugins/image_io/png/Makefile:Makefile.plugin.in \
         plugins/image_io/tga/Makefile:Makefile.plugin.in \
