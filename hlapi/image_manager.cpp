@@ -67,7 +67,7 @@ int TImageManager::_save (const string& rktNAME, const string& rktFORMAT, const 
 
   if ( !ptImageIO )
   {
-    return NULL;
+    return -1;
   }
 
   nAttrib.pvValue = (char*) rktNAME.c_str();
