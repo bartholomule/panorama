@@ -1,0 +1,51 @@
+// This will calculate a factorial, all in a single scene file.
+// It is a recursive version, but since this language doesn't yet provide a
+// stack, we'll have to do a little bit of hackery.
+//
+// Note that this lack of stack limitation prevents multiple inclusion (such as
+// the dual-recursion method of calculating the fibonacci series.
+
+debug(off);
+//debuglevel(10);          // Ask for extra levels of debug information.
+//reduction_reporting(on); // Generates loads of spew.
+
+//print("Entering factorial");
+
+
+if( !defined max_depth )
+{
+//  print("Initial call.... max_depth not defined");
+  define max_depth int(ifnull(envnull("X"), "10"));
+  define depth_left max_depth;
+  define total 1;
+}
+else
+{
+//  print("Recursive call: depth_left="+depth_left);
+}
+
+
+if( depth_left >. 1 )
+{
+  // 
+  redefine total total * depth_left;
+
+  //
+  redefine depth_left depth_left - 1;
+  #include "factorial.rt"
+
+  // Add on the way back up from recursion, because we have no stack...
+  redefine depth_left depth_left + 1;
+}
+
+
+// If we are the initial call... Print the results...  Note that the
+// subtraction done on the way down (above) had to be reversed upon return to
+// allow this kind of operation.
+if( depth_left == max_depth )
+{
+  print("factorial(" + max_depth + ")=" + total );
+
+  // Nothing to render (we're just doing a math test), so halt.
+  halt();
+}

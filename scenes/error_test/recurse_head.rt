@@ -1,6 +1,10 @@
-reduction_reporting(off);
-define max_depth 10;
-define total 0;
+// An example scene file to perform recursion.  This is just the head.
+// The real recursion happens
+
+debug(off);
+//reduction_reporting(on);  // If this is on, TONS of trash is spewed.
+define max_depth int(ifnull(envnull("X"), "10"));
+define total 1;
 
 print("Begin of recursion!");
 #include "recurse_body.rt"
