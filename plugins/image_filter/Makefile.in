@@ -4,6 +4,6 @@ BUILD_TOP = ../..
 DIRS = cartoon \
        convert_to_grey \
        fog \
-       text
+       @TEXT_FILTER@
 
 include ${BUILD_TOP}/Makefile.targets
