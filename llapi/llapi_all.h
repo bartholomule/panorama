@@ -16,6 +16,8 @@
 *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "llapi/attribs.h"
+#include "llapi/attribute.h"
 #include "llapi/atmosphere.h"
 #include "llapi/atmospheric_object.h"
 #include "llapi/base_class.h"
@@ -29,6 +31,7 @@
 #include "llapi/entity.h"
 #include "llapi/file.h"
 #include "llapi/frame.h"
+#include "llapi/heap_manager.h"
 #include "llapi/image.h"
 #include "llapi/image_filter.h"
 #include "llapi/image_io.h"
