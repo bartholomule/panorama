@@ -1,0 +1,424 @@
+/*
+*  Toy train CSG demo scene
+*/
+
+#include "materials.inc"
+
+define material MWood : class MaterialWood
+{
+  bsdf : class BsdfPhong
+  {
+    exponent 50
+  }
+  ambient	0.05
+  diffuse	0.6
+  specular	0.25
+}
+
+define camera c
+{
+  translate	<0, 600, 1200>
+  //look_at	<0, 0, 0>
+  look_at	<-25, 100, 0>
+}
+/*
+define light l_ambient
+{
+  translate	< 0, 1500, 700>
+//  translate	<0, 600, 1200>
+//  translate	< 400, 500, 1000>
+  volumetric    off
+  shadow        off
+  intensity 0.25
+}
+*/
+define light l_ambient
+{
+  translate	< -500, 500, 700>
+//  translate	<0, 600, 1200>
+//  translate	< 400, 500, 1000>
+//  volumetric    off
+//  shadow        off
+  intensity 0.75
+}
+
+define light l : class WarnLight
+{
+  translate	< 700, 1500, 700>
+  point_at	<0, 0, 0>
+  exponent      40
+  axis          <0, 0, 0>
+  angle_th      15
+  intensity     1.2 //1
+}
+
+plane
+{
+  translate     <0, 0, 0>
+  normal	<0, 1, 0>
+  material : extends MWood
+  {
+    color       COrange
+    base_color  CBlack
+    zoom        <100, 100, 100>
+  }
+  rotate <0,90,0>
+}
+
+/*
+plane
+{
+  translate     <0, 0, 0>
+  normal	<0, 1, 0>
+  material : extends MPlastic
+  {
+    color       CWhite
+  }
+  rotate <0,90,0>
+}
+*/
+
+define aggregate cabin
+{
+  difference // Hollow box with circular cutouts
+  {
+    difference // Hollow box
+    {
+      box
+      {
+        point1 <-100,-100,-100>
+        point2 <  70, 150, 100>
+      }
+      box
+      {
+        point1 < -90, -90, -90>
+        point2 <  71, 140,  90>
+      }
+    }
+    union
+    {
+      cylinder
+      {
+        scale     <  65, 101,  65>
+        rotate    <  90,   0,   0>
+        translate <  70,  65,   0> 
+      }
+      cylinder
+      {
+        scale     <  30, 101,   30>
+        rotate    <   0,   0,   90>
+        translate <   0, 110,   60>
+      }               
+      cylinder
+      {
+        scale     <  30, 101,   30>
+        rotate    <   0,   0,   90>
+        translate <   0, 110,  -60>
+      }
+    }
+  }
+  material : extends MPlastic
+  {
+    color CRed
+  }
+}
+
+define aggregate cabin_roof
+{
+  intersection
+  {
+    box
+    {
+      point1 <-130, 150,-110>
+      point2 <  80, 180, 110>
+    }
+    cylinder
+    {
+      scale     < 200, 150, 200>
+      rotate    <   0,   0,  90>
+      translate <   0, -20,   0>
+    }
+  }
+  material : extends MPlastic
+  {
+    color CYellow
+  }
+}
+
+define aggregate body
+{
+  cylinder
+  {
+    scale     <  90, 200,  90>
+    rotate    <   0,   0,  90>
+    translate <-300, -10,   0>
+  }
+  sphere
+  {
+    scale     <  20,  90,  90>
+    translate <-500, -10,   0>
+  }
+  material : extends MPlastic
+  {
+    color CRed
+  }
+}
+
+define aggregate base : class AggregateUniformGrid
+{
+  sphere
+  {
+    scale     <  10,  10,  10>
+    translate <-500,-110,-100>
+  }
+  sphere
+  {
+    scale     <  10,  10,  10>
+    translate <-500,-110, 100>
+  }
+  sphere
+  {
+    scale     <  10,  10,  10>
+    translate <  70,-110,-100>
+  }
+  sphere
+  {
+    scale     <  10,  10,  10>
+    translate <  70,-110, 100>
+  }
+  cylinder
+  {
+    scale     <  10, 285,  10>
+    rotate    <   0,   0,  90>
+    translate <-215,-110, 100>
+  }
+  cylinder
+  {
+    scale     <  10, 100,  10>
+    rotate    <  90,   0,   0>
+    translate <-500,-110,   0>
+  }
+  cylinder
+  {
+    scale     <  10, 285,  10>
+    rotate    <   0,   0,  90>
+    translate <-215,-110,-100>
+  }
+  cylinder
+  {
+    scale     <  10, 100,  10>
+    rotate    <  90,   0,   0>
+    translate <  70,-110,   0>
+  }
+  box
+  {
+    point1 < -500, -100, -100>
+    point2 <   70, -120,  100>
+  }
+  box
+  {
+    point1 < -500, -120, -80>
+    point2 <   50, -200,  80>
+  }
+  material : extends MPlastic
+  {
+    color CBlue
+  }
+}
+
+define aggregate wheelA : class AggregateUniformGrid
+{
+  torus
+  {
+    radius_a  50
+    radius_b   5
+    rotate < 90, 0, 0 >
+    translate < 0, 0,  90 >
+  }
+  cylinder
+  {
+    scale     < 50, 5, 50>
+    rotate < 90, 0, 0 >
+    translate < 0, 0,  90 >
+  }
+  cylinder
+  {
+    scale     < 45,  5, 45>
+    rotate < 90, 0, 0 >
+    translate < 0,  0, 100 >
+  }
+  torus
+  {
+    radius_a  40
+    radius_b   5
+    rotate < 90, 0, 0 >
+    translate <  0, 0, 105 >
+  }
+  cylinder
+  {
+    scale     < 40,  5, 40>
+    rotate < 90, 0, 0 >
+    translate <  0, 0, 105 >
+  }
+  torus
+  {
+    radius_a  50
+    radius_b   5
+    rotate < 90, 0, 0 >
+    translate < 0, 0, -90 >
+  }
+  cylinder
+  {
+    scale     < 50, 5, 50>
+    rotate < 90, 0, 0 >
+    translate < 0, 0, -90 >
+  }
+  cylinder
+  {
+    scale     < 45,  5, 45>
+    rotate < 90, 0, 0 >
+    translate < 0,  0,-100 >
+  }
+  torus
+  {
+    radius_a  40
+    radius_b   5
+    rotate < 90, 0, 0 >
+    translate <  0, 0,-105 >
+  }
+  cylinder
+  {
+    scale     < 40,  5, 40>
+    rotate < 90, 0, 0 >
+    translate <  0, 0,-105 >
+  }
+  
+  material : extends MPlastic
+  {
+    color CYellow
+  }
+}
+
+define aggregate wheelB
+{
+  sphere
+  {
+    radius 10
+    translate < 0, 0, 110>
+  }
+  sphere
+  {
+    radius 10
+    translate < 0, 0,-110>
+  }
+  cylinder
+  {
+    scale <4,110,4>
+    rotate < 90, 0, 0 >
+  }
+  material : extends MMirror
+  {
+  }
+}
+
+define aggregate wheels
+{
+  aggregate wheelA
+  aggregate wheelB
+}
+
+define aggregate funnel
+{
+  difference
+  {
+    union
+    {
+      cone
+      {
+        min_circle_point < 0,   0, 0 >
+        max_circle_point < 0,  70, 0 >
+        min_radius 20
+        max_radius 50
+      }
+      cone
+      {
+        max_circle_point < 0,  70, 0 >
+        min_circle_point < 0, 100, 0 >
+        min_radius 30
+        max_radius 50
+      }
+    }
+    cylinder
+    {
+      scale < 20, 110, 20 >
+    }
+  }
+  material : extends MPlastic
+  {
+    color CYellow
+  }
+  translate <-420, 80, 0 >
+}
+
+define aggregate hump // dunno what these actually are :)
+{
+  cylinder
+  {
+    scale < 30, 30, 30 >
+  }
+  sphere
+  {
+    radius 30
+    translate < 0, 30, 0 >
+  }
+  material : extends MPlastic
+  {
+    color CYellow
+  }
+  translate <-280, 80, 0 >
+}
+
+aggregate : class AggregateUniformGrid
+{
+  aggregate : extends wheels
+  {
+    translate <   20, -180, 0 >
+  }
+  aggregate : extends wheels
+  {
+    translate < -110, -180, 0 >
+  }
+  aggregate : extends wheels
+  {
+    translate < -460, -180, 0 >
+  }
+  aggregate cabin
+  aggregate cabin_roof
+  aggregate body
+  aggregate funnel
+  aggregate hump
+  aggregate base
+  rotate <0, 30,0>
+  translate < 200, 235, 0>
+}
+
+
+scene
+{
+  camera	c
+  light		l
+  light		l_ambient
+  width		400
+  height	300
+  background	CSummerSky
+  output
+  {
+    type        "png"
+    name	"train.png"
+  }
+  renderer : class Raytracer 
+  {
+    //sampling "adaptive"
+  }
+}
+
