@@ -6,9 +6,6 @@ started" project, please send mail to bug-panorama@gnu.org.
 
 -- BSDF -------------------------------------------------------------
 
-Project   : Implementation of the Cook-Torrance model
-Status    : Not started
-
 
 -- CAMERA -----------------------------------------------------------
 
@@ -25,10 +22,6 @@ Project   : An image filter to write text into the image (maybe using
             freetype library)
 Status    : In development
 Author(s) : Ken Geis (kgeis@cchemnt.cchem.berkeley.edu)
-
-Project   : Lens flare
-Status    : In development
-Author(s) : Jon Frydensbjerg (jonf@kom.auc.dk)
 
 
 -- OBJECT -----------------------------------------------------------
