@@ -1,0 +1,134 @@
+/*
+*  Projector test
+*/
+
+#include "materials.inc"
+
+define Camera c
+{
+  init()
+  {
+    location = Vector (100, 100, 500);
+    look_at  = Vector (0, 0, -200);
+  }
+}
+
+define Light l
+{
+  init()
+  {
+    location = Vector (0, 100, 100);
+    color    = CWhite;
+  }
+}
+
+define Light lp : class Projector
+{
+  init()
+  {
+    location = Vector (0, 0, 190);
+    point_at = Vector (50, 50, -200);
+    texture  = open_bitmap ("f16.tga");
+  }
+}
+
+// Floor
+Object : class Plane
+{
+  init()
+  {
+    location = Vector (0, -150, 0);
+    normal   = Vector (0, 1, 0);
+    material = MLambertian;
+    material.color = CWhite;
+  }
+}
+
+// Ceiling
+Object : class Plane
+{
+  init()
+  {
+    location = Vector (0, 150, 0);
+    normal   = Vector (0, -1, 0);
+    material = MLambertian;
+    material.color = CWhite;
+  }
+}
+
+// Left wall
+Object : class Plane
+{
+  init()
+  {
+    location = Vector (-200, 0, 0);
+    normal   = Vector (1, 0, 0);
+    material = MLambertian;
+    material.color = CWhite;
+  }
+}
+
+// Right wall
+Object : class Plane
+{
+  init()
+  {
+    location = Vector (200, 0, 0);
+    normal   = Vector (-1, 0, 0);
+    material = MLambertian;
+    material.color = CWhite;
+  }
+}
+
+// Front wall
+Object : class Plane
+{
+  init()
+  {
+    location = Vector (0, 0, -200);
+    normal   = Vector (0, 0, 1);
+    material = MLambertian;
+    material.color = CWhite;
+  }
+}
+
+// Back wall
+Object : class Plane
+{
+  init()
+  {
+    location  = Vector (0, 0, 200);
+    normal    = Vector (0, 0, -1);
+    one_sided = true;
+    material  = MLambertian;
+    material.color = CWhite;
+  }
+}
+
+Object : class Box
+{
+  init()
+  {
+    scale (100, 100, 100);
+    rotate (0, 0.8, 0);
+    location = Vector (0, -130, 0);
+    material = MLambertian;
+    material.color = CWhite;
+  }
+}
+
+Scene
+{
+  init()
+  {
+    add_light (l);
+    add_light (lp);
+    camera      = c;
+    width       = 400;
+    height      = 400;
+    background  = CBlack;
+    output      = new tga;
+    output.name = "projector.tga";
+    renderer    = new Raytracer;
+  }
+}

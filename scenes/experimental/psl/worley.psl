@@ -1,0 +1,63 @@
+/*
+*  Worley basis function test
+*/
+
+#include "materials.inc"
+
+define Camera c
+{
+  init()
+  {
+    location = Vector (0, 0, 600);
+    look_at  = Vector (0, 0, 0);
+  }
+}
+
+define Light l
+{
+  init()
+  {
+    location = Vector (200, 200, 500);
+    color    = CWhite;
+  }
+}
+
+define Light l2
+{
+  init()
+  {
+    location = Vector (0, 1000, 0);
+    color    = CWhite;
+    shadow   = false;
+  }
+}
+
+Object : class Sphere
+{
+  init()
+  {
+    location = Vector (0, 0, 0);
+    radius   = 150;
+    mat      = MWorley;
+
+    mat.color      = Color (0, 0.6, 0);
+    mat.base_color = CBrown;
+    mat.zoom       = Vector (50, 50, 50);
+    mat.bump       = 0.25;
+  }
+}
+
+Scene
+{
+  init()
+  {
+    add_light (l);
+    add_light (l2);
+    camera      = c;
+    width       = 400;
+    height      = 400;
+    background  = CSummerSky;
+    output_file = "worley.tga";
+    renderer    = new Raytracer;
+  }
+}

@@ -1,0 +1,27 @@
+/*
+*  test
+*/
+
+#include "materials.inc"
+
+Bool a = false;
+
+define Camera c
+{
+  Bool b = true;
+
+  init()
+  {
+    Real d;
+
+    function_call (0);
+  }
+}
+
+define Light l
+{
+}
+
+Scene
+{
+}
