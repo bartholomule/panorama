@@ -75,9 +75,18 @@ class TRay
       tDirection.normalize();
     }
     
-    void reflect (const TVector& rktNORMAL)
+    void reflect (const TVector& rktNORMAL, const TVector& rktORIGINAL)
     {
-      tDirection -= rktNORMAL * (2.0 * dotProduct (rktNORMAL, tDirection));
+      TVector   tReflection = rktNORMAL * (2.0 * dotProduct (rktNORMAL, tDirection));
+
+      if ( dotProduct (rktORIGINAL, tReflection) <= FX_EPSILON )
+      {
+        tDirection -= rktORIGINAL * (2.0 * dotProduct (rktORIGINAL, tDirection));
+      }
+      else
+      {
+        tDirection -= tReflection;
+      }
     }
     
     bool refract (const TVector& rktNORMAL, TScalar tIOR, bool& gTIR);
