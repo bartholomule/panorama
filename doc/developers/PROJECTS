@@ -27,16 +27,8 @@ Status    : In development
 Author(s) : Ken Geis (kgeis@cchemnt.cchem.berkeley.edu)
 
 Project   : Lens flare
-Status    : Not started
-
-
--- IMAGE I/O --------------------------------------------------------
-
-Project   : GIF image I/O plugin (only load due to patent problems)
-Status    : Not started
-
-Project   : Extend TGA plugin to support full TGA format
-Status    : Not started
+Status    : In development
+Author(s) : Jon Frydensbjerg (jonf@kom.auc.dk)
 
 
 -- OBJECT -----------------------------------------------------------
@@ -69,7 +61,8 @@ Status    : In development
 Author(s) : Angel Jimenez (ajimenez@vnet.es)
 
 Project   : Uniform grid spatial subdivision
-Status    : Not started
+Status    : In development
+Author(s) : Carlos Jimenez (carlos@leader.es)
 
 Project   : Automatic Bounding Volume Hierarchy (Salmon & Goldsmith)
 Status    : Experimental (included in distribution).
