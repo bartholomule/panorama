@@ -7,6 +7,7 @@ INSTALL = @INSTALL@
 SRC_DIR = @srcdir@
 
 FILES = cornell_box.rt \
+	lens_flare.rt \
 	plastic_cornell_box.rt \
         projector_cartoon.rt \
         xmas-tree.rt
