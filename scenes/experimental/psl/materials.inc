@@ -82,12 +82,13 @@ define Material MMirror
   }
 }
 
-define Material MChecker : class MaterialChecker
+define Material MChecker 
 {
   init()
   {
     bsdf          = new BsdfPhong;
     bsdf.exponent = 50;
+    color = new PatternChecker;
 
     ambient  = 0.2;
     diffuse  = 0.6;
@@ -95,12 +96,13 @@ define Material MChecker : class MaterialChecker
   }
 }
 
-define Material MNoise : class MaterialNoise
+define Material MNoise 
 {
   init()
   {
     bsdf          = new BsdfPhong;
     bsdf.exponent = 50;
+    color = new PatternNoise;
 
     ambient  = 0.2;
     diffuse  = 0.6;
@@ -108,12 +110,13 @@ define Material MNoise : class MaterialNoise
   }
 }
 
-define Material MWorley : class MaterialWorley
+define Material MWorley
 {
   init()
   {
     bsdf          = new BsdfPhong;
     bsdf.exponent = 50;
+    color = new PatternWorley;
   
     ambient  = 0.2;
     diffuse  = 0.6;
