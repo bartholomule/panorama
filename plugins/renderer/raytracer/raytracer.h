@@ -53,6 +53,8 @@ class TRaytracer : public TRenderer
     virtual TColor getRadiance (TSurfaceData& rtDATA, Word wDEPTH) const;
     void traceRay (TRay& rtRAY, TSurfaceData& rtDATA) const;
     bool traceShadowRay (const TRay& rktRAY, const TLight& rktLIGHT, TColor& rtRAD) const;
+    bool traceShadowRay (const TRay& rktRAY, const TObject& rktALight, TVector& rktPoint, TColor& rtRAD ) const;    
+  
     TColor shadePrimaryRay (TScalar I, TScalar J, TSurfaceData& rtDATA);
     void singleSample (TScalar I, TScalar J, SBuffers& rsBUFFERS);
     void superSampleUniform (TScalar I, TScalar J, SBuffers& rsBUFFERS);
@@ -89,6 +91,8 @@ class TRaytracer : public TRenderer
     TColor mediaRadiance (const TSurfaceData& rktDATA, const TColor& rktRAD) const;
     TColor directLight (const TSurfaceData& rktDATA) const;
     TColor directLight (const TSurfaceData& rktDATA, const TLight* pktLIGHT) const;
+    TColor directLight (const TSurfaceData& rktDATA, const TObject* pktALIGHT) const;  
+  
     TColor ambientLight (const TSurfaceData& rktDATA, Word wDEPTH) const;
     TColor specularReflectedLight (const TSurfaceData& rktDATA, Word wDEPTH, size_t* pzOBJ_CODE = NULL) const;
     TColor specularTransmittedLight (const TSurfaceData& rktDATA, Word wDEPTH, size_t* pzOBJ_CODE = NULL) const;

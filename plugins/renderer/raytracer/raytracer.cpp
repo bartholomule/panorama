@@ -81,6 +81,15 @@ TColor TRaytracer::getRadiance (TSurfaceData& rtDATA, Word wDEPTH) const
       tRadiance += specularTransmittedLight (rtDATA, wDEPTH, &rtDATA.zTransmission);
     }
 
+    //
+    // Addition to allow objects to be emissive.  Note that this is done even
+    // if an object is illuminated by a light source.  This hack is NOT
+    // correct, as it will increase the apparent brightness of lights to
+    // *potentially* twice their standard intensity.
+    // [_FIXME_]
+    //
+    tRadiance = tRadiance + rtDATA.object()->material()->emission(rtDATA);
+    
     tRadiance = mediaRadiance (rtDATA, tRadiance);
 
     for (list<const TObjectFilter*>::const_iterator tIter = rtDATA.object()->filterList().begin(); ( tIter != rtDATA.object()->filterList().end() ) ;tIter++)
@@ -196,6 +205,84 @@ bool TRaytracer::traceShadowRay (const TRay& rktRAY, const TLight& rktLIGHT, TCo
 }  /* traceShadowRay() */
 
 
+bool TRaytracer::traceShadowRay ( const TRay& rktRAY, const TObject& rktALight, TVector& light_location, TColor& rtRAD) const
+{
+  TColor           tLightColor;
+  TColor           tLightFilter(1,1,1);
+  TMaterial*       ptMaterial;
+  TScalar          tTransparency;
+  TSurfaceData     tSurfaceData;
+  TSpanList        tList;
+  TRay             tRay = rktRAY;
+  
+  //
+  // Set light location as a limit for intersection tests.
+  //
+  tRay.setLimit (Distance (tRay.location(), light_location));
+
+  while ( ptScene->world()->findFirstIntersection (tRay, tSurfaceData) )
+  {
+    //
+    // Atmospheric attenuation (without scattering).
+    //
+    if ( ptScene->participatingMedia() )
+    {
+      tLightFilter *= ptScene->atmosphere()->transparency (tRay.location(), tSurfaceData.point());
+    }
+      
+    ptMaterial = tSurfaceData.object()->material();
+
+    // Check to see if the ray hit the light (it has shape).
+    if( tSurfaceData.checkObject( &rktALight ) )
+    {
+      // The ray hit the light somewhere other than the point that would have
+      // been the location of the light photons.  We will just pick this point
+      // as the point of light emision.
+      light_location = tSurfaceData.point ();
+      // The ray could be limited again, but we've already hit the light.
+      // So... We can just terminate this loop and use the filtered light color
+      // given by the previous iterations.
+      break;
+    }
+    else if ( !ptMaterial->transparent (tSurfaceData) )
+    {
+      //
+      // Light is blocked by this object.
+      //
+      return false;
+    }
+    else
+    {
+      // [_TODO_] We could apply refraction to ray here.
+      tSurfaceData.object()->findAllIntersections (tRay, tList);
+
+      assert ( !tList.empty() );
+
+      tTransparency  = ptMaterial->transparency (tList);
+      tLightFilter   *= ptMaterial->color (tSurfaceData) * tTransparency;
+
+      //
+      // Set new ray location to the last intersection point.
+      //
+      tSurfaceData = tList.last();
+      tRay.setLocation (tSurfaceData.point());
+      tRay.setLimit (tRay.limit() - tSurfaceData.distance());
+    }
+  }
+
+  // Set up the surface data so that the color of emission can be calculated
+  // from the material.  In doing so, assume a perfect ray still exists in tRay.
+  tSurfaceData.setup (&rktALight, tRay);
+  tSurfaceData.setPoint (light_location);
+  ptMaterial = rktALight.material();
+  
+  tLightColor = ptMaterial->emission (tSurfaceData);
+  rtRAD = tLightColor * tLightFilter;
+
+  return true;
+} /* traceShadowRay() */
+
+
 TColor TRaytracer::shadePrimaryRay (TScalar I, TScalar J, TSurfaceData& rtDATA)
 {
 
@@ -205,8 +292,28 @@ TColor TRaytracer::shadePrimaryRay (TScalar I, TScalar J, TSurfaceData& rtDATA)
 
   traceRay (tRay, rtDATA);
 
-  return getRadiance (rtDATA, wMaxDepth);
-  
+  TColor primary_radiance =  getRadiance (rtDATA, wMaxDepth);
+
+    /*
+
+  // If it hit an object, and that object was emissive... Send another ray to
+  // it to allow it to be visible with a primary ray.
+  if( (rtDATA.object()) && (rtDATA.object()->material()->emission()) )
+  {
+    TColor primary_emission(0,0,0);
+    TSurfaceData tsd;
+    tsd.setPoint(tRay.location());
+    tsd.setNormal(tRay.direction());
+    tsd.setup (rtDATA.object(),tRay);
+    TVector point = rtDATA.point();
+
+    if( traceShadowRay (tRay, *rtDATA.object(), point, primary_emission) )
+    {
+      return primary_radiance + primary_emission;  
+    }
+  }
+    */
+  return primary_radiance;
 }  /* shadePrimaryRay() */
 
                                            
@@ -672,11 +779,18 @@ TColor TRaytracer::mediaRadiance (const TSurfaceData& rktDATA, const TColor& rkt
 {
 
   TColor   tRad = rktRAD;
+  TSurfaceData tsd = rktDATA;
 
-  for (vector<TLight*>::const_iterator tIter = ptScene->lightList().begin(); ( tIter != ptScene->lightList().end() ) ;tIter++)
+  for (vector<TLight*>::const_iterator tIter = ptScene->lightList().begin();
+       ( tIter != ptScene->lightList().end() );
+       tIter++)
   {
     tRad += (*tIter)->scatteredLight (rktDATA);
   }
+  // Note that the above does NOT need to be done with area lights unless area
+  // lights are allowed to have a halo.  If that is the case, then there will
+  // need to be some serious work on area lights, and not just the emission
+  // property which is currently in existance.
 
   if ( ptScene->participatingMedia() )
   {
@@ -702,7 +816,7 @@ TColor TRaytracer::ambientLight (const TSurfaceData& rktDATA, Word wDEPTH) const
 TColor TRaytracer::directLight (const TSurfaceData& rktDATA) const
 {
 
-  TLight*   ptLight;
+  const TLight*   ptLight;
   TColor    tTotalRadiance;
     
   for (vector<TLight*>::const_iterator tIter = ptScene->lightList().begin(); ( tIter != ptScene->lightList().end() ) ;tIter++)
@@ -710,6 +824,11 @@ TColor TRaytracer::directLight (const TSurfaceData& rktDATA) const
     ptLight         = *tIter;
     tTotalRadiance += directLight (rktDATA, ptLight);
   }
+  const vector<TObject*>& alv = ptScene->areaLightList();
+  for (vector<TObject*>::const_iterator tIter = alv.begin(); ( tIter != alv.end() ) ;tIter++)
+  {
+    tTotalRadiance += directLight (rktDATA, *tIter);
+  }  
 
   return tTotalRadiance;
 
@@ -753,6 +872,49 @@ TColor TRaytracer::directLight (const TSurfaceData& rktDATA, const TLight* pktLI
 }  /* directLight() */
 
 
+TColor TRaytracer::directLight (const TSurfaceData& rktDATA, const TObject* pktALIGHT) const
+{
+  TScalar   tCosNL;
+  TColor    rho;
+  TColor    tTotalRadiance;
+  TColor    tRadiance;
+  TVector   rand_point = pktALIGHT->RandomPointOnSurface();
+
+  //  cerr << "Rand point="; rand_point.printDebug();
+  TVector   light_point = (*pktALIGHT->transformMatrix()) * rand_point;
+  //  cerr << "light point="; light_point.printDebug();  
+  
+  TRay      tRay (rktDATA.point(), light_point - rktDATA.point());
+
+  tRay.normalize();
+
+  if ( rktDATA.object() )
+  {
+    tCosNL = dotProduct (rktDATA.normal(), tRay.direction());
+    
+    if ( tCosNL > 0 )
+    {
+      if ( traceShadowRay (tRay, *pktALIGHT, light_point, tRadiance) )
+      {
+        rho            = rktDATA.object()->material()->bsdf()->evaluateReflection (rktDATA, tRay.direction(), tCosNL, tRadiance);
+        tTotalRadiance = tRadiance * rho;
+      }
+    }
+  }
+  else
+  {
+    if ( traceShadowRay (tRay, *pktALIGHT, light_point, tRadiance) )
+    {
+      tTotalRadiance = tRadiance;
+    }
+  }
+
+  return tTotalRadiance;
+}  /* directLight() */
+
+
+
+
 TColor TRaytracer::specularReflectedLight (const TSurfaceData& rktDATA, Word wDEPTH, size_t* pzOBJ_CODE) const
 {
 
@@ -784,6 +946,7 @@ TColor TRaytracer::specularReflectedLight (const TSurfaceData& rktDATA, Word wDE
     }
     
     tRadiance = getRadiance (tSurfaceData, wDEPTH) * ptMaterial->specularReflection (rktDATA);
+    
   }
 
   return tRadiance;
