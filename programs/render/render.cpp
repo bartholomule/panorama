@@ -153,7 +153,16 @@ void SetPaths (void)
   
   char*   pcEnv;
 
-  _tTopDir = TOPDIR;
+  pcEnv = getenv ("PANORAMA");
+
+  if ( pcEnv )
+  {
+    _tTopDir = pcEnv;
+  }
+  else
+  {
+    _tTopDir = TOPDIR;
+  }
 
   if ( (pcEnv = getenv ("HOME")) != NULL )
   {
