@@ -25,4 +25,4 @@ clean:
 
 distclean:
 		@rm -f Makefile
-		@rm -f *.tga
+		@rm -f *.tga *.png *.jpg
