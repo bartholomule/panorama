@@ -495,14 +495,20 @@ void TZBufferRenderer::render (SBuffers& rsBUFFERS)
 TColor TZBufferRenderer::directLight (const TSurfaceData& rktDATA) const
 {
 
-  TLight*   ptLight;
-  TColor    tTotalRadiance;
+  const TLight* ptLight;
+  TColor        tTotalRadiance;
     
   for (vector<TLight*>::const_iterator tIter = ptScene->lightList().begin(); ( tIter != ptScene->lightList().end() ) ;tIter++)
   {
     ptLight         = *tIter;
     tTotalRadiance += directLight (rktDATA, ptLight);
   }
+
+  for (vector<TObject*>::const_iterator tIter = ptScene->areaLightList().begin(); ( tIter != ptScene->areaLightList().end() ) ;tIter++)
+  {
+    TObject* ptObject = *tIter;
+    tTotalRadiance += directLight (rktDATA, ptObject);
+  }  
 
   return tTotalRadiance;
 
@@ -546,6 +552,17 @@ TColor TZBufferRenderer::directLight (const TSurfaceData& rktDATA, const TLight*
   return tTotalRadiance;
   
 }  /* directLight() */
+
+TColor TZBufferRenderer::directLight (const TSurfaceData& rktDATA, const TObject* pktALIGHT) const
+{
+
+  // [_FIXME_]
+  // This should be fixed sometime to do some calculation instead of passing it
+  // on. 
+  return TRaytracer::directLight (rktDATA, pktALIGHT);
+
+}  /* directLight() */
+
 
 
 TColor TZBufferRenderer::specularReflectedLight (const TSurfaceData& rktDATA, Word wDEPTH, size_t* pzOBJ_CODE) const

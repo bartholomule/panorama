@@ -83,6 +83,7 @@ class TZBufferRenderer : public TRaytracer
 
     TColor directLight (const TSurfaceData& rktDATA) const;
     TColor directLight (const TSurfaceData& rktDATA, const TLight* pktLIGHT) const;
+    TColor directLight (const TSurfaceData& rktDATA, const TObject* pktALIGHT) const;    
     TColor specularReflectedLight (const TSurfaceData& rktDATA, Word wDEPTH, size_t* pzOBJ_CODE = NULL) const;
     TColor specularTransmittedLight (const TSurfaceData& rktDATA, Word wDEPTH, size_t* pzOBJ_CODE = NULL) const;
 
