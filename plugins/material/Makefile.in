@@ -7,6 +7,8 @@ DIRS = brick \
        leopard \
        marble \
        noise \
+       parquet \
+       wood \
        worley
 
 include ${BUILD_TOP}/Makefile.targets

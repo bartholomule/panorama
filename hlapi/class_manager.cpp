@@ -70,6 +70,8 @@ TBaseClass* TClassManager::_newObject (const string& rktCLASS, const TBaseClass*
   STATIC_CLASS (TMaterialLeopard, "MaterialLeopard");
   STATIC_CLASS (TMaterialMarble, "MaterialMarble");
   STATIC_CLASS (TMaterialNoise, "MaterialNoise");
+  STATIC_CLASS (TMaterialParquet, "MaterialParquet");
+  STATIC_CLASS (TMaterialWood, "MaterialWood");
   STATIC_CLASS (TMaterialWorley, "MaterialWorley");
   STATIC_CLASS (TBezierSurface, "BezierSurface");
   STATIC_CLASS (TOF_Cartoon, "OF_Cartoon");
