@@ -1,0 +1,52 @@
+/*
+*  Environment (background) mapping test
+*/
+
+#include "materials.inc"
+
+define camera c
+{
+  translate	<-300, 0, 400>
+  look_at	<0, 0, 400>
+}
+
+define light l
+{
+  translate	<-400, 200, 400>
+  color		CWhite
+}
+
+sphere
+{
+  translate	<0, 0, 400>
+  radius	90
+
+  material : extends MPlastic
+  {
+    color       CBlue
+
+    specular    0.4
+  }
+}
+
+scene
+{
+  camera	c
+  light		l
+  width		400
+  height	400
+  background : class PatternTexture
+  {
+    texture     "supernova.tga"
+    tiling      <4,4>
+    mirror      on
+    offset      <0.5, 0.5>
+    rotation    <30, 20, 40>
+  }
+  output
+  {
+    type        "png"
+    name	"background_mapping.png"
+  }
+  renderer : class Raytracer {}
+}
