@@ -183,7 +183,7 @@ bool THeightField::traverseGrid (const TRay& rktRAY, TSurfaceData& rtDATA) const
       if ( tError > FX_EPSILON )
       {
         iCellZ += iSignZ;
-        if ( ( iCellZ < 0 ) || ( iCellZ == ptImage->height() ) )
+        if ( ( iCellZ < 0 ) || ( iCellZ == (int) ptImage->height() ) )
         {
           break;
         }
@@ -208,8 +208,8 @@ bool THeightField::traverseGrid (const TRay& rktRAY, TSurfaceData& rtDATA) const
       tFarY  += tDeltaY;
 
     } while ( ( tNearY >= tMinY ) && ( tNearY <= tMaxY )       &&
-              ( iCellX >= 0 ) && ( iCellX < ptImage->width() ) &&
-              ( iCellZ >= 0 ) && ( iCellZ < ptImage->height() ) );
+              ( iCellX >= 0 ) && ( iCellX < (int) ptImage->width() ) &&
+              ( iCellZ >= 0 ) && ( iCellZ < (int) ptImage->height() ) );
   }
   else
   {
@@ -259,7 +259,7 @@ bool THeightField::traverseGrid (const TRay& rktRAY, TSurfaceData& rtDATA) const
       if ( tError > FX_EPSILON )
       {
         iCellX += iSignX;
-        if ( ( iCellX < 0 ) || ( iCellX == ptImage->width() ) )
+        if ( ( iCellX < 0 ) || ( iCellX == (int) ptImage->width() ) )
         {
           break;
         }
@@ -284,8 +284,8 @@ bool THeightField::traverseGrid (const TRay& rktRAY, TSurfaceData& rtDATA) const
       tFarY  += tDeltaY;
 
     } while ( ( tNearY >= tMinY ) && ( tNearY <= tMaxY )       &&
-              ( iCellX >= 0 ) && ( iCellX < ptImage->width() ) &&
-              ( iCellZ >= 0 ) && ( iCellZ < ptImage->height() ) );
+              ( iCellX >= 0 ) && ( iCellX < (int) ptImage->width() ) &&
+              ( iCellZ >= 0 ) && ( iCellZ < (int) ptImage->height() ) );
     
   }
 
