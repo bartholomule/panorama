@@ -1,0 +1,2 @@
+PLUGIN_NAME = lwo
+OBJ         = lwo.o chunks.o
