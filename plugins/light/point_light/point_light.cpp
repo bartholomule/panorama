@@ -32,6 +32,7 @@ bool TPointLight::visible (const TVector& rktPOINT) const
     // Check if light - point distance is less than threshold.
     //
     tDist = Distance (rktPOINT, tLocation);
+
     if ( tDist > tDistanceThreshold )
     {
       return false;

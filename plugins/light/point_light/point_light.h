@@ -36,7 +36,7 @@ class TPointLight : public TLight
     virtual bool visible (const TVector& rktPOINT) const;
     virtual TScalar attenuation (const TVector& rktPOINT) const
     {
-      TScalar   tDist = Distance (rktPOINT, tLocation);
+      TScalar   tDist = Distance (rktPOINT, location());
       TScalar   f = tFalloff.z() + tDist * (tFalloff.y() + (tFalloff.x() * tDist));
 
       return ( f != 0.0 ) ? min (TScalar (1) / f, TScalar (1)) : TScalar (1);
@@ -86,7 +86,7 @@ class TPointLight : public TLight
     }
 
     TColor scatteredLight (const TSurfaceData& rktDATA) const;
-    
+
     string className (void) const { return "PointLight"; }
  
     void printDebug (void) const;
