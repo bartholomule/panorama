@@ -4,3 +4,5 @@ Makefile.vars
 config.cache
 config.log
 config.status
+libtool
+autom4te.cache

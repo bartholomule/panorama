@@ -1,8 +1,69 @@
-
- This is a list of things to be done for Panorama.
+This is a list of things to be done for Panorama.
 
  If you have an idea for a new project, or you want to try one of the "not
 started" project, please send mail to bug-panorama@gnu.org.
+
+ Please report any errors from this page to bug-panorama@gnu.org.
+
+-- General ----------------------------------------------------------
+
+Project   : Statistics generator framework
+Desc.     : A class for the generation of statistics.  ie. Ray-shape
+            intersections/misses, Object construction counts, image load/saves,
+            etc.  This could aid in debugging especially for bounding volume
+            heirarchies.  
+Status    : Not started
+
+-- Plugin -----------------------------------------------------------
+
+Project   : New plugin format
+Desc.     : A new format (interface) for plugins, allowing more than one
+            registered object per plugin file, plugin descriptions, version
+            numbers, copyright strings, object dependency information, and more
+            fun stuff to break binary compatibility. :) 
+Status    : Not started
+
+-- Paradigm ---------------------------------------------------------
+
+Project   : Time
+Desc.     : The addition of time, and its supporting constructs.  This should
+            include time-changing matrices (for motion, transformation, etc),
+            shutter speeds (camera), exposure levels for cameras (to allow
+            images with proper/improper exposures, making possible changes to
+            constrast, brightness, etc), time-varying textures/patterns (waves,
+            fire, etc), and more.
+Status    : Not started
+
+Project   : Library separation
+Desc.     : A separation of the current LLAPI/HLAPI libraries into multiple
+            lower-level libraries, such as math, shapes, textures, and such.
+            The reason for this is to allow the use of the sub libraries in
+            other projects and lowering the overhead for using some of the
+            features of the panorama library set.
+Note      : This may require a good amount of rewrite.
+Status    : Not started
+
+-- Documentation ----------------------------------------------------
+
+Project   : RT Scene documentation
+Desc.     : Documentation is needed for the RT SDL, so that people may be able
+            to create their own scenes without the need to read through
+            everything that is included in the panorama package.
+Status    : Not started
+
+Project   : Plugin creation guide
+Desc.     : Real documentation on how to write a plugin.  This will need to be
+            delayed until the new plugin format is created. 
+Status    : Not started
+
+-- User interface ---------------------------------------------------
+
+Project   : RT Scene modeler
+Desc.     : A modeler for the RT scene language.  This may be broken up into
+            sub projects, such as a GTK-- version, Windows (DirectX?) version,
+            or similar.
+Status    : Not started
+
 
 -- BSDF -------------------------------------------------------------
 
@@ -10,10 +71,14 @@ started" project, please send mail to bug-panorama@gnu.org.
 -- CAMERA -----------------------------------------------------------
 
 Project   : Simulation of a real camera model
-Status    : Not started
+Status    : Partially complete (thin-lens model of a camera), as of v0.18.  
+            Still needs a major addition to panorama, the addition of time.
+            Currently only shows focal blur (no object motion is possible).
+Author(s) : Kevin Harris (kpharris@users.sourceforge.net)
 
 Project   : Parallel projection camera
-Status    : Not started
+Status    : Working? In CVS repository (no examples exist).
+Author(s) : Fausto Espinal
 
 
 -- IMAGE FILTER -----------------------------------------------------
@@ -26,50 +91,63 @@ Author(s) : Ken Geis (kgeis@cchemnt.cchem.berkeley.edu)
 
 -- OBJECT -----------------------------------------------------------
 
+Project   : 3DS object import
+Status    : Not started
+
+Project   : Automatic Bounding Volume Hierarchy (Salmon & Goldsmith)
+Status    : Experimental (included in distribution).
+Author(s) : Angel Jimenez (ajimenez@gnu.org)
+
+Project   : Caligari Truespace object import
+Status    : Not started
+
 Project   : Height field
 Status    : Experimental (included in distribution).
-Author(s) : Angel Jimenez (ajimenez@vnet.es)
+Author(s) : Angel Jimenez (ajimenez@gnu.org)
 
-Project   : Polyhedron
+Project   : Implicit surfaces (metaballs)
+Status    : Not started
+
+Project   : LightWave object import
 Status    : Experimental (included in distribution).
-Author(s) : Angel Jimenez (ajimenez@vnet.es)
+Author(s) : Angel Jimenez (ajimenez@gnu.org)
 
 Project   : NURBS surfaces
 Status    : Not started
 
-Project   : Implicit surfaces (metaballs)
-Status    : In development
-Author(s) : Carlos Jimenez (carlos@leader.es)
-
-Project   : 3DS object import
-Status    : In development
-Author(s) : Angel Jimenez (ajimenez@vnet.es)
-
-Project   : LightWave object import
+Project   : Polyhedron
 Status    : Experimental (included in distribution).
-Author(s) : Angel Jimenez (ajimenez@vnet.es)
+Author(s) : Angel Jimenez (ajimenez@gnu.org)
 
-Project   : Caligari Truespace object import
-Status    : In development
-Author(s) : Angel Jimenez (ajimenez@vnet.es)
-
-Project   : Automatic Bounding Volume Hierarchy (Salmon & Goldsmith)
-Status    : Experimental (included in distribution).
-Author(s) : Angel Jimenez (ajimenez@vnet.es)
+Project   : Quadric, cubic, quartic objects
+Status    : Not started
 
 Project   : Surfaces of revolution
 Status    : Not started
 
+Project   : Uniform grid spatial subdivision
+Status    : Not started
+
+Project   : Wavefront object import
+Status    : Not started
 
 -- RENDERER ---------------------------------------------------------
 
 Project   : ZBuffer renderer
 Status    : Experimental (included in distribution).
-Author(s) : Angel Jimenez (ajimenez@vnet.es)
+Author(s) : Angel Jimenez (ajimenez@gnu.org)
             Carlos Jimenez (carlos@leader.es)
 
+Project   : Monte-Carlo path tracer
+Status    : Not started
 
 -- SCENE I/O --------------------------------------------------------
 
 Project   : POVRay scene loader
+Status    : Not started
+
+Project   : POVRay scene saver
+status    : Not started
+
+Project   : RT scene saver
 Status    : Not started

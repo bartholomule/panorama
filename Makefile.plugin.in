@@ -5,36 +5,31 @@ include $(BUILD_TOP)/Makefile.vars
 include @srcdir@/$(BUILD_TOP)/Makefile.rules
 include @srcdir@/Makefile.data
 
-ALL_FILES = $(strip $(wildcard $(OBJ:%.o=%.cpp)))
+ALL_FILES = $(strip $(wildcard $(OBJ:%.lo=%.cpp)))
 
-CXXFLAGS += -fPIC
+INSTALL = @INSTALL@
 
 VPATH = @srcdir@
 SRC_DIR = @srcdir@
 
-PLUGIN = ${PLUGIN_NAME}.plg
+PLUGIN = ${PLUGIN_NAME}.la
 
 all:		${PLUGIN}
 
 install:        all
 ifneq (1,@STATIC_LINK@)
 		@echo Installing plugin ${PLUGIN_NAME}...
-		@@INSTALL@ ${PLUGIN} ${PLUGIN_DIR}
+		${LIBTOOL} --mode=install ${INSTALL} ${PLUGIN} ${PLUGIN_DIR}
 endif
 
-ifeq (1,@STATIC_LINK@)
-${PLUGIN}:	${OBJ}
-		@echo Adding plugin code to hlapi library
-		@ar rcs ${STATIC_HLAPI_LIB} ${OBJ}
-		@touch ${PLUGIN}
-else
 ${PLUGIN}:	${OBJ}
 		@echo Making plugin ${PLUGIN_NAME}...
-		@${CXX} -fPIC -shared -o ${PLUGIN} ${OBJ} ${LIB_PATH} ${LIB} ${ARCH_MAKE_SHARED_OPTS}
-endif
+		${LIBTOOL} --mode=link ${CXX} -o ${PLUGIN} ${OBJ} ${LIB_PATH} ${LIB} ${ARCH_MAKE_SHARED_OPTS} -module -rpath ${PLUGIN_DIR}
+
 
 clean: 
-		@rm -f ${OBJ} ${PLUGIN} core *~ *.bak 
+		@rm -f ${OBJ} ${OBJ:%.lo=%.o} ${PLUGIN} core *~ *.bak 
+		@rm -rf .libs
 
 distclean:      clean
 		@rm -f Makefile *.d

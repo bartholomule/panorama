@@ -3,75 +3,75 @@
 #
 
 # Atmospheric objects
-atm_const.plg
+atm_const@PLUGIN_EXTENSION@
 
 # BSDF
-bsdf_cook_torrance.plg
-bsdf_lambertian.plg
-bsdf_phong.plg
-bsdf_schlick.plg
-bsdf_schlick_double.plg
-bsdf_ward.plg
+bsdf_cook_torrance@PLUGIN_EXTENSION@
+bsdf_lambertian@PLUGIN_EXTENSION@
+bsdf_phong@PLUGIN_EXTENSION@
+bsdf_schlick@PLUGIN_EXTENSION@
+bsdf_schlick_double@PLUGIN_EXTENSION@
+bsdf_ward@PLUGIN_EXTENSION@
 
 # Cameras
-parallel.plg
-pinhole.plg
-thinlens.plg
+parallel@PLUGIN_EXTENSION@
+pinhole@PLUGIN_EXTENSION@
+thinlens@PLUGIN_EXTENSION@
 
 # Image filters
-if_cartoon.plg
-if_convert_to_grey.plg
-if_fog.plg
-if_lens_flare.plg
+if_cartoon@PLUGIN_EXTENSION@
+if_convert_to_grey@PLUGIN_EXTENSION@
+if_fog@PLUGIN_EXTENSION@
+if_lens_flare@PLUGIN_EXTENSION@
 @PLUGIN_TEXT@
 
 # Image input/output formats
-tga_io.plg
-tiff_io.plg
+tga_io@PLUGIN_EXTENSION@
+tiff_io@PLUGIN_EXTENSION@
 @PLUGIN_PNG@
 @PLUGIN_JPEG@
 @PLUGIN_GIF@
 
 # Lights
-point_light.plg
-projector.plg
-warn_light.plg
+point_light@PLUGIN_EXTENSION@
+projector@PLUGIN_EXTENSION@
+warn_light@PLUGIN_EXTENSION@
 
 # Patterns
-pat_amplifier.plg
-pat_brick.plg
-pat_checker.plg
-pat_composite.plg
-pat_crackle.plg
-pat_cylgrad.plg
-pat_leopard.plg
-pat_marble.plg
-pat_noise.plg
-pat_parquet.plg
-pat_texture.plg
-pat_wood.plg
-pat_worley.plg
+pat_amplifier@PLUGIN_EXTENSION@
+pat_brick@PLUGIN_EXTENSION@
+pat_checker@PLUGIN_EXTENSION@
+pat_composite@PLUGIN_EXTENSION@
+pat_crackle@PLUGIN_EXTENSION@
+pat_cylgrad@PLUGIN_EXTENSION@
+pat_leopard@PLUGIN_EXTENSION@
+pat_marble@PLUGIN_EXTENSION@
+pat_noise@PLUGIN_EXTENSION@
+pat_parquet@PLUGIN_EXTENSION@
+pat_texture@PLUGIN_EXTENSION@
+pat_wood@PLUGIN_EXTENSION@
+pat_worley@PLUGIN_EXTENSION@
 
 # Perturbations
-per_brick.plg
-per_bump.plg
-per_crackle.plg
-per_leopard.plg
-per_marble.plg
-per_noise.plg
-per_wave.plg
-per_worley.plg
+per_brick@PLUGIN_EXTENSION@
+per_bump@PLUGIN_EXTENSION@
+per_crackle@PLUGIN_EXTENSION@
+per_leopard@PLUGIN_EXTENSION@
+per_marble@PLUGIN_EXTENSION@
+per_noise@PLUGIN_EXTENSION@
+per_wave@PLUGIN_EXTENSION@
+per_worley@PLUGIN_EXTENSION@
 
 # Objects
-bezier.plg
-aggregate_uniform_grid.plg
+bezier@PLUGIN_EXTENSION@
+aggregate_uniform_grid@PLUGIN_EXTENSION@
 
 # Object filters
-of_cartoon.plg
-of_convert_to_grey.plg
+of_cartoon@PLUGIN_EXTENSION@
+of_convert_to_grey@PLUGIN_EXTENSION@
 
 # Renderers
-raytracer.plg
+raytracer@PLUGIN_EXTENSION@
 
 # Scene input/output formats
-rt_io.plg
+rt_io@PLUGIN_EXTENSION@

@@ -1,3 +1,14 @@
+>> Version 0.18.01 released (11 Feb 2003)
+ - Fixed problems which prevented 0.18 from compiling.
+
+ - Added libtool support (now required).
+
+ - Added another abstraction above the class manager, to allow a more complete
+   separation of the llapi and hlapi libraries. 
+
+
+>> Version 0.18 released (21 November 2002)
+
  - Windows (MSVC++6) project files added, for a statically linked 'render'
    executable (done by Kevin Harris).
 

@@ -5,7 +5,7 @@
 # set it, assuming you have an OBJ var set (containing all .o files), use
 # something like:
 #
-# ALL_FILES = $(strip $(wildcard $(OBJ:%.o=%.cpp)))
+# ALL_FILES = $(strip $(wildcard $(OBJ:%.o=%.cpp)) $(wildcard $(OBJ:%.lo=%.cpp)))
 #
 # It is important to note that the above assumes the .o files are generated
 # from .cpp files (which is the case for all of the base panorama code).  If

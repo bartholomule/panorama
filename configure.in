@@ -1,6 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
 
-AC_INIT(llapi/base_class.h)
+dnl AC_INIT(llapi/base_class.h)
+AC_INIT(panorama, 0.18.01, bug-panorama@gnu.org)
 
 AC_PREFIX_DEFAULT(/opt/panorama)
 
@@ -8,6 +9,14 @@ dnl Gets the host type
 AC_CANONICAL_HOST
 
 dnl Checks for programs.
+AC_LIBTOOL_DLOPEN
+AC_PROG_LIBTOOL
+AC_SUBST(LIBTOOL_DEPS)
+
+dnl FIXME!  I need to determine the suffix to use for a library (also for plugins).
+PLUGIN_EXTENSION=.so
+AC_SUBST(PLUGIN_EXTENSION)
+
 AC_PROG_CXX
 AC_PROG_INSTALL
 AC_PROG_LEX
@@ -16,6 +25,7 @@ AC_PROG_MAKE_SET
 
 dnl Checks for libraries.
 AC_CHECK_LIB(dl, dlopen)
+AC_CHECK_LIB(c,  dlopen)
 
 dnl Checks for header files.
 AC_HEADER_STDC
@@ -41,7 +51,7 @@ echo -e "checking for modern freetype... \c"
 if [ `freetype-config --cflags >/dev/null 2>/dev/null` ]
 then
   TEXT_FILTER="text"
-  PLUGIN_TEXT="if_text.plg"
+  PLUGIN_TEXT="if_text$PLUGIN_EXTENSION"
   echo "yes"
 else
   echo "no"
@@ -53,7 +63,7 @@ else
   if test $text_val = "yes"
   then
     TEXT_FILTER="text"
-    PLUGIN_TEXT="if_text.plg"
+    PLUGIN_TEXT="if_text$PLUGIN_EXTENSION"
   else
     TEXT_FILTER=""
     PLUGIN_TEXT=""
@@ -67,7 +77,7 @@ jpeg_val=no
 AC_CHECK_HEADER(jpeglib.h, [AC_CHECK_LIB(jpeg,main,jpeg_val=yes)])
 if test $jpeg_val = "yes"; then
 	JPEG_FILTER="jpeg"
-	PLUGIN_JPEG="jpeg_io.plg"
+	PLUGIN_JPEG="jpeg_io$PLUGIN_EXTENSION"
 else
 	JPEG_FILTER=""
 	PLUGIN_JPEG=""
@@ -81,7 +91,7 @@ AC_CHECK_HEADER(png.h, [AC_CHECK_LIB(png,main,dnl
 AC_CHECK_LIB(z,main,png_val=yes))])
 if test $png_val = "yes"; then
 	PNG_FILTER="png"
-	PLUGIN_PNG="png_io.plg"
+	PLUGIN_PNG="png_io$PLUGIN_EXTENSION"
 else
 	PNG_FILTER=""
 	PLUGIN_PNG=""
@@ -94,7 +104,7 @@ gif_val=no
 AC_CHECK_HEADER(gif_lib.h, [AC_CHECK_LIB(ungif,main,gif_val=yes)])
 if test $gif_val = "yes"; then
 	GIF_FILTER="gif"
-	PLUGIN_GIF="gif_io.plg"
+	PLUGIN_GIF="gif_io$PLUGIN_EXTENSION"
 else
 	GIF_FILTER=""
 	PLUGIN_GIF=""
@@ -107,7 +117,7 @@ tiff_val=no
 AC_CHECK_HEADER(tiffio.h, [AC_CHECK_LIB(tiff,TIFFGetVersion,tiff_val=yes)])
 if test $tiff_val = "yes"; then
 	TIFF_FILTER="tiff"
-	PLUGIN_TIFF="tiff_io.plg"
+	PLUGIN_TIFF="tiff_io$PLUGIN_EXTENSION"
 else
 	TIFF_FILTER=""
 	PLUGIN_TIFF=""
@@ -235,6 +245,7 @@ AC_OUTPUT(\
 	Makefile \
 	Makefile.vars \
 	Makefile.targets \
+        version \
         data/Makefile \
         data/gradient/Makefile \
         data/include/Makefile \

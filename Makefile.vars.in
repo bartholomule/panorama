@@ -1,6 +1,6 @@
 
 .SUFFIXES:
-.SUFFIXES: .cpp .h .o .l .y
+.SUFFIXES: .cpp .h .lo .l .y
 
 #
 # You can modify this variables (at your own risk) if you want to change the normal
@@ -22,17 +22,18 @@ SCENE_DIR    = ${TOPDIR}/scenes/
 # Don't change anything below this line.
 #
 
-LLAPI_LIB = ${BUILD_TOP}/llapi/libllapi.so
-HLAPI_LIB = ${BUILD_TOP}/hlapi/libhlapi.so
+LLAPI_LIB = ${BUILD_TOP}/llapi/libllapi.la
+HLAPI_LIB = ${BUILD_TOP}/hlapi/libhlapi.la
 
-STATIC_LLAPI_LIB = ${BUILD_TOP}/llapi/libllapi.a
-STATIC_HLAPI_LIB = ${BUILD_TOP}/hlapi/libhlapi.a
+STATIC_LLAPI_LIB = ${BUILD_TOP}/llapi/libllapi.la
+STATIC_HLAPI_LIB = ${BUILD_TOP}/hlapi/libhlapi.la
 
 INCLUDE = -I${BUILD_TOP} -I${SRC_DIR}/${BUILD_TOP} -I${SRC_DIR}
 DEFS    = @DEFS@ \
           -DTOPDIR='"${TOPDIR}"' \
 	  -DSTATIC_LINK=@STATIC_LINK@
 
+LIBTOOL  = ${BUILD_TOP}/libtool
 CXX      = @CXX@
 LEX      = @LEX@
 YACC     = @YACC@
@@ -49,22 +50,23 @@ OPT = -O
 # -fno-math-errno
 endif
 
-ifeq (@STATIC_LINK@,1)
-LLAPI_LIB = ${STATIC_LLAPI_LIB}
-HLAPI_LIB = ${STATIC_HLAPI_LIB}
-STAT =
-else
-STAT =
-endif
-
 ifeq (@PROFILE@,1)
 PROF = -pg
 else
 PROF = -fomit-frame-pointer
 endif
 
-CXXFLAGS = ${OPT} ${STAT} ${PROF} -ansi -fno-exceptions -fno-rtti \
+CXXFLAGS += ${OPT} ${STAT} ${PROF} -ansi -fno-exceptions -fno-rtti \
 	   -Wall -Wstrict-prototypes ${DEFS} ${INCLUDE}
+
+ifeq (@STATIC_LINK@,1)
+CXXFLAGS += -static
+LLAPI_LIB = ${STATIC_LLAPI_LIB}
+HLAPI_LIB = ${STATIC_HLAPI_LIB}
+STAT =
+else
+STAT =
+endif
 
 # The following one causes the gui to fail to build on my machine.  I don't know why.
 # -pedantic

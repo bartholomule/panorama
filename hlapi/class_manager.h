@@ -21,13 +21,29 @@
 
 #include <string>
 #include "llapi/base_class.h"
+#include "llapi/class_mgr_base.h"
 
-class TClassManager
+/*
+  TODO: Add a 'deleteObject' function, or something similar, so that it will 
+  be possible for a class to provide its own deallocation routines.  This is
+  neccessary for windows-based DLLs, where if something is allocated from a
+  DLL, it MUST be deallocated from the same DLL; No other part of the program
+  can attempt to free up the memory.  This may be the case for other operating
+  systems as well.  In any case, it would be a nice feature.
+ */
+class TClassManager : public TClassManagerBase
 {
-
   public:
-    
+
     static TBaseClass* _newObject (const string& rktCLASS, const TBaseClass* pktPARENT);
+
+  TClassManager() { }
+  virtual ~TClassManager() { }
+
+  virtual TBaseClass* newObject( const string& classname, const TBaseClass* copy_source = NULL )
+  {
+    return TClassManager::_newObject(classname, copy_source);
+  }
 
 };  /* class TClassManager */
 
