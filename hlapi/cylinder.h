@@ -26,23 +26,26 @@ class TCylinder : public TObject
 
   protected:
 
+    TVector   tTopPoint;
+    TVector   tBottomPoint;
+    TScalar   tRadius;
+    TScalar   tRadius2;
+    TScalar   tHeight;
+    bool      gOpen;
+    
     TVector localNormal (const TVector& rktPOINT) const;
 
-    TVector tTopPoint;
-    TVector tBottomPoint;
-    TScalar tRadius;
-    TScalar tRadius2;
-    TScalar tHeight;
-    
   public:
 
     TCylinder (void) :
       TObject()
     {
       sCapabilities.gInfinite = false;
-      tTopPoint 							= TVector ( 0, 1, 0);
-      tBottomPoint						= TVector ( 0,-1, 0);
-      tRadius									= 1.0;
+      
+      tTopPoint    = TVector ( 0, 1, 0);
+      tBottomPoint = TVector ( 0,-1, 0);
+      tRadius      = 1.0;
+      gOpen        = false;
     }
       
     void initialize (void);
@@ -54,7 +57,7 @@ class TCylinder : public TObject
     /**
     * Get the value of a named attribute of the object.
     * @param rktNAME The name of the attribute; valid names are
-    * 'point1', 'point2' and 'radius'.
+    * 'point1', 'point2', 'open' and 'radius'.
     * @param rnVALUE The returned value.
     * @see getAttributeList()
     */

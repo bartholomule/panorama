@@ -130,7 +130,7 @@ bool TCylinder::findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) con
 
   tSurfaceData.setup (this, rktRAY);
   
-  if ( !( fabs (tRayIT.direction().y()) < FX_EPSILON ) )
+  if ( !( fabs (tRayIT.direction().y()) < FX_EPSILON ) && !gOpen )
   {
     //
     // Intersection with bottom circle
@@ -249,6 +249,17 @@ int TCylinder::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribTy
       return FX_ATTRIB_WRONG_TYPE;
     }
   }
+  else if ( rktNAME == "open" )
+  {
+    if ( eTYPE == FX_BOOL )
+    {
+      gOpen = nVALUE.gValue;
+    }
+    else
+    {
+      return FX_ATTRIB_WRONG_TYPE;
+    }
+  }
   else if ( rktNAME == "radius" )
   {
     if ( eTYPE == FX_REAL )
@@ -282,6 +293,10 @@ int TCylinder::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
   {
     rnVALUE.pvValue = &tBottomPoint;
   }
+  else if ( rktNAME == "open" )
+  {
+    rnVALUE.gValue = gOpen;
+  }
   else if ( rktNAME == "radius" )
   {
     rnVALUE.dValue = tRadius;
@@ -303,6 +318,7 @@ void TCylinder::getAttributeList (TAttributeList& rtLIST) const
 
   rtLIST ["point1"] = FX_VECTOR;
   rtLIST ["point2"] = FX_VECTOR;
+  rtLIST ["open"]   = FX_BOOL;
   rtLIST ["radius"] = FX_REAL;
 
 }  /* getAttributeList() */
