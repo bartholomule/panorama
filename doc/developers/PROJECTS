@@ -84,6 +84,10 @@ Status    : Not started
 Project   : Surfaces of revolution
 Status    : Not started
 
+Project   : Extending bicubic Bezier patches
+Status    : In development
+Author(s) : Matt Kimball (mkimball@xmission.com)
+
 
 -- RENDERER ---------------------------------------------------------
 
