@@ -24,6 +24,8 @@
 #include "llapi/pattern.h"
 #include "hlapi/plugin_manager.h"
 
+#define ifloor(a,b) (( a < 0 ) ? ((a / b) - 1) : (a / b))
+
 enum EMappings
 {
 
@@ -46,9 +48,10 @@ class TPatternTexture : public TPattern
     bool        gTile;
     EMappings   eMapping;
 
-    size_t     zTextureWidth, zTextureHeight;
+    size_t      zTextureWidth, zTextureHeight;
+    double      dTextureWidth, dTextureHeight;
  
-    int correctTexel (int iVALUE, const size_t& rkzMAX) const;
+    int correctTexel (int iVALUE, const int kiMAX) const;
     
     TColor lerpTexel (const TVector2& rktUVCOORD) const;
 

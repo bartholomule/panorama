@@ -38,16 +38,22 @@ TPatternTexture::TPatternTexture (void) :
 }  /* TPatternTexture() */
 
 
-int TPatternTexture::correctTexel (int iVALUE, const size_t& rkzMAX) const
+
+int TPatternTexture::correctTexel (int iVALUE, const int kiMAX) const
 {
 
-  int  i = iVALUE % rkzMAX;
+  int  i = iVALUE % kiMAX;
+
+  if ( iVALUE < 0 ) 
+  {
+    i += (kiMAX - 1);
+  }
 
   if ( gMirror )
   { 
-    if ( ((iVALUE / rkzMAX) & 1) )
+    if ( (ifloor (iVALUE, kiMAX) & 1) )
     {
-      i = (rkzMAX - 1) - i;
+      i = (kiMAX - 1) - i;
     }
   }
 
@@ -66,8 +72,8 @@ TColor TPatternTexture::lerpTexel (const TVector2& rktUVCOORD) const
   double   iiu, iiv;
   double   fu, fv;
 
-  u = rktUVCOORD.x() * (double) zTextureWidth;
-  v = rktUVCOORD.y() * (double) zTextureHeight;  
+  u = rktUVCOORD.x() * dTextureWidth;
+  v = rktUVCOORD.y() * dTextureHeight;  
  
   // fractional part in fu and fv
   fu = modf (u, &iiu);
@@ -305,8 +311,11 @@ int TPatternTexture::setAttribute (const string& rktNAME, NAttribute nVALUE, EAt
         return FX_ATTRIB_USER_ERROR;
       }
 
-      zTextureWidth  = ptImage->width();
-      zTextureHeight = ptImage->height();
+      zTextureWidth  = (size_t) ptImage->width();
+      zTextureHeight = (size_t) ptImage->height();
+
+      dTextureWidth  = ptImage->width();
+      dTextureHeight = ptImage->height();
     }
     else
     {
