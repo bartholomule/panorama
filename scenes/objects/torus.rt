@@ -18,13 +18,15 @@ define l class PointLight
 
 addObject(class Plane
   {
-    translate(<0, -100, 0>);
+    // you can now use "setLocation(<0,-100,0>);" instead of the below line.
+    translate(<0,-100,0>);
+
     normal = <0, 1, 0>;
     material = MChecker
     {
       color = class PatternChecker
       {
-        color      = CBlue
+        color      = CBlue;
         base_color = CNavy;
         size       = 50;
       };

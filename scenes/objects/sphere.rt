@@ -34,7 +34,7 @@ class Cone
 };
 
 
-circle { translate( <0,-3,0> );  radius=3; };
+circle { translate( <2,-3,2> );  radius=3; material = MPlastic { color = CYellow; }; };
 
 class PointLight
 {
