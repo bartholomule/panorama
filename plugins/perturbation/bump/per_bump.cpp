@@ -26,6 +26,16 @@
 
 DEFINE_PLUGIN ("PerturbationBump", FX_PERTURBATION_CLASS, TPerturbationBump);
 
+TPerturbationBump::TPerturbationBump (void) :
+      TPerturbation(),
+      ptPattern (NULL),
+      tBumpFactor (1),
+      tSamples (2, 2)
+{
+
+  calcTotalNoSamples();
+
+}  /* TPerturbationBump() */
 
 TVector TPerturbationBump::perturbNormal (const TSurfaceData& rktDATA) const
 {
@@ -35,13 +45,19 @@ TVector TPerturbationBump::perturbNormal (const TSurfaceData& rktDATA) const
   if ( fabs(tBumpFactor) > FX_EPSILON )
   {
     TSurfaceData   tData;
-    TColor         tColor1;
-    TColor         tColor2;
+    TColor         tColor;
     TVector        tGradientU;
     TVector        tGradientV;
     TVector        r, s, t;
     TVector        tTemp;
     TScalar        tHeight;
+    TScalar        tHeightDiff;
+    TScalar        dx, dy;
+    TScalar        x, y;
+    TScalar        tRDamping;
+    TScalar        tTDamping;
+    TScalar        tRTotal;
+    TScalar        tTTotal;
 
     if ( !ptPattern )
     {
@@ -76,22 +92,56 @@ TVector TPerturbationBump::perturbNormal (const TSurfaceData& rktDATA) const
 
     tData = rktDATA;
 
-    tColor1 = ptPattern->color (rktDATA);
-    tHeight = tColor1.average();
+    tColor = ptPattern->color (rktDATA);
+    tHeight = tColor.average();
 
-    tTemp = rktDATA.point() + tGradientU;
-    tData.setPoint (tTemp);
-    tColor2 = ptPattern->color (tData);
+    dx = ( tSamples.x() > 1 ) ? (2.0 / (tSamples.x() - 1.0)) : 0;
+    dy = ( tSamples.y() > 1 ) ? (2.0 / (tSamples.y() - 1.0)) : 0;    
 
-    r *= tColor2.average() - tHeight;
+    tRTotal = 0;
+    tTTotal = 0;
 
-    tTemp = rktDATA.point() + tGradientV;
-    tData.setPoint (tTemp);
-    tColor2 = ptPattern->color (tData);
+    y = -1.0;
 
-    t *= tColor2.average() - tHeight;
+    for (size_t iy = 0; ( iy < (size_t) tSamples.y() ); iy++)
+    {  
+      x = -1.0;
 
-    tNewNormal = rktDATA.normal() + (r + t) * tBumpFactor;
+      tTDamping = ( y == 0 ) ? 0 : (1.0 - (y * y) * 0.5);
+
+      if ( y < 0 )
+      {
+        tTDamping = -tTDamping;  
+      }
+
+      for (size_t ix = 0; ( ix < (size_t) tSamples.x() ); ix++)
+      {
+	tTemp = rktDATA.point() + (tGradientU * x) + (tGradientV * y);
+	tData.setPoint (tTemp);
+	tColor = ptPattern->color (tData);
+
+	tHeightDiff = tColor.average() - tHeight;
+	
+	tRDamping = ( x == 0 ) ? 0 : (1.0 - (x * x) * 0.5);	
+
+	if ( x < 0 )
+	{
+	  tRDamping = -tRDamping;  
+	}
+	
+	tRTotal += tHeightDiff * tRDamping;
+	tTTotal += tHeightDiff * tTDamping;
+
+	x += dx;
+      }
+
+      y += dy;
+    }
+
+    r *= tRTotal;
+    t *= tTTotal;
+
+    tNewNormal = rktDATA.normal() + (r + t) * tBumpFactor * tTotalNoSamples;
     tNewNormal.normalize();
   }
   
@@ -136,6 +186,19 @@ int TPerturbationBump::setAttribute (const string& rktNAME, NAttribute nVALUE, E
       return FX_ATTRIB_WRONG_TYPE;
     }
   }
+  else if ( rktNAME == "samples" )
+  {
+    if ( eTYPE == FX_VECTOR2 )
+    {
+      tSamples = (*((TVector2*) nVALUE.pvValue));
+
+      calcTotalNoSamples();
+    }
+    else
+    {
+      return FX_ATTRIB_WRONG_TYPE;
+    }
+  }
   else
   {
     return TPerturbation::setAttribute (rktNAME, nVALUE, eTYPE);
@@ -161,6 +224,10 @@ int TPerturbationBump::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
   {
     rnVALUE.dValue = tBumpFactor;
   }
+  else if ( rktNAME == "samples" )
+  {
+    rnVALUE.pvValue = &tSamples;
+  }
   else
   {
     return TPerturbation::getAttribute (rktNAME, rnVALUE);
@@ -179,6 +246,7 @@ void TPerturbationBump::getAttributeList (TAttributeList& rtLIST) const
   rtLIST ["source"]    = FX_PATTERN;
   rtLIST ["grad_disp"] = FX_VECTOR2;
   rtLIST ["bump"]      = FX_REAL;
+  rtLIST ["samples"]   = FX_VECTOR2;
 
 }  /* getAttributeList() */
 

@@ -31,18 +31,23 @@ class TPerturbationBump : public TPerturbation
 
   protected:
 
+    TPattern*   ptPattern;
     TVector2    tGradientDisplacement;
     TScalar     tBumpFactor;
-    TPattern*   ptPattern;
+    TVector2    tSamples;
+
+    TScalar     tTotalNoSamples;
+
+    void calcTotalNoSamples (void)
+    { 
+      tTotalNoSamples = 1.0 / (tSamples.x() * tSamples.y());
+    }  
 
   public:
 
     static TBaseClass* _create (const TBaseClass* pktPARENT);
 
-    TPerturbationBump (void) :
-      TPerturbation(),
-      tBumpFactor (0),
-      ptPattern (NULL) {}
+    TPerturbationBump (void);
 
     TVector perturbNormal (const TSurfaceData& rktDATA) const;
 
