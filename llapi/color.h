@@ -20,7 +20,6 @@
 #define _COLOR__
 
 #include <cmath>
-#include "llapi/machine.h"
 #include "llapi/math_tools.h"
 
 class TColor
@@ -74,6 +73,7 @@ class TColor
 
     void clamp (void);
 
+    float min (void) const { return min3 (fRed, fGreen, fBlue); }
     float max (void) const { return max3 (fRed, fGreen, fBlue); }
 
     bool saturated (void) const;
