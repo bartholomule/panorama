@@ -27,6 +27,9 @@
 #include "parser_defs.h"
 #include "psl_io.h"
 
+#define WRITE_CODE(s)        if ( DEBUG_CODE ) { _tDebugCodeFile << s; }
+#define SET_CURRENT_CODE()   _ptCurrentCode = _ptCurrentProgram->getEventCode (_tCurrentEvent)
+
 enum EVarScope
 {
 
@@ -36,19 +39,25 @@ enum EVarScope
   
 };  /* enum EVarScope */
 
+// Auxiliar variables used for debugging
+static string     _lvalueName;
+static ofstream   _tDebugCodeFile;
+
 static map<string, TProcedural*, less<string> >   _tObjectMap;
 static stack<TProcedural*>                        _tDataStack;
+static list<TInstruction>*                        _ptCurrentCode = NULL;
 
 static TProcedural*   _ptData;
 static TProcedural*   _ptParent;
 static TAggregate*    _ptWorld;
-
-static EVarScope     _eVarScope      = FX_GLOBAL_SCOPE;
-static EAttribType   _eVarType       = FX_NONE;
-static TEventCode*   _ptCurrentEvent = NULL;
+static string         _tCurrentEvent;
+static EVarScope      _eVarScope        = FX_GLOBAL_SCOPE;
+static EAttribType    _eVarType         = FX_NONE;
+static TProgram*      _ptCurrentProgram = NULL;
 
 #define POP()           top(); _tDataStack.pop()            // Fix to STL's pop()
 
+#define DEBUG_CODE 1
 #define YYDEBUG 1
 
 static string DefaultClass (const string& rktTYPE);
@@ -61,7 +70,7 @@ static EAttribType GetTypeCode (const string& rktNAME);
 static void InitObjects (void);
 
 static void AddVariable (const string& rktNAME);
-static void AddInstruction (EInstructionCode eCODE, EAttribType eTYPE, NAttribute nPARAM);
+static void AddInstruction (EInstructionCode eCODE);
 
 %}
 
@@ -163,9 +172,17 @@ instance		: scene_instance
                           {}
 			;
 
-definition		: T_DEFINE any_def
+definition		: T_DEFINE
+                          {
+                            WRITE_CODE ("\ndefine ");
+                          }
+                          any_def
                           {}
-			| T_DEFINE scene_def
+			| T_DEFINE
+                          {
+                            WRITE_CODE ("\ndefine ");
+                          }
+                          scene_def
 			  {}
 			;
 
@@ -198,6 +215,7 @@ class			: /* Nothing */
 
 scene_def		: T_TYPE_SCENE name class '{'
 			  {
+                            WRITE_CODE ("Scene\n");
 			    DefineObject ($2, $3, "Scene");
                             _eVarScope = FX_OBJECT_SCOPE;
 			  }
@@ -213,6 +231,10 @@ scene_instance		: T_TYPE_SCENE class '{'
 			    _ptData = TScenePsl::_ptParsedScene;
 			    _tDataStack.push (_ptData);
                             _eVarScope = FX_OBJECT_SCOPE;
+
+                            _ptCurrentProgram = TScenePsl::_ptParsedScene->program();
+                            _tCurrentEvent    = EVENT_INIT_VARIABLES;
+                            SET_CURRENT_CODE();
 			  }
 			  program '}'
 			  {
@@ -220,7 +242,11 @@ scene_instance		: T_TYPE_SCENE class '{'
                             TScenePsl::_ptParsedScene->sendEvent ("init");
                             _eVarScope = FX_GLOBAL_SCOPE;
 
-                            TScenePsl::_ptParsedScene->globalData()->printDebug();
+                            TScenePsl::_ptParsedScene->program()->printDebug();
+
+                            _ptCurrentProgram = TScenePsl::_ptParsedScene->globalData();
+                            _tCurrentEvent    = EVENT_INIT_VARIABLES;
+                            SET_CURRENT_CODE();
 			  }
 			;
 
@@ -233,19 +259,28 @@ object_instance		: T_COMPLEX_TYPE class '{'
                             }
 			    CreateObject ($2, "");
                             _eVarScope = FX_OBJECT_SCOPE;
+
+                            _ptCurrentProgram = _ptData->program();
+                            _tCurrentEvent    = EVENT_INIT_VARIABLES;
+                            SET_CURRENT_CODE();
 			  }
 			  program '}'
 			  {
                             _tDataStack.top()->sendEvent ("init");
                             _eVarScope = FX_GLOBAL_SCOPE;
 
-//                            _tDataStack.top()->program()->printDebug();
+                            _tDataStack.top()->program()->printDebug();
 			    _tDataStack.pop();
+
+                            _ptCurrentProgram = TScenePsl::_ptParsedScene->globalData();
+                            _tCurrentEvent    = EVENT_INIT_VARIABLES;
+                            SET_CURRENT_CODE();
 			  }
 			;
 
 any_def			: T_COMPLEX_TYPE name class '{'
 			  {
+                            WRITE_CODE ($1 << endl);
 			    DefineObject ($2, $3, DefaultClass ($1));
                             _eVarScope = FX_OBJECT_SCOPE;
 			  }
@@ -316,26 +351,32 @@ string_expression       : T_QUOTED_STRING
 expression              : real_expression
                           {
                             $$ = $1;
+                            WRITE_CODE ("push_real " << $1.nValue.dValue << endl);
                           }
                         | bool_expression
                           {
                             $$ = $1;
+                            WRITE_CODE ("push_bool " << $1.nValue.gValue << endl);
                           }
                         | color_expression
                           {
                             $$ = $1;
+                            WRITE_CODE ("push_color ...\n");
                           }
                         | vector_expression
                           {
                             $$ = $1;
+                            WRITE_CODE ("push_vector ...\n");
                           }
                         | vector2_expression
                           {
                             $$ = $1;
+                            WRITE_CODE ("push_vector2 ...\n");
                           }
                         | string_expression
                           {
                             $$ = $1;
+                            WRITE_CODE ("push_string ...\n");
                           }
                         | T_IDENTIFIER
                           {}
@@ -348,7 +389,9 @@ expression              : real_expression
                         ;
 
 function_call           : T_IDENTIFIER '(' function_params ')'
-                          {}
+                          {
+                            WRITE_CODE ("call " << $1 << endl);
+                          }
                         ;
 
 function_params		: /* Nothing */
@@ -476,16 +519,19 @@ assignment		: lvalue '=' expression
                               exit (1);
                             }
                             */
+                            WRITE_CODE ("pop " << _lvalueName << endl);
                           }
                         ;
 
 lvalue                  : T_IDENTIFIER
                           {
                             $$ = FX_NONE;
+                            _lvalueName = $1;
                           }
 			| lvalue '.' T_IDENTIFIER
                           {
                             $$ = FX_NONE;
+                            _lvalueName += string (".") + $3;
                           }
 			;
 
@@ -504,13 +550,21 @@ event_list              : event
                           {}
                         ;
 
-event                   : T_IDENTIFIER '(' function_params ')' '{'
+event                   : T_IDENTIFIER '('
+		          {
+                            _tCurrentEvent = $1;
+                            SET_CURRENT_CODE();
+                            WRITE_CODE ("\nevent " << $1 << endl);
+                          }
+                          function_params ')' '{'
                           {
-                            _eVarScope      = FX_EVENT_SCOPE;
-                            _ptCurrentEvent = _tDataStack.top()->program()->getEventCode ($1);
+                            _eVarScope = FX_EVENT_SCOPE;
                           }
 			  code '}'
-                          {}
+                          {
+                            _tCurrentEvent = EVENT_INIT_VARIABLES;
+                            SET_CURRENT_CODE();
+                          }
                         ;
 
 code                    : variables sentences
@@ -530,17 +584,33 @@ void psl_error (const char* pkcTEXT)
 void PSL_InitParser (void)
 {
 
+  if ( DEBUG_CODE )
+  {
+    _tDebugCodeFile.open ((TScenePsl::_tInputFileName + ".code").c_str());
+  }
+
   InitObjects();
 
   _ptWorld = new TAggregate();
 
   TScenePsl::_ptParsedScene->setWorld (_ptWorld);
+
+  _ptCurrentProgram = TScenePsl::_ptParsedScene->globalData();
+  _tCurrentEvent    = EVENT_INIT_VARIABLES;
+  SET_CURRENT_CODE();
   
 }  /* PSL_InitParser() */
 
 
 void PSL_CloseParser (void)
 {
+
+  if ( DEBUG_CODE )
+  {
+    _tDebugCodeFile.close();
+  }
+
+  TScenePsl::_ptParsedScene->globalData()->printDebug();
 
   _tObjectMap.clear();
 
@@ -573,9 +643,10 @@ void AddVariable (const string& rktNAME)
 }  /* AddVariable() */
 
 
-void AddInstruction (EInstructionCode eCODE, EAttribType eTYPE, NAttribute nPARAM)
+void AddInstruction (EInstructionCode eCODE)
 {
 
+  /*
   TInstruction   tInst;
 
   tInst.eCode  = eCODE;
@@ -583,6 +654,7 @@ void AddInstruction (EInstructionCode eCODE, EAttribType eTYPE, NAttribute nPARA
   tInst.nParam = nPARAM;
 
   _ptCurrentEvent->push_back (tInst);
+  */
   
 }  /* AddInstruction() */
 
