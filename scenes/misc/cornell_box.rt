@@ -75,6 +75,18 @@ plane
   }
 }
 
+// Back wall
+plane
+{
+  normal	<0, 0, -1>
+  translate	<0, 0, 200>
+  one_sided     on
+  material : extends WallMaterial
+  {
+    color	CWhite
+  }
+}
+
 sphere
 {
   translate	<-50, -80, 100>
