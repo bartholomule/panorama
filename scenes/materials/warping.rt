@@ -16,7 +16,7 @@ define light l
   color		CWhite
 }
 
-define material MAmplfier : extends MPlastic
+define material MWarping : extends MPlastic
 {
   specular      0
   diffuse       0.8
@@ -55,7 +55,7 @@ box
   scale         <45, 140, 45>
   translate	<0, 0, 330>
 
-  material : extends MAmplfier
+  material : extends MWarping
   {
     color       PBrick1
 
@@ -72,7 +72,7 @@ sphere
   scale         <35, 70, 35>
   translate	<0, 0, 399>
 
-  material : extends MAmplfier
+  material : extends MWarping
   {
     color       PBrick2
 
@@ -89,7 +89,7 @@ cylinder
   scale         <30, 70, 30>
   translate	<0, 0, 470>
 
-  material : extends MAmplfier
+  material : extends MWarping
   {
     color       PBrick3
 
