@@ -1,4 +1,6 @@
 
+>> Version 0.10.1 released.
+
  - Changed rotation angles from radians to degrees.
 
  - Updated C++ coding style.
