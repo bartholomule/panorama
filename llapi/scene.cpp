@@ -21,6 +21,7 @@
 #include "hlapi/image_manager.h"
 #include "llapi/object.h"
 #include "llapi/scene.h"
+#include "llapi/material.h"
 
 TScene::TScene (void) :
   ptWorld (NULL),
@@ -36,10 +37,115 @@ TScene::TScene (void) :
 }
 
 
+
+void TScene::addLight(TLight* ptLIGHT)
+{
+  // It is important to make a note here that the light being added should have
+  // a correct matrix, but an incorrect location.  This leads to some
+  // weirdness.  Because of that, I am multiplying it's transform matrix by the
+  // zero point to find the actual location of the light.
+  // __FIXME__ -- Whenever anyone finds out why the light does NOT have a
+  // correct location, this should be modified so that a second copy is not
+  // required (I hate to change the original). 
+  
+  static TVector zero(0,0,0);
+
+  const TMatrix& transform = (*ptLIGHT->transformMatrix());
+  const TMatrix& inverse = (*ptLIGHT->inverseTransformMatrix());
+
+  // Now that we have the two matricies, it's time to make an instance of the
+  // object in question...
+  TLight* instance = (TLight*) TClassManager::_newObject
+    (ptLIGHT->className(), ptLIGHT);
+  if( ! instance )
+  {
+    string err = "Cannot instantiate pure light " + ptLIGHT->className();
+    cerr << err << endl;
+    exit(1);
+  }
+  // Now that we have an object, set it's matricies to those already
+  // calculated by the other instance.  .
+  TVector location = transform * zero;
+  instance->setTransformMatrix(transform);
+  instance->setInverseTransformMatrix(inverse);
+  instance->setLocation(location);
+
+  cout << "Adding pure light \"" << instance->className()
+       << "\" at <" << location.x() << ", " << location.y() << ", " << location.z() << ">" << endl;
+  
+  // The instance should be ok at this point... 
+  tLightList.push_back(instance);
+}
+
+void TScene::addAreaLight(TObject* ptALIGHT)
+{
+  cout << "Adding area light with shape \"" << ptALIGHT->className() << "\"" << endl;	
+  tAreaLightList.push_back(ptALIGHT);
+}
+
+bool TScene::recursiveLocateLights(TObject* obj, TObjectList& light_manip_list)
+{
+  if( obj != NULL )
+  {
+    NAttribute trash;
+    
+    if( obj->getAttribute("lightonly",trash) == FX_ATTRIB_OK )
+    {
+      if( trash.gValue )
+      {
+	addLight ((TLight*)obj);
+	return true;
+      } // if it was a light (lightonly attribute was true)
+    } // if it had the lightonly attribute
+    TMaterial* mat = obj->material ();
+    if( mat )
+    {
+      // If the object has some emission, it's an area light...
+      if( mat->emission () )
+      {
+	addAreaLight (obj);
+      }
+    }
+    if( obj->getAttribute("containsobjects",trash) == FX_ATTRIB_OK )
+    {
+      if( trash.gValue )
+      {
+	TAggregate* tag = (TAggregate*)obj;
+	TObjectList* tol = tag->objectList ();
+
+	light_manip_list.push_back(obj);
+
+	for( int i = 0; i < int(tol->size()); ++i)
+	{
+	  if(recursiveLocateLights ((*tol)[i], light_manip_list) )
+	  {
+	    tol->erase(tol->begin() + i);
+	    --i;
+	  }
+	}
+
+	light_manip_list.erase(light_manip_list.begin() +
+				   light_manip_list.size() - 1 );
+	// If there is nothing left in the container, remove it.  This is
+	// useful for a collection of light sources defined as an aggregate,
+	// where after all of the lights have been instantiated, the container
+	// is no longer needed.
+	if( tol->empty() )
+	{
+	  return true;
+	}
+      } 
+    } /* if obj is a container */
+  } /* if( obj != NULL ) */
+  return false;
+} /* recursiveLocateLights() */
+
 bool TScene::initialize (void)
 {
-
   ptWorld->initialize();
+
+  TObjectList tol;
+  recursiveLocateLights(ptWorld,tol);
 
   if ( ((TAggregate*) ptWorld)->objectList()->empty() )
   {
@@ -48,13 +154,16 @@ bool TScene::initialize (void)
   
   ptWorld->setObjectCode (1);
   
-  if ( tLightList.empty() )
+  if ( (tLightList.empty()) && (tAreaLightList.empty()) )
   {
     cout << "Warning: Scene has no lights" << endl;
   }
   else
   {
-    for (vector<TLight*>::iterator tIter = tLightList.begin(); ( tIter != tLightList.end() ) ;tIter++)
+    // Initialize the 'pure' lights
+    for (vector<TLight*>::iterator tIter = tLightList.begin();
+	 ( tIter != tLightList.end() );
+	 tIter++)
     {
       (*tIter)->initialize();
     }
@@ -342,3 +451,6 @@ void TScene::printDebug (void) const
   TDebug::_pop();
   
 }  /* printDebug() */
+
+
+

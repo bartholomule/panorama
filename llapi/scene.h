@@ -48,6 +48,10 @@ struct SBuffers
 };  /* struct SBuffers */
 
 
+typedef vector<TObject*> TObjectVector;
+
+
+
 class TScene : public TProcedural
 {
 
@@ -64,10 +68,13 @@ class TScene : public TProcedural
     SBuffers              sBuffers;
     TPattern*             ptBackgroundColor;
     vector<TLight*>       tLightList;
+    vector<TObject*>      tAreaLightList;    
     list<TImageFilter*>   tFilterList;
     TImageIO*             ptImageIO;
     TProgram              tGlobalData;
 
+    bool recursiveLocateLights(TObject* obj, TObjectVector& light_manip_list);
+  
   public:
 
     TScene (void);
@@ -76,6 +83,7 @@ class TScene : public TProcedural
     TCamera* camera (void) const { return ptCamera; }
     TObject* world (void) const { return ptWorld; }
     vector<TLight*>& lightList (void) { return tLightList; }
+    vector<TObject*>& areaLightList (void) { return tAreaLightList; }  
     SBuffers* buffers (void) { return &sBuffers; }
     Word neededBuffers (void) const { return wNeededBuffers; }
     bool participatingMedia (void) const { return gParticipatingMedia; }
@@ -91,7 +99,8 @@ class TScene : public TProcedural
     void setBackgroundColor (TPattern* ptPATTERN) { ptBackgroundColor = ptPATTERN; }
     void setWorld (TObject* ptWORLD) { ptWorld = ptWORLD; }
     void setCamera (TCamera* ptCAMERA) { ptCamera = ptCAMERA; }
-    void addLight (TLight* ptLIGHT) { tLightList.push_back (ptLIGHT); }
+    void addLight (TLight* ptLIGHT);
+    void addAreaLight (TObject* ptLIGHT);
     void setRenderer (TRenderer* ptRENDERER) { ptRenderer = ptRENDERER; }
     void setImageOutput (TImageIO* ptIMAGE_IO) { ptImageIO = ptIMAGE_IO; }
     void setParticipatingMedia (bool gACTIVE) { gParticipatingMedia = gACTIVE; }
@@ -131,5 +140,6 @@ class TScene : public TProcedural
     string className (void) const { return "Scene"; }
 
 };  /* class TScene */
+
 
 #endif  /* _RT_SCENE__ */
