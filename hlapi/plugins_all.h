@@ -23,6 +23,7 @@
 #include "plugins/image_filter/cartoon/if_cartoon.h"
 #include "plugins/image_filter/convert_to_grey/if_convert_to_grey.h"
 #include "plugins/image_filter/fog/if_fog.h"
+#include "plugins/image_filter/text/if_text.h"
 #include "plugins/light/point_light/point_light.h"
 #include "plugins/light/projector/projector.h"
 #include "plugins/light/warn_light/warn_light.h"
