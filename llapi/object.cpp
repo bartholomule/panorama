@@ -54,8 +54,7 @@ void TObject::translate (const TVector& rktNEW_POS)
   tMatrix.setTranslation (-rktNEW_POS);
   (*ptInverseMatrix) = (*ptInverseMatrix) * tMatrix;
 
-  tLocation = rktNEW_POS;
-  update();
+  TVolume::translate (rktNEW_POS);
   
 }  /* translate() */
 

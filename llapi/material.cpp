@@ -35,6 +35,7 @@ TMaterial::TMaterial (void) :
 
 
 TMaterial::TMaterial (const TMaterial& rktMATERIAL) :
+  TProcedural(rktMATERIAL),
   gTransparent (rktMATERIAL.gTransparent),
   tColor (rktMATERIAL.tColor),
   tOpacity (rktMATERIAL.tOpacity),
@@ -50,17 +51,22 @@ TMaterial::TMaterial (const TMaterial& rktMATERIAL) :
 TMaterial& TMaterial::operator = (const TMaterial& rktMATERIAL)
 {
 
-  gTransparent        = rktMATERIAL.gTransparent;
-  tColor              = rktMATERIAL.tColor;
-  tOpacity            = rktMATERIAL.tOpacity;
-  tAmbientReflection  = rktMATERIAL.tAmbientReflection;
-  tDiffuseReflection  = rktMATERIAL.tDiffuseReflection;
-  tSpecularReflection = rktMATERIAL.tSpecularReflection;
-  tIor                = rktMATERIAL.tIor;
-  tCaustics           = rktMATERIAL.tCaustics;
-  tSelfEmission       = rktMATERIAL.tSelfEmission;
-  ptBsdf              = rktMATERIAL.ptBsdf;
-
+  if( &rktMATERIAL != this )
+  {
+    gTransparent        = rktMATERIAL.gTransparent;
+    tColor              = rktMATERIAL.tColor;
+    tOpacity            = rktMATERIAL.tOpacity;
+    tAmbientReflection  = rktMATERIAL.tAmbientReflection;
+    tDiffuseReflection  = rktMATERIAL.tDiffuseReflection;
+    tSpecularReflection = rktMATERIAL.tSpecularReflection;
+    tIor                = rktMATERIAL.tIor;
+    tCaustics           = rktMATERIAL.tCaustics;
+    tSelfEmission       = rktMATERIAL.tSelfEmission;
+    ptBsdf              = rktMATERIAL.ptBsdf;
+    
+    TProcedural::operator= (rktMATERIAL);
+  }
+  
   return *this;
   
 }  /* operator =() */

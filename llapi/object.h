@@ -80,18 +80,25 @@ class TObject : public TVolume
 
     TObject& operator = (const TObject& rktOBJ)
     {
-      if ( !ptMatrix )
+      if( &rktOBJ != this )
       {
-        createMatrices();
+        if ( !ptMatrix )
+        {
+          createMatrices();
+        }
+  
+        *ptMatrix        = *(rktOBJ.ptMatrix);
+        *ptInverseMatrix = *(rktOBJ.ptInverseMatrix);
+  
+        ptMaterial        = rktOBJ.ptMaterial;
+        zObjectCode       = rktOBJ.zObjectCode;
+        tObjectFilterList = rktOBJ.tObjectFilterList;
+  
+        tBoundingBox      = rktOBJ.tBoundingBox;
+  
+        TVolume::operator= (rktOBJ);
       }
       
-      *ptMatrix        = *(rktOBJ.ptMatrix);
-      *ptInverseMatrix = *(rktOBJ.ptInverseMatrix);
-
-      ptMaterial        = rktOBJ.ptMaterial;
-      zObjectCode       = rktOBJ.zObjectCode;
-      tObjectFilterList = rktOBJ.tObjectFilterList;
-
       return *this;
     }
       

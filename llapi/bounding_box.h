@@ -46,14 +46,20 @@ class TBoundingBox : public TVolume
       tPoint2 (tINTX.max(), tINTY.max(), tINTZ.max()) {}
 
     TBoundingBox (const TBoundingBox& rktBBOX) :
+      TVolume(rktBBOX),
       tPoint1 (rktBBOX.tPoint1),
       tPoint2 (rktBBOX.tPoint2) {}
       
     TBoundingBox& operator = (const TBoundingBox& rktBBOX)
     {
-      tPoint1 = rktBBOX.tPoint1;
-      tPoint2 = rktBBOX.tPoint2;
+      if( &rktBBOX != this )
+      {
+        tPoint1 = rktBBOX.tPoint1;
+        tPoint2 = rktBBOX.tPoint2;
 
+        TVolume::operator= (rktBBOX);
+      }
+      
       return *this;
     }
 

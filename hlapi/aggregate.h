@@ -41,7 +41,7 @@ class TAggregate : public TObject
     }
       
     TAggregate (const TAggregate& rktAGGREGATE) :
-      TObject()
+      TObject (rktAGGREGATE)
     {
       copy (rktAGGREGATE.tObjectList);
       sCapabilities.gInfinite = rktAGGREGATE.capabilities().gInfinite;
@@ -49,9 +49,15 @@ class TAggregate : public TObject
 
     TAggregate& operator = (const TAggregate& rktAGGREGATE)
     {
-      copy (rktAGGREGATE.tObjectList);
+      if ( &rktAGGREGATE != this )
+      {
+        eraseList();
+        copy (rktAGGREGATE.tObjectList);
 
-      sCapabilities.gInfinite = rktAGGREGATE.capabilities().gInfinite;
+        sCapabilities.gInfinite = rktAGGREGATE.capabilities().gInfinite;
+
+        TObject::operator= (rktAGGREGATE);
+      }
 
       return *this;
     }
@@ -64,6 +70,27 @@ class TAggregate : public TObject
       }
     }
       
+    virtual void eraseList (void)
+    {
+      for (TObjectList::iterator iter = tObjectList.begin(); ( iter != tObjectList.end() ); iter++)
+      {
+        //
+        // Free the object to prevent a memory leak.
+        // NOTE: I (KH) did NOT add a call to delete here, as I am not sure if
+        //       it is safe to call it on the objects or not (do plugin manage
+        //       returned objects have proper virtual destructors, and are they
+        //       allocated with new?).  If someone knows the proper
+        //       deallocation process, please fix this. (KH 16May2000)
+        //
+        // delete *iter; // SAFE?!?!?
+      }
+
+      //
+      // Remove existing objects from the list to prevent nasty side effects.
+      //
+      tObjectList.erase (tObjectList.begin(), tObjectList.end());
+    }
+
     virtual void add (TObject* ptOBJ)
     {
       if ( ptOBJ->capabilities().gInfinite == true )
