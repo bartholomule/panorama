@@ -338,7 +338,7 @@ void TImageWindow::filterImage(TImageFilter* ptFilter)
   ptFilter->setScene(ptScene);
   ptFilter->filter(sBuffers);
 #if DEBUG_IT
-  cout << "Done with filter..." << endl;
+  GOM.debug() << "Done with filter..." << endl;
 #endif
   // Refresh the screen here...
   drawImage();

@@ -67,7 +67,8 @@ string GenerateFileHeader()
  * WITHOUT ANY WARRANTY; without even the implied warranty of           \n\
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU    \n\
  * General Public License for more details.                             \n\
- * *  You should have received a copy of the GNU General Public License \n\
+ *                                                                      \n\
+ * You should have received a copy of the GNU General Public License    \n\
  * along with this program; if not, write to the Free Software          \n\
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.\n\
  */");
@@ -268,7 +269,7 @@ void RemoveSwitches(int& argc, char** argv, string& munged_class, string& parent
       } break;
     case 'v':
       {
-	cout << "Class Stub Generator version $Revision: 1.1.2.2 $" << endl;
+	cout << "Class Stub Generator version $Revision: 1.1.2.3 $" << endl;
 	cout << "Copyright (C) 2003 Kevin Harris" << endl;
 	cout << endl;
 	cout << "This is free software, released under terms of the GNU Public License (GPL)" << endl;
@@ -277,7 +278,7 @@ void RemoveSwitches(int& argc, char** argv, string& munged_class, string& parent
       }
     case 'h':
       {
-	cout << "Class Stub Generator version $Revision: 1.1.2.2 $" << endl;
+	cout << "Class Stub Generator version $Revision: 1.1.2.3 $" << endl;
 	cout << "  This is a program to generate class stubs. \n\
   As arguments, it accepts one non-switch argument, which is the classname.\n\
   ie. giving it 'foo.baz' would generate a class baz in namespace foo.\n\

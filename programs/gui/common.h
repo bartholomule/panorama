@@ -60,12 +60,12 @@ Gtk::Menu* createPluginMenu (EClass tPLUGINCLASS,
     }
     else
     {
-      cout << "Plugin list is empty" << endl;
+      GOM.out() << "Plugin list is empty" << endl;
     }
   }
   else
   {
-    cout << "No plugins of requested type found" << endl;
+    GOM.out() << "No plugins of requested type found" << endl;
   }
 
   return filter_menu;

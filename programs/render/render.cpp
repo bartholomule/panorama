@@ -40,7 +40,7 @@ static bool     _gKeepLog = false;
 void DisplayHelp (void)
 {
 
-  cout << "Usage: " << _tProgramName << " input_file" << endl;
+  GOM.out() << "Usage: " << _tProgramName << " input_file" << endl;
 
 }  /* DisplayHelp() */
 
@@ -148,8 +148,8 @@ void ProcessCommandLine (int argc, char* argv[])
     _tInputFileName   = argv [1];
     _tInputFileFormat = FileExtension (_tInputFileName);
 
-    cout << "File : " << _tInputFileName << endl;
-    cout << "Type : " << _tInputFileFormat << endl;
+    GOM.out() << "File : " << _tInputFileName << endl;
+    GOM.out() << "Type : " << _tInputFileFormat << endl;
   }
 
 }  /* ProcessCommandLine() */
@@ -193,7 +193,7 @@ void SetPaths (void)
 bool FinishedLine (size_t zLINE, void* pvDATA)
 {
 
-  cout << "[" << zLINE << "]\r" << flush;
+  GOM.out() << "[" << zLINE << "]\r" << flush;
   
   return true;
 
@@ -216,20 +216,20 @@ int main (int argc, char *argv[])
 
   if ( !FileExists (_tLocalPath + "config") )
   {
-    cerr << "WARNING: No configuration file." << endl;
+    GOM.error() << "WARNING: No configuration file." << endl;
   }
   else
   {
     if ( !ProcessConfigFile (_tLocalPath + "config", tConfigData) )
     {
-      cerr << "ERROR: Couldn't read configuration file." << endl;
+      GOM.error() << "ERROR: Couldn't read configuration file." << endl;
       exit (1);
     }
   }
 
 //  for (multimap<string, string>::const_iterator iter = tConfigData.begin(); ( iter != tConfigData.end() ) ;iter++)
 //  {
-//    cout << (*iter).first << " = " << (*iter).second << endl;
+//    GOM.debug() << (*iter).first << " = " << (*iter).second << endl;
 //  }
   
   multimap<string, string>::const_iterator   iter = tConfigData.find ("PluginConfigFile");
@@ -237,11 +237,11 @@ int main (int argc, char *argv[])
 
   if ( !FileExists (tPluginConfigFile) )
   {
-    cerr << "ERROR: Plugin configuration file '" << tPluginConfigFile << "' does not exist." << endl;
+    GOM.error() << "ERROR: Plugin configuration file '" << tPluginConfigFile << "' does not exist." << endl;
     exit (1);
   }
 
-  cout << "Loading plugins..." << endl;
+  GOM.out() << "Loading plugins..." << endl;
   tPluginManager.initialize (tPluginConfigFile, 0);
 
   TGradient::_initialize();
@@ -251,17 +251,17 @@ int main (int argc, char *argv[])
 
   if ( !TSceneManager::_knownFormat (_tInputFileFormat) )
   {
-    cout << "ERROR: Scene format not supported" << endl;
+    GOM.error() << "ERROR: Scene format not supported" << endl;
     exit (1);
   }
   
-  cout << "Parsing..." << endl;
+  GOM.out() << "Parsing...                                                                      " << endl;
   ptScene = TSceneManager::_load (_tInputFileName, _tInputFileFormat);
-  cout << "Scene loaded..." << endl;
+  GOM.out() << "Scene loaded..." << endl;
 
   if ( !ptScene )
   {
-    cerr << "Error parsing input file" << endl;
+    GOM.error() << "Error parsing input file" << endl;
     exit (1);
   }
 
@@ -272,37 +272,37 @@ int main (int argc, char *argv[])
 
   tBaseTime = time (NULL);
 
-  cout << "Initializing..." << endl;
+  GOM.out() << "Initializing..." << endl;
   if(!ptScene->initialize())
   {
-    cerr << "Initialization failed!" << endl;
+    GOM.error() << "Initialization failed!" << endl;
     exit (1);
   }
   ptScene->printDebug("#");  
   tInitTime = time (NULL);
 
-  cout << "Rendering..." << endl;
+  GOM.out() << "Rendering..." << endl;
   ptScene->render (&FinishedLine);
   tRenderTime = time (NULL);
   
-  cout << "Postprocessing..." << endl;
+  GOM.out() << "Postprocessing..." << endl;
   ptScene->postprocess();
   tPostProcessTime = time (NULL);
   
-  cout << "Saving..." << endl;
+  GOM.out() << "Saving..." << endl;
   if ( !ptScene->saveImage() )
   {
-    cout << "Could not save image file" << endl;
+    GOM.error() << "Could not save image file" << endl;
   }
   
   ptScene->finalize();
 
-  cout << endl;
-  cout << " Total ellapsed time : " << difftime (tPostProcessTime, tBaseTime) << " secs" << endl;
-  cout << " - Initialization . . . " << difftime (tInitTime, tBaseTime) << " secs" << endl;
-  cout << " - Render         . . . " << difftime (tRenderTime, tInitTime) << " secs" << endl;
-  cout << " - Postprocessing . . . " << difftime (tPostProcessTime, tRenderTime) << " secs" << endl;
-  cout << "";
+  GOM.out() << endl;
+  GOM.out() << " Total ellapsed time : " << difftime (tPostProcessTime, tBaseTime) << " secs" << endl;
+  GOM.out() << " - Initialization . . . " << difftime (tInitTime, tBaseTime) << " secs" << endl;
+  GOM.out() << " - Render         . . . " << difftime (tRenderTime, tInitTime) << " secs" << endl;
+  GOM.out() << " - Postprocessing . . . " << difftime (tPostProcessTime, tRenderTime) << " secs" << endl;
+  GOM.out() << "";
 
   if ( _gKeepLog )
   {

@@ -147,13 +147,13 @@ int main (int argc, char *argv[])
 
   if ( !FileExists (_tLocalPath + "config") )
   {
-    cerr << "WARNING: No configuration file." << endl;
+    GOM.error() << "WARNING: No configuration file." << endl;
   }
   else
   {
     if ( !ProcessConfigFile (_tLocalPath + "config", tConfigData) )
     {
-      cerr << "ERROR: Couldn't read configuration file." << endl;
+      GOM.error() << "ERROR: Couldn't read configuration file." << endl;
       exit (1);
     }
   }
@@ -163,11 +163,11 @@ int main (int argc, char *argv[])
 
   if ( !FileExists (tPluginConfigFile) )
   {
-    cerr << "ERROR: Plugin configuration file '" << tPluginConfigFile << "' does not exist." << endl;
+    GOM.error() << "ERROR: Plugin configuration file '" << tPluginConfigFile << "' does not exist." << endl;
     exit (1);
   }
 
-  cout << "Loading plugins..." << endl;
+  GOM.out() << "Loading plugins..." << endl;
   tPluginManager.initialize (tPluginConfigFile, 0);
 
   TGradient::_initialize();

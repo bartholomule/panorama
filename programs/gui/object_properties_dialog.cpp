@@ -88,7 +88,7 @@ TObjectPropertiesDialog::createValueWidget (const string& name,
 
   if(ptObjectCopy == NULL)
   {
-    cout << "Null object... Not creating widget." << endl;
+    GOM.error() << "Null object... Not creating widget." << endl;
     return new Gtk::Label("BROKEN!");
   }
   
@@ -582,12 +582,12 @@ void TObjectPropertiesDialog::accept_changes()
       i != modified_attributes.end();
       ++i)
   {
-    cout << "Copying attribute " << *i << endl;
+    GOM.debug() << "Copying attribute " << *i << endl;
     EAttribType type = tal[*i];
     if( ( ptObjectCopy->getAttribute(*i, attrib) != FX_ATTRIB_OK ) || 
 	( ptObject->setAttribute(*i, attrib, type) != FX_ATTRIB_OK ) )
     {
-      cerr << "Error: accept_changes: could not copy attribute "
+      GOM.error() << "Error: accept_changes: could not copy attribute "
 	   << "\"" << *i << "\""
 	   << endl;      
     }
@@ -600,12 +600,12 @@ static void attribute_copy(TProcedural* source, TProcedural* dest)
 {
   if(source == NULL)
   {
-    cout << "Null source for attribute copy." << endl;
+    GOM.debug() << "Null source for attribute copy." << endl;
     return;
   }
   if(dest == NULL)
   {
-    cout << "Null dest for attribute copy." << endl;
+    GOM.debug() << "Null dest for attribute copy." << endl;
     return;
   }  
   
@@ -622,7 +622,7 @@ static void attribute_copy(TProcedural* source, TProcedural* dest)
       if(dest->setAttribute(attribute->first, nValue, attribute->second) !=
 	 FX_ATTRIB_OK)
       {
-	cerr << "Error: attribute_copy: could not copy attribute \""
+	GOM.error() << "Error: attribute_copy: could not copy attribute \""
 	     << attribute->first << "\""
 	     << endl;
       }
@@ -632,7 +632,7 @@ static void attribute_copy(TProcedural* source, TProcedural* dest)
 
 static void property_change_callback(property_callback_data tPCD)
 {
-  cout << __FUNCTION__ << endl;
+  GOM.debug() << __FUNCTION__ << endl;
   NAttribute nValue;
   TProcedural* dest_object = tPCD.destObject;
   bool changed = false;
@@ -651,7 +651,7 @@ static void property_change_callback(property_callback_data tPCD)
   case FX_STRING_LIST:    
   case FX_STRING:
     {
-      cout << "string" << endl;
+      GOM.debug() << "string" << endl;
 #if !defined(NEW_ATTRIBUTES)
       nValue.pvValue = (void*)((Gtk::Entry*)tPCD.dataContainer)->get_text().c_str();
 #else
@@ -664,13 +664,13 @@ static void property_change_callback(property_callback_data tPCD)
 
   case FX_REAL:
     {
-      cout << "real" << endl;      
+      GOM.debug() << "real" << endl;      
 #if !defined(NEW_ATTRIBUTES)
       nValue.dValue = ((Gtk::SpinButton*)tPCD.dataContainer)->get_value_as_float();
 #else
       nValue = new TAttribReal (((Gtk::SpinButton*)tPCD.dataContainer)->get_value_as_float());      
 #endif
-      cout << "Have value... Setting (" << tPCD.attributeName << ") ." << endl;
+      GOM.debug() << "Have value... Setting (" << tPCD.attributeName << ") ." << endl;
       dest_object->setAttribute(tPCD.attributeName, nValue, tPCD.eType);
       changed = true;      
     }
@@ -678,7 +678,7 @@ static void property_change_callback(property_callback_data tPCD)
 #if defined(NEW_ATTRIBUTES)
   case FX_INTEGER:
     {
-      cout << "int" << endl;      
+      GOM.debug() << "int" << endl;      
       nValue = new TAttribInt (((Gtk::SpinButton*)tPCD.dataContainer)->get_value_as_int());
       dest_object->setAttribute(tPCD.attributeName, nValue, tPCD.eType);
       changed = true;      
@@ -688,7 +688,7 @@ static void property_change_callback(property_callback_data tPCD)
 
   case FX_COLOR:
     {
-      cout << "color" << endl;      
+      GOM.debug() << "color" << endl;      
 #if !defined(NEW_ATTRIBUTES)	
       MessageDialog(unsup_title, unsup_text);
 #else
@@ -701,7 +701,7 @@ static void property_change_callback(property_callback_data tPCD)
 
   case FX_BOOL:
     {
-      cout << "bool" << endl;      
+      GOM.debug() << "bool" << endl;      
 #if !defined(NEW_ATTRIBUTES)
       nValue.gValue = ((Gtk::ToggleButton*)tPCD.dataContainer)->get_active();
 #else
@@ -750,7 +750,7 @@ static void property_change_callback(property_callback_data tPCD)
 
   case FX_VECTOR:
     {
-      cout << "vector" << endl;      
+      GOM.debug() << "vector" << endl;      
       dest_object->getAttribute(tPCD.attributeName, nValue);
 #if !defined(NEW_ATTRIBUTES)
       TVector tmp_vector(*(TVector*)nValue.pvValue);
@@ -771,7 +771,7 @@ static void property_change_callback(property_callback_data tPCD)
 
   case FX_VECTOR2:
     {
-      cout << "vector2" << endl;      
+      GOM.debug() << "vector2" << endl;      
       dest_object->getAttribute(tPCD.attributeName, nValue);
 #if !defined(NEW_ATTRIBUTES)
       TVector2 tmp_vector(*(TVector2*)nValue.pvValue);
@@ -798,7 +798,7 @@ static void property_change_callback(property_callback_data tPCD)
   /*
   if( changed )
   {
-    cout << "Changed!" << endl;
+    GOM.debug() << "Changed!" << endl;
     string name = tPCD.attributeName;
     vector<string>& vec = tPCD.ptDlg->modified_attributes;
 

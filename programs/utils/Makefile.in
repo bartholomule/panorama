@@ -26,4 +26,7 @@ clean:
 distclean:      clean
 		@rm -f Makefile
 
+install:
+
+
 include ${BUILD_TOP}/Makefile.deps

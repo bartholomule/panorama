@@ -130,7 +130,7 @@ void TSceneWindow::setSceneFile (void)
 
     if ( !TSceneManager::_knownFormat (tFormat) )
     {
-      cout << "ERROR: Scene format not supported" << endl;
+      GOM.error() << "ERROR: Scene format not supported" << endl;
       exit (1);
     }
   
