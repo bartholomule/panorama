@@ -24,9 +24,9 @@
 TColor TAtmosphericObject::evaluateScattering (const TSurfaceData& rktDATA) const
 {
 
-  TLight*   ptLight;
-  TScalar   tPhase      = 1;
-  TColor    tScattering = TColor::_null();
+  const TLight* ptLight;
+  TScalar       tPhase      = 1;
+  TColor        tScattering = TColor::_null();
 
   for (vector<TLight*>::const_iterator tIter = ptScene->lightList().begin(); ( tIter != ptScene->lightList().end() ) ;tIter++)
   {
