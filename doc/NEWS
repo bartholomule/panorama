@@ -1,4 +1,8 @@
 
+ - Fixed problem with static linking and profile info.
+
+ - Other portability bug fixes.
+
 >> Version 0.14 released
 
  - Several new sample scenes.
