@@ -19,6 +19,7 @@
 #include "language_functions.h"
 #include "rt_io.h"
 #include "attrib_tweak.h"
+#include "parser_defs.h"
 
 #define GLOBAL_FUNCTIONS (TSceneRT::_global_functions)
 
@@ -55,6 +56,26 @@ static string env(string s)
     rt_error("Environment Variable \"" + s + "\" is not defined");
     return("");
   }
+}
+
+static string envnull(string s)
+{
+  char* env_text = getenv(s.c_str());
+  if( env_text != NULL )
+  {
+    return string(env_text);
+  }
+  else
+  {
+    return("");
+  }
+}
+
+static bool set_reduction_reporting(bool b)
+{
+  bool b2 = reduction_reporting;
+  reduction_reporting = b;
+  return b2;
 }
 
 static void PrintFunctionList()
@@ -223,6 +244,33 @@ static void debug(bool b)
 }
 
 
+static string ifnull(string test, string failure)
+{
+  if( !test.empty() )
+  {
+    return test;
+  }
+  return failure;
+}
+
+static double minimum_value(double d1, double d2)
+{
+  if( d1 < d2 )
+  {
+    return d1;
+  }
+  return d2;
+}
+
+static double maximum_value(double d1, double d2)
+{
+  if( d1 > d2 )
+  {
+    return d1;
+  }
+  return d2;
+}
+
 #include <cmath>
 
 void GlobalInitFunctions (void)
@@ -253,6 +301,8 @@ void GlobalInitFunctions (void)
   // EVAL DOES NOT WORK YET!!!
   GLOBAL_FUNCTIONS["eval"] = create_user_function(&evaluate);
   GLOBAL_FUNCTIONS["env"] = create_user_function(&env);
+  GLOBAL_FUNCTIONS["envnull"] = create_user_function(&envnull);
+  GLOBAL_FUNCTIONS["reduction_reporting"] = create_user_function(&set_reduction_reporting);  
   GLOBAL_FUNCTIONS["debug"] = create_user_function(&debug);  
   
   // Functions for type conversions
@@ -263,6 +313,11 @@ void GlobalInitFunctions (void)
   GLOBAL_FUNCTIONS["bool"]    = create_user_function(&getBool);  
   GLOBAL_FUNCTIONS["color"]   = create_user_function(&getColor);        
 
+  // General useful functions
+  GLOBAL_FUNCTIONS["ifnull"]  = create_user_function(&ifnull);
+  GLOBAL_FUNCTIONS["min"]  = create_user_function(&minimum_value);
+  GLOBAL_FUNCTIONS["max"]  = create_user_function(&maximum_value);  
+  
   // Math functions
   // Trig functions
   fn = &std::sin;

@@ -161,6 +161,10 @@ static void FIXME(const string& s) { GOM.error() << "FIXME: " << s << endl; }
 %token <sIdent> DEFINED
 %token <sIdent> THIS
 
+%token T_IF
+%token T_ELSE
+%type <gValue> if_head
+
 
 /* Tokens to allow user requested information about types/attribute lists.
    Added 06/Aug/2000 */ 
@@ -168,9 +172,10 @@ static void FIXME(const string& s) { GOM.error() << "FIXME: " << s << endl; }
 %type <sIdent> potential_name
 %type <ptAttribute> instance;
 
-%type <sIdent> name
-%type <sIdent> class
-%type <ptColor> color
+%type <sIdent> name;
+%type <sIdent> class;
+%type <sIdent> string_math;
+%type <ptColor> color;
 
 %type <ptAttribute> any_vector; // really an array..
 %type <ptAttribute> vector_insides;
@@ -197,6 +202,10 @@ everything		: /* Nothing */
                           {
 			    report_reduction("everything <-- nothing");
 			  }
+			| everything statement
+                          {
+			    report_reduction("everything <-- everything definition");
+			  }
 			| everything expression ';'
                           {
 			    report_reduction("everything <-- everything expression ';'");
@@ -222,30 +231,97 @@ everything		: /* Nothing */
 			      }
 			    }			      
 			  }
-			| everything definition
-                          {
-			    report_reduction("everything <-- everything definition");
-			  }
 			;
-                        
+
+statement               : definition
+                          {
+			    report_reduction("statement <-- definition");
+			  }
+                        | simple_if_statement
+                          {
+			    report_reduction("statement <-- simple_if_statement");
+			  }
+/* FIXME! Add in expressions here (modify the ones in 'everything' above!!!!! */
+                        ;
+
+statement_list          : statement
+                         {
+			   report_reduction("statement_list <-- statement");
+			 }
+                        | statement_list statement
+                         {
+			   report_reduction("statement_list <-- statement_list statement");
+			 }			
+                        ;
+
+if_head                 : T_IF '(' expression ')'
+                          {
+			    report_reduction("if_head (start) <-- if ( expression )");
+			    
+			    bool b = check_get_bool($3);
+			    rt_enter_condition(b);
+			  }
+                          simple_if_body
+                          {
+			    report_reduction("if_head (cont) <-- if ( expression ) simple_if_body");
+			    rt_leave_condition();
+			    $$ = check_get_bool($3);
+                          }
+
+simple_if_statement     : if_head 
+                          {
+			    /* Nothing to do... */			    
+			    report_reduction("simple_if_statement <-- if_head");
+			  }
+                        | if_head T_ELSE
+                          {
+			    report_reduction("simple_if_statement (start) <-- if_head ELSE");
+			    rt_enter_condition(!$1);
+                          }
+                          simple_if_body
+                          {
+			    report_reduction("simple_if_statement (start) <-- if_head ELSE simple_if_body");
+			    rt_leave_condition();
+                          }
+                        ;
+
+simple_if_body          : definition
+                         {
+			   report_reduction("simple_if_body <-- definition");
+			 }  
+                      /* FIXME! Add in expressions here!!! */
+                        | '{' '}'
+                         {
+			   report_reduction("simple_if_body <-- { }");
+			 }  			
+                        | '{' statement_list '}'
+                         {
+			   report_reduction("simple_if_body <-- { statement_list }");
+			 }  			
+                        ;
+
+
 definition		: T_DEFINE name expression ';'
                           {
 			    report_reduction("definition <-- DEFINE name expression ;");
 			    report_reduction(string("definition <-- DEFINE ") +
 					     $2 + " " + $3->toString());
 
-			    if( DATAMAP.find($2) != DATAMAP.end() )
+			    if( rt_exec_ok() )
 			    {
-			      rt_warning(string($2) + " redefined here");
-			      rt_warning("previously defined here: " + DATAMAP[$2].first);
+			      if( DATAMAP.find($2) != DATAMAP.end() )
+			      {
+				rt_warning(string($2) + " redefined here");
+				rt_warning("previously defined here: " + DATAMAP[$2].first);
+			      }
+			      GOM.debug() << "Defining \"" << string($2) << "\"" << endl;
+			      
+			      char buffer[1024];
+			      sprintf(buffer,"%s line %d",
+				      TSceneRT::_tInputFileName.c_str(),
+				      int(TSceneRT::_dwLineNumber));
+			      DATAMAP[$2] = pair<string,attrib_type>(string(buffer),$3);
 			    }
-			    GOM.debug() << "Defining \"" << string($2) << "\"" << endl;
-			    
-			    char buffer[1024];
-			    sprintf(buffer,"%s line %d",
-				    TSceneRT::_tInputFileName.c_str(),
-				    int(TSceneRT::_dwLineNumber));
-			    DATAMAP[$2] = pair<string,attrib_type>(string(buffer),$3);
 			  }
                         | T_DEFINE reserved_words name instance ';'
                           {
@@ -255,16 +331,19 @@ definition		: T_DEFINE name expression ';'
 				 << " should not have \"" << $2 << "\" anymore"
 				 << endl;
 
-			    if( DATAMAP.find($3) != DATAMAP.end() )
+			    if( rt_exec_ok() )
 			    {
-			      rt_warning(string($3) + " redefined here");
-			      rt_warning("previously defined here: " + DATAMAP[$3].first);
+			      if( DATAMAP.find($3) != DATAMAP.end() )
+			      {
+				rt_warning(string($3) + " redefined here");
+				rt_warning("previously defined here: " + DATAMAP[$3].first);
+			      }
+			      char buffer[1024];
+			      sprintf(buffer,"%s line %d",
+				      TSceneRT::_tInputFileName.c_str(),
+				      int(TSceneRT::_dwLineNumber));
+			      DATAMAP[$2] = pair<string,attrib_type>(string(buffer),$4);
 			    }
-			    char buffer[1024];
-			    sprintf(buffer,"%s line %d",
-				    TSceneRT::_tInputFileName.c_str(),
-				    int(TSceneRT::_dwLineNumber));
-			    DATAMAP[$2] = pair<string,attrib_type>(string(buffer),$4);
 			  }
 			;
 
@@ -580,7 +659,7 @@ prec_1:
 			T_QUOTED_STRING
                         {
 			  report_reduction("prec_1 <-- quoted_string");
-			  report_reduction("prec_1 <-- " + string($1));
+			  report_reduction("prec_1 <-- \"" + string($1) + "\"");
 			  
 			  $$ = (user_arg_type)new TAttribString($1);
 			}			  
@@ -645,6 +724,9 @@ prec_1:
 			  $$ = $1;			  
                         }
                         | function_call
+                        {
+			  report_reduction("prec_1 <-- function_call");
+                        }
 			| any_vector
                         {
 			  report_reduction("prec_1 <-- any_vector");
@@ -656,83 +738,92 @@ prec_1:
 function_call           : potential_name '(' ')'
                         {
 			  report_reduction("function_call <-- potential_name ( )");
-			  report_reduction("function_call <-- " + string($1) +  "( )");
-
+			  if( rt_exec_ok() )
+			  {
+			    report_reduction("(detail) function_call <-- " + string($1) +  "( )");
+			    
 #if defined(DEBUG_IT)
-			  rt_error("about to call a function");
+			    rt_error("about to call a function");
 #endif /* defined(DEBUG_IT) */
-			  
-			  // Lookup using all objects in the current stack,
-			  // then check the global table... 
-			  TUserFunctionMap functions = all_user_functions();
-
-			  if( functions.find($1) != functions.end() )
-			  {
-			    user_arg_vector empty_args;
-			    $$ = functions[$1]->call(empty_args);
-			  }
-			  else
-			  {
-			    rt_error("function " + string($1) + " does not exist");
-			    $$ = (user_arg_type)new TAttribute();
+			    
+			    // Lookup using all objects in the current stack,
+			    // then check the global table... 
+			    TUserFunctionMap functions = all_user_functions();
+			    
+			    if( functions.find($1) != functions.end() )
+			    {
+			      user_arg_vector empty_args;
+			      $$ = functions[$1]->call(empty_args);
+			    }
+			    else
+			    {
+			      rt_error("function " + string($1) + " does not exist");
+			      $$ = (user_arg_type)new TAttribute();
+			    }
 			  }
 			}
                         | potential_name '(' expression ')'
                         {
 			  report_reduction("function_call <-- potential_name ( expression )");
-			  report_reduction("function_call <-- " + string($1) + "( " + $3->toString() + " )");
-			  
-			  
+			  if( rt_exec_ok() )
+			  {
+			    report_reduction("(detail) function_call <-- " + string($1) + "( " + $3->toString() + " )");
+			    
+			    
 #if defined(DEBUG_IT)
-			  rt_error("about to call a function");
+			    rt_error("about to call a function");
 #endif /* defined(DEBUG_IT) */
-			  
-			  // Lookup using all objects in the current stack,
-			  // then check the global table...
-			  TUserFunctionMap functions = all_user_functions();
-			  
-			  if( functions.find($1) != functions.end() )
-			  {
-			    user_arg_vector args;
-			    args.push_back($3);
-			    $$ = functions[$1]->call(args);
-
+			    
+			    // Lookup using all objects in the current stack,
+			    // then check the global table...
+			    TUserFunctionMap functions = all_user_functions();
+			    
+			    if( functions.find($1) != functions.end() )
+			    {
+			      user_arg_vector args;
+			      args.push_back($3);
+			      $$ = functions[$1]->call(args);
+			      
+			    }
+			    else
+			    {
+			      rt_error("function " + string($1) + " does not exist");
+			      $$ = (user_arg_type)new TAttribute();
+			    }			    
 			  }
-			  else
-			  {
-			    rt_error("function " + string($1) + " does not exist");
-			    $$ = (user_arg_type)new TAttribute();
-			  }			    
 			}
                         | potential_name '(' expression ',' expression ')'
                         {
 			  report_reduction("function_call <-- potential_name ( expression , expression )");
-			  report_reduction("function_call <-- " + string($1) + "( " + $3->toString() + "," + $5->toString() + " )");
-			  
-			  
+			  if( rt_exec_ok() )
+			  {
+			    report_reduction("(detail) function_call <-- " + string($1) + "( " + $3->toString() + "," + $5->toString() + " )");
+			    
+			    
 #if defined(DEBUG_IT)
-			  rt_error("about to call a function");
+			    rt_error("about to call a function");
 #endif /* defined(DEBUG_IT) */
-			  
-			  // Lookup using all objects in the current stack,
-			  // then check the global table...
-			  TUserFunctionMap functions = all_user_functions();
-			  
-			  if( functions.find($1) != functions.end() )
-			  {
-			    user_arg_vector args;
-			    args.push_back($3);
-			    args.push_back($5);			    
-			    $$ = functions[$1]->call(args);
-
+			    
+			    // Lookup using all objects in the current stack,
+			    // then check the global table...
+			    TUserFunctionMap functions = all_user_functions();
+			    
+			    if( functions.find($1) != functions.end() )
+			    {
+			      user_arg_vector args;
+			      args.push_back($3);
+			      args.push_back($5);			    
+			      $$ = functions[$1]->call(args);
+			      
+			    }
+			    else
+			    {
+			      rt_error("function " + string($1) + " does not exist");
+			      $$ = (user_arg_type)new TAttribute();
+			    }			    
 			  }
-			  else
-			  {
-			    rt_error("function " + string($1) + " does not exist");
-			    $$ = (user_arg_type)new TAttribute();
-			  }			    
 			}
-;
+		        ;
 
 
 color                   : '{' T_RED expression T_GREEN expression T_BLUE expression '}'
@@ -826,13 +917,42 @@ class			: /* Nothing
 			    //			    GOM.debug() << "the parent's classname is " << PARENT_OBJECT->className() << endl;
 			    $$ = PARENT_OBJECT->className();
 			  }
-			| T_CLASS T_IDENTIFIER
+                          | T_CLASS T_IDENTIFIER
 			  {
 			    report_reduction("class <-- : CLASS IDENTIFIER");
 			    PARENT_OBJECT = (magic_pointer<TBaseClass>)NULL;
 			    $$ = $2;
 			  }
+                          | T_CLASS string_math
+			  {
+			    report_reduction("class <-- : CLASS string_math");
+			    PARENT_OBJECT = (magic_pointer<TBaseClass>)NULL;
+			    $$ = $2;
+			  }
 			;
+
+
+string_math             : T_QUOTED_STRING
+                          {
+			    report_reduction("string_math <-- : QUOTED_STRING");
+			    $$ = $1;
+                          }
+                        | function_call
+                          {
+			    report_reduction("string_math <-- : function_call");
+			    $$ = check_get_string($1);
+			  }
+                        | string_math '+' T_QUOTED_STRING
+                          {
+			    report_reduction("string_math <-- : string_math + QUOTED_STRING");
+			    $$ = $1 + $3;
+			  }
+                        | string_math '+' function_call
+                          {
+			    report_reduction("string_math <-- : string_math + function_call");
+			    $$ = $1 + check_get_string($3);
+			  }
+                        ;
 
 params			: /* Nothing  
                           {
@@ -862,60 +982,69 @@ params			: /* Nothing
 param			: T_IDENTIFIER '=' expression
 			{
 			  report_reduction("param <-- IDENTIFIER = expression");
-			  SetParameter ($1, $3);
+			  if( rt_exec_ok() )
+			  {
+			    SetParameter ($1, $3);
+			  }
 			}
                         | expression
                         {
 			  report_reduction("param <-- expression");
-			  
-			  magic_pointer<TAttribObject> ptobj = get_object($1);
 
-			  // If it is an object, check to see if there is an
-			  // 'addObject' function in the current object. 
-			  if( !!ptobj  && !!ptobj->tValue )
+			  if( rt_exec_ok() )
 			  {
-
-			    magic_pointer<TAttribute> attr = DATASTACK.top();
-			    if( !!attr )
+			    magic_pointer<TAttribObject> ptobj = get_object($1);
+			    
+			    // If it is an object, check to see if there is an
+			    // 'addObject' function in the current object. 
+			    if( !!ptobj  && !!ptobj->tValue )
 			    {
-			      magic_pointer<TProcedural> proc = get_procedural_var(attr);
 			      
-			      if( !!proc )
+			      magic_pointer<TAttribute> attr = DATASTACK.top();
+			      if( !!attr )
 			      {
-				TUserFunctionMap functions = proc->getUserFunctions();
-				if( functions.find("addObject") !=
-				    functions.end() )
+				magic_pointer<TProcedural> proc = get_procedural_var(attr);
+				
+				if( !!proc )
 				{
-				  user_arg_vector args;
-				  args.push_back ($1);
-
-				  functions["addObject"]->call(args);
-
-				  static bool warned = false;
-				  if( !warned )
+				  TUserFunctionMap functions = proc->getUserFunctions();
+				  if( functions.find("addObject") !=
+				      functions.end() )
 				  {
-				    rt_warning("DEPRECATION: adding instance of " +
-					       ptobj->tValue->className() +
-					       " to the current object (likely aggregate or CSG) instead of ignoring it.  This feature may soon be removed.");
-				    warned = true;
+				    user_arg_vector args;
+				    args.push_back ($1);
+				    
+				    functions["addObject"]->call(args);
+				    
+				    static bool warned = false;
+				    if( !warned )
+				    {
+				      rt_warning("DEPRECATION: adding instance of " +
+						 ptobj->tValue->className() +
+						 " to the current object (likely aggregate or CSG) instead of ignoring it.  This feature may soon be removed.");
+				      warned = true;
+				    }
 				  }
 				}
 			      }
 			    }
-			  }
-			  else
-			  {
-			    magic_pointer<TProcedural> proc = get_procedural_var($1, false);
-			    if( !!proc )
+			    else
 			    {
-			      FIXME("Potentially do something with (" + $1->toString() + ") in the current object");
+			      magic_pointer<TProcedural> proc = get_procedural_var($1, false);
+			      if( !!proc )
+			      {
+				FIXME("Potentially do something with (" + $1->toString() + ") in the current object");
+			      }
 			    }
 			  }
 			}
                         | reserved_words '=' expression
                         {
 			  report_reduction("param <-- reserved_words = expression");
-			  SetParameter ($1, $3);			    
+			  if( rt_exec_ok() )
+			  {
+			    SetParameter ($1, $3);
+			  }
 			}
 			| object_param
                         {
@@ -932,28 +1061,32 @@ object_param		: T_FILTER '=' instance
 			  // If an object, object->addFilter.
 			  // If a scene, scene->addImageFilter
 			  report_reduction("object_param <-- FILTER = instance");
-			  // The object will clone this filter (a good idea?)
-			  // The alternative was to either:
-			  // 1) Use a magic pointer for the filter.
-			  // 2) Maintain a list of all object filters for
-			  //    proper deletion/deallocation. 
-			  //			    OBJECT->addFilter ($2.get_pointer());
-			  
-			  magic_pointer<TObject> obj = check_get_object(DATASTACK.top());
-			  magic_pointer<TScene> scene = check_get_scene(DATASTACK.top());
-			  if( !!obj )
+
+			  if( rt_exec_ok() )
 			  {
-			    // Do it (obj->addFilter)
-			    FIXME("object filters need work");
-			  }
-			  else if ( scene )
-			  {
-			    // Do it (scene->addImageFilter)
-			    FIXME("image filters need work");
-			  }
-			  else
-			  {
-			    SetParameter($1,$3);
+			    // The object will clone this filter (a good idea?)
+			    // The alternative was to either:
+			    // 1) Use a magic pointer for the filter.
+			    // 2) Maintain a list of all object filters for
+			    //    proper deletion/deallocation. 
+			    //			    OBJECT->addFilter ($2.get_pointer());
+			    
+			    magic_pointer<TObject> obj = check_get_object(DATASTACK.top());
+			    magic_pointer<TScene> scene = check_get_scene(DATASTACK.top());
+			    if( !!obj )
+			    {
+			      // Do it (obj->addFilter)
+			      FIXME("object filters need work");
+			    }
+			    else if ( scene )
+			    {
+			      // Do it (scene->addImageFilter)
+			      FIXME("image filters need work");
+			    }
+			    else
+			    {
+			      SetParameter($1,$3);
+			    }
 			  }
 			}
 			;
@@ -962,75 +1095,81 @@ object_param		: T_FILTER '=' instance
 scene_param		: T_LIGHT '=' instance
 			{
 			  report_reduction("scene_param <-- LIGHT = instance");
-			  // This is no longer needed, as there are special
-			  // cases for this in the light_instance rule.
-			  if( !!$3 )
+			  if( rt_exec_ok() )
 			  {
-			    static bool gave_warning = false;
-			    
-			    if(!gave_warning)
+			    // This is no longer needed, as there are special
+			    // cases for this in the light_instance rule.
+			    if( !!$3 )
 			    {
-			      GOM.error() << "Note for light instance on line "
-				   << TSceneRT::_dwLineNumber
-				   << endl;
-			      GOM.error() << "  Usage of lights in the 'scene' section is no longer required" << endl;
-			      GOM.error() << "  They may now be added to aggregates, csg, etc., or used "
-				   << endl
-				   << "  external to the scene section (same syntax)." 
-				   << endl;
-			      gave_warning = true;
-			    }
-			    
-			    magic_pointer<TObject> obj = check_get_object($3);
-			    if( !!obj )
-			    {
-			      if( !WORLD->containsObject( obj ) )
+			      static bool gave_warning = false;
+			      
+			      if(!gave_warning)
 			      {
-				WORLD->add ( obj );
+				GOM.error() << "Note for light instance on line "
+					    << TSceneRT::_dwLineNumber
+					    << endl;
+				GOM.error() << "  Usage of lights in the 'scene' section is no longer required" << endl;
+				GOM.error() << "  They may now be added to aggregates, csg, etc., or used "
+					    << endl
+					    << "  external to the scene section (same syntax)." 
+					    << endl;
+				gave_warning = true;
 			      }
-			      // The following does not work anymore, as lights
-			      // added in this manor do not go through the
-			      // re-translation process.  Check to see if it
-			      // breaks anything!
-			      // SCENE->addLight (rcp_static_cast<TLight>(obj)->clone_new());
-			    }
-			    else
-			    {
-			      rt_error("NULL light given (BUG?)");
+			      
+			      magic_pointer<TObject> obj = check_get_object($3);
+			      if( !!obj )
+			      {
+				if( !WORLD->containsObject( obj ) )
+				{
+				  WORLD->add ( obj );
+				}
+				// The following does not work anymore, as lights
+				// added in this manor do not go through the
+				// re-translation process.  Check to see if it
+				// breaks anything!
+				// SCENE->addLight (rcp_static_cast<TLight>(obj)->clone_new());
+			      }
+			      else
+			      {
+				rt_error("NULL light given (BUG?)");
+			      }
 			    }
 			  }
 			}
 			| T_OUTPUT '=' instance
 			{
 			  report_reduction("scene_param <-- OUTPUT = instance");
-			  FIXME("Image output");
-			  magic_pointer<TAttribScene> pscene = get_scene(DATA);
-			  if( !!pscene )
+			  if( rt_exec_ok() )
 			  {
-			    //			    magic_pointer<TScene> scene = pscene->tValue;
-			    GOM.error() << "Warning: Ignoring locally defined scene" << endl;
-			    magic_pointer<TScene> scene = TSceneRT::_ptParsedScene;
-			    if( !!scene )
+			    FIXME("Image output");
+			    magic_pointer<TAttribScene> pscene = get_scene(DATA);
+			    if( !!pscene )
 			    {
-			      magic_pointer<TAttribImageIO> io = get_imageio($3);
-			      if( !!io )
+			      //			    magic_pointer<TScene> scene = pscene->tValue;
+			      GOM.error() << "Warning: Ignoring locally defined scene" << endl;
+			      magic_pointer<TScene> scene = TSceneRT::_ptParsedScene;
+			      if( !!scene )
 			      {
-				//				GOM.debug() << "Setting image IO to " << io->toString() << endl;
-				scene->setImageOutput (io->tValue);
+				magic_pointer<TAttribImageIO> io = get_imageio($3);
+				if( !!io )
+				{
+				  //				GOM.debug() << "Setting image IO to " << io->toString() << endl;
+				  scene->setImageOutput (io->tValue);
+				}
+				else
+				{
+				  rt_error("Not an image io");
+				}
 			      }
 			      else
 			      {
-				rt_error("Not an image io");
+				rt_error("internal: scene is NULL");
 			      }
 			    }
 			    else
 			    {
-			      rt_error("internal: scene is NULL");
+			      SetParameter($1,$3);
 			    }
-			  }
-			  else
-			  {
-			    SetParameter($1,$3);
 			  }
 			}
                         ;
@@ -1183,9 +1322,10 @@ void CreateObject (const string& rktCLASS, const string& rktDEF_CLASS)
 
 void report_reduction(const string& s)
 {
-#if defined(REDUCTION_REPORTING)
-  cout << s << endl;
-#endif
+  if( reduction_reporting )
+  {
+    GOM.out() << s << std::endl;
+  }
 }
 
 magic_pointer<TAttribute> Instance(const string& s)

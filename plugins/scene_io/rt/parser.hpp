@@ -62,7 +62,9 @@
      LESS_EQ = 280,
      PARAM = 281,
      DEFINED = 282,
-     THIS = 283
+     THIS = 283,
+     T_IF = 284,
+     T_ELSE = 285
    };
 #endif
 #define T_BOOL 258
@@ -91,6 +93,8 @@
 #define PARAM 281
 #define DEFINED 282
 #define THIS 283
+#define T_IF 284
+#define T_ELSE 285
 
 
 
@@ -161,7 +165,7 @@ static void FIXME(const string& s) { GOM.error() << "FIXME: " << s << endl; }
 
 
 /* Line 112 of lalr1.cc.  */
-#line 164 "parser.hpp"
+#line 168 "parser.hpp"
 
 /* Enabling traces.  */
 #ifndef YYDEBUG
@@ -182,7 +186,7 @@ typedef int yystype;
 
 
 /* Line 138 of lalr1.cc.  */
-#line 185 "parser.hpp"
+#line 189 "parser.hpp"
 #ifndef YYLLOC_DEFAULT
 # define YYLLOC_DEFAULT(Current, Rhs, N) \
    Current.last.line = Rhs[N].last.line; \
@@ -260,11 +264,11 @@ namespace yy
     static const short pact_[];
     static const short pact_ninf_;
     static const unsigned char defact_[];
-    static const signed char pgoto_[];
-    static const signed char defgoto_[];
+    static const short pgoto_[];
+    static const short defgoto_[];
     static const short table_[];
     static const short table_ninf_;
-    static const signed char check_[];
+    static const short check_[];
     static const unsigned char r1_[];
     static const unsigned char r2_[];
 
@@ -275,7 +279,7 @@ namespace yy
     /* More tables, for debugging.  */
 #if YYDEBUG
     static const RhsNumberType rhs_[];
-    static const unsigned char prhs_[];
+    static const unsigned short prhs_[];
     static const unsigned short rline_[];
     static const unsigned char stos_[];
     static const unsigned short token_number_[];

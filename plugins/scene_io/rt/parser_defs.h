@@ -31,6 +31,7 @@
 extern FILE*   rt_in;
 extern FILE*   rt_out;
 extern int     rt_debug;
+extern bool    reduction_reporting;
 
 //
 //  Prototypes
@@ -43,5 +44,10 @@ int rt_lex (void);
 void RT_InitParser (void);
 void RT_CloseParser (void);
 void scanner_unput_string(const string& s);
-  
+
+void rt_enter_condition(bool condition);
+void rt_leave_condition();
+bool rt_exec_ok();
+
+
 #endif  /* _PARSER_DEFS__ */

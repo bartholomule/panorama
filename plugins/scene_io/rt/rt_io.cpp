@@ -35,6 +35,12 @@ TSceneRT::BASE_OBJECT_TYPE   TSceneRT::_ptParent;
 magic_pointer<TAggregate>    TSceneRT::_ptWorld;
 magic_pointer<TImageIO>      TSceneRT::_ptImageIO;  
 
+#include <vector>
+static std::vector<bool> condition_vector;
+static bool condition_ok = true;
+
+bool reduction_reporting;
+
 #include "parser.hpp"
 
 magic_pointer<TScene> TSceneRT::load (const string& rktNAME)
@@ -49,12 +55,21 @@ magic_pointer<TScene> TSceneRT::load (const string& rktNAME)
 
   if ( !rt_in )
   {
-    GOM.error() << "ERROR: Could not open scene file." << endl;
+    GOM.error() << "ERROR: Could not open scene file." << std::endl;
     return (magic_pointer<TScene>)NULL;
   }
 
   //  rt_debug = 0;
 
+  // [CHECKME!] Where do these really belong?
+  // Set some values that need to be set somewhere... 
+  condition_ok = true;
+#if defined(REDUCTION_REPORTING)
+  reduction_reporting = true;
+#else
+  reduction_reporting = false;
+#endif
+  
   RT_InitParser();
 
   yy::Parser rt_parser(true);
@@ -84,3 +99,48 @@ int TSceneRT::save (const string& rktNAME, const TScene* pktSCENE)
   return 0;
   
 }  /* _save() */
+
+
+void rt_enter_condition(bool condition)
+{
+  if( !condition )
+  {
+    condition_ok = false;
+  }
+  
+  GOM.debug() << "rt_enter_condition(" << condition << ") level " << condition_vector.size() + 1 << " exec_ok=" << condition_ok << std::endl;
+  
+  condition_vector.push_back(condition);
+}
+
+void rt_leave_condition()
+{
+  if( !condition_vector.empty() )
+  {
+    // Remove the last element.
+    condition_vector.pop_back();
+    
+    // Care must be taken when leaving to make sure that the conditions all add
+    // up again. 
+    bool cond = true;
+    for( std::vector<bool>::iterator i = condition_vector.begin();
+	 i != condition_vector.end();
+	 ++i )
+    {
+      cond = cond && *i;
+    }
+    condition_ok = cond;
+  }
+  else
+  {
+    GOM.error() << "rt_leave_condition: Left more than entered!" << std::endl;
+    condition_ok = true;
+  }
+  GOM.debug() << "rt_leave_condition(" << *condition_vector.rbegin() << ") level " << condition_vector.size() << " Recalculated condition=" << condition_ok << std::endl;
+}
+
+bool rt_exec_ok()
+{
+  GOM.debug() << "rt_exec_ok() returning " << condition_ok << std::endl;
+  return condition_ok;
+}

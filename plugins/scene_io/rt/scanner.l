@@ -122,6 +122,8 @@ output                  RESERVED (T_OUTPUT);
 red			RESERVED (T_RED);
 renderer		RESERVED (T_RENDERER);
 this                    RESERVED (THIS);
+"else"                  RESERVED (T_ELSE);
+"if"                    RESERVED (T_IF);
 
 on			{
 			  p->gValue = true;
@@ -266,6 +268,8 @@ bool ProcessInclude (void)
 
   int   iChar;
 
+  string temp_include_name;
+  
   do
   {
     iChar = yyinput();
@@ -279,7 +283,7 @@ bool ProcessInclude (void)
   else
   {
     iChar             = yyinput();
-    _tIncludeFileName = "";
+    temp_include_name = "";
     while ( iChar != '"' )
     {
       if ( (iChar == '\n') || (iChar == EOF) )
@@ -287,12 +291,20 @@ bool ProcessInclude (void)
         rt_error ("'\"' expected");
         exit (1);
       }
-      _tIncludeFileName += char (iChar);
+      temp_include_name += char (iChar);
       iChar = yyinput();
     }
    }
-   return IncludeFile();
-
+  if( rt_exec_ok() )
+  {
+    _tIncludeFileName = temp_include_name;
+    return IncludeFile();
+  }
+  else
+  {
+    // [FIXME!] Is this required, or is returning false possible?
+    return true;
+  }
 }  /* ProcessInclude() */
 
 
