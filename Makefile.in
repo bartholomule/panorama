@@ -30,7 +30,7 @@ clean:
 		@for i in $(DIRS); do \
                   $(MAKE) -C $$i clean; \
                 done
-		rm -f so_locations
+		@rm -f so_locations
 
 distclean:
 		@set -e
