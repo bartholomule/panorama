@@ -1,2 +1,2 @@
 PLUGIN_NAME = parallel
-OBJ         = parallel.o
+OBJ         = parallel.lo

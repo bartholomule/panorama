@@ -23,6 +23,7 @@
 #include "llapi/object.h"
 #include "llapi/scene.h"
 #include "llapi/material.h"
+#include "llapi/class_mgr_base.h"
 
 TScene::TScene (void) :
   ptWorld (NULL),
@@ -56,7 +57,15 @@ void TScene::addLight(TLight* ptLIGHT)
 
   // Now that we have the two matricies, it's time to make an instance of the
   // object in question...
-  TLight* instance = (TLight*) TClassManager::_newObject
+
+  if( !GlobalClassManager )
+  {
+    string err = "Unable to add a light (copy), as the GlobalClassManager variable has not been set!";
+    cout << err << endl;
+    exit(1);
+  }
+
+  TLight* instance = (TLight*) GlobalClassManager->newObject
     (ptLIGHT->className(), ptLIGHT);
   if( ! instance )
   {

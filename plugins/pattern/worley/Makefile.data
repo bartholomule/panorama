@@ -1,2 +1,2 @@
 PLUGIN_NAME = pat_worley
-OBJ         = pat_worley.o
+OBJ         = pat_worley.lo

@@ -1,2 +1,2 @@
 PLUGIN_NAME = pat_noise
-OBJ         = pat_noise.o
+OBJ         = pat_noise.lo

@@ -1,2 +1,2 @@
 PLUGIN_NAME = pat_wood
-OBJ         = pat_wood.o
+OBJ         = pat_wood.lo

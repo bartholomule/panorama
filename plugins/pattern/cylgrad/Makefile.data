@@ -1,2 +1,2 @@
 PLUGIN_NAME = pat_cylgrad
-OBJ         = pat_cylgrad.o
+OBJ         = pat_cylgrad.lo

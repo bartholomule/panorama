@@ -1,2 +1,2 @@
 PLUGIN_NAME = pat_brick
-OBJ         = pat_brick.o
+OBJ         = pat_brick.lo

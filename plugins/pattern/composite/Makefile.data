@@ -1,2 +1,2 @@
 PLUGIN_NAME = pat_composite
-OBJ         = pat_composite.o
+OBJ         = pat_composite.lo

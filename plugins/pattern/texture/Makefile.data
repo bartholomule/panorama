@@ -1,2 +1,2 @@
 PLUGIN_NAME = pat_texture
-OBJ         = pat_texture.o
+OBJ         = pat_texture.lo

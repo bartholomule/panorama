@@ -1,4 +1,4 @@
 PLUGIN_NAME = bsdf_schlick
-OBJ         = bsdf_schlick.o
+OBJ         = bsdf_schlick.lo
 
-bsdf_schlick.o: bsdf_schlick.h
+bsdf_schlick.lo: bsdf_schlick.h

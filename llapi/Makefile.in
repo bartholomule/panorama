@@ -4,71 +4,60 @@ BUILD_TOP = ..
 include ${BUILD_TOP}/Makefile.vars
 include @srcdir@/${BUILD_TOP}/Makefile.rules
 
-CXXFLAGS += -fPIC
-
 INSTALL = @INSTALL@
 
 VPATH = @srcdir@
 SRC_DIR = @srcdir@
 
-LIBNAME = libllapi.so.0
+LIBNAME = libllapi.la
 
-OBJ = atmosphere.o \
-      atmospheric_object.o \
-      base_class.o \
-      bounding_box.o \
-      bsdf.o \
-      camera.o \
-      catrom2.o \
-      debug.o \
-      file.o \
-      gradient.o \
-      heap_manager.o \
-      image.o \
-      image_io.o \
-      light.o \
-      material.o \
-      mesh.o \
-      object.o \
-      perlin_noise.o \
-      pattern.o \
-      procedural.o \
-      program.o \
-      ray.o \
-      root_solver.o \
-      sc_noise.o \
-      scene.o \
-      span_list.o \
-      surface_data.o \
-      wood.o \
-      worley_basis.o
+OBJ = atmosphere.lo \
+      atmospheric_object.lo \
+      base_class.lo \
+      bounding_box.lo \
+      bsdf.lo \
+      camera.lo \
+      catrom2.lo \
+      debug.lo \
+      file.lo \
+      gradient.lo \
+      heap_manager.lo \
+      image.lo \
+      image_io.lo \
+      light.lo \
+      material.lo \
+      mesh.lo \
+      object.lo \
+      perlin_noise.lo \
+      pattern.lo \
+      procedural.lo \
+      program.lo \
+      ray.lo \
+      root_solver.lo \
+      sc_noise.lo \
+      scene.lo \
+      span_list.lo \
+      surface_data.lo \
+      wood.lo \
+      worley_basis.lo
 
-ALL_FILES = $(strip $(wildcard $(OBJ:%.o=%.cpp)))
+ALL_FILES = $(strip $(wildcard $(OBJ:%.lo=%.cpp)))
 
-all:		${LLAPI_LIB} ${STATIC_LLAPI_LIB}
+all:		${LLAPI_LIB}
 
 install:        all
 		@echo Installing llapi lib...
-		@@INSTALL@ ${LLAPI_LIB} ${LIB_DIR}/${LIBNAME}
-		@rm -f ${LIB_DIR}/libllapi.so
-		@ln -s ${LIBNAME} ${LIB_DIR}/libllapi.so
+		${LIBTOOL} --mode=install ${INSTALL} ${LLAPI_LIB} ${LIB_DIR}/${LIBNAME}
 
-ifneq (@STATIC_LINK@,1)
-# When doing a static link, this rule should be covered already.  This is only
-# useful for shared libraries. 
+
 ${LLAPI_LIB}:	${OBJ}
 		@echo Making library ${LLAPI_LIB}...
-		@${CXX} -fPIC -shared ${CXXFLAGS} -Wl,-soname,${LIBNAME} -o ${LLAPI_LIB} ${OBJ} ${ARCH_MAKE_SHARED_OPTS}
-endif
-
-
-${STATIC_LLAPI_LIB}:    ${OBJ}
-		@echo Making static library ${STATIC_LLAPI_LIB}...
-		@ar rcs ${STATIC_LLAPI_LIB} ${OBJ}
+		${LIBTOOL} --mode=link ${CXX} -shared ${CXXFLAGS} -o ${LLAPI_LIB} $^ ${ARCH_MAKE_SHARED_OPTS} -rpath ${LIB_DIR}
 
 clean:
-		@rm -f ${OBJ} ${LLAPI_LIB} ${STATIC_LLAPI_LIB}
+		@rm -f ${OBJ} ${LLAPI_LIB} ${STATIC_LLAPI_LIB} 
 		@rm -f *~ *.bak core
+		@rm -rf .libs
 
 distclean:      clean
 		@rm -f Makefile *.d

@@ -1,4 +1,4 @@
 PLUGIN_NAME = bsdf_ward
-OBJ         = bsdf_ward.o
+OBJ         = bsdf_ward.lo
 
-bsdf_ward.o: bsdf_ward.h
+bsdf_ward.lo: bsdf_ward.h

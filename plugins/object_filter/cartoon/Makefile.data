@@ -1,2 +1,2 @@
 PLUGIN_NAME = of_cartoon
-OBJ         = of_cartoon.o
+OBJ         = of_cartoon.lo

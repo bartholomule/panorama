@@ -1,2 +1,2 @@
 PLUGIN_NAME = height_field
-OBJ         = height_field.o
+OBJ         = height_field.lo

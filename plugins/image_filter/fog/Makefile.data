@@ -1,2 +1,2 @@
 PLUGIN_NAME = if_fog
-OBJ         = if_fog.o
+OBJ         = if_fog.lo

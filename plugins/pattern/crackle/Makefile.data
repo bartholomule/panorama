@@ -1,2 +1,2 @@
 PLUGIN_NAME = pat_crackle
-OBJ         = pat_crackle.o
+OBJ         = pat_crackle.lo

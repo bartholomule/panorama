@@ -1,2 +1,2 @@
 PLUGIN_NAME = pat_leopard
-OBJ         = pat_leopard.o
+OBJ         = pat_leopard.lo

@@ -1,2 +1,2 @@
 PLUGIN_NAME = per_bump
-OBJ         = per_bump.o
+OBJ         = per_bump.lo

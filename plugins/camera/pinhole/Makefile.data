@@ -1,2 +1,2 @@
 PLUGIN_NAME = pinhole
-OBJ         = pinhole.o
+OBJ         = pinhole.lo

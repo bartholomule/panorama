@@ -1,2 +1,2 @@
 PLUGIN_NAME = bsdf_phong
-OBJ         = bsdf_phong.o
+OBJ         = bsdf_phong.lo

@@ -1,11 +1,11 @@
 PLUGIN_NAME = if_lens_flare
-OBJ         = if_lens_flare.o flare.o       
+OBJ         = if_lens_flare.lo flare.lo       
 
-if_lens_flare.o: if_lens_flare.h
-if_lens_flare.o flare.o: flare.h
-if_lens_flare.o: flare_std.h
-if_lens_flare.o: flare_hard.h
-if_lens_flare.o: flare_decreasing.h  
-if_lens_flare.o: flare_ring.h
-if_lens_flare.o: flare_halo.h
-if_lens_flare.o: flare_streaks.h
+if_lens_flare.lo: if_lens_flare.h
+if_lens_flare.lo flare.lo: flare.h
+if_lens_flare.lo: flare_std.h
+if_lens_flare.lo: flare_hard.h
+if_lens_flare.lo: flare_decreasing.h  
+if_lens_flare.lo: flare_ring.h
+if_lens_flare.lo: flare_halo.h
+if_lens_flare.lo: flare_streaks.h

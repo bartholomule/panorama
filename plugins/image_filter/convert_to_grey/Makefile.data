@@ -1,2 +1,2 @@
 PLUGIN_NAME = if_convert_to_grey
-OBJ         = if_convert_to_grey.o
+OBJ         = if_convert_to_grey.lo

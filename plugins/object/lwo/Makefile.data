@@ -1,2 +1,2 @@
 PLUGIN_NAME = lwo
-OBJ         = lwo.o chunks.o
+OBJ         = lwo.lo chunks.lo

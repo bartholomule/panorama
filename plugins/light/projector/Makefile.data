@@ -1,2 +1,2 @@
 PLUGIN_NAME = projector
-OBJ         = projector.o
+OBJ         = projector.lo

@@ -1,2 +1,2 @@
 PLUGIN_NAME = bsdf_lambertian
-OBJ         = bsdf_lambertian.o
+OBJ         = bsdf_lambertian.lo

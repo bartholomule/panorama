@@ -1,2 +1,2 @@
 PLUGIN_NAME = warn_light
-OBJ         = warn_light.o
+OBJ         = warn_light.lo

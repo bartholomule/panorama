@@ -1,2 +1,2 @@
 PLUGIN_NAME = polyhedron
-OBJ         = polyhedron.o
+OBJ         = polyhedron.lo

@@ -1,2 +1,5 @@
 *.plg
+*.la
+*.lo
+.libs
 Makefile

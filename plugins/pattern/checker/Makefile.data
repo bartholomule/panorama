@@ -1,2 +1,2 @@
 PLUGIN_NAME = pat_checker
-OBJ         = pat_checker.o
+OBJ         = pat_checker.lo

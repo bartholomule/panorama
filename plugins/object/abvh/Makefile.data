@@ -1,2 +1,2 @@
 PLUGIN_NAME = abvh
-OBJ         = abvh.o
+OBJ         = abvh.lo
