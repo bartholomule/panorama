@@ -24,11 +24,12 @@ scene
   filter : class IF_Text {
     color	CWhite
     size	50
-    text	"Panorama text plugin!"
+    text	"Panoramas text plugin"
     xlate	<0,240>
     
-    // Replace font path according to local location of True Type Fonts
-    fontfile    "/mnt/tivoli/windows/fonts/cour.ttf"
+    // Remember that you can setup the local path to True Type Fonts by editing
+    // your 'config'-file, and adding a 'FontPath=foo/bar/...' entry.
+    fontfile    "cour.ttf"
   }
 }
 
