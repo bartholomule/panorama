@@ -8,6 +8,8 @@ INSTALL = @INSTALL@
 
 VPATH = @srcdir@
 
+LIBNAME = libhlapi.so.0
+
 OBJ = box.o \
       circle.o \
       cone.o \
@@ -32,7 +34,7 @@ install:        all
                 
 ${HLAPI_LIB}:	${OBJ}
 		@echo Making library ${HLAPI_LIB}...
-		@${CXX} -fPIC -shared ${CXXFLAGS} -o ${HLAPI_LIB} ${OBJ}
+		@${CXX} -fPIC -shared ${CXXFLAGS} -Wl,-soname,${LIBNAME} -o ${HLAPI_LIB} ${OBJ}
 
 ${STATIC_HLAPI_LIB}:    ${OBJ}
 		@echo Making static library ${STATIC_HLAPI_LIB}...

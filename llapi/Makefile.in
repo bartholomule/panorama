@@ -8,6 +8,8 @@ INSTALL = @INSTALL@
 
 VPATH = @srcdir@
 
+LIBNAME = libllapi.so.0
+
 OBJ = aggregate.o \
       atmosphere.o \
       atmospheric_object.o \
@@ -40,7 +42,7 @@ install:        all
 
 ${LLAPI_LIB}:	${OBJ}
 		@echo Making library ${LLAPI_LIB}...
-		@${CXX} -fPIC -shared ${CXXFLAGS} -o ${LLAPI_LIB} ${OBJ}
+		@${CXX} -fPIC -shared ${CXXFLAGS} -Wl,-soname,${LIBNAME} -o ${LLAPI_LIB} ${OBJ}
 
 ${STATIC_LLAPI_LIB}:    ${OBJ}
 		@echo Making static library ${STATIC_LLAPI_LIB}...
