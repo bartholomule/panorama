@@ -30,7 +30,8 @@
 template <class TItem>
 struct TPQNode
 {
-  TItem       tData;
+  
+  TItem     tData;
   TScalar   tDistance;
 
   TPQNode (const TItem& rktITEM, TScalar tDIST) :
