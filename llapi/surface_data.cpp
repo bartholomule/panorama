@@ -72,8 +72,15 @@ TVector TSurfaceData::normal(void) const
   if ( !gNormalAssigned )
   {
     gNormalAssigned = true;
-    tNormal         = pktObject->normal (*this);
-    tNormal         = pktObject->material()->perturbNormal (*this);
+    if ( !pktObject )
+    {
+      tNormal.set (0, 0, 0);
+    }
+    else
+    {
+      tNormal = pktObject->normal (*this);
+      tNormal = pktObject->material()->perturbNormal (*this);
+    }
   }
 
   return tNormal;

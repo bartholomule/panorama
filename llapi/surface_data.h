@@ -46,6 +46,9 @@ class TSurfaceData
 
     TSurfaceData (void) :
       pktObject (NULL),
+      zObjectCode (0),
+      tDistance (SCALAR_MAX),
+      pvData (NULL),
       gNormalAssigned (false),
       zReflection (0),
       zTransmission (0),
