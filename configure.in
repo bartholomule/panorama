@@ -147,6 +147,7 @@ AC_OUTPUT(\
         plugins/object/Makefile \
         plugins/object/abvh/Makefile:Makefile.plugin.in \
         plugins/object/bezier/Makefile:Makefile.plugin.in \
+        plugins/object/subdiv/Makefile:Makefile.plugin.in \
         plugins/object/height_field/Makefile:Makefile.plugin.in \
         plugins/object/lwo/Makefile:Makefile.plugin.in \
         plugins/object/polyhedron/Makefile:Makefile.plugin.in \
