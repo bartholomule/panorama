@@ -1,6 +1,7 @@
 
 BUILD_TOP = ../..
 
-DIRS = cartoon
+DIRS = cartoon \
+       convert_to_grey
 
 include ${BUILD_TOP}/Makefile.targets
