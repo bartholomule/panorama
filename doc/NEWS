@@ -1,4 +1,6 @@
 
+ - Added new OF_ConvertToGrey object filter plugin.
+
  - Fixed bug in gradients.
 
  - Fixed scene plugins so that many of them can be loaded at the same time.
