@@ -54,9 +54,9 @@ void TMeshObject::getMesh (list<TMesh*>& rtMESH_LIST) const
     ptMesh->vertexList()->push_back (tVertex);
   }
   
-  for (vector<TMesh::TFace>::const_iterator tIter = tFaceList.begin(); ( tIter != tFaceList.end() ) ;tIter++)
+  for (vector<TMesh::TFace>::const_iterator tIter2 = tFaceList.begin(); ( tIter2 != tFaceList.end() ) ;tIter2++)
   {
-    ptMesh->faceList()->push_back (*tIter);
+    ptMesh->faceList()->push_back (*tIter2);
   }
 
   ptMesh->updateFaces();
