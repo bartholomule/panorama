@@ -1,7 +1,8 @@
-*.dsw
 *.plg
 *.pch
 *.obj
+*.ncb
+*.opt
 Lib
 Release
 Debug
