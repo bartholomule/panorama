@@ -28,20 +28,20 @@
 #include "parser_defs.h"
 #include "rt_io.h"
 
-static map<string, TBaseClass*, less<string> >        _tObjectMap;
+static map<string, TProcedural*, less<string> >       _tObjectMap;
 static map<string, TColor, less<string> >             _tColorMap;
 static map<string, double(*)(void), less<string> >    _tFunctionMap;
-static stack<TBaseClass*>                             _tDataStack;
+static stack<TProcedural*>                            _tDataStack;
 
-static TBaseClass*   _ptData;
-static TBaseClass*   _ptParent;
-static Byte          _bVertices;
-static TVector       _tVector;
-static TVector2      _tVector2;
-static TColor        _tColor;
-static TAggregate*   _ptWorld;
-static NAttribute    _nAttrib;
-static TImageIO*     _ptImageIO;
+static TProcedural*   _ptData;
+static TProcedural*   _ptParent;
+static Byte           _bVertices;
+static TVector        _tVector;
+static TVector2       _tVector2;
+static TColor         _tColor;
+static TAggregate*    _ptWorld;
+static NAttribute     _nAttrib;
+static TImageIO*      _ptImageIO;
 
 static double (*_pfFunction)(void);
 
@@ -61,7 +61,7 @@ static double (*_pfFunction)(void);
 
 #define YYDEBUG 1
 
-TBaseClass* NewObject (const string& rktCLASS, const TBaseClass* pktPARENT);
+TProcedural* NewObject (const string& rktCLASS, const TProcedural* pktPARENT);
 void* InstanceObject (const string& rktNAME);
 void* UpdateObject (const string& rktNAME);
 void DefineObject (const string& rktNAME, const string& rktCLASS, const string& rktDEF_CLASS);
@@ -1309,14 +1309,14 @@ void InitObjects (void)
 }  /* InitObjects() */
 
 
-TBaseClass* NewObject (const string& rktCLASS, const TBaseClass* pktPARENT)
+TProcedural* NewObject (const string& rktCLASS, const TProcedural* pktPARENT)
 {
 
-  TBaseClass*   ptChild;
+  TProcedural*   ptChild;
 
 //  cout << "New object : \"" << rktCLASS << "\"" << endl;
 
-  ptChild = TClassManager::_newObject (rktCLASS, pktPARENT);
+  ptChild = (TProcedural*) TClassManager::_newObject (rktCLASS, pktPARENT);
   if ( !ptChild )
   {
     string   tMessage = string ("class ") + rktCLASS + " does not exist";
@@ -1356,7 +1356,7 @@ void* InstanceObject (const string& rktNAME)
 void* UpdateObject (const string& rktNAME)
 {
 
-  TBaseClass*   ptObject;
+  TProcedural*   ptObject;
 
 //  cout << "Updating object : \"" << rktNAME << "\"" << endl;
 
@@ -1440,7 +1440,7 @@ void SetParameter (const string& rktATTRIB, EAttribType eTYPE)
   }
   else if ( iResult == FX_ATTRIB_USER_ERROR )
   {
-    yyerror (TBaseClass::_tUserErrorMessage.c_str());
+    yyerror (TProcedural::_tUserErrorMessage.c_str());
     exit (1);
   }
 

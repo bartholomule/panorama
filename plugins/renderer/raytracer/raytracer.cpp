@@ -599,7 +599,7 @@ int TRaytracer::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribT
       }
       else
       {
-        TBaseClass::_tUserErrorMessage = "unknown sampling method : " + tName;
+        TProcedural::_tUserErrorMessage = "unknown sampling method : " + tName;
 
         return FX_ATTRIB_USER_ERROR;
       }

@@ -74,7 +74,7 @@ int TProjector::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribT
       ptImage = tImageManager.newImage (pcName, FileExtension (pcName));
       if ( !ptImage )
       {
-        TBaseClass::_tUserErrorMessage = string ("could not open texture file ") + (char*) nVALUE.pvValue;
+        TProcedural::_tUserErrorMessage = string ("could not open texture file ") + (char*) nVALUE.pvValue;
         return FX_ATTRIB_USER_ERROR;
       }
     }
