@@ -18,7 +18,7 @@
 
 #include <cmath>
 #include <string.h>
-#include <freetype.h>
+#include <freetype/freetype.h>
 #include "llapi/file.h"
 #include "llapi/scene.h"
 #include "if_text.h"
