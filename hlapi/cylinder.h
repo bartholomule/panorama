@@ -27,6 +27,12 @@ class TCylinder : public TObject
   protected:
 
     TVector localNormal (const TVector& rktPOINT) const;
+
+    TVector tTopPoint;
+    TVector tBottomPoint;
+    TScalar tRadius;
+    TScalar tRadius2;
+    TScalar tHeight;
     
   public:
 
@@ -34,12 +40,36 @@ class TCylinder : public TObject
       TObject()
     {
       sCapabilities.gInfinite = false;
+      tTopPoint 							= TVector ( 0, 1, 0);
+      tBottomPoint						= TVector ( 0,-1, 0);
+      tRadius									= 1.0;
     }
       
     void initialize (void);
     
     bool findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) const;
 
+    int setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
+
+    /**
+    * Get the value of a named attribute of the object.
+    * @param rktNAME The name of the attribute; valid names are
+    * 'point1', 'point2' and 'radius'.
+    * @param rnVALUE The returned value.
+    * @see getAttributeList()
+    */
+    int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
+
+    /**
+    * Get a list of the object's attribute names and types.
+    * @see getAttribute()
+    */
+    void getAttributeList (TAttributeList& rtLIST) const;
+
+    /**
+    * Get the name of the object class as a string.
+    * @return the name of the class
+    */
     string className (void) const { return "Cylinder"; }
 
 };  /* class TCylinder */

@@ -25,7 +25,7 @@ TVector TCylinder::localNormal (const TVector& rktPOINT) const
   {
     return TVector (0, 1, 0);
   }
-  else if ( fabs (rktPOINT.y()) < FX_EPSILON )
+  else if ( fabs (rktPOINT.y() + 1) < FX_EPSILON )
   {
     return TVector (0, -1, 0);
   }
@@ -37,10 +37,68 @@ TVector TCylinder::localNormal (const TVector& rktPOINT) const
 
 void TCylinder::initialize (void)
 {
+  TVector tAxis;
+  TVector tCentre;
+  TScalar tDistance;
+  TMatrix tMatrix = *ptMatrix;
+  
+  tCentre      = (tTopPoint + tBottomPoint) / 2.0;
+  
+  tAxis     = tCentre - tTopPoint;
+  tHeight   = tAxis.norm();
+  tDistance = tCentre.norm();
+  
+  // Canonical cylinder has endpoints at < 0, 1, 0 > and < 0,-1, 0 >   
+  // First, scale the canonical cylinder to the correct dimensions
+  
+  scale (TVector (tRadius, tHeight, tRadius), TVector (0, 0, 0) );
+  
+  // Secondly, we translate the cylinder so that the base is the
+  // correct distance from the origin.    
+  // Finally, we rotate the cylinder to the correct coordinates
+    
+  if ( ( fabs (tAxis.x()) < FX_EPSILON ) && ( fabs (tAxis.z()) < FX_EPSILON ) )
+  {
+    // cylinder is on the y-axis.
+    if ( dotProduct (tAxis, TVector (0, 1, 0)) < 0 )
+    {
+      // cylinder is on the -ve y-axis, and needs to be rotated
+      rotate (TVector (180, 0, 0));
+    }
+  }
+  else
+  {
+    TVector   tTmpX;
+    TVector   tTmpZ;
+    TScalar   tAxisYProyection;
+    TScalar   tAxistTmpZProyection;
+      
+    tTmpX = crossProduct (TVector (0, 1, 0), tAxis);
+    tTmpX.normalize();
+    tTmpZ = crossProduct (tTmpX, TVector (0, 1, 0));
+    tTmpZ.normalize();
+    tAxisYProyection     = dotProduct (tAxis, TVector (0, 1, 0));
+    tAxistTmpZProyection = dotProduct (tAxis, tTmpZ);
 
-  tBoundingBox.set (TVector (-1, 0, -1), TVector (1, 1, 1));
+    //translate (TVector (0, -tDistance, 0) );
+    rotate (tTmpX * 1.0, tTmpX * 2.0, atan2 (tAxistTmpZProyection, tAxisYProyection) * 180 / PI);
+  }
+
+  translate (tCentre); 
+
+  tBoundingBox.set (TVector (-1, -1, -1), TVector (1, 1, 1));
   tBoundingBox.applyTransform (*ptMatrix);
 
+/*
+  TVector tTP = tTopPoint;
+  TVector tBP( 0,-1, 0);
+
+  tTP.printDebug();
+  tTP = (*ptInverseMatrix) * tTP;
+  tTP.printDebug();
+  tTP = (*ptMatrix) * tTP;
+  tTP.printDebug();
+*/    
   TObject::initialize();
   
 }  /* initialize() */
@@ -60,7 +118,7 @@ bool TCylinder::findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) con
 
   if ( !tBoundingBox.intersects (rktRAY) )
   {
-    return false;
+    //return false;
   }
 
   tFactor = tRayIT.applyTransform (ptInverseMatrix);
@@ -77,7 +135,7 @@ bool TCylinder::findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) con
     //
     // Intersection with bottom circle
     //
-    s1     = -tRayIT.location().y() / tRayIT.direction().y();
+    s1     = -(1 + tRayIT.location().y()) / tRayIT.direction().y();
     tPoint = tRayIT.location() + (tRayIT.direction() * s1);
     if ( ( (tPoint.x() * tPoint.x() + tPoint.z() * tPoint.z()) <= 1 ) &&
          ( s1 >= FX_EPSILON )                                         &&
@@ -138,7 +196,7 @@ bool TCylinder::findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) con
     if ( ( s1 >= FX_EPSILON ) && ( s1 <= tRayIT.limit() ) )
     {
       tPoint = tRayIT.location() + (tRayIT.direction() * s1);
-      if ( ( tPoint.y() > 0 ) && ( tPoint.y() < 1 ) )
+      if ( ( tPoint.y() > -1 ) && ( tPoint.y() < 1 ) )
       {
         if ( tSurfaceData.setPoint (tFactor * s1) )
         {
@@ -151,7 +209,7 @@ bool TCylinder::findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) con
     if ( ( s2 >= FX_EPSILON ) && ( s2 <= tRayIT.limit() ) )
     {
       tPoint = tRayIT.location() + (tRayIT.direction() * s2);
-      if ( ( tPoint.y() > 0 ) && ( tPoint.y() < 1 ) )
+      if ( ( tPoint.y() > -1 ) && ( tPoint.y() < 1 ) )
       {
         if ( tSurfaceData.setPoint (tFactor * s2) )
         {
@@ -165,3 +223,86 @@ bool TCylinder::findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) con
   return gIntersection;
 
 }  /* findAllIntersections() */
+
+
+int TCylinder::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
+{
+  if ( rktNAME == "point1" )
+  {
+    if ( eTYPE == FX_VECTOR )
+    {
+     tTopPoint = *((TVector*) nVALUE.pvValue);
+    }
+    else
+    {
+      return FX_ATTRIB_WRONG_TYPE;
+    }
+  }
+  else if ( rktNAME == "point2" )
+  {
+    if ( eTYPE == FX_VECTOR )
+    {
+      tBottomPoint = *((TVector*) nVALUE.pvValue);
+    }
+    else
+    {
+      return FX_ATTRIB_WRONG_TYPE;
+    }
+  }
+  else if ( rktNAME == "radius" )
+  {
+    if ( eTYPE == FX_REAL )
+    {
+      tRadius  = nVALUE.dValue;
+      tRadius2 = tRadius * tRadius;
+    }
+    else
+    {
+      return FX_ATTRIB_WRONG_TYPE;
+    }
+  }
+  else
+  {
+    return TObject::setAttribute (rktNAME, nVALUE, eTYPE);
+  }
+
+  return FX_ATTRIB_OK;
+
+}  /* setAttribute() */
+
+
+int TCylinder::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
+{
+
+  if ( rktNAME == "point1" )
+  {
+    rnVALUE.pvValue = &tTopPoint;
+  }
+  else if ( rktNAME == "point2" )
+  {
+    rnVALUE.pvValue = &tBottomPoint;
+  }
+  else if ( rktNAME == "radius" )
+  {
+    rnVALUE.dValue = tRadius;
+  }
+  else
+  {
+    return TObject::getAttribute (rktNAME, rnVALUE);
+  }
+
+  return FX_ATTRIB_OK;
+
+}  /* getAttribute() */
+
+
+void TCylinder::getAttributeList (TAttributeList& rtLIST) const
+{
+
+  TObject::getAttributeList (rtLIST);
+
+  rtLIST ["point1"] = FX_VECTOR;
+  rtLIST ["point2"] = FX_VECTOR;
+  rtLIST ["radius"] = FX_REAL;
+
+}  /* getAttributeList() */
