@@ -148,9 +148,9 @@ void TABVH::insertObject (TObject* ptOBJ)
 void TABVH::initialize (void)
 {
 
-  size_t                       zPos;
-  TObject*                     ptObj;
-  vector<TObject*>::iterator   tIter;
+  size_t                  zPos;
+  TObject*                ptObj;
+  TObjectList::iterator   tIter;
 
   if ( tObjectList.empty() )
   {
