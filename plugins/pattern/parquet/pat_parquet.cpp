@@ -18,7 +18,6 @@
 
 #include "pat_parquet.h"
 
-
 DEFINE_PLUGIN ("PatternParquet", FX_PATTERN_CLASS, TPatternParquet);
 
 const int akiLookup[8][8] =
@@ -34,8 +33,9 @@ const int akiLookup[8][8] =
   };
 
 
-inline TColor TPatternParquet::evaluate (const TVector& rktPOINT) const
+TColor TPatternParquet::evaluate (const TVector& rktPOINT) const
 {
+
   TScalar  tValue;
   TColor   tRet;
   TScalar  tX  = rktPOINT.x()/3;
@@ -64,7 +64,8 @@ inline TColor TPatternParquet::evaluate (const TVector& rktPOINT) const
   tRet *= 1.0 - frand() * 0.4;
   
   return tRet;
-}
+
+}  /* evaluate() */
 
 
 int TPatternParquet::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)

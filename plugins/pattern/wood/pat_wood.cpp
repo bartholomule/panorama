@@ -18,12 +18,11 @@
 
 #include "pat_wood.h"
 
-
 DEFINE_PLUGIN ("PatternWood", FX_PATTERN_CLASS, TPatternWood);
 
-
-inline TColor TPatternWood::evaluate (const TVector& rktPOINT) const
+TColor TPatternWood::evaluate (const TVector& rktPOINT) const
 {
+
   TScalar  tX = rktPOINT.x();
   TScalar  tY = rktPOINT.y();
   TScalar  tZ = rktPOINT.z();
@@ -44,7 +43,8 @@ inline TColor TPatternWood::evaluate (const TVector& rktPOINT) const
   }
   
   return tRet;
-}
+
+}  /* evaluate() */
 
 
 int TPatternWood::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
