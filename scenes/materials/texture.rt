@@ -39,10 +39,9 @@ torus
   {
     color : extends PTexture
     {
-      offset    <0.5, 0.5>
-      mapping   "planar"
-      scaling   <0.1, 0.1, 0.1>
-      rotation  <90, 0, 0>
+      tiling       <3, 3>
+      mapping      "torus"
+      tube_center  30
     }
   }
 }
@@ -74,8 +73,10 @@ box
   {
     color : extends PTexture
     {
-      tiling    <4, 4>
       mirror    off
+      mapping   "planar"
+      scaling   <4, 4, 4>
+      rotation  <180, 45, 0>
     }    
   }
 }
@@ -94,7 +95,7 @@ cylinder
       tile      off
       color     CWhite      
       mapping   "cylindrical"      
-      rotation  <45, 0, 0>
+      rotation  <140, 0, 0>
     }    
   }
 }
