@@ -37,13 +37,7 @@ inline void TRaytracer::traceRay (TRay& rtRAY, TSurfaceData& rtDATA) const
   //
   // Search for the first intersection.
   //
-  if ( ptScene->world()->findFirstIntersection (rtRAY, rtDATA) )
-  {
-    //
-    // Data has been previously filled by intersection method.
-    //
-  }
-  else
+  if ( !ptScene->world()->findFirstIntersection (rtRAY, rtDATA) )
   {
     //
     // There was no intersection, so we can only store ray and a null pointer
@@ -219,7 +213,6 @@ inline void TRaytracer::superSampleUniform (TScalar I, TScalar J, SBuffers& rsBU
   TScalar        tStep  = 1.0 / bMaxAADepth;
   TScalar        BI     = I - 0.5;
   TScalar        BJ     = J - 0.5;
-  Word           wNeeds = ptScene->neededBuffers();
 
   J = BJ;
   for (Byte SJ = 0; ( SJ < bMaxAADepth ) ;SJ++)
@@ -235,12 +228,12 @@ inline void TRaytracer::superSampleUniform (TScalar I, TScalar J, SBuffers& rsBU
     J += tStep;
   }
 
-  if ( wNeeds & FX_ZBUFFER )
+  if ( wNeededBuffers & FX_ZBUFFER )
   {
     rsBUFFERS.ptZBuffer->setPixel (I, J, tSurfaceData.distance());
   }
 
-  if ( wNeeds & FX_NBUFFER )
+  if ( wNeededBuffers & FX_NBUFFER )
   {
     rsBUFFERS.ptNBuffer->setPixel (I, J, tSurfaceData.normal());
   }
@@ -257,16 +250,15 @@ inline void TRaytracer::singleSample (TScalar I, TScalar J, SBuffers& rsBUFFERS)
 
   TColor         tRadiance;
   TSurfaceData   tSurfaceData;
-  Word           wNeeds = ptScene->neededBuffers();
 
-  tRadiance += shadePrimaryRay (I, J, tSurfaceData);
+  tRadiance = shadePrimaryRay (I, J, tSurfaceData);
 
-  if ( wNeeds & FX_ZBUFFER )
+  if ( wNeededBuffers & FX_ZBUFFER )
   {
     rsBUFFERS.ptZBuffer->setPixel (I, J, tSurfaceData.distance());
   }
 
-  if ( wNeeds & FX_NBUFFER )
+  if ( wNeededBuffers & FX_NBUFFER )
   {
     rsBUFFERS.ptNBuffer->setPixel (I, J, tSurfaceData.normal());
   }
@@ -281,7 +273,6 @@ inline void TRaytracer::superSampleStochastic (TScalar I, TScalar J, SBuffers& r
 
   TColor         tRadiance;
   TSurfaceData   tSurfaceData;
-  Word           wNeeds = ptScene->neededBuffers();
 
   for (Byte S = 0; ( S < bMaxAADepth ) ;S++)
   {
@@ -290,12 +281,12 @@ inline void TRaytracer::superSampleStochastic (TScalar I, TScalar J, SBuffers& r
 
   tRadiance /= bMaxAADepth;
   
-  if ( wNeeds & FX_ZBUFFER )
+  if ( wNeededBuffers & FX_ZBUFFER )
   {
     rsBUFFERS.ptZBuffer->setPixel (I, J, tSurfaceData.distance());
   }
 
-  if ( wNeeds & FX_NBUFFER )
+  if ( wNeededBuffers & FX_NBUFFER )
   {
     rsBUFFERS.ptNBuffer->setPixel (I, J, tSurfaceData.normal());
   }
@@ -407,7 +398,6 @@ inline void TRaytracer::superSampleAdaptive (TScalar I, TScalar J, SBuffers& rsB
   TColor         tRadiance;
   TColor         atRadiance [4];
   TSurfaceData   tSurfaceData;
-  Word           wNeeds = ptScene->neededBuffers();
 
   atRadiance[0] = shadePrimaryRay (I - 0.5, J - 0.5, tSurfaceData);
   atRadiance[1] = shadePrimaryRay (I + 0.5, J - 0.5, tSurfaceData);
@@ -416,12 +406,12 @@ inline void TRaytracer::superSampleAdaptive (TScalar I, TScalar J, SBuffers& rsB
 
   tRadiance = recursiveSampleAdaptive (I, J, 0.5, atRadiance, 0);
                                        
-  if ( wNeeds & FX_ZBUFFER )
+  if ( wNeededBuffers & FX_ZBUFFER )
   {
     rsBUFFERS.ptZBuffer->setPixel (I, J, tSurfaceData.distance());
   }
 
-  if ( wNeeds & FX_NBUFFER )
+  if ( wNeededBuffers & FX_NBUFFER )
   {
     rsBUFFERS.ptNBuffer->setPixel (I, J, tSurfaceData.normal());
   }
@@ -437,16 +427,15 @@ inline void TRaytracer::sampleFalseColor (TScalar I, TScalar J, SBuffers& rsBUFF
   TColor         tRadiance;
   TColor         atRadiance [5];
   TSurfaceData   atSurfaceData [5];
-  Word           wNeeds = ptScene->neededBuffers();
 
   atRadiance[4] = shadePrimaryRay (I, J, atSurfaceData[4]);
 
-  if ( wNeeds & FX_ZBUFFER )
+  if ( wNeededBuffers & FX_ZBUFFER )
   {
     rsBUFFERS.ptZBuffer->setPixel (I, J, atSurfaceData[4].distance());
   }
 
-  if ( wNeeds & FX_NBUFFER )
+  if ( wNeededBuffers & FX_NBUFFER )
   {
     rsBUFFERS.ptNBuffer->setPixel (I, J, atSurfaceData[4].normal());
   }
@@ -642,12 +631,11 @@ void TRaytracer::setAmbientLight (const TColor& rktCOLOR)
 void TRaytracer::render (SBuffers& rsBUFFERS)
 {
 
-  size_t   zWidth  = rsBUFFERS.ptImage->width();
-  size_t   zHeight = rsBUFFERS.ptImage->height();
-
-  for (size_t J = 0; ( J < zHeight ) ;J++)
+  wNeededBuffers = ptScene->neededBuffers();
+  
+  for (size_t J = 0; ( J < rsBUFFERS.ptImage->height() ) ;J++)
   {
-    for (size_t I = 0; ( I < zWidth ) ;I++)
+    for (size_t I = 0; ( I < rsBUFFERS.ptImage->width() ) ;I++)
     {
       switch ( eSamplingMethod )
       {

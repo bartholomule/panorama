@@ -48,6 +48,7 @@ class TRaytracer : public TRenderer
     TScene*           ptScene;
     ESamplingMethod   eSamplingMethod;
     Byte              bMaxAADepth;
+    Word              wNeededBuffers;
 
     void traceRay (TRay& rtRAY, TSurfaceData& rtDATA) const;
     TColor getRadiance (TSurfaceData& rtDATA, Word wDEPTH) const;
