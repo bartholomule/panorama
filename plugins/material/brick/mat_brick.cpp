@@ -44,7 +44,7 @@ inline TScalar TMaterialBrick::smoothstep (TScalar a, TScalar b, TScalar x) cons
     return 1.0;
   }
 
-	// Normalize x 
+  // Normalize x 
   x = (x - a) / (b - a); 
 
   return x * x * (3 - 2 * x);
@@ -60,7 +60,7 @@ inline TScalar TMaterialBrick::smoothstepdiff (TScalar a, TScalar b, TScalar x) 
     return 0.0;
   }
   
-	// Normalize x 
+  // Normalize x 
   x = (x - a) / (b - a); 
 
   return 4.0 * x * (1.0 - x);
