@@ -187,9 +187,9 @@ TBezierSubsurface::TBezierSubsurface (TBezierSurface* ptOBJECT)
   gSubdivided            = false;
   bPatchSubdivisionDepth = 0;
   ptAncestor             = this;
-  tParametricPos         = TVector2(0.0, 0.0);
-  tParametricVecU        = TVector2(1.0, 0.0);
-  tParametricVecV        = TVector2(0.0, 1.0);
+  tParametricPos         = TVector2 (0.0, 0.0);
+  tParametricVecU        = TVector2 (1.0, 0.0);
+  tParametricVecV        = TVector2 (0.0, 1.0);
 
   for (Byte N = 0; ( N < 4 ) ;N++)
   {
@@ -197,13 +197,13 @@ TBezierSubsurface::TBezierSubsurface (TBezierSurface* ptOBJECT)
     bEdgeSubdivisionDepth[N] = 0;
   }
 
-  for (Byte N = 0; ( N < 4 ) ;N++)
+  for (Byte L = 0; ( L < 4 ) ;L++)
   {
-    for(Byte M = 0; ( M < 4 ) ;M++)
+    for(Byte K = 0; ( K < 4 ) ;K++)
     {
-      atControlPoints[N][M][0] = 0.0;
-      atControlPoints[N][M][1] = 0.0;
-      atControlPoints[N][M][2] = 0.0;
+      atControlPoints[L][K][0] = 0.0;
+      atControlPoints[L][K][1] = 0.0;
+      atControlPoints[L][K][2] = 0.0;
     }
   }
 
