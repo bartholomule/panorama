@@ -1,4 +1,6 @@
 
-DIRS = ./atm_const
+BUILD_TOP = ../..
 
-include @top_srcdir@/Makefile.targets
+DIRS = atm_const
+
+include ${BUILD_TOP}/Makefile.targets

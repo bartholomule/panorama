@@ -1,8 +1,10 @@
 
-DIRS = ./atmospheric \
-       ./lights \
-       ./materials \
-       ./misc \
-       ./objects
+BUILD_TOP = ..
 
-include @top_srcdir@/Makefile.targets
+DIRS = atmospheric \
+       lights \
+       materials \
+       misc \
+       objects
+
+include ${BUILD_TOP}/Makefile.targets

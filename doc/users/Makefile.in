@@ -1,9 +1,14 @@
 
-include @top_srcdir@/Makefile.vars
+BUILD_TOP = ../..
 
-FILES = ./README \
-	./classes.html \
-        ./language.html
+include ${BUILD_TOP}/Makefile.vars
+
+INSTALL = @INSTALL@
+SRC_DIR = @srcdir@
+
+FILES = README \
+	classes.html \
+        language.html
         
 all:
 
@@ -11,7 +16,7 @@ install:
 		@echo Installing user documentation files...
 		@set -e; \
 		for i in $(FILES); do \
-		  @INSTALL_DATA@ $$i ${DOC_DIR}/users; \
+		  @INSTALL_DATA@ ${SRC_DIR}/$$i ${DOC_DIR}/users; \
 		done
 
 clean:

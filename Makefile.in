@@ -1,13 +1,17 @@
 
-include @top_srcdir@/Makefile.vars
+BUILD_TOP = .
 
-DIRS = ./data \
-       ./doc \
-       ./hlapi \
-       ./llapi \
-       ./plugins \
-       ./programs \
-       ./scenes
+include ${BUILD_TOP}/Makefile.vars
+
+SRC_DIR = @srcdir@
+
+DIRS = data \
+       doc \
+       hlapi \
+       llapi \
+       plugins \
+       programs \
+       scenes
 
 all:
 		@set -e; \
@@ -32,9 +36,11 @@ distclean:
 		@for i in $(DIRS); do \
                   $(MAKE) -C $$i distclean; \
                 done
-		@rm -f ./Makefile ./Makefile.targets ./Makefile.vars
-		@rm -f ./config.cache ./config.log ./config.status
+		@rm -f ${SRC_DIR}/Makefile ${SRC_DIR}/Makefile.targets ${SRC_DIR}/Makefile.vars
+		@rm -f ${SRC_DIR}/config.cache ${SRC_DIR}/config.log ${SRC_DIR}/config.status
 
 installdirs:
 		@echo Creating directories...
-		@@top_srcdir@/mkinstalldirs ${TOP_DIR} ${BIN_DIR} ${LIB_DIR} ${DOC_DIR} ${CONFIG_DIR} ${INCLUDE_DIR} ${PLUGIN_DIR} ${TEXTURE_DIR}
+		@${BUILD_TOP}/mkinstalldirs ${TOP_DIR} ${BIN_DIR} ${LIB_DIR} ${DOC_DIR} \
+                			    ${CONFIG_DIR} ${INCLUDE_DIR} ${PLUGIN_DIR}  \
+                                            ${TEXTURE_DIR} ${SCENE_DIR}

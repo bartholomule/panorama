@@ -1,30 +1,36 @@
 
-include @top_srcdir@/Makefile.vars
-include @top_srcdir@/Makefile.rules
+BUILD_TOP = ..
 
-OBJ = ./aggregate.o \
-      ./atmosphere.o \
-      ./atmospheric_object.o \
-      ./base_class.o \
-      ./bounding_box.o \
-      ./bsdf.o \
-      ./camera.o \
-      ./debug.o \
-      ./file.o \
-      ./image.o \
-      ./image_io.o \
-      ./light.o \
-      ./material.o \
-      ./mesh.o \
-      ./object.o \
-      ./perlin_noise.o \
-      ./ray.o \
-      ./root_solver.o \
-      ./scene.o \
-      ./span_list.o \
-      ./surface_data.o \
-      ./transform_object.o \
-      ./worley_basis.o
+include ${BUILD_TOP}/Makefile.vars
+include ${BUILD_TOP}/Makefile.rules
+
+INSTALL = @INSTALL@
+
+VPATH = @srcdir@
+
+OBJ = aggregate.o \
+      atmosphere.o \
+      atmospheric_object.o \
+      base_class.o \
+      bounding_box.o \
+      bsdf.o \
+      camera.o \
+      debug.o \
+      file.o \
+      image.o \
+      image_io.o \
+      light.o \
+      material.o \
+      mesh.o \
+      object.o \
+      perlin_noise.o \
+      ray.o \
+      root_solver.o \
+      scene.o \
+      span_list.o \
+      surface_data.o \
+      transform_object.o \
+      worley_basis.o
 
 all:		${LLAPI_LIB} ${STATIC_LLAPI_LIB}
 

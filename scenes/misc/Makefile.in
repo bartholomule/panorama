@@ -1,18 +1,23 @@
 
-include @top_srcdir@/Makefile.vars
+BUILD_TOP = ../..
 
-FILES = ./cornell_box.rt \
-	./plastic_cornell_box.rt \
-        ./projector_cartoon.rt
+include ${BUILD_TOP}/Makefile.vars
+
+INSTALL = @INSTALL@
+SRC_DIR = @srcdir@
+
+FILES = cornell_box.rt \
+	plastic_cornell_box.rt \
+        projector_cartoon.rt
 
 all:
 
 install:
 		@echo "Installing scenes (misc)..."
-		@@top_srcdir@/mkinstalldirs ${TOPDIR}/scenes/misc
+		@${BUILD_TOP}/mkinstalldirs ${SCENE_DIR}/misc
 		@set -e; \
 		for i in $(FILES); do \
-		  @INSTALL_DATA@ $$i ${TOPDIR}/scenes/misc; \
+		  @INSTALL_DATA@ ${SRC_DIR}/$$i ${SCENE_DIR}/misc; \
 		done
 
 clean:

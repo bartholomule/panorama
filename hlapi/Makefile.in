@@ -1,22 +1,28 @@
 
-include @top_srcdir@/Makefile.vars
-include @top_srcdir@/Makefile.rules
+BUILD_TOP = ..
 
-OBJ = ./box.o \
-      ./circle.o \
-      ./cone.o \
-      ./class_manager.o \
-      ./cylinder.o \
-      ./image_manager.o \
-      ./mesh_object.o \
-      ./phong_triangle.o \
-      ./plane.o \
-      ./plugin_manager.o \
-      ./rectangle.o \
-      ./scene_manager.o \
-      ./sphere.o \
-      ./torus.o \
-      ./triangle.o
+include ${BUILD_TOP}/Makefile.vars
+include ${BUILD_TOP}/Makefile.rules
+
+INSTALL = @INSTALL@
+
+VPATH = @srcdir@
+
+OBJ = box.o \
+      circle.o \
+      cone.o \
+      class_manager.o \
+      cylinder.o \
+      image_manager.o \
+      mesh_object.o \
+      phong_triangle.o \
+      plane.o \
+      plugin_manager.o \
+      rectangle.o \
+      scene_manager.o \
+      sphere.o \
+      torus.o \
+      triangle.o
 
 all:		${HLAPI_LIB} ${STATIC_HLAPI_LIB}
 

@@ -1,5 +1,7 @@
 
-DIRS = ./lambertian \
-       ./phong
+BUILD_TOP = ../..
 
-include @top_srcdir@/Makefile.targets
+DIRS = lambertian \
+       phong
+
+include ${BUILD_TOP}/Makefile.targets

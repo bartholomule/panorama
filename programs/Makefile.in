@@ -1,4 +1,6 @@
 
-DIRS = ./render
+BUILD_TOP = ..
 
-include @top_srcdir@/Makefile.targets
+DIRS = render
+
+include ${BUILD_TOP}/Makefile.targets

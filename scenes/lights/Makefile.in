@@ -1,17 +1,22 @@
 
-include @top_srcdir@/Makefile.vars
+BUILD_TOP = ../..
 
-FILES = ./projector.rt \
-	./warn.rt
+include ${BUILD_TOP}/Makefile.vars
+
+INSTALL = @INSTALL@
+SRC_DIR = @srcdir@
+
+FILES = projector.rt \
+	warn.rt
 
 all:
 
 install:
 		@echo "Installing scenes (lights)..."
-		@@top_srcdir@/mkinstalldirs ${TOPDIR}/scenes/lights
+		@${BUILD_TOP}/mkinstalldirs ${SCENE_DIR}/lights
 		@set -e; \
 		for i in $(FILES); do \
-		  @INSTALL_DATA@ $$i ${TOPDIR}/scenes/lights; \
+		  @INSTALL_DATA@ ${SRC_DIR}/$$i ${SCENE_DIR}/lights; \
 		done
 
 clean:

@@ -574,7 +574,7 @@ object : class BezierSurface
 scene
 {
   camera	c
-//  light		l
+  light		l
   light		l2
   width		400
   height	400

@@ -1,4 +1,6 @@
 
-DIRS = ./bezier
+BUILD_TOP = ../..
 
-include @top_srcdir@/Makefile.targets
+DIRS = bezier
+
+include ${BUILD_TOP}/Makefile.targets

@@ -1,6 +1,8 @@
 
-DIRS = ./point_light \
-       ./projector \
-       ./warn_light
+BUILD_TOP = ../..
 
-include @top_srcdir@/Makefile.targets
+DIRS = point_light \
+       projector \
+       warn_light
+
+include ${BUILD_TOP}/Makefile.targets

@@ -4,8 +4,6 @@ AC_INIT(llapi/base_class.h)
 
 AC_PREFIX_DEFAULT(/opt/panorama)
 
-AC_CONFIG_AUX_DIR(`pwd`)
-
 dnl Checks for programs.
 AC_PROG_CXX
 AC_PROG_INSTALL
@@ -23,9 +21,6 @@ dnl Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
 AC_C_BIGENDIAN
 AC_TYPE_SIZE_T
-
-SRC_DIR=`pwd`
-AC_SUBST(SRC_DIR)
 
 dnl Checks for static-link option.
 AC_MSG_CHECKING(whether to link statically or not)

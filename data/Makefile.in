@@ -1,5 +1,7 @@
 
-DIRS = ./include \
-       ./texture
+BUILD_TOP = ..
 
-include @top_srcdir@/Makefile.targets
+DIRS = include \
+       texture
+
+include ${BUILD_TOP}/Makefile.targets

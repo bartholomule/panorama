@@ -1,7 +1,13 @@
 
-include @top_srcdir@/Makefile.vars
+BUILD_TOP = ../..
 
-FILES = ./f16.tga ./supernova.tga
+include ${BUILD_TOP}/Makefile.vars
+
+INSTALL = @INSTALL@
+SRC_DIR = @srcdir@
+
+FILES = f16.tga \
+	supernova.tga
         
 all:
 
@@ -9,7 +15,7 @@ install:
 		@echo Installing texture files...
 		@set -e; \
 		for i in $(FILES); do \
-		  @INSTALL_DATA@ $$i ${TEXTURE_DIR}; \
+		  @INSTALL_DATA@ ${SRC_DIR}/$$i ${TEXTURE_DIR}; \
 		done
 
 clean:

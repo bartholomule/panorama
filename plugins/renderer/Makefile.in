@@ -1,4 +1,6 @@
 
-DIRS = ./raytracer
+BUILD_TOP = ../..
 
-include @top_srcdir@/Makefile.targets
+DIRS = raytracer
+
+include ${BUILD_TOP}/Makefile.targets

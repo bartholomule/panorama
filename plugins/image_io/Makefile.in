@@ -1,4 +1,6 @@
 
-DIRS = ./tga
+BUILD_TOP = ../..
 
-include @top_srcdir@/Makefile.targets
+DIRS = tga
+
+include ${BUILD_TOP}/Makefile.targets

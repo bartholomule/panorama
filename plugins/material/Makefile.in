@@ -1,7 +1,9 @@
 
-DIRS = ./checker \
-       ./leopard \
-       ./noise \
-       ./worley
+BUILD_TOP = ../..
 
-include @top_srcdir@/Makefile.targets
+DIRS = checker \
+       leopard \
+       noise \
+       worley
+
+include ${BUILD_TOP}/Makefile.targets

@@ -1,4 +1,6 @@
 
-DIRS = ./rt
+BUILD_TOP = ../..
 
-include @top_srcdir@/Makefile.targets
+DIRS = rt
+
+include ${BUILD_TOP}/Makefile.targets

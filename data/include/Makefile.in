@@ -1,7 +1,13 @@
 
-include @top_srcdir@/Makefile.vars
+BUILD_TOP = ../..
 
-FILES = ./colors.inc ./materials.inc
+include ${BUILD_TOP}/Makefile.vars
+
+INSTALL = @INSTALL@
+SRC_DIR = @srcdir@
+
+FILES = colors.inc \
+        materials.inc
         
 all:
 
@@ -9,7 +15,7 @@ install:
 		@echo Installing include files...
 		@set -e; \
 		for i in $(FILES); do \
-		  @INSTALL_DATA@ $$i ${INCLUDE_DIR}; \
+		  @INSTALL_DATA@ ${SRC_DIR}/$$i ${INCLUDE_DIR}; \
 		done
 
 clean:

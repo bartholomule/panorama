@@ -7,8 +7,6 @@
 # directory structure
 #
 
-SRC_DIR     = @SRC_DIR@
-
 TOPDIR      = @prefix@
 BIN_DIR     = ${TOPDIR}/bin/
 INCLUDE_DIR = ${TOPDIR}/include/
@@ -17,29 +15,30 @@ DOC_DIR     = ${TOPDIR}/doc/
 CONFIG_DIR  = ${TOPDIR}/etc/
 PLUGIN_DIR  = ${LIB_DIR}/plugins/
 TEXTURE_DIR = ${LIB_DIR}/texture/
+SCENE_DIR   = ${TOPDIR}/scenes/
 
 #
 # Don't change anything below this line.
 #
 
-LLAPI_LIB = ${SRC_DIR}/llapi/libllapi.so
-HLAPI_LIB = ${SRC_DIR}/hlapi/libhlapi.so
+LLAPI_LIB = ${BUILD_TOP}/llapi/libllapi.so
+HLAPI_LIB = ${BUILD_TOP}/hlapi/libhlapi.so
 
-STATIC_LLAPI_LIB = ${SRC_DIR}/llapi/libllapi.a
-STATIC_HLAPI_LIB = ${SRC_DIR}/hlapi/libhlapi.a
+STATIC_LLAPI_LIB = ${BUILD_TOP}/llapi/libllapi.a
+STATIC_HLAPI_LIB = ${BUILD_TOP}/hlapi/libhlapi.a
 
-DEFS     = @DEFS@ \
-           -DTOPDIR='"${TOPDIR}"' \
-           -DBIN_DIR='"${BIN_DIR}"' \
-           -DINCLUDE_DIR='"${INCLUDE_DIR}"' \
-           -DLIB_DIR='"${LIB_DIR}"' \
-           -DDOC_DIR='"${DOC_DIR}"' \
-           -DPLUGIN_DIR='"${PLUGIN_DIR}"' \
-           -DTEXTURE_DIR='"${TEXTURE_DIR}"' \
-           -DSTATIC_LINK=@STATIC_LINK@
-INCLUDE  = -I${SRC_DIR}
+INCLUDE = -I${BUILD_TOP}
+DEFS    = @DEFS@ \
+          -DTOPDIR='"${TOPDIR}"' \
+          -DBIN_DIR='"${BIN_DIR}"' \
+          -DINCLUDE_DIR='"${INCLUDE_DIR}"' \
+          -DLIB_DIR='"${LIB_DIR}"' \
+          -DDOC_DIR='"${DOC_DIR}"' \
+          -DPLUGIN_DIR='"${PLUGIN_DIR}"' \
+          -DTEXTURE_DIR='"${TEXTURE_DIR}"' \
+          -DSCENE_DIR='"${SCENE_DIR}"' \
+          -DSTATIC_LINK=@STATIC_LINK@
 
-INSTALL  = @INSTALL@
 CXX      = @CXX@
 LEX      = @LEX@
 YACC     = @YACC@

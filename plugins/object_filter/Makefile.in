@@ -1,4 +1,6 @@
 
-DIRS = ./cartoon
+BUILD_TOP = ../..
 
-include @top_srcdir@/Makefile.targets
+DIRS = cartoon
+
+include ${BUILD_TOP}/Makefile.targets

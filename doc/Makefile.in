@@ -1,18 +1,23 @@
 
-include @top_srcdir@/Makefile.vars
+BUILD_TOP = ..
 
-DIRS  = ./developers \
-        ./users
+include ${BUILD_TOP}/Makefile.vars
 
-FILES = ./AUTHORS \
-	./BUGS \
-        ./CREDITS \
-        ./FAQ \
-        ./INSTALL \
-        ./LICENSE \
-        ./NEWS \
-        ./README \
-        ./pluginrc
+INSTALL = @INSTALL@
+SRC_DIR = @srcdir@
+
+DIRS  = developers \
+        users
+
+FILES = AUTHORS \
+	BUGS \
+        CREDITS \
+        FAQ \
+        INSTALL \
+        LICENSE \
+        NEWS \
+        README \
+        pluginrc
 
 all:
 		@set -e; \
@@ -23,10 +28,10 @@ all:
 install:        all
 		@set -e; \
 		for i in $(FILES); do \
-		  @INSTALL_DATA@ $$i ${DOC_DIR}; \
+		  @INSTALL_DATA@ ${SRC_DIR}/$$i ${DOC_DIR}; \
 		done
-		@@INSTALL_DATA@ pluginrc ${CONFIG_DIR}
-		@@top_srcdir@/mkinstalldirs ${DOC_DIR}/developers ${DOC_DIR}/users
+		@@INSTALL_DATA@ ${SRC_DIR}/pluginrc ${CONFIG_DIR}
+		@${BUILD_TOP}/mkinstalldirs ${DOC_DIR}/developers ${DOC_DIR}/users
 		@set -e; \
 		for i in $(DIRS); do \
                   $(MAKE) -C $$i install; \

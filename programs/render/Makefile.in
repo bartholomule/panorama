@@ -1,14 +1,21 @@
 
-include @top_srcdir@/Makefile.vars
-include @top_srcdir@/Makefile.rules
+BUILD_TOP = ../..
+
+include ${BUILD_TOP}/Makefile.vars
+include ${BUILD_TOP}/Makefile.rules
+
+INSTALL = @INSTALL@
+SRC_DIR = @srcdir@
+
+VPATH = ${SRC_DIR}
 
 ifeq (1,@STATIC_LINK@)
 LDFLAGS += -ldl
 else
-LDFLAGS += -L@top_srcdir@/llapi -L@top_srcdir@/hlapi -lllapi -lhlapi -ldl
+LDFLAGS += -L${BUILD_TOP}/llapi -L${BUILD_TOP}/hlapi -lllapi -lhlapi -ldl
 endif
 
-EXE = @srcdir@/render
+EXE = render
 OBJ = render.o
 
 all:		${EXE}

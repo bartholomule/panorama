@@ -1,6 +1,8 @@
 
-DIRS = ./cartoon \
-       ./convert_to_grey \
-       ./fog
+BUILD_TOP = ../..
 
-include @top_srcdir@/Makefile.targets
+DIRS = cartoon \
+       convert_to_grey \
+       fog
+
+include ${BUILD_TOP}/Makefile.targets

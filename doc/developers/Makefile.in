@@ -1,11 +1,16 @@
 
-include @top_srcdir@/Makefile.vars
+BUILD_TOP = ../..
 
-FILES = ./C++_Coding_Style \
-        ./CHANGES_0.9.1-0.10.0 \
-	./General \
-        ./PROJECTS \
-        ./README
+include ${BUILD_TOP}/Makefile.vars
+
+INSTALL = @INSTALL@
+SRC_DIR = @srcdir@
+
+FILES = C++_Coding_Style \
+        CHANGES_0.9.1-0.10.0 \
+	General \
+        PROJECTS \
+        README
         
 all:
 
@@ -13,7 +18,7 @@ install:
 		@echo Installing developers documentation files...
 		@set -e; \
 		for i in $(FILES); do \
-		  @INSTALL_DATA@ $$i ${DOC_DIR}/developers; \
+		  @INSTALL_DATA@ ${SRC_DIR}/$$i ${DOC_DIR}/developers; \
 		done
 
 clean:

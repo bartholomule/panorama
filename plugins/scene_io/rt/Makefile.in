@@ -1,7 +1,11 @@
 
-include @top_srcdir@/Makefile.vars
-include @top_srcdir@/Makefile.rules
+BUILD_TOP = ../../..
+
+include ${BUILD_TOP}/Makefile.vars
+include ${BUILD_TOP}/Makefile.rules
 include @srcdir@/Makefile.data
+
+VPATH = @srcdir@
 
 PLUGIN = ${PLUGIN_NAME}.plg
 
