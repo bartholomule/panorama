@@ -77,15 +77,13 @@ class TRay
     
     void reflect (const TVector& rktNORMAL, const TVector& rktORIGINAL)
     {
-      TVector   tReflection = rktNORMAL * (2.0 * dotProduct (rktNORMAL, tDirection));
+      TVector  tOldDirection = tDirection;
 
-      if ( dotProduct (rktORIGINAL, tReflection) <= FX_EPSILON )
+      tDirection -= rktNORMAL * (2.0 * dotProduct (rktNORMAL, tDirection));
+
+      if ( dotProduct (rktORIGINAL, tDirection) <= FX_EPSILON )
       {
-        tDirection -= rktORIGINAL * (2.0 * dotProduct (rktORIGINAL, tDirection));
-      }
-      else
-      {
-        tDirection -= tReflection;
+	tDirection = tOldDirection - rktORIGINAL * (2.0 * dotProduct (tOldDirection, rktORIGINAL));
       }
     }
     
