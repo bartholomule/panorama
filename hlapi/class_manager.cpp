@@ -61,6 +61,7 @@ TBaseClass* TClassManager::_newObject (const string& rktCLASS, const TBaseClass*
   STATIC_CLASS (TIF_Cartoon, "IF_Cartoon");
   STATIC_CLASS (TIF_ConvertToGrey, "IF_ConvertToGrey");
   STATIC_CLASS (TIF_Fog, "IF_Fog");
+  STATIC_CLASS (TIF_Text, "IF_Text");
   STATIC_CLASS (TPointLight, "PointLight");
   STATIC_CLASS (TProjector, "Projector");
   STATIC_CLASS (TWarnLight, "WarnLight");
