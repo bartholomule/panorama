@@ -81,7 +81,7 @@ void TParallelCamera::getAttributeList (TAttributeList& rtLIST) const
 
   TCamera::getAttributeList (rtLIST);
 
-  rtLIST ["width"] = FX_REAL;
+  rtLIST ["width"]  = FX_REAL;
   rtLIST ["height"] = FX_REAL;
 
 }  /* getAttributeList() */
