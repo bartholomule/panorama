@@ -52,6 +52,8 @@ class TRenderer : public TProcedural
     virtual TColor mediaRadiance (const TSurfaceData& rktDATA, const TColor& rktRAD) const = 0;
     virtual TColor directLight (const TSurfaceData& rktDATA) const = 0;
     virtual TColor directLight (const TSurfaceData& rktDATA, const TLight* pktLIGHT) const = 0;
+    virtual TColor directLight (const TSurfaceData& rktDATA, const TObject* pktALIGHT) const = 0;  
+
     virtual TColor ambientLight (const TSurfaceData& rktDATA, Word wDEPTH) const = 0;
     virtual TColor specularReflectedLight (const TSurfaceData& rktDATA, Word wDEPTH, size_t* pzOBJ_CODE) const = 0;
     virtual TColor specularTransmittedLight (const TSurfaceData& rktDATA, Word wDEPTH, size_t* pzOBJ_CODE) const = 0;
