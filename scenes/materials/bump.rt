@@ -34,7 +34,7 @@ sphere
         mirror    on
       }
 
-      bump        -6
+      bump        -7
       grad_disp   <2, 2>
       samples     <6, 6>
     }
