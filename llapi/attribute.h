@@ -181,8 +181,8 @@ struct TAttribOther : public TAttribute
 	Destroy ( tValue );
       }
       
-      Clone = tValue.Clone;
-      Destroy = tValue.Destroy;
+      Clone = tao.Clone;
+      Destroy = tao.Destroy;
 
       if ( ( tao.tValue != NULL ) && ( Clone != NULL ) )
       {

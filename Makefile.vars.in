@@ -44,11 +44,7 @@ ARCH_PROG_SETLIBPATH  = @ARCH_PROG_SETLIBPATH@
 ifeq (@DEBUG_INFO@,1)
 OPT = -ggdb
 else
-# If you want more speed, and are not going to be changing any of the header 
-# files, remove the -fno-default-inline flag here.  It is mostly intended to 
-# avoid inlining of virtual functions in base classes, where the body has been 
-# placed inside the class declaration.
-OPT = -O6 -fexpensive-optimizations -fno-math-errno -fno-default-inline 
+OPT = -O6 -fexpensive-optimizations -fno-math-errno
 endif
 
 ifeq (@STATIC_LINK@,1)
