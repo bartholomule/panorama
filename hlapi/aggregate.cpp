@@ -123,6 +123,19 @@ void TAggregate::setObjectCode (size_t zCODE)
 }  /* setObjectCode() */
 
 
+void TAggregate::addFilter (const TObjectFilter* pktFILTER)
+{
+
+  for (vector<TObject*>::iterator tIter = tObjectList.begin(); ( tIter != tObjectList.end() ) ;tIter++)
+  {
+    (*tIter)->addFilter (pktFILTER);
+  }
+
+  tObjectFilterList.push_back (pktFILTER);
+  
+}  /* addFilter() */
+
+
 void TAggregate::printDebug (void) const
 {
 

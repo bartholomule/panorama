@@ -63,6 +63,7 @@ class TAggregate : public TObject
 
     void setMaterial (TMaterial* ptMATERIAL);
     void setObjectCode (size_t zCODE);
+    void addFilter (const TObjectFilter* pktFILTER);
 
     void initialize (void);
 
