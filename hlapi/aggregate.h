@@ -82,7 +82,11 @@ class TAggregate : public TObject
         //       allocated with new?).  If someone knows the proper
         //       deallocation process, please fix this. (KH 16May2000)
         //
-        // delete *iter; // SAFE?!?!?
+        // Angel has determined this to be safe (if people wrote their code
+        // correctly), so I am going to make the change and avoid a memory
+        // leak. (KH 04Aug2000)
+        //
+        delete *iter; 
       }
 
       //
