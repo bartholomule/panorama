@@ -61,10 +61,11 @@
      LESS = 279,
      LESS_EQ = 280,
      PARAM = 281,
-     DEFINED = 282,
-     THIS = 283,
-     T_IF = 284,
-     T_ELSE = 285
+     T_DEFINED = 282,
+     T_REDEFINE = 283,
+     THIS = 284,
+     T_IF = 285,
+     T_ELSE = 286
    };
 #endif
 #define T_BOOL 258
@@ -91,10 +92,11 @@
 #define LESS 279
 #define LESS_EQ 280
 #define PARAM 281
-#define DEFINED 282
-#define THIS 283
-#define T_IF 284
-#define T_ELSE 285
+#define T_DEFINED 282
+#define T_REDEFINE 283
+#define THIS 284
+#define T_IF 285
+#define T_ELSE 286
 
 
 
@@ -103,8 +105,6 @@
 #line 70 "parser.y"
 
 
-  //  #define REDUCTION_REPORTING
-  
 #include <map>
 #include <string>
 #include <iostream>
@@ -264,7 +264,7 @@ namespace yy
     static const short pact_[];
     static const short pact_ninf_;
     static const unsigned char defact_[];
-    static const short pgoto_[];
+    static const signed char pgoto_[];
     static const short defgoto_[];
     static const short table_[];
     static const short table_ninf_;

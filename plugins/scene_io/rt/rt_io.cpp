@@ -59,8 +59,9 @@ magic_pointer<TScene> TSceneRT::load (const string& rktNAME)
     return (magic_pointer<TScene>)NULL;
   }
 
-  //  rt_debug = 0;
-
+  // [FIXME!] Allow selection of enabled/disabled to be set externally.
+  GOM.DisableStream("debug");
+  
   // [CHECKME!] Where do these really belong?
   // Set some values that need to be set somewhere... 
   condition_ok = true;
@@ -108,7 +109,7 @@ void rt_enter_condition(bool condition)
     condition_ok = false;
   }
   
-  GOM.debug() << "rt_enter_condition(" << condition << ") level " << condition_vector.size() + 1 << " exec_ok=" << condition_ok << std::endl;
+  GOM.debug(4) << "rt_enter_condition(" << condition << ") level " << condition_vector.size() + 1 << " exec_ok=" << condition_ok << std::endl;
   
   condition_vector.push_back(condition);
 }
@@ -117,6 +118,7 @@ void rt_leave_condition()
 {
   if( !condition_vector.empty() )
   {
+    bool current_condition = *condition_vector.rbegin();
     // Remove the last element.
     condition_vector.pop_back();
     
@@ -130,13 +132,15 @@ void rt_leave_condition()
       cond = cond && *i;
     }
     condition_ok = cond;
+
+    GOM.debug() << "rt_leave_condition(" << current_condition << ") level " << condition_vector.size() << " Recalculated condition=" << condition_ok << std::endl;
+    
   }
   else
   {
     GOM.error() << "rt_leave_condition: Left more than entered!" << std::endl;
     condition_ok = true;
   }
-  GOM.debug() << "rt_leave_condition(" << *condition_vector.rbegin() << ") level " << condition_vector.size() << " Recalculated condition=" << condition_ok << std::endl;
 }
 
 bool rt_exec_ok()

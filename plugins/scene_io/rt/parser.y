@@ -1,6 +1,6 @@
 /*
 *  Copyright (C) 1998, 1999 Angel Jimenez Jimenez and Carlos Jimenez Moreno
-*  Copyright (C) 2001, 2002 Kevin Harris
+*  Copyright (C) 2001 - 2003 Kevin Harris
 *
 *  This program is free software; you can redistribute it and/or modify
 *  it under the terms of the GNU General Public License as published by
@@ -69,8 +69,6 @@
 %name-prefix="rt_" 
 %{
 
-  //  #define REDUCTION_REPORTING
-  
 #include <map>
 #include <string>
 #include <iostream>
@@ -158,12 +156,14 @@ static void FIXME(const string& s) { GOM.error() << "FIXME: " << s << endl; }
 %token <gValue> LESS
 %token <gValue> LESS_EQ
 %token <sIdent> PARAM
-%token <sIdent> DEFINED
+%token <sIdent> T_DEFINED
+%token <sIdent> T_REDEFINE
 %token <sIdent> THIS
 
 %token T_IF
 %token T_ELSE
 %type <gValue> if_head
+%type <gValue> param_if_head
 
 
 /* Tokens to allow user requested information about types/attribute lists.
@@ -206,42 +206,44 @@ everything		: /* Nothing */
                           {
 			    report_reduction("everything <-- everything definition");
 			  }
-			| everything expression ';'
-                          {
-			    report_reduction("everything <-- everything expression ';'");
-			    magic_pointer<TAttribObject> ptobj = get_object($2);
-			    if( !!ptobj )
-			    {
-			      magic_pointer<TObject> obj = ptobj->tValue;
-			      if( !!obj )
-			      {
-				if( !WORLD->containsObject( obj ) )
-				{
-				  //				  GOM.debug() << "Adding instance of " << obj->className() << " to world." << endl;
-				  WORLD->add ( obj );
-				}
-			      }
-			    }
-			    else
-			    {
-			      magic_pointer<TProcedural> proc = get_procedural_var($2, false);
-			      if( !!proc )
-			      {
-				FIXME("Potentially add instance (" + $2->toString() + " to the global scene");
-			      }
-			    }			      
-			  }
 			;
 
 statement               : definition
                           {
 			    report_reduction("statement <-- definition");
 			  }
-                        | simple_if_statement
+                        | expression ';'
+			  {
+			    report_reduction("statement <-- expression ';'");
+			    if( rt_exec_ok() )
+			    {
+			      magic_pointer<TAttribObject> ptobj = get_object($1);
+			      if( !!ptobj )
+			      {
+				magic_pointer<TObject> obj = ptobj->tValue;
+				if( !!obj )
+				{
+				  if( !WORLD->containsObject( obj ) )
+				  {
+				    GOM.debug() << "Adding instance of " << obj->className() << " to world." << endl;
+				    WORLD->add ( obj );
+				  }
+				}
+			      }
+			      else
+			      {
+				magic_pointer<TProcedural> proc = get_procedural_var($1, false);
+				if( !!proc )
+				{
+				  FIXME("Potentially add procedural variable instance (" + $1->toString() + " to the global scene");
+				}
+			      }			      
+			    } // exec ok.
+			  }
+			  | simple_if_statement
                           {
 			    report_reduction("statement <-- simple_if_statement");
 			  }
-/* FIXME! Add in expressions here (modify the ones in 'everything' above!!!!! */
                         ;
 
 statement_list          : statement
@@ -254,19 +256,35 @@ statement_list          : statement
 			 }			
                         ;
 
+// See also: the parameter version (param_if_head).
 if_head                 : T_IF '(' expression ')'
                           {
 			    report_reduction("if_head (start) <-- if ( expression )");
-			    
-			    bool b = check_get_bool($3);
-			    rt_enter_condition(b);
+
+			    if( rt_exec_ok() )
+			    {			    
+			      bool b = check_get_bool($3);
+			      rt_enter_condition(b);
+			    }
+			    else
+			    {
+			      rt_enter_condition(false);
+			    }
 			  }
                           simple_if_body
                           {
 			    report_reduction("if_head (cont) <-- if ( expression ) simple_if_body");
 			    rt_leave_condition();
-			    $$ = check_get_bool($3);
+			    if( rt_exec_ok() )
+			    {			    
+			      $$ = check_get_bool($3);
+			    }
+			    else
+			    {
+			      $$ = true; // Forces any else clause to be false.
+			    }
                           }
+                          ;
 
 simple_if_statement     : if_head 
                           {
@@ -289,7 +307,6 @@ simple_if_body          : definition
                          {
 			   report_reduction("simple_if_body <-- definition");
 			 }  
-                      /* FIXME! Add in expressions here!!! */
                         | '{' '}'
                          {
 			   report_reduction("simple_if_body <-- { }");
@@ -297,7 +314,12 @@ simple_if_body          : definition
                         | '{' statement_list '}'
                          {
 			   report_reduction("simple_if_body <-- { statement_list }");
-			 }  			
+			 }
+                        | '{' error '}'
+                         {
+			   report_reduction("simple_if_body <-- { error }");
+			   rt_error("expected statement list or nothing");
+                         }
                         ;
 
 
@@ -321,18 +343,44 @@ definition		: T_DEFINE name expression ';'
 				      TSceneRT::_tInputFileName.c_str(),
 				      int(TSceneRT::_dwLineNumber));
 			      DATAMAP[$2] = pair<string,attrib_type>(string(buffer),$3);
-			    }
+			    } // exec ok.
+			  }
+                          | T_REDEFINE name expression ';'
+                          {
+			    report_reduction("definition <-- REDEFINE name expression ;");
+			    report_reduction(string("definition <-- DEFINE ") +
+					     $2 + " " + $3->toString());
+
+			    if( rt_exec_ok() )
+			    {
+			      // Uncomment the below (and modify) to display
+			      // warnings (invert the comparision). 
+			      /*
+			      if( DATAMAP.find($2) != DATAMAP.end() )
+			      {
+				rt_warning(string($2) + " redefined here");
+				rt_warning("previously defined here: " + DATAMAP[$2].first);
+			      }
+			      */
+			      GOM.debug() << "Defining \"" << string($2) << "\"" << endl;
+			      
+			      char buffer[1024];
+			      sprintf(buffer,"%s line %d",
+				      TSceneRT::_tInputFileName.c_str(),
+				      int(TSceneRT::_dwLineNumber));
+			      DATAMAP[$2] = pair<string,attrib_type>(string(buffer),$3);
+			    } // exec ok.
 			  }
                         | T_DEFINE reserved_words name instance ';'
                           {
 			    report_reduction("definition <-- DEFINE reserved_words name instance");
-			    cerr << "Warning: definition on line "
-			         << TSceneRT::_dwLineNumber
-				 << " should not have \"" << $2 << "\" anymore"
-				 << endl;
-
 			    if( rt_exec_ok() )
 			    {
+			      cerr << "Warning: definition on line "
+				   << TSceneRT::_dwLineNumber
+				   << " should not have \"" << $2 << "\" anymore"
+				   << endl;
+			      
 			      if( DATAMAP.find($3) != DATAMAP.end() )
 			      {
 				rt_warning(string($3) + " redefined here");
@@ -343,7 +391,7 @@ definition		: T_DEFINE name expression ';'
 				      TSceneRT::_tInputFileName.c_str(),
 				      int(TSceneRT::_dwLineNumber));
 			      DATAMAP[$2] = pair<string,attrib_type>(string(buffer),$4);
-			    }
+			    } // exec ok.
 			  }
 			;
 
@@ -385,6 +433,15 @@ expression:
 			    report_reduction("expression <-- prec_8");
 			    report_reduction("expression <-- " + $1->toString());
                           }
+                       | error
+                         {
+			   report_reduction("expression <-- error");
+			   if( rt_exec_ok() )
+			   {			   
+			     rt_error("expected expression");
+			   }
+			   $$ = (user_arg_type)new TAttribute();
+                         }
 ;
 
 prec_8:
@@ -398,8 +455,15 @@ prec_8:
                         {
 			  report_reduction("prec_8 <-- prec_8 OR prec_7");
 			  report_reduction("prec_8 <-- " + $1->toString() + " OR " + $3->toString());
-			  $$ = (user_arg_type)new TAttribBool(check_get_bool($1) ||
-					       check_get_bool($3));
+			  if( rt_exec_ok() )
+			  {			  
+			    $$ = (user_arg_type)new TAttribBool(check_get_bool($1) ||
+								check_get_bool($3));
+			  }
+			  else
+			  {
+			    $$ = (user_arg_type)new TAttribBool(false);
+			  }
 			}
 ;
 
@@ -414,8 +478,15 @@ prec_7:
                         {
 			  report_reduction("prec_7 <-- prec_7 AND prec_6");
 			  report_reduction("prec_7 <-- " + $1->toString() + " AND " + $3->toString());
-			  $$ = (user_arg_type)new TAttribBool(check_get_bool($1) &&
-					       check_get_bool($3));
+			  if( rt_exec_ok() )
+			  {			  			  
+			    $$ = (user_arg_type)new TAttribBool(check_get_bool($1) &&
+								check_get_bool($3));
+			  }
+			  else
+			  {
+			    $$ = (user_arg_type)new TAttribBool(false);
+			  }
 			}
 ;
 
@@ -430,82 +501,96 @@ prec_6:
                         | prec_6 EQUAL prec_5
                         {
 			  report_reduction("prec_6 <-- prec_6 EQUAL prec_5");
-			  if( !types_match($1, $3 ) )
-			  {
-			    rt_error( ("Cannot convert " + EAttribType_to_str($3->eType) +
-				       " to " + EAttribType_to_str($1->eType)) );
+			  if( rt_exec_ok() )
+			  {			  			  
+			    if( !types_match($1, $3 ) )
+			    {
+			      rt_error( ("Cannot convert " + EAttribType_to_str($3->eType) +
+					 " to " + EAttribType_to_str($1->eType)) );
+			    }
+			    if( $1->eType == FX_REAL )
+			    {
+			      $$ = (user_arg_type)new TAttribBool(check_get_real($1) == check_get_real($3));
+			    }
+			    else if( $1->eType == FX_BOOL )
+			    {
+			      $$ = (user_arg_type)new TAttribBool(check_get_bool($1) ==
+								  check_get_bool($3));
+			    }
+			    else if( $1->eType == FX_VECTOR )
+			    {
+			      $$ = (user_arg_type)new TAttribBool(get_vector($1)->tValue ==
+								  get_vector($3)->tValue);
+			    }
+			    else if( $1->eType == FX_VECTOR2 )
+			    {
+			      $$ = (user_arg_type)new TAttribBool(get_vector2($1)->tValue ==
+								  get_vector2($3)->tValue);
+			    }
+			    else if( $1->eType == FX_STRING || $1->eType == FX_STRING_LIST )
+			    {
+			      $$ = (user_arg_type)new TAttribBool(check_get_string($1) ==
+								  check_get_string($3));	  
+			    }
+			    else if( $1->eType == FX_INTEGER )
+			    {
+			      $$ = (user_arg_type)new TAttribBool(get_int($1)->tValue ==
+								  get_int($3)->tValue);	  
+			    }			  
+			    else
+			    {
+			      rt_error("I can't compare a " + EAttribType_to_str($1->eType) + " and a " + EAttribType_to_str($3->eType));
+			    }
 			  }
-			  if( $1->eType == FX_REAL )
-			  {
-			    $$ = (user_arg_type)new TAttribBool(check_get_real($1) == check_get_real($3));
-			  }
-			  else if( $1->eType == FX_BOOL )
-			  {
-			    $$ = (user_arg_type)new TAttribBool(check_get_bool($1) ==
-						 check_get_bool($3));
-			  }
-			  else if( $1->eType == FX_VECTOR )
-			  {
-			    $$ = (user_arg_type)new TAttribBool(get_vector($1)->tValue ==
-						 get_vector($3)->tValue);
-			  }
-			  else if( $1->eType == FX_VECTOR2 )
-			  {
-			    $$ = (user_arg_type)new TAttribBool(get_vector2($1)->tValue ==
-						 get_vector2($3)->tValue);
-			  }
-			  else if( $1->eType == FX_STRING || $1->eType == FX_STRING_LIST )
-			  {
-			    $$ = (user_arg_type)new TAttribBool(check_get_string($1) ==
-						 check_get_string($3));	  
-			  }
-			  else if( $1->eType == FX_INTEGER )
-			  {
-			    $$ = (user_arg_type)new TAttribBool(get_int($1)->tValue ==
-						 get_int($3)->tValue);	  
-			  }			  
 			  else
 			  {
-			    rt_error("I can't compare a " + EAttribType_to_str($3->eType));
+			    $$ = (user_arg_type)new TAttribBool(false);
 			  }
 			}
                         | prec_6 NOT_EQ prec_5
                         {
 			  report_reduction("prec_6 <-- prec_6 NOT_EQ prec_5");
-			  if( !types_match($1, $3 ) )
-			  {
-			    rt_error( ("Cannot convert " + EAttribType_to_str($3->eType) +
-				       " to " + EAttribType_to_str($1->eType)) );
-			  }
-			  if( $1->eType == FX_REAL )
-			  {
-			    $$ = (user_arg_type)new TAttribBool(check_get_real($1) !=
-						 check_get_real($3));
-			  }
-			  else if( $1->eType == FX_BOOL )
-			  {
-			    $$ = (user_arg_type)new TAttribBool(check_get_bool($1) !=
-						 check_get_bool($3));
-			  }
-			  else if( $1->eType == FX_VECTOR )
-			  {
-			    $$ = (user_arg_type)new TAttribBool(get_vector($1) != get_vector($3));
-			  }
-			  else if( $1->eType == FX_VECTOR2 )
-			  {
-			    $$ = (user_arg_type)new TAttribBool(get_vector2($1) != get_vector2($3));
-			  }
-			  else if( $1->eType == FX_STRING || $1->eType == FX_STRING_LIST )
-			  {
-			    $$ = (user_arg_type)new TAttribBool(check_get_string($1) != check_get_string($3));	  
-			  }
-			  else if( $1->eType == FX_INTEGER )
-			  {
-			    $$ = (user_arg_type)new TAttribBool(get_int($1)->tValue == get_int($3)->tValue);	  
+			  if( rt_exec_ok() )
+			  {			  			  
+			    if( !types_match($1, $3 ) )
+			    {
+			      rt_error( ("Cannot convert " + EAttribType_to_str($3->eType) +
+					 " to " + EAttribType_to_str($1->eType)) );
+			    }
+			    if( $1->eType == FX_REAL )
+			    {
+			      $$ = (user_arg_type)new TAttribBool(check_get_real($1) !=
+								  check_get_real($3));
+			    }
+			    else if( $1->eType == FX_BOOL )
+			    {
+			      $$ = (user_arg_type)new TAttribBool(check_get_bool($1) !=
+								  check_get_bool($3));
+			    }
+			    else if( $1->eType == FX_VECTOR )
+			    {
+			      $$ = (user_arg_type)new TAttribBool(get_vector($1) != get_vector($3));
+			    }
+			    else if( $1->eType == FX_VECTOR2 )
+			    {
+			      $$ = (user_arg_type)new TAttribBool(get_vector2($1) != get_vector2($3));
+			    }
+			    else if( $1->eType == FX_STRING || $1->eType == FX_STRING_LIST )
+			    {
+			      $$ = (user_arg_type)new TAttribBool(check_get_string($1) != check_get_string($3));	  
+			    }
+			    else if( $1->eType == FX_INTEGER )
+			    {
+			      $$ = (user_arg_type)new TAttribBool(get_int($1)->tValue == get_int($3)->tValue);	  
+			    }
+			    else
+			    {
+			      rt_error("I can't compare a " + EAttribType_to_str($3->eType));
+			    }
 			  }
 			  else
 			  {
-			    rt_error("I can't compare a " + EAttribType_to_str($3->eType));
+			    $$ = (user_arg_type)new TAttribBool(false);
 			  }
 			}
 ;
@@ -521,22 +606,50 @@ prec_5:
 			| prec_4 GREATER_EQ prec_4
                         {
 			  report_reduction("prec_4 <-- prec_6 >= prec_5");
-			  $$ = (user_arg_type)new TAttribBool(check_get_real($1) >= check_get_real($3));
+			  if( rt_exec_ok() )
+			  {
+			    $$ = (user_arg_type)new TAttribBool(check_get_real($1) >= check_get_real($3));
+			  }
+			  else
+			  {
+			    $$ = (user_arg_type)new TAttribBool(false);
+			  }
 			}
-                        | prec_4 GREATER prec_4
+                        | prec_4 GREATER prec_4 
                         {
 			  report_reduction("prec_4 <-- prec_6 > prec_5");
-			  $$ = (user_arg_type)new TAttribBool(check_get_real($1) > check_get_real($3));
+			  if( rt_exec_ok() )
+			  {
+			    $$ = (user_arg_type)new TAttribBool(check_get_real($1) > check_get_real($3));
+			  }
+			  else
+			  {
+			    $$ = (user_arg_type)new TAttribBool(false);
+			  }
 			}
                         | prec_4 LESS_EQ prec_4
                         {
 			  report_reduction("prec_4 <-- prec_6 <= prec_5");
-			  $$ = (user_arg_type)new TAttribBool(check_get_real($1) <= check_get_real($3));
+			  if( rt_exec_ok() )
+			  {
+			    $$ = (user_arg_type)new TAttribBool(check_get_real($1) <= check_get_real($3));
+			  }
+			  else
+			  {
+			    $$ = (user_arg_type)new TAttribBool(false);
+			  }
 			}
                         | prec_4 LESS prec_4
                         {
 			  report_reduction("prec_4 <-- prec_6 < prec_5");
-			  $$ = (user_arg_type)new TAttribBool(check_get_real($1) < check_get_real($3));
+			  if( rt_exec_ok() )
+			  {
+			    $$ = (user_arg_type)new TAttribBool(check_get_real($1) < check_get_real($3));
+			  }
+			  else
+			  {
+			    $$ = (user_arg_type)new TAttribBool(false);
+			  }
 			} 
 ;
 
@@ -552,23 +665,36 @@ prec_4:
 
 			  report_reduction("prec_4 <-- prec_4 + prec_3");
 			  report_reduction("prec_4 <-- " + $1->toString() + " + " + $3->toString());
-			  
-			  $$ = add($1,$3);
-			  if( !$$ )
+			  if( rt_exec_ok() )
+			  { 
+			    $$ = add($1,$3);
+			    if( !$$ )
+			    {
+			      rt_error("addition of " + EAttribType_to_str($1->eType) +
+				       " and " + EAttribType_to_str($3->eType) + " failed");
+			    }
+			  }
+			  else
 			  {
-			    rt_error("addition of " + EAttribType_to_str($1->eType) +
-				     " and " + EAttribType_to_str($3->eType) + " failed");
+			    $$ = (user_arg_type)new TAttribReal(0);
 			  }
 			} 
                         | prec_4 '-' prec_3
                         {
 			  report_reduction("prec_4 <-- prec_4 - prec_3");
 			  report_reduction("prec_4 <-- " + $1->toString() + " - " + $3->toString());			  
-			  $$ = sub($1,$3);
-			  if( !$$ )
+			  if( rt_exec_ok() )
 			  {
-			    rt_error("subtraction of " + EAttribType_to_str($1->eType) +
-				     " and " + EAttribType_to_str($3->eType) + " failed");
+			    $$ = sub($1,$3);
+			    if( !$$ )
+			    {
+			      rt_error("subtraction of " + EAttribType_to_str($1->eType) +
+				       " and " + EAttribType_to_str($3->eType) + " failed");
+			    }
+			  }
+			  else
+			  {
+			    $$ = (user_arg_type)new TAttribReal(0);
 			  }
 			} 
 ;
@@ -577,7 +703,7 @@ prec_3:
 			prec_2
                         {
 			  report_reduction("prec_3 <-- prec_2");
-			  report_reduction("prec_3 <-- " + $1->toString());			  
+			  report_reduction("prec_3 <-- " + $1->toString());
 			  $$ = $1;
 			}			
 			| prec_3 '*' prec_2
@@ -585,23 +711,37 @@ prec_3:
 			  report_reduction("prec_3 <-- prec_3 * prec_2");
 			  report_reduction("prec_4 <-- " + $1->toString() + " * " + $3->toString());			  
 			  
-			  $$ = mul($1,$3);
-			  if( !$$ )
+			  if( rt_exec_ok() )
 			  {
-			    rt_error("multiplication of " + EAttribType_to_str($1->eType) +
-				     " and " + EAttribType_to_str($3->eType) + " failed");
+			    $$ = mul($1,$3);
+			    if( !$$ )
+			    {
+			      rt_error("multiplication of " + EAttribType_to_str($1->eType) +
+				       " and " + EAttribType_to_str($3->eType) + " failed");
+			    }
+			  }
+			  else
+			  {
+			    $$ = (user_arg_type)new TAttribReal(0);
 			  }
 			}
                         | prec_3 '/' prec_2
                         {
 			  report_reduction("prec_3 <-- prec_3 / prec_2");
 			  report_reduction("prec_4 <-- " + $1->toString() + " / " + $3->toString());			  
-			  
-			  $$ = div($1,$3);
-			  if( !$$ )
+
+			  if( rt_exec_ok() )
+			  {			  
+			    $$ = div($1,$3);
+			    if( !$$ )
+			    {
+			      rt_error("division of " + EAttribType_to_str($1->eType) +
+				       " and " + EAttribType_to_str($3->eType) + " failed");
+			    }
+			  }
+			  else
 			  {
-			    rt_error("division of " + EAttribType_to_str($1->eType) +
-				     " and " + EAttribType_to_str($3->eType) + " failed");
+			    $$ = (user_arg_type)new TAttribReal(0);
 			  }
 			}
 ;
@@ -617,8 +757,14 @@ prec_2:
                         {
 			  report_reduction("prec_2 <-- ! prec_2");
 			  report_reduction("prec_2 <-- ! " + $2->toString());
-
-			  $$ = (user_arg_type)new TAttribBool(!check_get_bool($2));
+			  if( rt_exec_ok() )
+			  {
+			    $$ = (user_arg_type)new TAttribBool(!check_get_bool($2));
+			  }
+			  else
+			  {
+			    $$ = (user_arg_type)new TAttribBool(false);
+			  }
 			}
                         | '+' prec_2
                         {
@@ -632,24 +778,31 @@ prec_2:
 			  report_reduction("prec_2 <-- - prec_2");
 			  report_reduction("prec_2 <-- - " + $2->toString());
 
-			  if( $2->eType != FX_ARRAY )
-			  {
-			    $$ = sub((user_arg_type)new TAttribInt(0), $2);
-			    if( !$$ )
+			  if( rt_exec_ok() )
+			  {			  
+			    if( $2->eType != FX_ARRAY )
 			    {
-			      rt_error("negation of " + EAttribType_to_str($2->eType) + " failed");
+			      $$ = sub((user_arg_type)new TAttribInt(0), $2);
+			      if( !$$ )
+			      {
+				rt_error("negation of " + EAttribType_to_str($2->eType) + " failed");
+			      }
+			    }
+			    else
+			    {
+			      magic_pointer<TAttribArray> tar = rcp_static_cast<TAttribArray>($2);
+			      vector<TScalar> barf(tar->tValue);
+			      
+			      for(unsigned i = 0; i < barf.size(); ++i)
+			      {
+				barf[i] = -barf[i];
+			      }
+			      $$ = (user_arg_type)new TAttribArray(barf);
 			    }
 			  }
 			  else
 			  {
-			    magic_pointer<TAttribArray> tar = rcp_static_cast<TAttribArray>($2);
-			    vector<TScalar> barf(tar->tValue);
-
-			    for(unsigned i = 0; i < barf.size(); ++i)
-			    {
-			      barf[i] = -barf[i];
-			    }
-			    $$ = (user_arg_type)new TAttribArray(barf);
+			    $$ = (user_arg_type)new TAttribReal(0);
 			  }
 			}
 ;
@@ -667,9 +820,9 @@ prec_1:
                         {
 			  report_reduction("prec_1 <-- PARAM prec_1");
 			  
-			  FIXME("recovering a paramater (how?)");
+			  FIXME("recovering a command line paramater (how?)");
 			}
-                        | DEFINED name
+                        | T_DEFINED name
                         {
 			  report_reduction("prec_1 <-- DEFINED name");
 
@@ -738,9 +891,10 @@ prec_1:
 function_call           : potential_name '(' ')'
                         {
 			  report_reduction("function_call <-- potential_name ( )");
+			  report_reduction("(detail) function_call <-- " + string($1) +  "( )");
+			    
 			  if( rt_exec_ok() )
 			  {
-			    report_reduction("(detail) function_call <-- " + string($1) +  "( )");
 			    
 #if defined(DEBUG_IT)
 			    rt_error("about to call a function");
@@ -760,16 +914,19 @@ function_call           : potential_name '(' ')'
 			      rt_error("function " + string($1) + " does not exist");
 			      $$ = (user_arg_type)new TAttribute();
 			    }
+			  } // exec ok
+			  else
+			  {
+			    $$ = (user_arg_type)new TAttribute();
 			  }
 			}
                         | potential_name '(' expression ')'
                         {
 			  report_reduction("function_call <-- potential_name ( expression )");
+			  report_reduction("(detail) function_call <-- " + string($1) + "( " + $3->toString() + " )");
+			  
 			  if( rt_exec_ok() )
-			  {
-			    report_reduction("(detail) function_call <-- " + string($1) + "( " + $3->toString() + " )");
-			    
-			    
+			  {			    
 #if defined(DEBUG_IT)
 			    rt_error("about to call a function");
 #endif /* defined(DEBUG_IT) */
@@ -790,16 +947,19 @@ function_call           : potential_name '(' ')'
 			      rt_error("function " + string($1) + " does not exist");
 			      $$ = (user_arg_type)new TAttribute();
 			    }			    
-			  }
+			  } // exec ok.
+			  else
+			  {
+			    $$ = (user_arg_type)new TAttribute();
+			  }			  
 			}
                         | potential_name '(' expression ',' expression ')'
                         {
 			  report_reduction("function_call <-- potential_name ( expression , expression )");
+			  report_reduction("(detail) function_call <-- " + string($1) + "( " + $3->toString() + "," + $5->toString() + " )");
+			    
 			  if( rt_exec_ok() )
 			  {
-			    report_reduction("(detail) function_call <-- " + string($1) + "( " + $3->toString() + "," + $5->toString() + " )");
-			    
-			    
 #if defined(DEBUG_IT)
 			    rt_error("about to call a function");
 #endif /* defined(DEBUG_IT) */
@@ -821,10 +981,47 @@ function_call           : potential_name '(' ')'
 			      rt_error("function " + string($1) + " does not exist");
 			      $$ = (user_arg_type)new TAttribute();
 			    }			    
-			  }
+			  } // exec ok.
+			  else
+			  {
+			    $$ = (user_arg_type)new TAttribute();
+			  }			  
+			}
+                        | potential_name '(' expression ',' expression ',' expression ')'
+                        {
+			  report_reduction("function_call <-- potential_name ( expression , expression , expression )");
+			  report_reduction("(detail) function_call <-- " + string($1) + "( " + $3->toString() + "," + $5->toString() + "," + $7->toString() + " )");
+			  
+			  if( rt_exec_ok() )
+			  {
+#if defined(DEBUG_IT)
+			    rt_error("about to call a function");
+#endif /* defined(DEBUG_IT) */
+			    
+			    // Lookup using all objects in the current stack,
+			    // then check the global table...
+			    TUserFunctionMap functions = all_user_functions();
+			    
+			    if( functions.find($1) != functions.end() )
+			    {
+			      user_arg_vector args;
+			      args.push_back($3);
+			      args.push_back($5);
+			      args.push_back($7);			      
+			      $$ = functions[$1]->call(args);		      
+			    }
+			    else
+			    {
+			      rt_error("function " + string($1) + " does not exist");
+			      $$ = (user_arg_type)new TAttribute();
+			    }			    
+			  } // exec ok.
+			  else
+			  {
+			    $$ = (user_arg_type)new TAttribute();
+			  }			  
 			}
 		        ;
-
 
 color                   : '{' T_RED expression T_GREEN expression T_BLUE expression '}'
                           {
@@ -832,23 +1029,29 @@ color                   : '{' T_RED expression T_GREEN expression T_BLUE express
 			    report_reduction("color <-- { RED " + $3->toString() +
 					     " GREEN " + $5->toString() +
 					     " BLUE " + $7->toString() + " }");
-
-			    double r = check_get_real($3);
-			    double g = check_get_real($5);
-			    double b = check_get_real($7);
-
-			    GOM.debug() << "r=" << r << " g=" << g << " b=" << b << endl;
-			    TColor* c = new TColor(r,g,b);
-			    GOM.debug() << "Here's what was really created: ";
-			    c->printDebug(""); cerr << endl;
-			    
-			    $$ = magic_pointer<TColor>(c);
+			    if( rt_exec_ok() )
+			    {
+			      double r = check_get_real($3);
+			      double g = check_get_real($5);
+			      double b = check_get_real($7);
+			      
+			      GOM.debug() << "r=" << r << " g=" << g << " b=" << b << endl;
+			      TColor* c = new TColor(r,g,b);
+			      GOM.debug() << "Here's what was really created: ";
+			      c->printDebug(""); cerr << endl;
+			      
+			      $$ = magic_pointer<TColor>(c);
+			    }
+			    else
+			    {
+			      $$ = magic_pointer<TColor>(new TColor());
+			    }
 			  }
                        ;
 
 any_vector              :  '<' vector_insides '>'
                           {
-			    report_reduction("any_vector <-- '<' vector_insides '>'");
+			    report_reduction("any_vector <-- < vector_insides >");
 			    $$ = $2;
                           }
 /*                          | '<' '>'
@@ -862,21 +1065,35 @@ any_vector              :  '<' vector_insides '>'
 vector_insides          : expression
                           {
 			    report_reduction("vector_insides <-- expression");
-			    double e = check_get_real($1);
-			    $$ = (user_arg_type)new TAttribArray(e);
+			    if( rt_exec_ok() )
+			    {			    
+			      double e = check_get_real($1);
+			      $$ = (user_arg_type)new TAttribArray(e);
+			    }
+			    else
+			    {
+			      $$ = (user_arg_type)new TAttribArray(double(0));
+			    }
 			  }
                           | vector_insides ',' expression
                           {
 			    report_reduction("vector_insides <-- vector_insides ',' expression");
-			    if( $1->eType == FX_ARRAY )
-			    {
-			      double e = check_get_real($3);
-			      rcp_static_cast<TAttribArray>($1)->tValue.push_back(e);
-			      $$ = $1;
+			    if( rt_exec_ok() )
+			    {			    
+			      if( $1->eType == FX_ARRAY )
+			      {
+				double e = check_get_real($3);
+				rcp_static_cast<TAttribArray>($1)->tValue.push_back(e);
+				$$ = $1;
+			      }
+			      else
+			      {
+				rt_error("lhs of ',' was not part of an array.");
+			      }
 			    }
 			    else
 			    {
-			      rt_error("lhs of ',' was not part of an array.");
+			      $$ = (user_arg_type)new TAttribArray(0);
 			    }
 			  }
                         ;
@@ -906,16 +1123,24 @@ class			: /* Nothing
                           T_IDENTIFIER /*':' T_EXTENDS */
 			  {
 			    report_reduction("class <-- : EXTENDS IDENTIFIER");
-                            if ( DATAMAP.find ($1) == DATAMAP.end() )
-                            {
-			      rt_error ("trying to extend from non existing object");
-			      exit (1);
-                            }
 
-			    //			    GOM.debug() << "the type of the parent is " << DATAMAP [$1].second->AttributeName() << endl;
-                            PARENT_OBJECT = attr_to_base(DATAMAP [$1].second);
-			    //			    GOM.debug() << "the parent's classname is " << PARENT_OBJECT->className() << endl;
-			    $$ = PARENT_OBJECT->className();
+			    if( rt_exec_ok() )
+			    {			    
+			      if ( DATAMAP.find ($1) == DATAMAP.end() )
+			      {
+				rt_error ("trying to extend from non existing object");
+				exit (1);
+			      }
+			      
+			      // GOM.debug() << "the type of the parent is " << DATAMAP [$1].second->AttributeName() << endl;
+			      PARENT_OBJECT = attr_to_base(DATAMAP [$1].second);
+			      // GOM.debug() << "the parent's classname is " << PARENT_OBJECT->className() << endl;
+			      $$ = PARENT_OBJECT->className();
+			    }
+			    else
+			    {
+			      $$ = "none";
+			    }
 			  }
                           | T_CLASS T_IDENTIFIER
 			  {
@@ -940,7 +1165,14 @@ string_math             : T_QUOTED_STRING
                         | function_call
                           {
 			    report_reduction("string_math <-- : function_call");
-			    $$ = check_get_string($1);
+			    if( rt_exec_ok() )
+			    {			    
+			      $$ = check_get_string($1);
+			    }
+			    else
+			    {
+			      $$ = "";
+			    }
 			  }
                         | string_math '+' T_QUOTED_STRING
                           {
@@ -950,7 +1182,14 @@ string_math             : T_QUOTED_STRING
                         | string_math '+' function_call
                           {
 			    report_reduction("string_math <-- : string_math + function_call");
-			    $$ = $1 + check_get_string($3);
+			    if( rt_exec_ok() )
+			    {			    
+			      $$ = $1 + check_get_string($3);
+			    }
+			    else
+			    {
+			      $$ = "";
+			    }
 			  }
                         ;
 
@@ -963,20 +1202,18 @@ params			: /* Nothing
                         {
 			  report_reduction("params <-- param ;");
                         }
-                        | error ';'
+                        | param_if_statement
                         {
-			  report_reduction("params <-- error ;");
-			  rt_error("expected parameter expression");
+			  report_reduction("params <-- param_if_statement");
                         }
-			| params param ';'
+                        | params param ';'
                         {
 			  report_reduction("params <-- params param ;");
 			}
-			| params error ';'
+                        | params param_if_statement
                         {
-			  report_reduction("params <-- params error ;");
-			  rt_error("expected parameter expression");
-			}
+			  report_reduction("params <-- params param_if_statement");
+                        }
                         ;
 
 param			: T_IDENTIFIER '=' expression
@@ -985,7 +1222,7 @@ param			: T_IDENTIFIER '=' expression
 			  if( rt_exec_ok() )
 			  {
 			    SetParameter ($1, $3);
-			  }
+			  } // exec ok.
 			}
                         | expression
                         {
@@ -1033,10 +1270,10 @@ param			: T_IDENTIFIER '=' expression
 			      magic_pointer<TProcedural> proc = get_procedural_var($1, false);
 			      if( !!proc )
 			      {
-				FIXME("Potentially do something with (" + $1->toString() + ") in the current object");
+				FIXME("Potentially do something with the procedural variable (" + $1->toString() + ") in the current object");
 			      }
 			    }
-			  }
+			  } // exec ok
 			}
                         | reserved_words '=' expression
                         {
@@ -1044,7 +1281,7 @@ param			: T_IDENTIFIER '=' expression
 			  if( rt_exec_ok() )
 			  {
 			    SetParameter ($1, $3);
-			  }
+			  } // exec ok.
 			}
 			| object_param
                         {
@@ -1087,7 +1324,7 @@ object_param		: T_FILTER '=' instance
 			    {
 			      SetParameter($1,$3);
 			    }
-			  }
+			  } // exec ok.
 			}
 			;
 
@@ -1134,7 +1371,7 @@ scene_param		: T_LIGHT '=' instance
 				rt_error("NULL light given (BUG?)");
 			      }
 			    }
-			  }
+			  } // exec ok.
 			}
 			| T_OUTPUT '=' instance
 			{
@@ -1170,8 +1407,69 @@ scene_param		: T_LIGHT '=' instance
 			    {
 			      SetParameter($1,$3);
 			    }
-			  }
+			  } // exec ok.
 			}
+                        ;
+
+param_if_statement     : param_if_head 
+                          {
+			    /* Nothing to do... */			    
+			    report_reduction("param_if_statement <-- if_head");
+			  }
+                        | param_if_head T_ELSE
+                          {
+			    report_reduction("param_if_statement (start) <-- if_head ELSE");
+			    rt_enter_condition(!$1);
+                          }
+                          param_if_body
+                          {
+			    report_reduction("param_if_statement (start) <-- if_head ELSE param_if_body");
+			    rt_leave_condition();
+                          }
+                        ;
+
+param_if_head           : T_IF '(' expression ')'
+                          {
+			    report_reduction("param_if_head (start) <-- if ( expression )");
+
+			    if( rt_exec_ok() )
+			    {			    
+			      bool b = check_get_bool($3);
+			      rt_enter_condition(b);
+			    }
+			    else
+			    {
+			      rt_enter_condition(false);
+			    }
+			  }
+                          param_if_body
+                          {
+			    report_reduction("param_if_head (cont) <-- if ( expression ) param_if_body");
+			    rt_leave_condition();
+			    if( rt_exec_ok() )
+			    {			    
+			      $$ = check_get_bool($3);
+			    }
+			    else
+			    {
+			      $$ = true; // Forces any else clause to be false
+			    }
+                          }
+                          ;
+
+param_if_body          : '{' '}'
+                         {
+			   report_reduction("param_if_body <-- { }");
+			 }  			
+                        | '{' params '}'
+                         {
+			   report_reduction("param_if_body <-- { params }");
+			 }
+                        | '{' error '}'
+                         {
+			   report_reduction("param_if_body <-- { error }");
+			   rt_error("expected parameter list or nothing");
+                         }
                         ;
 
 potential_name          : name
@@ -1359,11 +1657,11 @@ namespace yy
 {
   void Parser::error_()
   {
-    rt_error("Unknown parser error occurred (it called error_())");
+    rt_error(message);
   }
   void Parser::print_()
   {
-    //    rt_warning("Parser::print_() called... What is it?");
+    rt_warning("Parser::print_() called... What is it?  message(" + message + ")");
   }  
   // The stupid bison appears to be ignoring the yyprefix
   int yylex(yystype *p)

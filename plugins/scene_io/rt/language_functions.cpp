@@ -231,6 +231,11 @@ static void evaluate(const string& s)
   // This needs work.  It will cause problems if it is used.
 }
 
+static int set_debug_level(int i)
+{
+  return GOM.SetDebugLevel(i);
+}
+
 static void debug(bool b)
 {
   if( b )
@@ -303,7 +308,8 @@ void GlobalInitFunctions (void)
   GLOBAL_FUNCTIONS["env"] = create_user_function(&env);
   GLOBAL_FUNCTIONS["envnull"] = create_user_function(&envnull);
   GLOBAL_FUNCTIONS["reduction_reporting"] = create_user_function(&set_reduction_reporting);  
-  GLOBAL_FUNCTIONS["debug"] = create_user_function(&debug);  
+  GLOBAL_FUNCTIONS["debug"] = create_user_function(&debug);
+  GLOBAL_FUNCTIONS["debuglevel"] = create_user_function(&set_debug_level);    
   
   // Functions for type conversions
   GLOBAL_FUNCTIONS["vector"]  = create_user_function(&getVector);

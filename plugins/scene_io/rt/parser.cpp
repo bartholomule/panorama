@@ -186,82 +186,99 @@ yy::Parser::parse ()
     break;
 
   case 4:
-#line 210 "parser.y"
-    {
-			    report_reduction("everything <-- everything expression ';'");
-			    magic_pointer<TAttribObject> ptobj = get_object(semantic_stack_[1].ptAttribute);
-			    if( !!ptobj )
-			    {
-			      magic_pointer<TObject> obj = ptobj->tValue;
-			      if( !!obj )
-			      {
-				if( !WORLD->containsObject( obj ) )
-				{
-				  //				  GOM.debug() << "Adding instance of " << obj->className() << " to world." << endl;
-				  WORLD->add ( obj );
-				}
-			      }
-			    }
-			    else
-			    {
-			      magic_pointer<TProcedural> proc = get_procedural_var(semantic_stack_[1].ptAttribute, false);
-			      if( !!proc )
-			      {
-				FIXME("Potentially add instance (" + semantic_stack_[1].ptAttribute->toString() + " to the global scene");
-			      }
-			    }			      
-			  }
-    break;
-
-  case 5:
-#line 237 "parser.y"
+#line 212 "parser.y"
     {
 			    report_reduction("statement <-- definition");
 			  }
     break;
 
+  case 5:
+#line 216 "parser.y"
+    {
+			    report_reduction("statement <-- expression ';'");
+			    if( rt_exec_ok() )
+			    {
+			      magic_pointer<TAttribObject> ptobj = get_object(semantic_stack_[1].ptAttribute);
+			      if( !!ptobj )
+			      {
+				magic_pointer<TObject> obj = ptobj->tValue;
+				if( !!obj )
+				{
+				  if( !WORLD->containsObject( obj ) )
+				  {
+				    GOM.debug() << "Adding instance of " << obj->className() << " to world." << endl;
+				    WORLD->add ( obj );
+				  }
+				}
+			      }
+			      else
+			      {
+				magic_pointer<TProcedural> proc = get_procedural_var(semantic_stack_[1].ptAttribute, false);
+				if( !!proc )
+				{
+				  FIXME("Potentially add procedural variable instance (" + semantic_stack_[1].ptAttribute->toString() + " to the global scene");
+				}
+			      }			      
+			    } // exec ok.
+			  }
+    break;
+
   case 6:
-#line 241 "parser.y"
+#line 244 "parser.y"
     {
 			    report_reduction("statement <-- simple_if_statement");
 			  }
     break;
 
   case 7:
-#line 248 "parser.y"
+#line 250 "parser.y"
     {
 			   report_reduction("statement_list <-- statement");
 			 }
     break;
 
   case 8:
-#line 252 "parser.y"
+#line 254 "parser.y"
     {
 			   report_reduction("statement_list <-- statement_list statement");
 			 }
     break;
 
   case 9:
-#line 258 "parser.y"
+#line 261 "parser.y"
     {
 			    report_reduction("if_head (start) <-- if ( expression )");
-			    
-			    bool b = check_get_bool(semantic_stack_[1].ptAttribute);
-			    rt_enter_condition(b);
+
+			    if( rt_exec_ok() )
+			    {			    
+			      bool b = check_get_bool(semantic_stack_[1].ptAttribute);
+			      rt_enter_condition(b);
+			    }
+			    else
+			    {
+			      rt_enter_condition(false);
+			    }
 			  }
     break;
 
   case 10:
-#line 265 "parser.y"
+#line 275 "parser.y"
     {
 			    report_reduction("if_head (cont) <-- if ( expression ) simple_if_body");
 			    rt_leave_condition();
-			    yyval.gValue = check_get_bool(semantic_stack_[3].ptAttribute);
+			    if( rt_exec_ok() )
+			    {			    
+			      yyval.gValue = check_get_bool(semantic_stack_[3].ptAttribute);
+			    }
+			    else
+			    {
+			      yyval.gValue = true; // Forces any else clause to be false.
+			    }
                           }
     break;
 
   case 11:
-#line 272 "parser.y"
+#line 290 "parser.y"
     {
 			    /* Nothing to do... */			    
 			    report_reduction("simple_if_statement <-- if_head");
@@ -269,7 +286,7 @@ yy::Parser::parse ()
     break;
 
   case 12:
-#line 277 "parser.y"
+#line 295 "parser.y"
     {
 			    report_reduction("simple_if_statement (start) <-- if_head ELSE");
 			    rt_enter_condition(!semantic_stack_[1].gValue);
@@ -277,7 +294,7 @@ yy::Parser::parse ()
     break;
 
   case 13:
-#line 282 "parser.y"
+#line 300 "parser.y"
     {
 			    report_reduction("simple_if_statement (start) <-- if_head ELSE simple_if_body");
 			    rt_leave_condition();
@@ -285,28 +302,36 @@ yy::Parser::parse ()
     break;
 
   case 14:
-#line 289 "parser.y"
+#line 307 "parser.y"
     {
 			   report_reduction("simple_if_body <-- definition");
 			 }
     break;
 
   case 15:
-#line 294 "parser.y"
+#line 311 "parser.y"
     {
 			   report_reduction("simple_if_body <-- { }");
 			 }
     break;
 
   case 16:
-#line 298 "parser.y"
+#line 315 "parser.y"
     {
 			   report_reduction("simple_if_body <-- { statement_list }");
 			 }
     break;
 
   case 17:
-#line 305 "parser.y"
+#line 319 "parser.y"
+    {
+			   report_reduction("simple_if_body <-- { error }");
+			   rt_error("expected statement list or nothing");
+                         }
+    break;
+
+  case 18:
+#line 327 "parser.y"
     {
 			    report_reduction("definition <-- DEFINE name expression ;");
 			    report_reduction(string("definition <-- DEFINE ") +
@@ -326,21 +351,50 @@ yy::Parser::parse ()
 				      TSceneRT::_tInputFileName.c_str(),
 				      int(TSceneRT::_dwLineNumber));
 			      DATAMAP[semantic_stack_[2].sIdent] = pair<string,attrib_type>(string(buffer),semantic_stack_[1].ptAttribute);
-			    }
+			    } // exec ok.
 			  }
     break;
 
-  case 18:
-#line 327 "parser.y"
+  case 19:
+#line 349 "parser.y"
     {
-			    report_reduction("definition <-- DEFINE reserved_words name instance");
-			    cerr << "Warning: definition on line "
-			         << TSceneRT::_dwLineNumber
-				 << " should not have \"" << semantic_stack_[3].sIdent << "\" anymore"
-				 << endl;
+			    report_reduction("definition <-- REDEFINE name expression ;");
+			    report_reduction(string("definition <-- DEFINE ") +
+					     semantic_stack_[2].sIdent + " " + semantic_stack_[1].ptAttribute->toString());
 
 			    if( rt_exec_ok() )
 			    {
+			      // Uncomment the below (and modify) to display
+			      // warnings (invert the comparision). 
+			      /*
+			      if( DATAMAP.find($2) != DATAMAP.end() )
+			      {
+				rt_warning(string($2) + " redefined here");
+				rt_warning("previously defined here: " + DATAMAP[$2].first);
+			      }
+			      */
+			      GOM.debug() << "Defining \"" << string(semantic_stack_[2].sIdent) << "\"" << endl;
+			      
+			      char buffer[1024];
+			      sprintf(buffer,"%s line %d",
+				      TSceneRT::_tInputFileName.c_str(),
+				      int(TSceneRT::_dwLineNumber));
+			      DATAMAP[semantic_stack_[2].sIdent] = pair<string,attrib_type>(string(buffer),semantic_stack_[1].ptAttribute);
+			    } // exec ok.
+			  }
+    break;
+
+  case 20:
+#line 375 "parser.y"
+    {
+			    report_reduction("definition <-- DEFINE reserved_words name instance");
+			    if( rt_exec_ok() )
+			    {
+			      cerr << "Warning: definition on line "
+				   << TSceneRT::_dwLineNumber
+				   << " should not have \"" << semantic_stack_[3].sIdent << "\" anymore"
+				   << endl;
+			      
 			      if( DATAMAP.find(semantic_stack_[2].sIdent) != DATAMAP.end() )
 			      {
 				rt_warning(string(semantic_stack_[2].sIdent) + " redefined here");
@@ -351,12 +405,12 @@ yy::Parser::parse ()
 				      TSceneRT::_tInputFileName.c_str(),
 				      int(TSceneRT::_dwLineNumber));
 			      DATAMAP[semantic_stack_[3].sIdent] = pair<string,attrib_type>(string(buffer),semantic_stack_[1].ptAttribute);
-			    }
+			    } // exec ok.
 			  }
     break;
 
-  case 19:
-#line 351 "parser.y"
+  case 21:
+#line 399 "parser.y"
     {
 			    report_reduction("instance <-- name");
 			    report_reduction(string("instance <-- ") + semantic_stack_[0].sIdent);			    
@@ -364,16 +418,16 @@ yy::Parser::parse ()
                           }
     break;
 
-  case 20:
-#line 357 "parser.y"
+  case 22:
+#line 405 "parser.y"
     {
 			    //			    GOM.debug() << "Creating object..." << endl;
 			    CreateObject(semantic_stack_[0].sIdent,"");
                           }
     break;
 
-  case 21:
-#line 362 "parser.y"
+  case 23:
+#line 410 "parser.y"
     {
 			    report_reduction("instance <--  class { params }");
 			    report_reduction(string("instance <-- ") + DATA->toString());
@@ -383,22 +437,22 @@ yy::Parser::parse ()
 			  }
     break;
 
-  case 22:
-#line 372 "parser.y"
+  case 24:
+#line 420 "parser.y"
     {
 			    report_reduction("param_block <-- { params }");
 			  }
     break;
 
-  case 23:
-#line 376 "parser.y"
+  case 25:
+#line 424 "parser.y"
     {
 			    report_reduction("param_block <-- { }");
 			  }
     break;
 
-  case 24:
-#line 383 "parser.y"
+  case 26:
+#line 431 "parser.y"
     {
 			    yyval.ptAttribute = semantic_stack_[0].ptAttribute;
 			    report_reduction("expression <-- prec_8");
@@ -406,8 +460,20 @@ yy::Parser::parse ()
                           }
     break;
 
-  case 25:
-#line 392 "parser.y"
+  case 27:
+#line 437 "parser.y"
+    {
+			   report_reduction("expression <-- error");
+			   if( rt_exec_ok() )
+			   {			   
+			     rt_error("expected expression");
+			   }
+			   yyval.ptAttribute = (user_arg_type)new TAttribute();
+                         }
+    break;
+
+  case 28:
+#line 449 "parser.y"
     {
 			  report_reduction("prec_8 <-- prec_7");
 			  report_reduction("prec_8 <-- " + semantic_stack_[0].ptAttribute->toString());
@@ -415,18 +481,25 @@ yy::Parser::parse ()
 			}
     break;
 
-  case 26:
-#line 398 "parser.y"
+  case 29:
+#line 455 "parser.y"
     {
 			  report_reduction("prec_8 <-- prec_8 OR prec_7");
 			  report_reduction("prec_8 <-- " + semantic_stack_[2].ptAttribute->toString() + " OR " + semantic_stack_[0].ptAttribute->toString());
-			  yyval.ptAttribute = (user_arg_type)new TAttribBool(check_get_bool(semantic_stack_[2].ptAttribute) ||
-					       check_get_bool(semantic_stack_[0].ptAttribute));
+			  if( rt_exec_ok() )
+			  {			  
+			    yyval.ptAttribute = (user_arg_type)new TAttribBool(check_get_bool(semantic_stack_[2].ptAttribute) ||
+								check_get_bool(semantic_stack_[0].ptAttribute));
+			  }
+			  else
+			  {
+			    yyval.ptAttribute = (user_arg_type)new TAttribBool(false);
+			  }
 			}
     break;
 
-  case 27:
-#line 408 "parser.y"
+  case 30:
+#line 472 "parser.y"
     {
 			  report_reduction("prec_7 <-- prec_6");
 			  report_reduction("prec_7 <-- " + semantic_stack_[0].ptAttribute->toString());			  
@@ -434,18 +507,25 @@ yy::Parser::parse ()
 			}
     break;
 
-  case 28:
-#line 414 "parser.y"
+  case 31:
+#line 478 "parser.y"
     {
 			  report_reduction("prec_7 <-- prec_7 AND prec_6");
 			  report_reduction("prec_7 <-- " + semantic_stack_[2].ptAttribute->toString() + " AND " + semantic_stack_[0].ptAttribute->toString());
-			  yyval.ptAttribute = (user_arg_type)new TAttribBool(check_get_bool(semantic_stack_[2].ptAttribute) &&
-					       check_get_bool(semantic_stack_[0].ptAttribute));
+			  if( rt_exec_ok() )
+			  {			  			  
+			    yyval.ptAttribute = (user_arg_type)new TAttribBool(check_get_bool(semantic_stack_[2].ptAttribute) &&
+								check_get_bool(semantic_stack_[0].ptAttribute));
+			  }
+			  else
+			  {
+			    yyval.ptAttribute = (user_arg_type)new TAttribBool(false);
+			  }
 			}
     break;
 
-  case 29:
-#line 425 "parser.y"
+  case 32:
+#line 496 "parser.y"
     {
 			  report_reduction("prec_6 <-- prec_5");
 			  report_reduction("prec_6 <-- " + semantic_stack_[0].ptAttribute->toString());			  
@@ -453,95 +533,109 @@ yy::Parser::parse ()
 			}
     break;
 
-  case 30:
-#line 431 "parser.y"
+  case 33:
+#line 502 "parser.y"
     {
 			  report_reduction("prec_6 <-- prec_6 EQUAL prec_5");
-			  if( !types_match(semantic_stack_[2].ptAttribute, semantic_stack_[0].ptAttribute ) )
-			  {
-			    rt_error( ("Cannot convert " + EAttribType_to_str(semantic_stack_[0].ptAttribute->eType) +
-				       " to " + EAttribType_to_str(semantic_stack_[2].ptAttribute->eType)) );
+			  if( rt_exec_ok() )
+			  {			  			  
+			    if( !types_match(semantic_stack_[2].ptAttribute, semantic_stack_[0].ptAttribute ) )
+			    {
+			      rt_error( ("Cannot convert " + EAttribType_to_str(semantic_stack_[0].ptAttribute->eType) +
+					 " to " + EAttribType_to_str(semantic_stack_[2].ptAttribute->eType)) );
+			    }
+			    if( semantic_stack_[2].ptAttribute->eType == FX_REAL )
+			    {
+			      yyval.ptAttribute = (user_arg_type)new TAttribBool(check_get_real(semantic_stack_[2].ptAttribute) == check_get_real(semantic_stack_[0].ptAttribute));
+			    }
+			    else if( semantic_stack_[2].ptAttribute->eType == FX_BOOL )
+			    {
+			      yyval.ptAttribute = (user_arg_type)new TAttribBool(check_get_bool(semantic_stack_[2].ptAttribute) ==
+								  check_get_bool(semantic_stack_[0].ptAttribute));
+			    }
+			    else if( semantic_stack_[2].ptAttribute->eType == FX_VECTOR )
+			    {
+			      yyval.ptAttribute = (user_arg_type)new TAttribBool(get_vector(semantic_stack_[2].ptAttribute)->tValue ==
+								  get_vector(semantic_stack_[0].ptAttribute)->tValue);
+			    }
+			    else if( semantic_stack_[2].ptAttribute->eType == FX_VECTOR2 )
+			    {
+			      yyval.ptAttribute = (user_arg_type)new TAttribBool(get_vector2(semantic_stack_[2].ptAttribute)->tValue ==
+								  get_vector2(semantic_stack_[0].ptAttribute)->tValue);
+			    }
+			    else if( semantic_stack_[2].ptAttribute->eType == FX_STRING || semantic_stack_[2].ptAttribute->eType == FX_STRING_LIST )
+			    {
+			      yyval.ptAttribute = (user_arg_type)new TAttribBool(check_get_string(semantic_stack_[2].ptAttribute) ==
+								  check_get_string(semantic_stack_[0].ptAttribute));	  
+			    }
+			    else if( semantic_stack_[2].ptAttribute->eType == FX_INTEGER )
+			    {
+			      yyval.ptAttribute = (user_arg_type)new TAttribBool(get_int(semantic_stack_[2].ptAttribute)->tValue ==
+								  get_int(semantic_stack_[0].ptAttribute)->tValue);	  
+			    }			  
+			    else
+			    {
+			      rt_error("I can't compare a " + EAttribType_to_str(semantic_stack_[2].ptAttribute->eType) + " and a " + EAttribType_to_str(semantic_stack_[0].ptAttribute->eType));
+			    }
 			  }
-			  if( semantic_stack_[2].ptAttribute->eType == FX_REAL )
-			  {
-			    yyval.ptAttribute = (user_arg_type)new TAttribBool(check_get_real(semantic_stack_[2].ptAttribute) == check_get_real(semantic_stack_[0].ptAttribute));
-			  }
-			  else if( semantic_stack_[2].ptAttribute->eType == FX_BOOL )
-			  {
-			    yyval.ptAttribute = (user_arg_type)new TAttribBool(check_get_bool(semantic_stack_[2].ptAttribute) ==
-						 check_get_bool(semantic_stack_[0].ptAttribute));
-			  }
-			  else if( semantic_stack_[2].ptAttribute->eType == FX_VECTOR )
-			  {
-			    yyval.ptAttribute = (user_arg_type)new TAttribBool(get_vector(semantic_stack_[2].ptAttribute)->tValue ==
-						 get_vector(semantic_stack_[0].ptAttribute)->tValue);
-			  }
-			  else if( semantic_stack_[2].ptAttribute->eType == FX_VECTOR2 )
-			  {
-			    yyval.ptAttribute = (user_arg_type)new TAttribBool(get_vector2(semantic_stack_[2].ptAttribute)->tValue ==
-						 get_vector2(semantic_stack_[0].ptAttribute)->tValue);
-			  }
-			  else if( semantic_stack_[2].ptAttribute->eType == FX_STRING || semantic_stack_[2].ptAttribute->eType == FX_STRING_LIST )
-			  {
-			    yyval.ptAttribute = (user_arg_type)new TAttribBool(check_get_string(semantic_stack_[2].ptAttribute) ==
-						 check_get_string(semantic_stack_[0].ptAttribute));	  
-			  }
-			  else if( semantic_stack_[2].ptAttribute->eType == FX_INTEGER )
-			  {
-			    yyval.ptAttribute = (user_arg_type)new TAttribBool(get_int(semantic_stack_[2].ptAttribute)->tValue ==
-						 get_int(semantic_stack_[0].ptAttribute)->tValue);	  
-			  }			  
 			  else
 			  {
-			    rt_error("I can't compare a " + EAttribType_to_str(semantic_stack_[0].ptAttribute->eType));
+			    yyval.ptAttribute = (user_arg_type)new TAttribBool(false);
 			  }
 			}
     break;
 
-  case 31:
-#line 473 "parser.y"
+  case 34:
+#line 551 "parser.y"
     {
 			  report_reduction("prec_6 <-- prec_6 NOT_EQ prec_5");
-			  if( !types_match(semantic_stack_[2].ptAttribute, semantic_stack_[0].ptAttribute ) )
-			  {
-			    rt_error( ("Cannot convert " + EAttribType_to_str(semantic_stack_[0].ptAttribute->eType) +
-				       " to " + EAttribType_to_str(semantic_stack_[2].ptAttribute->eType)) );
-			  }
-			  if( semantic_stack_[2].ptAttribute->eType == FX_REAL )
-			  {
-			    yyval.ptAttribute = (user_arg_type)new TAttribBool(check_get_real(semantic_stack_[2].ptAttribute) !=
-						 check_get_real(semantic_stack_[0].ptAttribute));
-			  }
-			  else if( semantic_stack_[2].ptAttribute->eType == FX_BOOL )
-			  {
-			    yyval.ptAttribute = (user_arg_type)new TAttribBool(check_get_bool(semantic_stack_[2].ptAttribute) !=
-						 check_get_bool(semantic_stack_[0].ptAttribute));
-			  }
-			  else if( semantic_stack_[2].ptAttribute->eType == FX_VECTOR )
-			  {
-			    yyval.ptAttribute = (user_arg_type)new TAttribBool(get_vector(semantic_stack_[2].ptAttribute) != get_vector(semantic_stack_[0].ptAttribute));
-			  }
-			  else if( semantic_stack_[2].ptAttribute->eType == FX_VECTOR2 )
-			  {
-			    yyval.ptAttribute = (user_arg_type)new TAttribBool(get_vector2(semantic_stack_[2].ptAttribute) != get_vector2(semantic_stack_[0].ptAttribute));
-			  }
-			  else if( semantic_stack_[2].ptAttribute->eType == FX_STRING || semantic_stack_[2].ptAttribute->eType == FX_STRING_LIST )
-			  {
-			    yyval.ptAttribute = (user_arg_type)new TAttribBool(check_get_string(semantic_stack_[2].ptAttribute) != check_get_string(semantic_stack_[0].ptAttribute));	  
-			  }
-			  else if( semantic_stack_[2].ptAttribute->eType == FX_INTEGER )
-			  {
-			    yyval.ptAttribute = (user_arg_type)new TAttribBool(get_int(semantic_stack_[2].ptAttribute)->tValue == get_int(semantic_stack_[0].ptAttribute)->tValue);	  
+			  if( rt_exec_ok() )
+			  {			  			  
+			    if( !types_match(semantic_stack_[2].ptAttribute, semantic_stack_[0].ptAttribute ) )
+			    {
+			      rt_error( ("Cannot convert " + EAttribType_to_str(semantic_stack_[0].ptAttribute->eType) +
+					 " to " + EAttribType_to_str(semantic_stack_[2].ptAttribute->eType)) );
+			    }
+			    if( semantic_stack_[2].ptAttribute->eType == FX_REAL )
+			    {
+			      yyval.ptAttribute = (user_arg_type)new TAttribBool(check_get_real(semantic_stack_[2].ptAttribute) !=
+								  check_get_real(semantic_stack_[0].ptAttribute));
+			    }
+			    else if( semantic_stack_[2].ptAttribute->eType == FX_BOOL )
+			    {
+			      yyval.ptAttribute = (user_arg_type)new TAttribBool(check_get_bool(semantic_stack_[2].ptAttribute) !=
+								  check_get_bool(semantic_stack_[0].ptAttribute));
+			    }
+			    else if( semantic_stack_[2].ptAttribute->eType == FX_VECTOR )
+			    {
+			      yyval.ptAttribute = (user_arg_type)new TAttribBool(get_vector(semantic_stack_[2].ptAttribute) != get_vector(semantic_stack_[0].ptAttribute));
+			    }
+			    else if( semantic_stack_[2].ptAttribute->eType == FX_VECTOR2 )
+			    {
+			      yyval.ptAttribute = (user_arg_type)new TAttribBool(get_vector2(semantic_stack_[2].ptAttribute) != get_vector2(semantic_stack_[0].ptAttribute));
+			    }
+			    else if( semantic_stack_[2].ptAttribute->eType == FX_STRING || semantic_stack_[2].ptAttribute->eType == FX_STRING_LIST )
+			    {
+			      yyval.ptAttribute = (user_arg_type)new TAttribBool(check_get_string(semantic_stack_[2].ptAttribute) != check_get_string(semantic_stack_[0].ptAttribute));	  
+			    }
+			    else if( semantic_stack_[2].ptAttribute->eType == FX_INTEGER )
+			    {
+			      yyval.ptAttribute = (user_arg_type)new TAttribBool(get_int(semantic_stack_[2].ptAttribute)->tValue == get_int(semantic_stack_[0].ptAttribute)->tValue);	  
+			    }
+			    else
+			    {
+			      rt_error("I can't compare a " + EAttribType_to_str(semantic_stack_[0].ptAttribute->eType));
+			    }
 			  }
 			  else
 			  {
-			    rt_error("I can't compare a " + EAttribType_to_str(semantic_stack_[0].ptAttribute->eType));
+			    yyval.ptAttribute = (user_arg_type)new TAttribBool(false);
 			  }
 			}
     break;
 
-  case 32:
-#line 515 "parser.y"
+  case 35:
+#line 600 "parser.y"
     {
 			  report_reduction("prec_5 <-- prec_4");
 			  report_reduction("prec_5 <-- " + semantic_stack_[0].ptAttribute->toString());			  
@@ -550,40 +644,68 @@ yy::Parser::parse ()
 			}
     break;
 
-  case 33:
-#line 522 "parser.y"
+  case 36:
+#line 607 "parser.y"
     {
 			  report_reduction("prec_4 <-- prec_6 >= prec_5");
-			  yyval.ptAttribute = (user_arg_type)new TAttribBool(check_get_real(semantic_stack_[2].ptAttribute) >= check_get_real(semantic_stack_[0].ptAttribute));
-			}
-    break;
-
-  case 34:
-#line 527 "parser.y"
-    {
-			  report_reduction("prec_4 <-- prec_6 > prec_5");
-			  yyval.ptAttribute = (user_arg_type)new TAttribBool(check_get_real(semantic_stack_[2].ptAttribute) > check_get_real(semantic_stack_[0].ptAttribute));
-			}
-    break;
-
-  case 35:
-#line 532 "parser.y"
-    {
-			  report_reduction("prec_4 <-- prec_6 <= prec_5");
-			  yyval.ptAttribute = (user_arg_type)new TAttribBool(check_get_real(semantic_stack_[2].ptAttribute) <= check_get_real(semantic_stack_[0].ptAttribute));
-			}
-    break;
-
-  case 36:
-#line 537 "parser.y"
-    {
-			  report_reduction("prec_4 <-- prec_6 < prec_5");
-			  yyval.ptAttribute = (user_arg_type)new TAttribBool(check_get_real(semantic_stack_[2].ptAttribute) < check_get_real(semantic_stack_[0].ptAttribute));
+			  if( rt_exec_ok() )
+			  {
+			    yyval.ptAttribute = (user_arg_type)new TAttribBool(check_get_real(semantic_stack_[2].ptAttribute) >= check_get_real(semantic_stack_[0].ptAttribute));
+			  }
+			  else
+			  {
+			    yyval.ptAttribute = (user_arg_type)new TAttribBool(false);
+			  }
 			}
     break;
 
   case 37:
-#line 545 "parser.y"
+#line 619 "parser.y"
+    {
+			  report_reduction("prec_4 <-- prec_6 > prec_5");
+			  if( rt_exec_ok() )
+			  {
+			    yyval.ptAttribute = (user_arg_type)new TAttribBool(check_get_real(semantic_stack_[2].ptAttribute) > check_get_real(semantic_stack_[0].ptAttribute));
+			  }
+			  else
+			  {
+			    yyval.ptAttribute = (user_arg_type)new TAttribBool(false);
+			  }
+			}
+    break;
+
+  case 38:
+#line 631 "parser.y"
+    {
+			  report_reduction("prec_4 <-- prec_6 <= prec_5");
+			  if( rt_exec_ok() )
+			  {
+			    yyval.ptAttribute = (user_arg_type)new TAttribBool(check_get_real(semantic_stack_[2].ptAttribute) <= check_get_real(semantic_stack_[0].ptAttribute));
+			  }
+			  else
+			  {
+			    yyval.ptAttribute = (user_arg_type)new TAttribBool(false);
+			  }
+			}
+    break;
+
+  case 39:
+#line 643 "parser.y"
+    {
+			  report_reduction("prec_4 <-- prec_6 < prec_5");
+			  if( rt_exec_ok() )
+			  {
+			    yyval.ptAttribute = (user_arg_type)new TAttribBool(check_get_real(semantic_stack_[2].ptAttribute) < check_get_real(semantic_stack_[0].ptAttribute));
+			  }
+			  else
+			  {
+			    yyval.ptAttribute = (user_arg_type)new TAttribBool(false);
+			  }
+			}
+    break;
+
+  case 40:
+#line 658 "parser.y"
     {
 			  report_reduction("prec_4 <-- prec_3");
 			  report_reduction("prec_4 <-- " + semantic_stack_[0].ptAttribute->toString());			  
@@ -591,77 +713,104 @@ yy::Parser::parse ()
 			}
     break;
 
-  case 38:
-#line 551 "parser.y"
+  case 41:
+#line 664 "parser.y"
     {
 
 			  report_reduction("prec_4 <-- prec_4 + prec_3");
 			  report_reduction("prec_4 <-- " + semantic_stack_[2].ptAttribute->toString() + " + " + semantic_stack_[0].ptAttribute->toString());
-			  
-			  yyval.ptAttribute = add(semantic_stack_[2].ptAttribute,semantic_stack_[0].ptAttribute);
-			  if( !yyval.ptAttribute )
-			  {
-			    rt_error("addition of " + EAttribType_to_str(semantic_stack_[2].ptAttribute->eType) +
-				     " and " + EAttribType_to_str(semantic_stack_[0].ptAttribute->eType) + " failed");
+			  if( rt_exec_ok() )
+			  { 
+			    yyval.ptAttribute = add(semantic_stack_[2].ptAttribute,semantic_stack_[0].ptAttribute);
+			    if( !yyval.ptAttribute )
+			    {
+			      rt_error("addition of " + EAttribType_to_str(semantic_stack_[2].ptAttribute->eType) +
+				       " and " + EAttribType_to_str(semantic_stack_[0].ptAttribute->eType) + " failed");
+			    }
 			  }
-			}
-    break;
-
-  case 39:
-#line 564 "parser.y"
-    {
-			  report_reduction("prec_4 <-- prec_4 - prec_3");
-			  report_reduction("prec_4 <-- " + semantic_stack_[2].ptAttribute->toString() + " - " + semantic_stack_[0].ptAttribute->toString());			  
-			  yyval.ptAttribute = sub(semantic_stack_[2].ptAttribute,semantic_stack_[0].ptAttribute);
-			  if( !yyval.ptAttribute )
+			  else
 			  {
-			    rt_error("subtraction of " + EAttribType_to_str(semantic_stack_[2].ptAttribute->eType) +
-				     " and " + EAttribType_to_str(semantic_stack_[0].ptAttribute->eType) + " failed");
-			  }
-			}
-    break;
-
-  case 40:
-#line 578 "parser.y"
-    {
-			  report_reduction("prec_3 <-- prec_2");
-			  report_reduction("prec_3 <-- " + semantic_stack_[0].ptAttribute->toString());			  
-			  yyval.ptAttribute = semantic_stack_[0].ptAttribute;
-			}
-    break;
-
-  case 41:
-#line 584 "parser.y"
-    {
-			  report_reduction("prec_3 <-- prec_3 * prec_2");
-			  report_reduction("prec_4 <-- " + semantic_stack_[2].ptAttribute->toString() + " * " + semantic_stack_[0].ptAttribute->toString());			  
-			  
-			  yyval.ptAttribute = mul(semantic_stack_[2].ptAttribute,semantic_stack_[0].ptAttribute);
-			  if( !yyval.ptAttribute )
-			  {
-			    rt_error("multiplication of " + EAttribType_to_str(semantic_stack_[2].ptAttribute->eType) +
-				     " and " + EAttribType_to_str(semantic_stack_[0].ptAttribute->eType) + " failed");
+			    yyval.ptAttribute = (user_arg_type)new TAttribReal(0);
 			  }
 			}
     break;
 
   case 42:
-#line 596 "parser.y"
+#line 683 "parser.y"
     {
-			  report_reduction("prec_3 <-- prec_3 / prec_2");
-			  report_reduction("prec_4 <-- " + semantic_stack_[2].ptAttribute->toString() + " / " + semantic_stack_[0].ptAttribute->toString());			  
-			  
-			  yyval.ptAttribute = div(semantic_stack_[2].ptAttribute,semantic_stack_[0].ptAttribute);
-			  if( !yyval.ptAttribute )
+			  report_reduction("prec_4 <-- prec_4 - prec_3");
+			  report_reduction("prec_4 <-- " + semantic_stack_[2].ptAttribute->toString() + " - " + semantic_stack_[0].ptAttribute->toString());			  
+			  if( rt_exec_ok() )
 			  {
-			    rt_error("division of " + EAttribType_to_str(semantic_stack_[2].ptAttribute->eType) +
-				     " and " + EAttribType_to_str(semantic_stack_[0].ptAttribute->eType) + " failed");
+			    yyval.ptAttribute = sub(semantic_stack_[2].ptAttribute,semantic_stack_[0].ptAttribute);
+			    if( !yyval.ptAttribute )
+			    {
+			      rt_error("subtraction of " + EAttribType_to_str(semantic_stack_[2].ptAttribute->eType) +
+				       " and " + EAttribType_to_str(semantic_stack_[0].ptAttribute->eType) + " failed");
+			    }
+			  }
+			  else
+			  {
+			    yyval.ptAttribute = (user_arg_type)new TAttribReal(0);
 			  }
 			}
     break;
 
   case 43:
-#line 611 "parser.y"
+#line 704 "parser.y"
+    {
+			  report_reduction("prec_3 <-- prec_2");
+			  report_reduction("prec_3 <-- " + semantic_stack_[0].ptAttribute->toString());
+			  yyval.ptAttribute = semantic_stack_[0].ptAttribute;
+			}
+    break;
+
+  case 44:
+#line 710 "parser.y"
+    {
+			  report_reduction("prec_3 <-- prec_3 * prec_2");
+			  report_reduction("prec_4 <-- " + semantic_stack_[2].ptAttribute->toString() + " * " + semantic_stack_[0].ptAttribute->toString());			  
+			  
+			  if( rt_exec_ok() )
+			  {
+			    yyval.ptAttribute = mul(semantic_stack_[2].ptAttribute,semantic_stack_[0].ptAttribute);
+			    if( !yyval.ptAttribute )
+			    {
+			      rt_error("multiplication of " + EAttribType_to_str(semantic_stack_[2].ptAttribute->eType) +
+				       " and " + EAttribType_to_str(semantic_stack_[0].ptAttribute->eType) + " failed");
+			    }
+			  }
+			  else
+			  {
+			    yyval.ptAttribute = (user_arg_type)new TAttribReal(0);
+			  }
+			}
+    break;
+
+  case 45:
+#line 729 "parser.y"
+    {
+			  report_reduction("prec_3 <-- prec_3 / prec_2");
+			  report_reduction("prec_4 <-- " + semantic_stack_[2].ptAttribute->toString() + " / " + semantic_stack_[0].ptAttribute->toString());			  
+
+			  if( rt_exec_ok() )
+			  {			  
+			    yyval.ptAttribute = div(semantic_stack_[2].ptAttribute,semantic_stack_[0].ptAttribute);
+			    if( !yyval.ptAttribute )
+			    {
+			      rt_error("division of " + EAttribType_to_str(semantic_stack_[2].ptAttribute->eType) +
+				       " and " + EAttribType_to_str(semantic_stack_[0].ptAttribute->eType) + " failed");
+			    }
+			  }
+			  else
+			  {
+			    yyval.ptAttribute = (user_arg_type)new TAttribReal(0);
+			  }
+			}
+    break;
+
+  case 46:
+#line 751 "parser.y"
     {
 			  report_reduction("prec_2 <-- prec_1");
 			  report_reduction("prec_2 <-- " + semantic_stack_[0].ptAttribute->toString());			  
@@ -669,18 +818,24 @@ yy::Parser::parse ()
 			}
     break;
 
-  case 44:
-#line 617 "parser.y"
+  case 47:
+#line 757 "parser.y"
     {
 			  report_reduction("prec_2 <-- ! prec_2");
 			  report_reduction("prec_2 <-- ! " + semantic_stack_[0].ptAttribute->toString());
-
-			  yyval.ptAttribute = (user_arg_type)new TAttribBool(!check_get_bool(semantic_stack_[0].ptAttribute));
+			  if( rt_exec_ok() )
+			  {
+			    yyval.ptAttribute = (user_arg_type)new TAttribBool(!check_get_bool(semantic_stack_[0].ptAttribute));
+			  }
+			  else
+			  {
+			    yyval.ptAttribute = (user_arg_type)new TAttribBool(false);
+			  }
 			}
     break;
 
-  case 45:
-#line 624 "parser.y"
+  case 48:
+#line 770 "parser.y"
     {
 			  report_reduction("prec_2 <-- + prec_2");
 			  report_reduction("prec_2 <-- + " + semantic_stack_[0].ptAttribute->toString());
@@ -689,36 +844,43 @@ yy::Parser::parse ()
 			}
     break;
 
-  case 46:
-#line 631 "parser.y"
+  case 49:
+#line 777 "parser.y"
     {
 			  report_reduction("prec_2 <-- - prec_2");
 			  report_reduction("prec_2 <-- - " + semantic_stack_[0].ptAttribute->toString());
 
-			  if( semantic_stack_[0].ptAttribute->eType != FX_ARRAY )
-			  {
-			    yyval.ptAttribute = sub((user_arg_type)new TAttribInt(0), semantic_stack_[0].ptAttribute);
-			    if( !yyval.ptAttribute )
+			  if( rt_exec_ok() )
+			  {			  
+			    if( semantic_stack_[0].ptAttribute->eType != FX_ARRAY )
 			    {
-			      rt_error("negation of " + EAttribType_to_str(semantic_stack_[0].ptAttribute->eType) + " failed");
+			      yyval.ptAttribute = sub((user_arg_type)new TAttribInt(0), semantic_stack_[0].ptAttribute);
+			      if( !yyval.ptAttribute )
+			      {
+				rt_error("negation of " + EAttribType_to_str(semantic_stack_[0].ptAttribute->eType) + " failed");
+			      }
+			    }
+			    else
+			    {
+			      magic_pointer<TAttribArray> tar = rcp_static_cast<TAttribArray>(semantic_stack_[0].ptAttribute);
+			      vector<TScalar> barf(tar->tValue);
+			      
+			      for(unsigned i = 0; i < barf.size(); ++i)
+			      {
+				barf[i] = -barf[i];
+			      }
+			      yyval.ptAttribute = (user_arg_type)new TAttribArray(barf);
 			    }
 			  }
 			  else
 			  {
-			    magic_pointer<TAttribArray> tar = rcp_static_cast<TAttribArray>(semantic_stack_[0].ptAttribute);
-			    vector<TScalar> barf(tar->tValue);
-
-			    for(unsigned i = 0; i < barf.size(); ++i)
-			    {
-			      barf[i] = -barf[i];
-			    }
-			    yyval.ptAttribute = (user_arg_type)new TAttribArray(barf);
+			    yyval.ptAttribute = (user_arg_type)new TAttribReal(0);
 			  }
 			}
     break;
 
-  case 47:
-#line 660 "parser.y"
+  case 50:
+#line 813 "parser.y"
     {
 			  report_reduction("prec_1 <-- quoted_string");
 			  report_reduction("prec_1 <-- \"" + string(semantic_stack_[0].sIdent) + "\"");
@@ -727,17 +889,17 @@ yy::Parser::parse ()
 			}
     break;
 
-  case 48:
-#line 667 "parser.y"
+  case 51:
+#line 820 "parser.y"
     {
 			  report_reduction("prec_1 <-- PARAM prec_1");
 			  
-			  FIXME("recovering a paramater (how?)");
+			  FIXME("recovering a command line paramater (how?)");
 			}
     break;
 
-  case 49:
-#line 673 "parser.y"
+  case 52:
+#line 826 "parser.y"
     {
 			  report_reduction("prec_1 <-- DEFINED name");
 
@@ -752,8 +914,8 @@ yy::Parser::parse ()
 			}
     break;
 
-  case 50:
-#line 686 "parser.y"
+  case 53:
+#line 839 "parser.y"
     {
 			  report_reduction("prec_1 <-- BOOL");
 			  
@@ -761,8 +923,8 @@ yy::Parser::parse ()
 			}
     break;
 
-  case 51:
-#line 692 "parser.y"
+  case 54:
+#line 845 "parser.y"
     {
 			  report_reduction("prec_1 <-- INTEGER");
 			  
@@ -770,8 +932,8 @@ yy::Parser::parse ()
 			}
     break;
 
-  case 52:
-#line 698 "parser.y"
+  case 55:
+#line 851 "parser.y"
     {
 			    report_reduction("prec_1 <-- REAL");
 			    
@@ -779,8 +941,8 @@ yy::Parser::parse ()
                           }
     break;
 
-  case 53:
-#line 705 "parser.y"
+  case 56:
+#line 858 "parser.y"
     {
 			  report_reduction("prec_1 <-- ( expression )");
 			  report_reduction("prec_1 <-- ( " + semantic_stack_[1].ptAttribute->toString() + " )");
@@ -789,51 +951,52 @@ yy::Parser::parse ()
 			}
     break;
 
-  case 54:
-#line 712 "parser.y"
+  case 57:
+#line 865 "parser.y"
     {
 			  report_reduction("prec_1 <-- color");
 			  yyval.ptAttribute = (user_arg_type)new TAttribColor(*semantic_stack_[0].ptColor);
 			}
     break;
 
-  case 55:
-#line 717 "parser.y"
+  case 58:
+#line 870 "parser.y"
     {
 			  report_reduction("prec_1 <-- THIS");
 			  yyval.ptAttribute = DATA;
 			}
     break;
 
-  case 56:
-#line 722 "parser.y"
+  case 59:
+#line 875 "parser.y"
     {
 			  report_reduction("prec_1 <-- instance");
 			  yyval.ptAttribute = semantic_stack_[0].ptAttribute;			  
                         }
     break;
 
-  case 57:
-#line 727 "parser.y"
+  case 60:
+#line 880 "parser.y"
     {
 			  report_reduction("prec_1 <-- function_call");
                         }
     break;
 
-  case 58:
-#line 731 "parser.y"
+  case 61:
+#line 884 "parser.y"
     {
 			  report_reduction("prec_1 <-- any_vector");
                         }
     break;
 
-  case 59:
-#line 739 "parser.y"
+  case 62:
+#line 892 "parser.y"
     {
 			  report_reduction("function_call <-- potential_name ( )");
+			  report_reduction("(detail) function_call <-- " + string(semantic_stack_[2].sIdent) +  "( )");
+			    
 			  if( rt_exec_ok() )
 			  {
-			    report_reduction("(detail) function_call <-- " + string(semantic_stack_[2].sIdent) +  "( )");
 			    
 #if defined(DEBUG_IT)
 			    rt_error("about to call a function");
@@ -853,19 +1016,22 @@ yy::Parser::parse ()
 			      rt_error("function " + string(semantic_stack_[2].sIdent) + " does not exist");
 			      yyval.ptAttribute = (user_arg_type)new TAttribute();
 			    }
+			  } // exec ok
+			  else
+			  {
+			    yyval.ptAttribute = (user_arg_type)new TAttribute();
 			  }
 			}
     break;
 
-  case 60:
-#line 766 "parser.y"
+  case 63:
+#line 924 "parser.y"
     {
 			  report_reduction("function_call <-- potential_name ( expression )");
+			  report_reduction("(detail) function_call <-- " + string(semantic_stack_[3].sIdent) + "( " + semantic_stack_[1].ptAttribute->toString() + " )");
+			  
 			  if( rt_exec_ok() )
-			  {
-			    report_reduction("(detail) function_call <-- " + string(semantic_stack_[3].sIdent) + "( " + semantic_stack_[1].ptAttribute->toString() + " )");
-			    
-			    
+			  {			    
 #if defined(DEBUG_IT)
 			    rt_error("about to call a function");
 #endif /* defined(DEBUG_IT) */
@@ -886,19 +1052,22 @@ yy::Parser::parse ()
 			      rt_error("function " + string(semantic_stack_[3].sIdent) + " does not exist");
 			      yyval.ptAttribute = (user_arg_type)new TAttribute();
 			    }			    
-			  }
+			  } // exec ok.
+			  else
+			  {
+			    yyval.ptAttribute = (user_arg_type)new TAttribute();
+			  }			  
 			}
     break;
 
-  case 61:
-#line 796 "parser.y"
+  case 64:
+#line 957 "parser.y"
     {
 			  report_reduction("function_call <-- potential_name ( expression , expression )");
+			  report_reduction("(detail) function_call <-- " + string(semantic_stack_[5].sIdent) + "( " + semantic_stack_[3].ptAttribute->toString() + "," + semantic_stack_[1].ptAttribute->toString() + " )");
+			    
 			  if( rt_exec_ok() )
 			  {
-			    report_reduction("(detail) function_call <-- " + string(semantic_stack_[5].sIdent) + "( " + semantic_stack_[3].ptAttribute->toString() + "," + semantic_stack_[1].ptAttribute->toString() + " )");
-			    
-			    
 #if defined(DEBUG_IT)
 			    rt_error("about to call a function");
 #endif /* defined(DEBUG_IT) */
@@ -920,92 +1089,161 @@ yy::Parser::parse ()
 			      rt_error("function " + string(semantic_stack_[5].sIdent) + " does not exist");
 			      yyval.ptAttribute = (user_arg_type)new TAttribute();
 			    }			    
-			  }
+			  } // exec ok.
+			  else
+			  {
+			    yyval.ptAttribute = (user_arg_type)new TAttribute();
+			  }			  
 			}
     break;
 
-  case 62:
-#line 830 "parser.y"
+  case 65:
+#line 991 "parser.y"
+    {
+			  report_reduction("function_call <-- potential_name ( expression , expression , expression )");
+			  report_reduction("(detail) function_call <-- " + string(semantic_stack_[7].sIdent) + "( " + semantic_stack_[5].ptAttribute->toString() + "," + semantic_stack_[3].ptAttribute->toString() + "," + semantic_stack_[1].ptAttribute->toString() + " )");
+			  
+			  if( rt_exec_ok() )
+			  {
+#if defined(DEBUG_IT)
+			    rt_error("about to call a function");
+#endif /* defined(DEBUG_IT) */
+			    
+			    // Lookup using all objects in the current stack,
+			    // then check the global table...
+			    TUserFunctionMap functions = all_user_functions();
+			    
+			    if( functions.find(semantic_stack_[7].sIdent) != functions.end() )
+			    {
+			      user_arg_vector args;
+			      args.push_back(semantic_stack_[5].ptAttribute);
+			      args.push_back(semantic_stack_[3].ptAttribute);
+			      args.push_back(semantic_stack_[1].ptAttribute);			      
+			      yyval.ptAttribute = functions[semantic_stack_[7].sIdent]->call(args);		      
+			    }
+			    else
+			    {
+			      rt_error("function " + string(semantic_stack_[7].sIdent) + " does not exist");
+			      yyval.ptAttribute = (user_arg_type)new TAttribute();
+			    }			    
+			  } // exec ok.
+			  else
+			  {
+			    yyval.ptAttribute = (user_arg_type)new TAttribute();
+			  }			  
+			}
+    break;
+
+  case 66:
+#line 1027 "parser.y"
     {
 			    report_reduction("color <-- { RED expression GREEN expression BLUE expression }");
 			    report_reduction("color <-- { RED " + semantic_stack_[5].ptAttribute->toString() +
 					     " GREEN " + semantic_stack_[3].ptAttribute->toString() +
 					     " BLUE " + semantic_stack_[1].ptAttribute->toString() + " }");
-
-			    double r = check_get_real(semantic_stack_[5].ptAttribute);
-			    double g = check_get_real(semantic_stack_[3].ptAttribute);
-			    double b = check_get_real(semantic_stack_[1].ptAttribute);
-
-			    GOM.debug() << "r=" << r << " g=" << g << " b=" << b << endl;
-			    TColor* c = new TColor(r,g,b);
-			    GOM.debug() << "Here's what was really created: ";
-			    c->printDebug(""); cerr << endl;
-			    
-			    yyval.ptColor = magic_pointer<TColor>(c);
+			    if( rt_exec_ok() )
+			    {
+			      double r = check_get_real(semantic_stack_[5].ptAttribute);
+			      double g = check_get_real(semantic_stack_[3].ptAttribute);
+			      double b = check_get_real(semantic_stack_[1].ptAttribute);
+			      
+			      GOM.debug() << "r=" << r << " g=" << g << " b=" << b << endl;
+			      TColor* c = new TColor(r,g,b);
+			      GOM.debug() << "Here's what was really created: ";
+			      c->printDebug(""); cerr << endl;
+			      
+			      yyval.ptColor = magic_pointer<TColor>(c);
+			    }
+			    else
+			    {
+			      yyval.ptColor = magic_pointer<TColor>(new TColor());
+			    }
 			  }
     break;
 
-  case 63:
-#line 850 "parser.y"
+  case 67:
+#line 1053 "parser.y"
     {
-			    report_reduction("any_vector <-- '<' vector_insides '>'");
+			    report_reduction("any_vector <-- < vector_insides >");
 			    yyval.ptAttribute = semantic_stack_[1].ptAttribute;
                           }
     break;
 
-  case 64:
-#line 863 "parser.y"
+  case 68:
+#line 1066 "parser.y"
     {
 			    report_reduction("vector_insides <-- expression");
-			    double e = check_get_real(semantic_stack_[0].ptAttribute);
-			    yyval.ptAttribute = (user_arg_type)new TAttribArray(e);
-			  }
-    break;
-
-  case 65:
-#line 869 "parser.y"
-    {
-			    report_reduction("vector_insides <-- vector_insides ',' expression");
-			    if( semantic_stack_[2].ptAttribute->eType == FX_ARRAY )
-			    {
+			    if( rt_exec_ok() )
+			    {			    
 			      double e = check_get_real(semantic_stack_[0].ptAttribute);
-			      rcp_static_cast<TAttribArray>(semantic_stack_[2].ptAttribute)->tValue.push_back(e);
-			      yyval.ptAttribute = semantic_stack_[2].ptAttribute;
+			      yyval.ptAttribute = (user_arg_type)new TAttribArray(e);
 			    }
 			    else
 			    {
-			      rt_error("lhs of ',' was not part of an array.");
+			      yyval.ptAttribute = (user_arg_type)new TAttribArray(double(0));
 			    }
 			  }
     break;
 
-  case 66:
-#line 893 "parser.y"
+  case 69:
+#line 1079 "parser.y"
+    {
+			    report_reduction("vector_insides <-- vector_insides ',' expression");
+			    if( rt_exec_ok() )
+			    {			    
+			      if( semantic_stack_[2].ptAttribute->eType == FX_ARRAY )
+			      {
+				double e = check_get_real(semantic_stack_[0].ptAttribute);
+				rcp_static_cast<TAttribArray>(semantic_stack_[2].ptAttribute)->tValue.push_back(e);
+				yyval.ptAttribute = semantic_stack_[2].ptAttribute;
+			      }
+			      else
+			      {
+				rt_error("lhs of ',' was not part of an array.");
+			      }
+			    }
+			    else
+			    {
+			      yyval.ptAttribute = (user_arg_type)new TAttribArray(0);
+			    }
+			  }
+    break;
+
+  case 70:
+#line 1110 "parser.y"
     {
 			    report_reduction("name <-- IDENTIFIER");
 			    yyval.sIdent = semantic_stack_[0].sIdent;
 			  }
     break;
 
-  case 67:
-#line 907 "parser.y"
+  case 71:
+#line 1124 "parser.y"
     {
 			    report_reduction("class <-- : EXTENDS IDENTIFIER");
-                            if ( DATAMAP.find (semantic_stack_[0].sIdent) == DATAMAP.end() )
-                            {
-			      rt_error ("trying to extend from non existing object");
-			      exit (1);
-                            }
 
-			    //			    GOM.debug() << "the type of the parent is " << DATAMAP [$1].second->AttributeName() << endl;
-                            PARENT_OBJECT = attr_to_base(DATAMAP [semantic_stack_[0].sIdent].second);
-			    //			    GOM.debug() << "the parent's classname is " << PARENT_OBJECT->className() << endl;
-			    yyval.sIdent = PARENT_OBJECT->className();
+			    if( rt_exec_ok() )
+			    {			    
+			      if ( DATAMAP.find (semantic_stack_[0].sIdent) == DATAMAP.end() )
+			      {
+				rt_error ("trying to extend from non existing object");
+				exit (1);
+			      }
+			      
+			      // GOM.debug() << "the type of the parent is " << DATAMAP [$1].second->AttributeName() << endl;
+			      PARENT_OBJECT = attr_to_base(DATAMAP [semantic_stack_[0].sIdent].second);
+			      // GOM.debug() << "the parent's classname is " << PARENT_OBJECT->className() << endl;
+			      yyval.sIdent = PARENT_OBJECT->className();
+			    }
+			    else
+			    {
+			      yyval.sIdent = "none";
+			    }
 			  }
     break;
 
-  case 68:
-#line 921 "parser.y"
+  case 72:
+#line 1146 "parser.y"
     {
 			    report_reduction("class <-- : CLASS IDENTIFIER");
 			    PARENT_OBJECT = (magic_pointer<TBaseClass>)NULL;
@@ -1013,8 +1251,8 @@ yy::Parser::parse ()
 			  }
     break;
 
-  case 69:
-#line 927 "parser.y"
+  case 73:
+#line 1152 "parser.y"
     {
 			    report_reduction("class <-- : CLASS string_math");
 			    PARENT_OBJECT = (magic_pointer<TBaseClass>)NULL;
@@ -1022,81 +1260,93 @@ yy::Parser::parse ()
 			  }
     break;
 
-  case 70:
-#line 936 "parser.y"
+  case 74:
+#line 1161 "parser.y"
     {
 			    report_reduction("string_math <-- : QUOTED_STRING");
 			    yyval.sIdent = semantic_stack_[0].sIdent;
                           }
     break;
 
-  case 71:
-#line 941 "parser.y"
+  case 75:
+#line 1166 "parser.y"
     {
 			    report_reduction("string_math <-- : function_call");
-			    yyval.sIdent = check_get_string(semantic_stack_[0].ptAttribute);
+			    if( rt_exec_ok() )
+			    {			    
+			      yyval.sIdent = check_get_string(semantic_stack_[0].ptAttribute);
+			    }
+			    else
+			    {
+			      yyval.sIdent = "";
+			    }
 			  }
     break;
 
-  case 72:
-#line 946 "parser.y"
+  case 76:
+#line 1178 "parser.y"
     {
 			    report_reduction("string_math <-- : string_math + QUOTED_STRING");
 			    yyval.sIdent = semantic_stack_[2].sIdent + semantic_stack_[0].sIdent;
 			  }
     break;
 
-  case 73:
-#line 951 "parser.y"
+  case 77:
+#line 1183 "parser.y"
     {
 			    report_reduction("string_math <-- : string_math + function_call");
-			    yyval.sIdent = semantic_stack_[2].sIdent + check_get_string(semantic_stack_[0].ptAttribute);
+			    if( rt_exec_ok() )
+			    {			    
+			      yyval.sIdent = semantic_stack_[2].sIdent + check_get_string(semantic_stack_[0].ptAttribute);
+			    }
+			    else
+			    {
+			      yyval.sIdent = "";
+			    }
 			  }
     break;
 
-  case 74:
-#line 963 "parser.y"
+  case 78:
+#line 1202 "parser.y"
     {
 			  report_reduction("params <-- param ;");
                         }
     break;
 
-  case 75:
-#line 967 "parser.y"
+  case 79:
+#line 1206 "parser.y"
     {
-			  report_reduction("params <-- error ;");
-			  rt_error("expected parameter expression");
+			  report_reduction("params <-- param_if_statement");
                         }
     break;
 
-  case 76:
-#line 972 "parser.y"
+  case 80:
+#line 1210 "parser.y"
     {
 			  report_reduction("params <-- params param ;");
 			}
     break;
 
-  case 77:
-#line 976 "parser.y"
+  case 81:
+#line 1214 "parser.y"
     {
-			  report_reduction("params <-- params error ;");
-			  rt_error("expected parameter expression");
-			}
+			  report_reduction("params <-- params param_if_statement");
+                        }
     break;
 
-  case 78:
-#line 983 "parser.y"
+  case 82:
+#line 1220 "parser.y"
     {
 			  report_reduction("param <-- IDENTIFIER = expression");
 			  if( rt_exec_ok() )
 			  {
 			    SetParameter (semantic_stack_[2].sIdent, semantic_stack_[0].ptAttribute);
-			  }
+			  } // exec ok.
 			}
     break;
 
-  case 79:
-#line 991 "parser.y"
+  case 83:
+#line 1228 "parser.y"
     {
 			  report_reduction("param <-- expression");
 
@@ -1142,40 +1392,40 @@ yy::Parser::parse ()
 			      magic_pointer<TProcedural> proc = get_procedural_var(semantic_stack_[0].ptAttribute, false);
 			      if( !!proc )
 			      {
-				FIXME("Potentially do something with (" + semantic_stack_[0].ptAttribute->toString() + ") in the current object");
+				FIXME("Potentially do something with the procedural variable (" + semantic_stack_[0].ptAttribute->toString() + ") in the current object");
 			      }
 			    }
-			  }
+			  } // exec ok
 			}
     break;
 
-  case 80:
-#line 1042 "parser.y"
+  case 84:
+#line 1279 "parser.y"
     {
 			  report_reduction("param <-- reserved_words = expression");
 			  if( rt_exec_ok() )
 			  {
 			    SetParameter (semantic_stack_[2].sIdent, semantic_stack_[0].ptAttribute);
-			  }
+			  } // exec ok.
 			}
     break;
 
-  case 81:
-#line 1050 "parser.y"
+  case 85:
+#line 1287 "parser.y"
     {
 			  report_reduction("param <-- object_param");
 			}
     break;
 
-  case 82:
-#line 1054 "parser.y"
+  case 86:
+#line 1291 "parser.y"
     {
 			  report_reduction("param <-- scene_param");
 			}
     break;
 
-  case 83:
-#line 1060 "parser.y"
+  case 87:
+#line 1297 "parser.y"
     {
 			  // If an object, object->addFilter.
 			  // If a scene, scene->addImageFilter
@@ -1206,12 +1456,12 @@ yy::Parser::parse ()
 			    {
 			      SetParameter(semantic_stack_[2].sIdent,semantic_stack_[0].ptAttribute);
 			    }
-			  }
+			  } // exec ok.
 			}
     break;
 
-  case 84:
-#line 1096 "parser.y"
+  case 88:
+#line 1333 "parser.y"
     {
 			  report_reduction("scene_param <-- LIGHT = instance");
 			  if( rt_exec_ok() )
@@ -1253,12 +1503,12 @@ yy::Parser::parse ()
 				rt_error("NULL light given (BUG?)");
 			      }
 			    }
-			  }
+			  } // exec ok.
 			}
     break;
 
-  case 85:
-#line 1140 "parser.y"
+  case 89:
+#line 1377 "parser.y"
     {
 			  report_reduction("scene_param <-- OUTPUT = instance");
 			  if( rt_exec_ok() )
@@ -1292,74 +1542,153 @@ yy::Parser::parse ()
 			    {
 			      SetParameter(semantic_stack_[2].sIdent,semantic_stack_[0].ptAttribute);
 			    }
-			  }
+			  } // exec ok.
 			}
     break;
 
-  case 86:
-#line 1178 "parser.y"
+  case 90:
+#line 1415 "parser.y"
+    {
+			    /* Nothing to do... */			    
+			    report_reduction("param_if_statement <-- if_head");
+			  }
+    break;
+
+  case 91:
+#line 1420 "parser.y"
+    {
+			    report_reduction("param_if_statement (start) <-- if_head ELSE");
+			    rt_enter_condition(!semantic_stack_[1].gValue);
+                          }
+    break;
+
+  case 92:
+#line 1425 "parser.y"
+    {
+			    report_reduction("param_if_statement (start) <-- if_head ELSE param_if_body");
+			    rt_leave_condition();
+                          }
+    break;
+
+  case 93:
+#line 1432 "parser.y"
+    {
+			    report_reduction("param_if_head (start) <-- if ( expression )");
+
+			    if( rt_exec_ok() )
+			    {			    
+			      bool b = check_get_bool(semantic_stack_[1].ptAttribute);
+			      rt_enter_condition(b);
+			    }
+			    else
+			    {
+			      rt_enter_condition(false);
+			    }
+			  }
+    break;
+
+  case 94:
+#line 1446 "parser.y"
+    {
+			    report_reduction("param_if_head (cont) <-- if ( expression ) param_if_body");
+			    rt_leave_condition();
+			    if( rt_exec_ok() )
+			    {			    
+			      yyval.gValue = check_get_bool(semantic_stack_[3].ptAttribute);
+			    }
+			    else
+			    {
+			      yyval.gValue = true; // Forces any else clause to be false
+			    }
+                          }
+    break;
+
+  case 95:
+#line 1461 "parser.y"
+    {
+			   report_reduction("param_if_body <-- { }");
+			 }
+    break;
+
+  case 96:
+#line 1465 "parser.y"
+    {
+			   report_reduction("param_if_body <-- { params }");
+			 }
+    break;
+
+  case 97:
+#line 1469 "parser.y"
+    {
+			   report_reduction("param_if_body <-- { error }");
+			   rt_error("expected parameter list or nothing");
+                         }
+    break;
+
+  case 98:
+#line 1476 "parser.y"
     {
 			  report_reduction("potential_name <-- name");
 			}
     break;
 
-  case 87:
-#line 1182 "parser.y"
+  case 99:
+#line 1480 "parser.y"
     {
 			  report_reduction("potential_name <-- reserved_words");
 			}
     break;
 
-  case 88:
-#line 1189 "parser.y"
+  case 100:
+#line 1487 "parser.y"
     {
 			    report_reduction("reserved_words <-- BLUE");
 			    yyval.sIdent = semantic_stack_[0].sIdent;
 			  }
     break;
 
-  case 89:
-#line 1194 "parser.y"
+  case 101:
+#line 1492 "parser.y"
     {
 			    report_reduction("reserved_words <-- CLASS");
 			    yyval.sIdent = semantic_stack_[0].sIdent;
 			  }
     break;
 
-  case 90:
-#line 1199 "parser.y"
+  case 102:
+#line 1497 "parser.y"
     {
 			    report_reduction("reserved_words <-- DEFINE");
 			    yyval.sIdent = semantic_stack_[0].sIdent;
 			  }
     break;
 
-  case 91:
-#line 1204 "parser.y"
+  case 103:
+#line 1502 "parser.y"
     {
 			    report_reduction("reserved_words <-- EXTENDS");
 			    yyval.sIdent = semantic_stack_[0].sIdent;
 			  }
     break;
 
-  case 92:
-#line 1209 "parser.y"
+  case 104:
+#line 1507 "parser.y"
     {
 			    report_reduction("reserved_words <-- GREEN");
 			    yyval.sIdent = semantic_stack_[0].sIdent;
 			  }
     break;
 
-  case 93:
-#line 1214 "parser.y"
+  case 105:
+#line 1512 "parser.y"
     {
 			    report_reduction("reserved_words <-- RED");
 			    yyval.sIdent = semantic_stack_[0].sIdent;
 			  }
     break;
 
-  case 94:
-#line 1219 "parser.y"
+  case 106:
+#line 1517 "parser.y"
     {
 			    report_reduction("reserved_words <-- RENDERER");
 			    yyval.sIdent = semantic_stack_[0].sIdent;
@@ -1370,7 +1699,7 @@ yy::Parser::parse ()
     }
 
 /* Line 446 of lalr1.cc.  */
-#line 1373 "parser.cpp"
+#line 1702 "parser.cpp"
 
   state_stack_.pop (len_);
   semantic_stack_.pop (len_);
@@ -1544,27 +1873,29 @@ yy::Parser::lex_ ()
 
 /* YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
    STATE-NUM.  */
-const short yy::Parser::pact_ninf_ = -85;
+const short yy::Parser::pact_ninf_ = -127;
 const short
 yy::Parser::pact_[] =
 {
-     -85,   149,   -85,   -85,   -85,   -85,    24,   -85,   -85,    75,
-     333,   -85,   -85,   -85,   -85,   309,    31,   -85,    37,   269,
-     269,   269,    59,   269,   269,   -85,    60,   -85,   -85,   -85,
-      58,    70,    76,    22,   -85,   106,    33,   -85,   -85,   -85,
-     -85,   -85,    65,   -85,    67,   -85,    57,   -85,   -85,   -85,
-     -85,   -85,    73,   -85,   269,    31,   -85,   -85,   269,   -85,
-     -85,    69,   269,   -85,   -85,    15,   -85,   -85,   269,   269,
-     269,   269,   269,   269,   269,   269,   269,   269,   269,   269,
-      72,     8,   108,    77,    54,    74,   -85,    94,   269,   -85,
-      16,    76,    22,   -85,   -85,    -3,    -3,    -3,    -3,    33,
-      33,   -85,   -85,   189,   -85,   -85,   -10,   -85,   -85,   -85,
-      75,    87,   -85,   -85,   269,   -85,   333,    12,   -85,   -85,
-      88,    -6,    82,    83,    89,   -85,   -85,   229,   104,   -85,
-     -85,    97,   -85,   269,   -85,    16,   134,   -85,   -85,    20,
-     -85,   269,    54,    54,    54,   109,   -85,   110,   -85,   269,
-     113,   -85,   269,   -85,   -85,   -85,   -85,   -85,   -85,   -85,
-     -85,   -85,   -85,   107,   -85
+    -127,   175,  -127,  -127,  -127,  -127,  -127,   -32,  -127,  -127,
+      20,   117,  -127,  -127,  -127,  -127,   585,    13,    13,  -127,
+      -2,   544,   544,   503,    26,   544,   503,  -127,    17,  -127,
+    -127,  -127,    14,    38,    47,    49,  -127,    29,    40,  -127,
+    -127,  -127,  -127,  -127,    34,  -127,    39,  -127,    45,  -127,
+    -127,  -127,  -127,  -127,    46,  -127,   503,    13,  -127,  -127,
+     503,   503,  -127,  -127,    62,   503,  -127,  -127,    -3,  -127,
+    -127,   544,   544,   544,   544,   544,   544,   544,   544,   544,
+     544,   544,   544,    63,   462,    79,    65,    12,    67,    66,
+    -127,    92,   503,  -127,     4,    47,    49,  -127,  -127,    61,
+      61,    61,    61,    40,    40,  -127,  -127,   216,  -127,  -127,
+     -18,  -127,  -127,  -127,    20,    71,  -127,  -127,  -127,   503,
+    -127,   117,   380,  -127,  -127,   -22,    69,    70,    72,    73,
+    -127,  -127,   257,    76,  -127,  -127,  -127,    77,    74,  -127,
+     503,  -127,     4,   108,    80,  -127,  -127,   421,   503,    12,
+      12,    12,   503,  -127,    88,  -127,  -127,  -127,   503,    -4,
+    -127,   503,  -127,  -127,  -127,  -127,  -127,  -127,  -127,    91,
+    -127,    93,  -127,  -127,   503,    95,  -127,   298,  -127,    98,
+    -127,    93,    97,  -127,   339,  -127,  -127,  -127,  -127
 };
 
 /* YYDEFACT[S] -- default rule to reduce with in state S when YYTABLE
@@ -1573,130 +1904,186 @@ yy::Parser::pact_[] =
 const unsigned char
 yy::Parser::defact_[] =
 {
-       2,     0,     1,    50,    52,    51,    66,    47,    88,    89,
-      90,    91,    92,    93,    94,     0,     0,    55,     0,     0,
-       0,     0,     0,     0,     0,     3,    11,     6,     5,    56,
-       0,    24,    25,    27,    29,    32,    37,    40,    43,    57,
-      54,    58,    19,    20,     0,    87,    66,    70,    89,    90,
-      71,    86,    69,    66,     0,     0,    48,    49,     0,    45,
-      46,     0,     0,    44,    64,     0,    12,     4,     0,     0,
+       2,     0,     1,    27,    53,    55,    54,    70,    50,   100,
+     101,   102,   103,   104,   105,   106,     0,     0,     0,    58,
+       0,     0,     0,     0,     0,     0,     0,     3,    11,     6,
+       4,    59,     0,    26,    28,    30,    32,    35,    40,    43,
+      46,    60,    57,    61,    21,    22,     0,    99,    70,    74,
+     101,   102,    75,    98,    73,    70,     0,     0,    51,    52,
+       0,     0,    48,    49,     0,     0,    47,    68,     0,    12,
+       5,     0,     0,     0,     0,     0,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,     0,    53,     0,     0,    63,
-       0,    26,    28,    30,    31,    34,    33,    36,    35,    38,
-      39,    41,    42,     0,    21,    59,     0,    72,    73,    17,
-       0,     0,    19,     9,     0,    65,     0,     0,    13,    14,
-       0,    66,     0,     0,     0,    23,    79,     0,     0,    81,
-      82,    87,    60,     0,    18,     0,     0,    15,     7,     0,
-      75,     0,     0,     0,     0,     0,    22,     0,    74,     0,
-       0,    10,     0,    16,     8,    78,    83,    84,    85,    77,
-      76,    80,    61,     0,    62
+      56,     0,     0,    67,     0,    29,    31,    33,    34,    37,
+      36,    39,    38,    41,    42,    44,    45,     0,    23,    62,
+       0,    76,    77,    18,     0,     0,    21,    19,     9,     0,
+      69,     0,     0,    13,    14,    70,     0,     0,     0,     0,
+      25,    83,     0,     0,    85,    86,    79,    90,    99,    63,
+       0,    20,     0,     0,    27,    15,     7,     0,     0,     0,
+       0,     0,     0,    24,     0,    81,    78,    91,     0,     0,
+      10,     0,    17,    16,     8,    82,    87,    88,    89,     0,
+      80,     0,    84,    64,     0,     0,    93,     0,    92,     0,
+      66,     0,    27,    95,     0,    65,    94,    97,    96
 };
 
 /* YYPGOTO[NTERM-NUM].  */
-const short
+const signed char
 yy::Parser::pgoto_[] =
 {
-     -85,   -85,   -84,   -85,   -85,   -85,   -85,   -85,    26,   -83,
-     -74,   -85,   -85,    -1,   -85,    79,    95,     1,    25,     2,
-     -14,   128,    -5,   -85,   -85,   -85,    -8,   -85,   -85,   -85,
-      36,   -85,   -85,   -85,    -7
+    -127,  -127,  -107,  -127,  -127,  -127,  -127,  -127,   -11,   -86,
+     -83,  -127,  -127,    -1,  -127,    78,    68,     8,   -31,    19,
+      -9,   122,    -5,  -127,  -127,  -127,    -8,  -127,  -127,   -33,
+    -126,  -127,  -127,  -121,  -127,  -127,  -127,   -36,  -127,   -10
 };
 
 /* YYDEFGOTO[NTERM-NUM].  */
 const short
 yy::Parser::defgoto_[] =
 {
-      -1,     1,    25,   139,    26,   135,    27,    90,   118,    28,
-      29,    80,   104,   126,    31,    32,    33,    34,    35,    36,
-      37,    38,    39,    40,    41,    65,    42,    43,    52,   127,
-     128,   129,   130,    44,    45
+      -1,     1,    27,   147,    28,   142,    29,    94,   123,    30,
+      31,    83,   108,   131,    33,    34,    35,    36,    37,    38,
+      39,    40,    41,    42,    43,    68,    44,    45,    54,   132,
+     133,   134,   135,   136,   171,   137,   181,   178,    46,    47
 };
 
 /* YYTABLE[YYPACT[STATE-NUM]].  What to do in state STATE-NUM.  If
    positive, shift that token.  If negative, reduce the rule which
    number is the opposite.  If zero, do what YYDEFACT says.  */
-const short yy::Parser::table_ninf_ = -87;
+const short yy::Parser::table_ninf_ = -99;
 const short
 yy::Parser::table_[] =
 {
-      30,    51,    54,    55,    50,    59,    60,   119,    57,    63,
-     111,     3,     4,     5,     6,     7,     8,     9,    49,    11,
-      61,    12,   116,    64,    13,    14,   116,   132,    76,    77,
-     116,   133,   -67,   138,    15,    16,    17,    53,   141,    19,
-      20,    18,    70,    71,    21,   105,    22,    84,    23,    18,
-      24,   137,   119,    83,   117,   154,    88,    85,    89,   153,
-       6,    87,   -67,   110,   101,   102,    78,    79,   156,   157,
-     158,    93,    94,    58,    51,    62,   112,   108,    99,   100,
-     106,    46,    47,     8,    48,    49,    11,   115,    12,    68,
-      66,    13,    14,    67,    69,   -68,   131,    95,    96,    97,
-      98,   -86,    51,    81,    82,    50,    86,   114,    54,    55,
-     103,   113,   109,   136,    53,   107,     8,    48,    49,    11,
-     131,    12,   134,   140,    13,    14,   142,   143,    72,    73,
-      74,    75,   150,   144,   112,   112,   112,    76,    77,   148,
-     155,   149,   152,    56,   159,   160,   164,    91,   161,     2,
-     162,   163,     3,     4,     5,     6,     7,     8,     9,    10,
-      11,   151,    12,   147,    92,    13,    14,     0,     0,     0,
-       0,     0,     0,     0,     0,    15,    16,    17,    18,     0,
-      19,    20,     0,     0,     0,    21,     0,    22,     0,    23,
-     120,    24,     3,     4,     5,   121,     7,     8,     9,    49,
-      11,   122,    12,   123,   124,    13,    14,     0,     0,     0,
-       0,     0,     0,     0,     0,    15,    16,    17,     0,     0,
-      19,    20,     0,     0,     0,    21,     0,    22,   125,    23,
-     145,    24,     3,     4,     5,   121,     7,     8,     9,    49,
-      11,   122,    12,   123,   124,    13,    14,     0,     0,     0,
-       0,     0,     0,     0,     0,    15,    16,    17,     0,     0,
-      19,    20,     0,     0,     0,    21,     0,    22,   146,    23,
-       0,    24,     3,     4,     5,     6,     7,     8,     9,    49,
-      11,     0,    12,     0,     0,    13,    14,     0,     0,     0,
-       0,     0,     0,     0,     0,    15,    16,    17,     0,     0,
-      19,    20,     0,     0,     0,    21,     0,    22,     0,    23,
-       0,    24,     3,     4,     5,     6,     7,     8,     9,    49,
-      11,     0,    12,     0,     0,    13,    14,     0,     0,     0,
-       0,     0,     0,     0,     0,    15,    16,    17,     0,    53,
-       0,     8,    48,    49,    11,    21,    12,    22,     0,    13,
-      14,    24
+      32,    57,    53,    56,   115,    52,   154,   -71,   124,    59,
+      60,   155,    62,    63,   121,   146,    66,   -71,     7,    55,
+     139,   114,    64,   148,   140,    67,    48,    49,     9,    50,
+      51,    12,    18,    13,   173,    61,    14,    15,   174,    92,
+     164,    93,    65,   122,    99,   100,   101,   102,    69,    87,
+      70,    75,    76,    77,    78,    86,   124,    71,   154,    88,
+      89,    79,    80,   155,    91,    72,   166,   167,   168,    73,
+      74,   -98,   105,   106,    81,    82,    84,    53,    85,   116,
+     112,    97,    98,   110,   -72,    55,   111,     9,    50,    51,
+      12,   120,    13,    79,    80,    14,    15,   138,   103,   104,
+      90,   113,   107,   117,   118,   119,    53,   141,   157,    52,
+     152,    57,   156,    56,   149,   150,   161,   151,   143,   158,
+     162,    32,   138,    55,   170,     9,    50,    51,    12,   176,
+      13,   160,   177,    14,    15,   180,   185,   187,    58,   159,
+      96,   116,   116,   116,   184,   186,    32,   165,     0,    95,
+       0,   169,     0,     0,     0,     0,     0,   172,     0,     0,
+     175,     0,     0,     0,     0,     0,     0,   138,     0,     0,
+       0,     0,     0,   179,   138,     2,     3,     0,     4,     5,
+       6,     7,     8,     9,    10,    11,    12,     0,    13,     0,
+       0,    14,    15,     0,     0,     0,     0,     0,     0,     0,
+       0,    16,    17,    18,    19,    20,     0,    21,    22,     0,
+       0,     0,    23,     0,    24,     0,    25,     3,    26,     4,
+       5,     6,   125,     8,     9,    10,    51,    12,   126,    13,
+     127,   128,    14,    15,     0,     0,     0,     0,     0,     0,
+       0,     0,    16,    17,     0,    19,   129,     0,    21,    22,
+       0,     0,     0,    23,     0,    24,   130,    25,     3,    26,
+       4,     5,     6,   125,     8,     9,    10,    51,    12,   126,
+      13,   127,   128,    14,    15,     0,     0,     0,     0,     0,
+       0,     0,     0,    16,    17,     0,    19,   129,     0,    21,
+      22,     0,     0,     0,    23,     0,    24,   153,    25,   182,
+      26,     4,     5,     6,   125,     8,     9,    10,    51,    12,
+     126,    13,   127,   128,    14,    15,     0,     0,     0,     0,
+       0,     0,     0,     0,    16,    17,     0,    19,   129,     0,
+      21,    22,     0,     0,     0,    23,     0,    24,   183,    25,
+       3,    26,     4,     5,     6,   125,     8,     9,    10,    51,
+      12,   126,    13,   127,   128,    14,    15,     0,     0,     0,
+       0,     0,     0,     0,     0,    16,    17,     0,    19,   129,
+       0,    21,    22,     0,     0,     0,    23,     0,    24,   188,
+      25,   144,    26,     4,     5,     6,     7,     8,     9,    10,
+      11,    12,     0,    13,     0,     0,    14,    15,     0,     0,
+       0,     0,     0,     0,     0,     0,    16,    17,    18,    19,
+      20,     0,    21,    22,     0,     0,     0,    23,     0,    24,
+     145,    25,     3,    26,     4,     5,     6,     7,     8,     9,
+      10,    11,    12,     0,    13,     0,     0,    14,    15,     0,
+       0,     0,     0,     0,     0,     0,     0,    16,    17,    18,
+      19,    20,     0,    21,    22,     0,     0,     0,    23,     0,
+      24,   163,    25,     3,    26,     4,     5,     6,     7,     8,
+       9,    10,    51,    12,     0,    13,     0,     0,    14,    15,
+       0,     0,     0,     0,     0,     0,     0,     0,    16,    17,
+       0,    19,     0,     0,    21,    22,     0,     0,     0,    23,
+     109,    24,     0,    25,     3,    26,     4,     5,     6,     7,
+       8,     9,    10,    51,    12,     0,    13,     0,     0,    14,
+      15,     0,     0,     0,     0,     0,     0,     0,     0,    16,
+      17,     0,    19,     0,     0,    21,    22,     0,     0,     0,
+      23,     0,    24,     0,    25,     0,    26,     4,     5,     6,
+       7,     8,     9,    10,    51,    12,     0,    13,     0,     0,
+      14,    15,     0,     0,     0,     0,     0,     0,     0,     0,
+      16,    17,     0,    19,     0,     0,    21,    22,     0,     0,
+       0,    23,     0,    24,     0,    25,     0,    26,     4,     5,
+       6,     7,     8,     9,    10,    51,    12,     0,    13,     0,
+       0,    14,    15,     0,     0,     0,     0,     0,     0,     0,
+       0,    16,    17,     0,    19,     0,     0,     0,     0,     0,
+       0,     0,    23,     0,    24,     0,     0,     0,    26
 };
 
 /* YYCHECK.  */
 const short
 yy::Parser::check_[] =
 {
-       1,     9,    10,    10,     9,    19,    20,    90,    16,    23,
-      84,     3,     4,     5,     6,     7,     8,     9,    10,    11,
-      21,    13,    10,    24,    16,    17,    10,    37,    31,    32,
-      10,    41,    38,   117,    26,    27,    28,     6,    44,    31,
-      32,    29,    20,    21,    36,    37,    38,    55,    40,    29,
-      42,    39,   135,    54,    38,   139,    41,    58,    43,    39,
-       6,    62,    38,     9,    78,    79,    33,    34,   142,   143,
-     144,    70,    71,    36,    82,    16,    84,    82,    76,    77,
-      81,     6,     7,     8,     9,    10,    11,    88,    13,    19,
-      30,    16,    17,    35,    18,    38,   103,    72,    73,    74,
-      75,    36,   110,    36,    31,   110,    37,    13,   116,   116,
-      38,    37,    35,   114,     6,     7,     8,     9,    10,    11,
-     127,    13,    35,    35,    16,    17,    44,    44,    22,    23,
-      24,    25,   133,    44,   142,   143,   144,    31,    32,    35,
-     141,    44,     8,    15,    35,    35,    39,    68,   149,     0,
-      37,   152,     3,     4,     5,     6,     7,     8,     9,    10,
-      11,   135,    13,   127,    69,    16,    17,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    26,    27,    28,    29,    -1,
-      31,    32,    -1,    -1,    -1,    36,    -1,    38,    -1,    40,
-       1,    42,     3,     4,     5,     6,     7,     8,     9,    10,
+       1,    11,    10,    11,    87,    10,   132,    39,    94,    17,
+      18,   132,    21,    22,    10,   122,    25,    39,     6,     6,
+      38,     9,    23,    45,    42,    26,     6,     7,     8,     9,
+      10,    11,    28,    13,    38,    37,    16,    17,    42,    42,
+     147,    44,    16,    39,    75,    76,    77,    78,    31,    57,
+      36,    22,    23,    24,    25,    56,   142,    19,   184,    60,
+      61,    32,    33,   184,    65,    18,   149,   150,   151,    20,
+      21,    37,    81,    82,    34,    35,    37,    85,    32,    87,
+      85,    73,    74,    84,    39,     6,     7,     8,     9,    10,
+      11,    92,    13,    32,    33,    16,    17,   107,    79,    80,
+      38,    36,    39,    36,    38,    13,   114,    36,    31,   114,
+      37,   121,    36,   121,    45,    45,     8,    45,   119,    45,
+      40,   122,   132,     6,    36,     8,     9,    10,    11,    38,
+      13,   142,    39,    16,    17,    40,    38,    40,    16,   140,
+      72,   149,   150,   151,   177,   181,   147,   148,    -1,    71,
+      -1,   152,    -1,    -1,    -1,    -1,    -1,   158,    -1,    -1,
+     161,    -1,    -1,    -1,    -1,    -1,    -1,   177,    -1,    -1,
+      -1,    -1,    -1,   174,   184,     0,     1,    -1,     3,     4,
+       5,     6,     7,     8,     9,    10,    11,    -1,    13,    -1,
+      -1,    16,    17,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    26,    27,    28,    29,    30,    -1,    32,    33,    -1,
+      -1,    -1,    37,    -1,    39,    -1,    41,     1,    43,     3,
+       4,     5,     6,     7,     8,     9,    10,    11,    12,    13,
+      14,    15,    16,    17,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    26,    27,    -1,    29,    30,    -1,    32,    33,
+      -1,    -1,    -1,    37,    -1,    39,    40,    41,     1,    43,
+       3,     4,     5,     6,     7,     8,     9,    10,    11,    12,
+      13,    14,    15,    16,    17,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    26,    27,    -1,    29,    30,    -1,    32,
+      33,    -1,    -1,    -1,    37,    -1,    39,    40,    41,     1,
+      43,     3,     4,     5,     6,     7,     8,     9,    10,    11,
+      12,    13,    14,    15,    16,    17,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    26,    27,    -1,    29,    30,    -1,
+      32,    33,    -1,    -1,    -1,    37,    -1,    39,    40,    41,
+       1,    43,     3,     4,     5,     6,     7,     8,     9,    10,
       11,    12,    13,    14,    15,    16,    17,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    26,    27,    28,    -1,    -1,
-      31,    32,    -1,    -1,    -1,    36,    -1,    38,    39,    40,
-       1,    42,     3,     4,     5,     6,     7,     8,     9,    10,
-      11,    12,    13,    14,    15,    16,    17,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    26,    27,    28,    -1,    -1,
-      31,    32,    -1,    -1,    -1,    36,    -1,    38,    39,    40,
-      -1,    42,     3,     4,     5,     6,     7,     8,     9,    10,
-      11,    -1,    13,    -1,    -1,    16,    17,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    26,    27,    28,    -1,    -1,
-      31,    32,    -1,    -1,    -1,    36,    -1,    38,    -1,    40,
-      -1,    42,     3,     4,     5,     6,     7,     8,     9,    10,
-      11,    -1,    13,    -1,    -1,    16,    17,    -1,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    26,    27,    28,    -1,     6,
-      -1,     8,     9,    10,    11,    36,    13,    38,    -1,    16,
-      17,    42
+      -1,    -1,    -1,    -1,    -1,    26,    27,    -1,    29,    30,
+      -1,    32,    33,    -1,    -1,    -1,    37,    -1,    39,    40,
+      41,     1,    43,     3,     4,     5,     6,     7,     8,     9,
+      10,    11,    -1,    13,    -1,    -1,    16,    17,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    26,    27,    28,    29,
+      30,    -1,    32,    33,    -1,    -1,    -1,    37,    -1,    39,
+      40,    41,     1,    43,     3,     4,     5,     6,     7,     8,
+       9,    10,    11,    -1,    13,    -1,    -1,    16,    17,    -1,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    26,    27,    28,
+      29,    30,    -1,    32,    33,    -1,    -1,    -1,    37,    -1,
+      39,    40,    41,     1,    43,     3,     4,     5,     6,     7,
+       8,     9,    10,    11,    -1,    13,    -1,    -1,    16,    17,
+      -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    26,    27,
+      -1,    29,    -1,    -1,    32,    33,    -1,    -1,    -1,    37,
+      38,    39,    -1,    41,     1,    43,     3,     4,     5,     6,
+       7,     8,     9,    10,    11,    -1,    13,    -1,    -1,    16,
+      17,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    26,
+      27,    -1,    29,    -1,    -1,    32,    33,    -1,    -1,    -1,
+      37,    -1,    39,    -1,    41,    -1,    43,     3,     4,     5,
+       6,     7,     8,     9,    10,    11,    -1,    13,    -1,    -1,
+      16,    17,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      26,    27,    -1,    29,    -1,    -1,    32,    33,    -1,    -1,
+      -1,    37,    -1,    39,    -1,    41,    -1,    43,     3,     4,
+       5,     6,     7,     8,     9,    10,    11,    -1,    13,    -1,
+      -1,    16,    17,    -1,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    26,    27,    -1,    29,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    37,    -1,    39,    -1,    -1,    -1,    43
 };
 
 #if YYDEBUG
@@ -1705,23 +2092,25 @@ yy::Parser::check_[] =
 const unsigned char
 yy::Parser::stos_[] =
 {
-       0,    46,     0,     3,     4,     5,     6,     7,     8,     9,
-      10,    11,    13,    16,    17,    26,    27,    28,    29,    31,
-      32,    36,    38,    40,    42,    47,    49,    51,    54,    55,
-      58,    59,    60,    61,    62,    63,    64,    65,    66,    67,
-      68,    69,    71,    72,    78,    79,     6,     7,     9,    10,
-      67,    71,    73,     6,    71,    79,    66,    71,    36,    65,
-      65,    58,    16,    65,    58,    70,    30,    35,    19,    18,
-      20,    21,    22,    23,    24,    25,    31,    32,    33,    34,
-      56,    36,    31,    58,    71,    58,    37,    58,    41,    43,
-      52,    60,    61,    62,    62,    63,    63,    63,    63,    64,
-      64,    65,    65,    38,    57,    37,    58,     7,    67,    35,
-       9,    55,    71,    37,    13,    58,    10,    38,    53,    54,
-       1,     6,    12,    14,    15,    39,    58,    74,    75,    76,
-      77,    79,    37,    41,    35,    50,    58,    39,    47,    48,
-      35,    44,    44,    44,    44,     1,    39,    75,    35,    44,
-      58,    53,     8,    39,    47,    58,    55,    55,    55,    35,
-      35,    58,    37,    58,    39
+       0,    47,     0,     1,     3,     4,     5,     6,     7,     8,
+       9,    10,    11,    13,    16,    17,    26,    27,    28,    29,
+      30,    32,    33,    37,    39,    41,    43,    48,    50,    52,
+      55,    56,    59,    60,    61,    62,    63,    64,    65,    66,
+      67,    68,    69,    70,    72,    73,    84,    85,     6,     7,
+       9,    10,    68,    72,    74,     6,    72,    85,    67,    72,
+      72,    37,    66,    66,    59,    16,    66,    59,    71,    31,
+      36,    19,    18,    20,    21,    22,    23,    24,    25,    32,
+      33,    34,    35,    57,    37,    32,    59,    72,    59,    59,
+      38,    59,    42,    44,    53,    61,    62,    63,    63,    64,
+      64,    64,    64,    65,    65,    66,    66,    39,    58,    38,
+      59,     7,    68,    36,     9,    56,    72,    36,    38,    13,
+      59,    10,    39,    54,    55,     6,    12,    14,    15,    30,
+      40,    59,    75,    76,    77,    78,    79,    81,    85,    38,
+      42,    36,    51,    59,     1,    40,    48,    49,    45,    45,
+      45,    45,    37,    40,    76,    79,    36,    31,    45,    59,
+      54,     8,    40,    40,    48,    59,    56,    56,    56,    59,
+      36,    80,    59,    38,    42,    59,    38,    39,    83,    59,
+      40,    82,     1,    40,    75,    38,    83,    40,    40
 };
 
 /* TOKEN_NUMBER_[YYLEX-NUM] -- Internal token number corresponding
@@ -1732,8 +2121,8 @@ yy::Parser::token_number_[] =
        0,   256,   257,   258,   259,   260,   261,   262,   263,   264,
      265,   266,   267,   268,   269,   270,   271,   272,   273,   274,
      275,   276,   277,   278,   279,   280,   281,   282,   283,   284,
-     285,    43,    45,    42,    47,    59,    40,    41,   123,   125,
-      33,    44,    60,    62,    61
+     285,   286,    43,    45,    42,    47,    59,    40,    41,   123,
+     125,    33,    44,    60,    62,    61
 };
 #endif
 
@@ -1741,32 +2130,34 @@ yy::Parser::token_number_[] =
 const unsigned char
 yy::Parser::r1_[] =
 {
-       0,    45,    46,    46,    46,    47,    47,    48,    48,    50,
-      49,    51,    52,    51,    53,    53,    53,    54,    54,    55,
-      56,    55,    57,    57,    58,    59,    59,    60,    60,    61,
-      61,    61,    62,    62,    62,    62,    62,    63,    63,    63,
-      64,    64,    64,    65,    65,    65,    65,    66,    66,    66,
-      66,    66,    66,    66,    66,    66,    66,    66,    66,    67,
-      67,    67,    68,    69,    70,    70,    71,    72,    72,    72,
-      73,    73,    73,    73,    74,    74,    74,    74,    75,    75,
-      75,    75,    75,    76,    77,    77,    78,    78,    79,    79,
-      79,    79,    79,    79,    79
+       0,    46,    47,    47,    48,    48,    48,    49,    49,    51,
+      50,    52,    53,    52,    54,    54,    54,    54,    55,    55,
+      55,    56,    57,    56,    58,    58,    59,    59,    60,    60,
+      61,    61,    62,    62,    62,    63,    63,    63,    63,    63,
+      64,    64,    64,    65,    65,    65,    66,    66,    66,    66,
+      67,    67,    67,    67,    67,    67,    67,    67,    67,    67,
+      67,    67,    68,    68,    68,    68,    69,    70,    71,    71,
+      72,    73,    73,    73,    74,    74,    74,    74,    75,    75,
+      75,    75,    76,    76,    76,    76,    76,    77,    78,    78,
+      79,    80,    79,    82,    81,    83,    83,    83,    84,    84,
+      85,    85,    85,    85,    85,    85,    85
 };
 
 /* YYR2[YYN] -- Number of symbols composing right hand side of rule YYN.  */
 const unsigned char
 yy::Parser::r2_[] =
 {
-       0,     2,     0,     2,     3,     1,     1,     1,     2,     0,
-       6,     1,     0,     4,     1,     2,     3,     4,     5,     1,
-       0,     3,     3,     2,     1,     1,     3,     1,     3,     1,
-       3,     3,     1,     3,     3,     3,     3,     1,     3,     3,
-       1,     3,     3,     1,     2,     2,     2,     1,     2,     2,
-       1,     1,     1,     3,     1,     1,     1,     1,     1,     3,
-       4,     6,     8,     3,     1,     3,     1,     1,     2,     2,
-       1,     1,     3,     3,     2,     2,     3,     3,     3,     1,
-       3,     1,     1,     3,     3,     3,     1,     1,     1,     1,
-       1,     1,     1,     1,     1
+       0,     2,     0,     2,     1,     2,     1,     1,     2,     0,
+       6,     1,     0,     4,     1,     2,     3,     3,     4,     4,
+       5,     1,     0,     3,     3,     2,     1,     1,     1,     3,
+       1,     3,     1,     3,     3,     1,     3,     3,     3,     3,
+       1,     3,     3,     1,     3,     3,     1,     2,     2,     2,
+       1,     2,     2,     1,     1,     1,     3,     1,     1,     1,
+       1,     1,     3,     4,     6,     8,     8,     3,     1,     3,
+       1,     1,     2,     2,     1,     1,     3,     3,     2,     1,
+       3,     2,     3,     1,     3,     1,     1,     3,     3,     3,
+       1,     0,     4,     0,     6,     2,     3,     3,     1,     1,
+       1,     1,     1,     1,     1,     1,     1
 };
 
 #if YYDEBUG || YYERROR_VERBOSE
@@ -1779,15 +2170,17 @@ const yy::Parser::name_[] =
   "T_IDENTIFIER", "T_QUOTED_STRING", "T_BLUE", "T_CLASS", "T_DEFINE", 
   "T_EXTENDS", "T_FILTER", "T_GREEN", "T_LIGHT", "T_OUTPUT", "T_RED", 
   "T_RENDERER", "AND_L", "OR_L", "EQUAL", "NOT_EQ", "GREATER", 
-  "GREATER_EQ", "LESS", "LESS_EQ", "PARAM", "DEFINED", "THIS", "T_IF", 
-  "T_ELSE", "'+'", "'-'", "'*'", "'/'", "';'", "'('", "')'", "'{'", "'}'", 
-  "'!'", "','", "'<'", "'>'", "'='", "$accept", "everything", "statement", 
-  "statement_list", "if_head", "@1", "simple_if_statement", "@2", 
-  "simple_if_body", "definition", "instance", "@3", "param_block", 
-  "expression", "prec_8", "prec_7", "prec_6", "prec_5", "prec_4", 
-  "prec_3", "prec_2", "prec_1", "function_call", "color", "any_vector", 
-  "vector_insides", "name", "class", "string_math", "params", "param", 
-  "object_param", "scene_param", "potential_name", "reserved_words", 0
+  "GREATER_EQ", "LESS", "LESS_EQ", "PARAM", "T_DEFINED", "T_REDEFINE", 
+  "THIS", "T_IF", "T_ELSE", "'+'", "'-'", "'*'", "'/'", "';'", "'('", 
+  "')'", "'{'", "'}'", "'!'", "','", "'<'", "'>'", "'='", "$accept", 
+  "everything", "statement", "statement_list", "if_head", "@1", 
+  "simple_if_statement", "@2", "simple_if_body", "definition", "instance", 
+  "@3", "param_block", "expression", "prec_8", "prec_7", "prec_6", 
+  "prec_5", "prec_4", "prec_3", "prec_2", "prec_1", "function_call", 
+  "color", "any_vector", "vector_insides", "name", "class", "string_math", 
+  "params", "param", "object_param", "scene_param", "param_if_statement", 
+  "@4", "param_if_head", "@5", "param_if_body", "potential_name", 
+  "reserved_words", 0
 };
 #endif
 
@@ -1796,35 +2189,39 @@ const yy::Parser::name_[] =
 const yy::Parser::RhsNumberType
 yy::Parser::rhs_[] =
 {
-      46,     0,    -1,    -1,    46,    47,    -1,    46,    58,    35,
-      -1,    54,    -1,    51,    -1,    47,    -1,    48,    47,    -1,
-      -1,    29,    36,    58,    37,    50,    53,    -1,    49,    -1,
-      -1,    49,    30,    52,    53,    -1,    54,    -1,    38,    39,
-      -1,    38,    48,    39,    -1,    10,    71,    58,    35,    -1,
-      10,    79,    71,    55,    35,    -1,    71,    -1,    -1,    72,
-      56,    57,    -1,    38,    74,    39,    -1,    38,    39,    -1,
-      59,    -1,    60,    -1,    59,    19,    60,    -1,    61,    -1,
-      60,    18,    61,    -1,    62,    -1,    61,    20,    62,    -1,
-      61,    21,    62,    -1,    63,    -1,    63,    23,    63,    -1,
-      63,    22,    63,    -1,    63,    25,    63,    -1,    63,    24,
-      63,    -1,    64,    -1,    63,    31,    64,    -1,    63,    32,
-      64,    -1,    65,    -1,    64,    33,    65,    -1,    64,    34,
-      65,    -1,    66,    -1,    40,    65,    -1,    31,    65,    -1,
-      32,    65,    -1,     7,    -1,    26,    66,    -1,    27,    71,
-      -1,     3,    -1,     5,    -1,     4,    -1,    36,    58,    37,
-      -1,    68,    -1,    28,    -1,    55,    -1,    67,    -1,    69,
-      -1,    78,    36,    37,    -1,    78,    36,    58,    37,    -1,
-      78,    36,    58,    41,    58,    37,    -1,    38,    16,    58,
-      13,    58,     8,    58,    39,    -1,    42,    70,    43,    -1,
-      58,    -1,    70,    41,    58,    -1,     6,    -1,     6,    -1,
-       9,     6,    -1,     9,    73,    -1,     7,    -1,    67,    -1,
-      73,    31,     7,    -1,    73,    31,    67,    -1,    75,    35,
-      -1,     1,    35,    -1,    74,    75,    35,    -1,    74,     1,
-      35,    -1,     6,    44,    58,    -1,    58,    -1,    79,    44,
-      58,    -1,    76,    -1,    77,    -1,    12,    44,    55,    -1,
-      14,    44,    55,    -1,    15,    44,    55,    -1,    71,    -1,
-      79,    -1,     8,    -1,     9,    -1,    10,    -1,    11,    -1,
-      13,    -1,    16,    -1,    17,    -1
+      47,     0,    -1,    -1,    47,    48,    -1,    55,    -1,    59,
+      36,    -1,    52,    -1,    48,    -1,    49,    48,    -1,    -1,
+      30,    37,    59,    38,    51,    54,    -1,    50,    -1,    -1,
+      50,    31,    53,    54,    -1,    55,    -1,    39,    40,    -1,
+      39,    49,    40,    -1,    39,     1,    40,    -1,    10,    72,
+      59,    36,    -1,    28,    72,    59,    36,    -1,    10,    85,
+      72,    56,    36,    -1,    72,    -1,    -1,    73,    57,    58,
+      -1,    39,    75,    40,    -1,    39,    40,    -1,    60,    -1,
+       1,    -1,    61,    -1,    60,    19,    61,    -1,    62,    -1,
+      61,    18,    62,    -1,    63,    -1,    62,    20,    63,    -1,
+      62,    21,    63,    -1,    64,    -1,    64,    23,    64,    -1,
+      64,    22,    64,    -1,    64,    25,    64,    -1,    64,    24,
+      64,    -1,    65,    -1,    64,    32,    65,    -1,    64,    33,
+      65,    -1,    66,    -1,    65,    34,    66,    -1,    65,    35,
+      66,    -1,    67,    -1,    41,    66,    -1,    32,    66,    -1,
+      33,    66,    -1,     7,    -1,    26,    67,    -1,    27,    72,
+      -1,     3,    -1,     5,    -1,     4,    -1,    37,    59,    38,
+      -1,    69,    -1,    29,    -1,    56,    -1,    68,    -1,    70,
+      -1,    84,    37,    38,    -1,    84,    37,    59,    38,    -1,
+      84,    37,    59,    42,    59,    38,    -1,    84,    37,    59,
+      42,    59,    42,    59,    38,    -1,    39,    16,    59,    13,
+      59,     8,    59,    40,    -1,    43,    71,    44,    -1,    59,
+      -1,    71,    42,    59,    -1,     6,    -1,     6,    -1,     9,
+       6,    -1,     9,    74,    -1,     7,    -1,    68,    -1,    74,
+      32,     7,    -1,    74,    32,    68,    -1,    76,    36,    -1,
+      79,    -1,    75,    76,    36,    -1,    75,    79,    -1,     6,
+      45,    59,    -1,    59,    -1,    85,    45,    59,    -1,    77,
+      -1,    78,    -1,    12,    45,    56,    -1,    14,    45,    56,
+      -1,    15,    45,    56,    -1,    81,    -1,    -1,    81,    31,
+      80,    83,    -1,    -1,    30,    37,    59,    38,    82,    83,
+      -1,    39,    40,    -1,    39,    75,    40,    -1,    39,     1,
+      40,    -1,    72,    -1,    85,    -1,     8,    -1,     9,    -1,
+      10,    -1,    11,    -1,    13,    -1,    16,    -1,    17,    -1
 };
 
 /* YYPRHS[YYN] -- Index of the first RHS symbol of rule number YYN in
@@ -1832,32 +2229,34 @@ yy::Parser::rhs_[] =
 const unsigned short
 yy::Parser::prhs_[] =
 {
-       0,     0,     3,     4,     7,    11,    13,    15,    17,    20,
-      21,    28,    30,    31,    36,    38,    41,    45,    50,    56,
-      58,    59,    63,    67,    70,    72,    74,    78,    80,    84,
-      86,    90,    94,    96,   100,   104,   108,   112,   114,   118,
-     122,   124,   128,   132,   134,   137,   140,   143,   145,   148,
-     151,   153,   155,   157,   161,   163,   165,   167,   169,   171,
-     175,   180,   187,   196,   200,   202,   206,   208,   210,   213,
-     216,   218,   220,   224,   228,   231,   234,   238,   242,   246,
-     248,   252,   254,   256,   260,   264,   268,   270,   272,   274,
-     276,   278,   280,   282,   284
+       0,     0,     3,     4,     7,     9,    12,    14,    16,    19,
+      20,    27,    29,    30,    35,    37,    40,    44,    48,    53,
+      58,    64,    66,    67,    71,    75,    78,    80,    82,    84,
+      88,    90,    94,    96,   100,   104,   106,   110,   114,   118,
+     122,   124,   128,   132,   134,   138,   142,   144,   147,   150,
+     153,   155,   158,   161,   163,   165,   167,   171,   173,   175,
+     177,   179,   181,   185,   190,   197,   206,   215,   219,   221,
+     225,   227,   229,   232,   235,   237,   239,   243,   247,   250,
+     252,   256,   259,   263,   265,   269,   271,   273,   277,   281,
+     285,   287,   288,   293,   294,   301,   304,   308,   312,   314,
+     316,   318,   320,   322,   324,   326,   328
 };
 
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 const unsigned short
 yy::Parser::rline_[] =
 {
-       0,   202,   202,   205,   209,   236,   240,   247,   251,   258,
-     257,   271,   277,   276,   288,   293,   297,   304,   326,   350,
-     357,   356,   371,   375,   382,   391,   397,   407,   413,   424,
-     430,   472,   514,   521,   526,   531,   536,   544,   550,   563,
-     577,   583,   595,   610,   616,   623,   630,   659,   666,   672,
-     685,   691,   697,   704,   711,   716,   721,   726,   730,   738,
-     765,   795,   829,   849,   862,   868,   892,   906,   920,   926,
-     935,   940,   945,   950,   962,   966,   971,   975,   982,   990,
-    1041,  1049,  1053,  1059,  1095,  1139,  1177,  1181,  1188,  1193,
-    1198,  1203,  1208,  1213,  1218
+       0,   202,   202,   205,   211,   215,   243,   249,   253,   261,
+     260,   289,   295,   294,   306,   310,   314,   318,   326,   348,
+     374,   398,   405,   404,   419,   423,   430,   436,   448,   454,
+     471,   477,   495,   501,   550,   599,   606,   618,   630,   642,
+     657,   663,   682,   703,   709,   728,   750,   756,   769,   776,
+     812,   819,   825,   838,   844,   850,   857,   864,   869,   874,
+     879,   883,   891,   923,   956,   990,  1026,  1052,  1065,  1078,
+    1109,  1123,  1145,  1151,  1160,  1165,  1177,  1182,  1201,  1205,
+    1209,  1213,  1219,  1227,  1278,  1286,  1290,  1296,  1332,  1376,
+    1414,  1420,  1419,  1432,  1431,  1460,  1464,  1468,  1475,  1479,
+    1486,  1491,  1496,  1501,  1506,  1511,  1516
 };
 #endif
 
@@ -1872,16 +2271,16 @@ yy::Parser::translate_ (int token)
          0,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,    40,     2,     2,     2,     2,     2,     2,
-      36,    37,    33,    31,    41,    32,     2,    34,     2,     2,
-       2,     2,     2,     2,     2,     2,     2,     2,     2,    35,
-      42,    44,    43,     2,     2,     2,     2,     2,     2,     2,
+       2,     2,     2,    41,     2,     2,     2,     2,     2,     2,
+      37,    38,    34,    32,    42,    33,     2,    35,     2,     2,
+       2,     2,     2,     2,     2,     2,     2,     2,     2,    36,
+      43,    45,    44,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,    38,     2,    39,     2,     2,     2,     2,
+       2,     2,     2,    39,     2,    40,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
@@ -1897,7 +2296,7 @@ yy::Parser::translate_ (int token)
        2,     2,     2,     2,     2,     2,     1,     2,     3,     4,
        5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
       15,    16,    17,    18,    19,    20,    21,    22,    23,    24,
-      25,    26,    27,    28,    29,    30
+      25,    26,    27,    28,    29,    30,    31
   };
   if ((unsigned) token <= user_token_number_max_)
     return translate_[token];
@@ -1906,19 +2305,19 @@ yy::Parser::translate_ (int token)
 }
 
 const int yy::Parser::eof_ = 0;
-const int yy::Parser::last_ = 351;
-const int yy::Parser::nnts_ = 35;
+const int yy::Parser::last_ = 628;
+const int yy::Parser::nnts_ = 40;
 const int yy::Parser::empty_ = -2;
 const int yy::Parser::final_ = 2;
 const int yy::Parser::terror_ = 1;
 const int yy::Parser::errcode_ = 256;
-const int yy::Parser::ntokens_ = 45;
+const int yy::Parser::ntokens_ = 46;
 const int yy::Parser::initdepth_ = 200;
 
-const unsigned yy::Parser::user_token_number_max_ = 285;
+const unsigned yy::Parser::user_token_number_max_ = 286;
 const yy::Parser::TokenNumberType yy::Parser::undef_token_ = 2;
 
-#line 1225 "parser.y"
+#line 1523 "parser.y"
 
 
 void rt_error (const char* pkcTEXT)
@@ -2056,11 +2455,11 @@ namespace yy
 {
   void Parser::error_()
   {
-    rt_error("Unknown parser error occurred (it called error_())");
+    rt_error(message);
   }
   void Parser::print_()
   {
-    //    rt_warning("Parser::print_() called... What is it?");
+    rt_warning("Parser::print_() called... What is it?  message(" + message + ")");
   }  
   // The stupid bison appears to be ignoring the yyprefix
   int yylex(yystype *p)

@@ -87,7 +87,7 @@ static Byte               _bIncludeLevel = 0;
 #define RESERVED(x)                 \
 {                                   \
   p->sIdent.assign(yytext, yyleng); \
-/*  GOM.debug() << "scanner returning: \"" << p->sIdent << "\"" << endl; */ \
+  GOM.debug(3) << "scanner returning reserved token "#x + string(" (") + p->sIdent + ")" << std::endl; \
   return x;                         \
 } 
  
@@ -109,11 +109,15 @@ real			{float}({exponent})?
 
 "<="                    RESERVED (LESS_EQ);
 ">="                    RESERVED (GREATER_EQ);
+"<."                    RESERVED (LESS);
+">."                    RESERVED (GREATER);
 "=="                    RESERVED (EQUAL);
 "!="                    RESERVED (NOT_EQ);
 blue			RESERVED (T_BLUE);
 class			RESERVED (T_CLASS);
+defined			RESERVED (T_DEFINED);
 define			RESERVED (T_DEFINE);
+redefine		RESERVED (T_REDEFINE);
 extends			RESERVED (T_EXTENDS);
 filter			RESERVED (T_FILTER);
 green			RESERVED (T_GREEN);
@@ -176,7 +180,7 @@ false			{
 
 {identifier}		{
                           p->sIdent.assign(yytext, yyleng);
-			  /*			  GOM.debug() << "scanner returning: \"" << p->sIdent << "\"" << endl; */
+			  GOM.debug(3) << "scanner returning: \"" << p->sIdent << "\"" << endl;
 			  return T_IDENTIFIER;
 			}
 
@@ -198,11 +202,14 @@ false			{
 
 {quoted_string}		{
                           p->sIdent.assign(yytext+1, yyleng-2);
-			  /*			  GOM.debug() << "scanner returning: \"" << p->sIdent << "\"" << endl;			   */
+			  GOM.debug(3) << "scanner returning: \"" << p->sIdent << "\"" << endl;
 			  return T_QUOTED_STRING;
 			}
 
-.			/* GOM.debug() << "scanner returning: '" << yytext[0] << "'" << endl; */ return yytext[0];
+.			{
+                          GOM.debug(3) << "scanner returning: '" << yytext[0] << "'" << endl;
+			  return yytext[0];
+                        }
 
 <<EOF>>			{
 			  if ( _bIncludeLevel == 0 )
@@ -215,7 +222,7 @@ false			{
 			    yy_delete_buffer (YY_CURRENT_BUFFER);
 			    _tIncludeFileData         = _atIncludeStack [_bIncludeLevel];
 			    TSceneRT::_tInputFileName = _tIncludeFileData.tFileName;
-//			    GOM.debug() << "Returning to file : " << TSceneRT::_tInputFileName << endl;
+			    GOM.debug(3) << "Returning to file : " << TSceneRT::_tInputFileName << endl;
 			    TSceneRT::_dwLineNumber = _tIncludeFileData.dwLineNumber;
 			    yy_switch_to_buffer (_tIncludeFileData.yyBuffer);
 			  }
@@ -326,7 +333,7 @@ bool IncludeFile (void)
   }
 
   string name = FilenameConvert(_tIncludeFileName);
-  // GOM.debug() << "Attempting to open \"" + name + "\" for include" << endl;
+  GOM.debug(3) << "Attempting to open \"" + name + "\" for include" << endl;
 
   yyin = fopen (name.c_str(), "r");
 
@@ -365,7 +372,7 @@ bool IncludeFile (void)
   TSceneRT::_dwLineNumber   = 1L;
   yy_switch_to_buffer (yy_create_buffer (yyin, YY_BUF_SIZE));
 
-//  GOM.debug() << "Including file : " << TSceneRT::tInputFileName << endl;
+  GOM.debug(3) << "Including file : " << TSceneRT::_tInputFileName << endl;
 
   return true;
 
@@ -384,10 +391,10 @@ void scanner_unput_string(const string& s)
   {
     unput(new_text[i]);
   }
-  GOM.debug() << "Scanner: Just unput: \"" << new_text << "\"" << endl;
+  GOM.debug(3) << "Scanner: Just unput: \"" << new_text << "\"" << endl;
 
   YY_FLUSH_BUFFER;
   
   string trash_text = string(yytext,yyleng);
-  GOM.debug() << "  new yytext=\"" << trash_text << "\"" << endl;
+  GOM.debug(3) << "  new yytext=\"" << trash_text << "\"" << endl;
 }

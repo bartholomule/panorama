@@ -23,14 +23,16 @@
 #include <string>
 
 #define MAX_IDENTIFIER		31
-#define MAX_INCLUDE_DEPTH	10
+#define MAX_INCLUDE_DEPTH	128
 
 //
 //  Extern variables
 //
 extern FILE*   rt_in;
 extern FILE*   rt_out;
-extern int     rt_debug;
+// [FIXME!] Read/remove!
+// This next one was not used anywhere so I'm commenting it out.
+/* extern int     rt_debug; */
 extern bool    reduction_reporting;
 
 //
