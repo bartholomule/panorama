@@ -51,7 +51,8 @@ class TCamera : public TEntity
     
     virtual void getRay (TScalar tX, TScalar tY, TRay& rtRAY) const = 0;
     virtual bool getPlaneProjection (const TVector& rktPOINT, TVector2& rtPROJ) const = 0;
-
+    virtual TScalar getZ (const TVector& rktPOINT) const = 0;
+    
     virtual void setLookAt (const TVector& rktVECTOR)
     {
       tLookAt = rktVECTOR;

@@ -116,7 +116,7 @@ bool TPinholeCamera::getPlaneProjection (const TVector& rktPOINT, TVector2& rtPR
   rtPROJ.set (u, v);
   
   return true;
-
+  
 }  /* getPlaneProjection */
 
 

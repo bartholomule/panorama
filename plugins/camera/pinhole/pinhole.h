@@ -64,6 +64,11 @@ class TPinholeCamera : public TCamera
     }
     bool getPlaneProjection (const TVector& rktPOINT, TVector2& rtPROJ) const;
 
+    TScalar getZ (const TVector& rktPOINT) const
+    {
+      return -dotProduct (tDirection, rktPOINT);
+    }
+    
     string className (void) const { return "PinholeCamera"; }
 
     void printDebug (void) const;
