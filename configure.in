@@ -216,6 +216,7 @@ AC_OUTPUT(\
         plugins/bsdf/schlick_double/Makefile:Makefile.plugin.in \
         plugins/bsdf/ward/Makefile:Makefile.plugin.in \
         plugins/camera/Makefile \
+        plugins/camera/parallel/Makefile:Makefile.plugin.in \
         plugins/camera/pinhole/Makefile:Makefile.plugin.in \
         plugins/image_filter/Makefile \
         plugins/image_filter/cartoon/Makefile:Makefile.plugin.in \

@@ -23,6 +23,7 @@
 #include "plugins/bsdf/schlick/bsdf_schlick.h"
 #include "plugins/bsdf/schlick_double/bsdf_schlick_double.h"
 #include "plugins/bsdf/ward/bsdf_ward.h"
+#include "plugins/camera/parallel/parallel.h"
 #include "plugins/camera/pinhole/pinhole.h"
 #include "plugins/image_filter/cartoon/if_cartoon.h"
 #include "plugins/image_filter/convert_to_grey/if_convert_to_grey.h"

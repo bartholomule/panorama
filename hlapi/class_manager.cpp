@@ -65,6 +65,7 @@ TBaseClass* TClassManager::_newObject (const string& rktCLASS, const TBaseClass*
   STATIC_CLASS (TBsdfSchlick, "BsdfSchlick");
   STATIC_CLASS (TBsdfSchlickDouble, "BsdfSchlickDouble");
   STATIC_CLASS (TBsdfWard, "BsdfWard");
+  STATIC_CLASS (TParallelCamera, "ParallelCamera");
   STATIC_CLASS (TPinholeCamera, "PinholeCamera");
   STATIC_CLASS (TIF_Cartoon, "IF_Cartoon");
   STATIC_CLASS (TIF_ConvertToGrey, "IF_ConvertToGrey");

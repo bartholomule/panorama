@@ -14,6 +14,7 @@ bsdf_schlick_double.plg
 bsdf_ward.plg
 
 # Cameras
+parallel.plg
 pinhole.plg
 
 # Image filters
