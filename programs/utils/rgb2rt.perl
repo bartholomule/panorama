@@ -4,7 +4,21 @@
 #            in rgb.txt into the Panorama file format.
 #            Output defaults to stdout.
 
-$RGBFILE = "/usr/X11R6/lib/X11/rgb.txt";
+# 23-JUL-1999 Modified by Hugh Sasse <hgs@dmu.ac.uk>
+# to support openwindows.
+
+if ( -f "/usr/X11R6/lib/X11/rgb.txt")
+{
+    $RGBFILE = "/usr/X11R6/lib/X11/rgb.txt";
+}
+elsif ( -f "/usr/openwin/lib/X11/rgb.txt")
+{
+    $RGBFILE = "/usr/openwin/lib/X11/rgb.txt";
+}
+else
+{
+    die "Unable to find rgb.txt ";
+}
 
 open RGBFILE or die "Can't open $RGBFILE: $\n";
 @textin = <RGBFILE>;
