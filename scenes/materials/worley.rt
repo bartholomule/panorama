@@ -3,61 +3,58 @@
 */
 
 #include "materials.inc"
+#include "shapes.inc"
 
-define camera c
+define c class PinholeCamera
 {
-  translate	<0, 0, 600>
-  look_at	<0, 0, 0>
-}
+  translate( <0, 0, 600> );
+  look_at = <0, 0, 0>;
+};
 
-define light l
+define l class PointLight
 {
-  translate	<200, 200, 500>
-  color		CWhite
-}
+  translate( <200, 200, 500> );
+  color = CWhite;
+};
 
-define light l2
+define l2 class PointLight
 {
-  translate	<0, 1000, 0>
-  color		CWhite
-  shadow        off
-}
+  translate( <0, 1000, 0> );
+  color  = CWhite;
+  shadow = off;
+};
 
-define pattern pat_worley : class PatternWorley
+define pat_worley class PatternWorley
 {
-  color       { red 0 green 0.6 blue 0 }
-  base_color  CBrown
-  zoom        <50, 50, 50>
-}
+  color      = { red 0 green 0.6 blue 0 };
+  base_color = CBrown;
+  zoom       = <50, 50, 50>;
+};
 
 sphere
 {
-  translate     <0, 0, 0>
-  radius        150
-  material : extends MWorley
+  translate( <0, 0, 0> );
+  radius = 150;
+  material = MWorley
   {
-    color   pat_worley
+    color = pat_worley;
 
-    perturb_func : class PerturbationWorley
+    perturb_func = class PerturbationWorley
     {
-      worley_pattern   pat_worley
-      bump             0.25
-    }
-  }
-}
+      worley_pattern = pat_worley;
+      bump           = 0.25;
+    };
+  };
+};
 
 scene
 {
-  camera	c
-  light		l
-  light		l2
-  width		400
-  height	400
-  background	CSummerSky
-  output
-  {
-    type        "png"
-    name	"worley.png"
-  }
-  renderer : class Raytracer {}
-}
+  camera     = c;
+  light	     = l;
+  light      = l2;
+  width	     = 400;
+  height     = 400;
+  background = CSummerSky;
+  output = class png { name = "worley.png"; };
+  renderer = class Raytracer { };
+};

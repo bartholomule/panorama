@@ -3,89 +3,89 @@
 */
 
 #include "materials.inc"
+#include "shapes.inc"
 
-define camera c
+define c class PinholeCamera
 {
-  translate	<-250, 0, 400>
-  look_at	<0, 0, 400>
-}
+  translate( <-250, 0, 400> );
+  look_at = <0, 0, 400>;
+};
 
-define light l
+define l class PointLight
 {
-  translate	<-250, 0, 400>
-  color		CWhite
-}
+  translate( <-250, 0, 400> );
+  color = CWhite;
+};
 
-define material MAmplifier : extends MPlastic
+define MAmplifier MPlastic
 {
-  specular      0
-  diffuse       0.8
-}
+  specular = 0;
+  diffuse  = 0.8;
+};
 
-define pattern PNoise_red : class PatternNoise
+define PNoise_red class PatternNoise
 {
-  base_color    CWhite
-  color         CRed
-  zoom          <0.4, 0.4, 0.4>
-}
+  base_color = CWhite;
+  color      = CRed;
+  zoom       = <0.4, 0.4, 0.4>;
+};
 
-define pattern PAmplifier1 : class PatternAmplifier
+define PAmplifier1 class PatternAmplifier
 {
-  source        PNoise_red
-  amplification 2
-}
+  source        = PNoise_red;
+  amplification = 2;
+};
 
-define pattern PAmplifier2 : class PatternAmplifier 
+define PAmplifier2 class PatternAmplifier 
 {
-  source        PNoise_red
-  amplification -0.5
-  offset        1
-}
+  source        = PNoise_red;
+  amplification = -0.5;
+  offset        = 1;
+};
 
 cylinder
 {
-  scale         <30, 70, 30>
-  translate	<0, 0, 330>
+  scale    ( <30, 70, 30> );
+  translate( <0, 0, 330> );
 
-  material : extends MAmplifier
+  material = MAmplifier
   {
-    color       PNoise_red
-  }
-}
+    color = PNoise_red;
+  };
+};
 
 cylinder
 {
-  scale         <30, 70, 30>
-  translate	<30, 0, 399>
+  scale    ( <30, 70, 30> );
+  translate( <30, 0, 399> );
 
-  material : extends MAmplifier
+  material = MAmplifier
   {
-    color       PAmplifier1
-  }
-}
+    color = PAmplifier1;
+  };
+};
 
 cylinder
 {
-  scale         <30, 70, 30>
-  translate	<0, 0, 470>
+  scale    ( <30, 70, 30> );
+  translate( <0, 0, 470> );
 
-  material : extends MAmplifier
+  material = MAmplifier
   {
-    color       PAmplifier2
-  }
-}
+    color = PAmplifier2;
+  };
+};
 
 scene
 {
-  camera	c
-  light		l
-  width		400
-  height	400
-  background    CSummerSky
-  output
+  camera     = c;
+  light	     = l;
+  width	     = 400;
+  height     = 400;
+  background = CSummerSky;
+  output = class png
   {
-    type        "png"
-    name	"amplifier.png"
-  }
-  renderer : class Raytracer {}
-}
+    name = "amplifier.png";
+  };
+  renderer = class Raytracer {};
+};
