@@ -27,6 +27,13 @@
 
 #undef yywrap
 
+#if BROKEN_FILENO_INCLUDE
+/* Under IRIX 6.5, fileno does not get defined using g++ */
+extern "C" {
+  extern int fileno(FILE *);
+}
+#endif
+
 extern multimap<string, string>   tConfigData;
 
 //
