@@ -1,0 +1,109 @@
+
+#include "materials.inc"
+
+define material MTransparentNoise : class MaterialNoise
+{
+  bsdf : class BsdfPhong
+  {
+    exponent    500
+  }
+  ambient     0.0
+  diffuse     0.0
+  specular    0.2
+  opacity     0.2
+  ior         1.5
+  caustics   20.0
+  color 	CWhite
+  base_color  "tropical"
+  zoom        < 25, 25, 25>
+}
+
+define camera c
+{
+  //translate	<0, 200, 300>
+  translate	<0, 100, 450>
+  //look_at	<0, 0, 0>
+  look_at	<0, 0, 0>
+}
+
+define light l_ambient
+{
+  translate	<-400, 500, 1000>
+  volumetric    off
+  shadow        off
+  intensity     0.3
+}
+
+define light l : class WarnLight
+{
+  point_at	<0, 50, 0>
+  exponent      20
+  axis          <0, 0, 0>
+  angle_th      10 //15
+  intensity     1
+}
+
+/*
+difference
+{
+  sphere
+  {
+    radius 75
+  }
+  sphere
+  {
+    radius 0.001
+  }
+  material MTransparentNoise
+}
+*/
+
+sphere
+{
+  radius 75
+  material MTransparentNoise
+}
+
+plane
+{
+  translate     <0,-150, 0>
+  normal	<0, 1, 0>
+  material : extends MChecker
+  {
+    color       CBlack
+    base_color  CWhite
+    size 50
+  }
+}
+
+plane
+{
+  translate     <0, 0,-500>
+  normal	<0, 0, 1>
+  material : extends MChecker
+  {
+    color       CBlack
+    base_color  CWhite
+    size 50
+  }
+}
+
+scene
+{
+  camera	c
+  light : extends l { translate <-400,400,500> }
+  light : extends l { translate < 400,400,500> }
+  light   l_ambient
+  width	  400 //      1024
+  height  300 //       768
+  background	CSummerSky
+  output
+  {
+    type        "png"
+    name	"painted_crystal.png"
+  }
+  renderer : class Raytracer 
+  {
+    //sampling "adaptive"
+  }
+}
