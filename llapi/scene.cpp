@@ -83,6 +83,8 @@ bool TScene::finalize (void)
   delete sBuffers.ptZBuffer;
   delete sBuffers.ptNBuffer;
 
+  ptWorld->finalize();
+  
   ptRenderer->finalize();
   
   return true;
