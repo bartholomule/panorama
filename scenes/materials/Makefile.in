@@ -10,10 +10,12 @@ FILES = brick.rt \
 	checker.rt \
 	checker45.rt \
         crackle.rt \
+        crystal.rt \
         leopard.rt \
         marble.rt \
         marble2.rt \
         materials.rt \
+        painted_crystal.rt \
         water.rt \
         wood.rt \
         worley.rt
