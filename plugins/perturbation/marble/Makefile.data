@@ -1,0 +1,2 @@
+PLUGIN_NAME = per_marble
+OBJ         = per_marble.o

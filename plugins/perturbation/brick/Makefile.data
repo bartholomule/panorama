@@ -1,0 +1,2 @@
+PLUGIN_NAME = per_brick
+OBJ         = per_brick.o

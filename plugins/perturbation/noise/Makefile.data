@@ -1,0 +1,2 @@
+PLUGIN_NAME = per_noise
+OBJ         = per_noise.o
