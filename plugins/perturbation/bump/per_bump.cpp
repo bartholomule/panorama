@@ -37,7 +37,7 @@ TPerturbationBump::TPerturbationBump (void) :
 TVector TPerturbationBump::perturbNormal (const TSurfaceData& rktDATA) const
 {
 
-  TVector   tNewNormal = rktDATA.normal();
+  TVector   tNewNormal = rktDATA.unperturbedNormal();
 
   if ( fabs(tBumpFactor) > FX_EPSILON )
   {
@@ -50,19 +50,16 @@ TVector TPerturbationBump::perturbNormal (const TSurfaceData& rktDATA) const
     TVector        tTemp;
     TScalar        tHeight;
     TScalar        tHeightDiff;
-    TScalar        tOldHeightDiff;
-    TScalar        tSign;
-    TScalar        tOldSign;
     TScalar        dx, dy;
     TScalar        x, y;
     TScalar        tRDamping;
     TScalar        tTDamping;
+    TScalar        tRDampingAbs;
+    TScalar        tTDampingAbs;
     TScalar        tRDampingTotal;
     TScalar        tTDampingTotal;
     TScalar        tRTotal;
     TScalar        tTTotal;
-    bool           gFinished;
-    TScalar        tIteration = 0;
 
     if ( !ptPattern )
     {
@@ -70,7 +67,7 @@ TVector TPerturbationBump::perturbNormal (const TSurfaceData& rktDATA) const
       exit (1);
     }
 
-    s = rktDATA.normal();
+    s = tNewNormal;
 
     r = crossProduct (s, TVector(0.0, 1.0, 0.0));
 
@@ -103,90 +100,61 @@ TVector TPerturbationBump::perturbNormal (const TSurfaceData& rktDATA) const
     dx = ( tSamples.x() > 1 ) ? (2.0 / (tSamples.x() - 1.0)) : 0;
     dy = ( tSamples.y() > 1 ) ? (2.0 / (tSamples.y() - 1.0)) : 0;    
 
-    gFinished = false;
+    tRTotal = 0;
+    tTTotal = 0;
 
-    do
-    {
-      y = -1.0;
+    tRDampingTotal = 0;
+    tTDampingTotal = 0;
 
-      gFinished = true;
-      tIteration++;
+    y = -1.0;
 
-      tRTotal = 0;
-      tTTotal = 0;
+    for (size_t iy = 0; ( iy < (size_t) tSamples.y() ); iy++)
+    {  
 
-      tRDampingTotal = 0;
-      tTDampingTotal = 0;
+      tTDampingAbs = (1.0 - (y * y) * 0.8);
 
-      tSign    = 0;
-      tOldSign = 0;
-
-      tOldHeightDiff = 0;
-
-      for (size_t iy = 0; ( iy < (size_t) tSamples.y() ); iy++)
-      {  
-        x = -1.0;
-
-        tTDamping = ( y == 0 ) ? 0 : (1.0 - (y * y) * 0.8);
-	
-        if ( y < 0 )
-        {
-          tTDamping = -tTDamping;  
-        }
-
-        for (size_t ix = 0; ( ix < (size_t) tSamples.x() ); ix++)
-        {
-          tTemp = ptPattern->warp (rktDATA.localPoint()) + (tGradientU * x) + (tGradientV * y);
-          tData.setPoint (tTemp);
-          tColor = ptPattern->color (tData);
-
-          tHeightDiff = tColor.average() - tHeight;
-
-	  if ( ix > 0 )
-	  {
-	    tSign = sign (tOldHeightDiff - tHeightDiff);
-	  }
-
-          if ( ( ix > 1 ) && ( tSign != tOldSign ) ) 
-	  {
-            tGradientU *= 0.2;    
-            tGradientV *= 0.2;
-
-	    gFinished = false;
-
-	    break;
-	  }
-
-          tRDamping = ( x == 0 ) ? 0 : (1.0 - (x * x) * 0.8);	
-
-	  tRDampingTotal += tRDamping;
-	  tTDampingTotal += fabs (tTDamping);
-
-          if ( x < 0 )
-	  {
-	    tRDamping = -tRDamping;  
-          }
-       
-          tRTotal += tHeightDiff * tRDamping;
-  	  tTTotal += tHeightDiff * tTDamping;
-
-          tOldHeightDiff = tHeightDiff;
-	  tOldSign = tSign;
-
-	  x += dx;
-        }
-
-	if ( !gFinished ) break;
-	
-        y += dy;
+      if ( tTDampingAbs > (1.0 - FX_EPSILON) ) 
+      {
+        tTDampingAbs = 0;
       }
+	
+      tTDamping = ( y > 0 ) ? tTDampingAbs : -tTDampingAbs;
+
+      x = -1.0;
+
+      for (size_t ix = 0; ( ix < (size_t) tSamples.x() ); ix++)
+      {
+        tTemp = ptPattern->warp (rktDATA.localPoint()) + (tGradientU * x) + (tGradientV * y);
+        tData.setPoint (tTemp);
+        tColor = ptPattern->color (tData);
+
+        tHeightDiff = tColor.average() - tHeight;
+
+        tRDampingAbs = (1.0 - (x * x) * 0.8);	
+
+	if ( tRDampingAbs > (1.0 - FX_EPSILON) ) 
+        {
+          tRDampingAbs = 0;
+        }
+
+	tRDamping = ( x > 0 ) ? tRDampingAbs : -tRDampingAbs;
+
+	tRDampingTotal += tRDampingAbs;
+	tTDampingTotal += tTDampingAbs;
+       
+        tRTotal += tHeightDiff * tRDamping;
+  	tTTotal += tHeightDiff * tTDamping;
+
+        x += dx;
+      }
+	
+      y += dy;
     }
-    while ( ( !gFinished ) && ( tIteration < _ktMAX_NO_ITERATIONS ) );
 
     r *= tRTotal / tRDampingTotal;
     t *= tTTotal / tTDampingTotal;
 
-    tNewNormal = s + (r + t) * ((tBumpFactor * pow (5.0, tIteration - 1.0)));
+    tNewNormal = s + (r + t) * tBumpFactor;
     tNewNormal.normalize();
   }
   
