@@ -186,10 +186,9 @@ void DeleteComments (void)
   int    iChar;
   bool   gEnd = false;
 
-//  cout << "Entering comment..." << endl;
+  iChar = yyinput();
   while ( !gEnd )
   {
-    iChar = yyinput();
     while ( iChar != '*' )
     {
       if ( iChar == EOF )
@@ -208,12 +207,7 @@ void DeleteComments (void)
     {
       gEnd = true;
     }
-    else if ( iChar == '\n' )
-    {
-      TSceneRT::_dwLineNumber++;
-    }
   }
-//  cout << "Exiting comment..." << endl;
 
 }  /* DeleteComments() */
 
