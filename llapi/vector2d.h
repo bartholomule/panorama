@@ -1,5 +1,6 @@
 /*
 *  Copyright (C) 1998 Angel Jimenez Jimenez and Carlos Jimenez Moreno
+*  Copyright (C) 1999 Jon Frydensbjerg
 *
 *  This program is free software; you can redistribute it and/or modify
 *  it under the terms of the GNU General Public License as published by
@@ -293,8 +294,8 @@ template <class TItem>
 inline TItem dotProduct (const TVector2D<TItem>& rktVEC1, const TVector2D<TItem>& rktVEC2)
 {
 
-  return (rktVEC1.vx * rktVEC2.vx +
-          rktVEC1.vy * rktVEC2.vy);
+  return (rktVEC1.x() * rktVEC2.x() +
+          rktVEC1.y() * rktVEC2.y());
 
 }  /* dotProduct() */
 
