@@ -21,6 +21,7 @@
 
 #include "llapi/bsdf.h"
 #include "llapi/material.h"
+#include "llapi/vector.h"
 #include "hlapi/plugin_manager.h"
 
 class TBsdfLambertian : public TBsdf
@@ -36,6 +37,13 @@ class TBsdfLambertian : public TBsdf
       TColor    tColor = rktDATA.object()->material()->color (rktDATA);
 
       return tColor * (kd * tCOSNL);
+    }
+
+    void getRayDirection (const TSurfaceData& rktDATA, const TVector& rktREFLECTED, TVector& rtDIR) const
+    {
+      TVector   v = RandomVectorInSphere();
+
+      rtDIR = ( dotProduct (v, rktDATA.normal()) > 0 ) ? v : -v;
     }
 
     string className (void) const { return "BsdfLambertian"; }
