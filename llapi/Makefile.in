@@ -31,6 +31,7 @@ OBJ = atmosphere.o \
       mesh.o \
       object.o \
       perlin_noise.o \
+      pattern.o \
       procedural.o \
       program.o \
       ray.o \
