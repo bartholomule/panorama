@@ -32,6 +32,16 @@ void TObject::createMatrices (void)
 }  /* createMatrices() */
 
 
+void TObject::initialize (void)
+{
+
+  assert ( ptMaterial );
+
+  ptMaterial->initialize();
+
+}  /* initialize() */
+
+
 void TObject::translate (const TVector& rktNEW_POS)
 {
   

@@ -95,10 +95,7 @@ class TObject : public TVolume
       return *this;
     }
       
-    virtual void initialize (void)
-    {
-      assert ( ptMaterial );
-    }
+    virtual void initialize (void);
 
     virtual bool intersects (const TRay& rktRAY) const
     {
