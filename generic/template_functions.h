@@ -157,7 +157,7 @@ void my_swap(T& t1, T& t2)
 template <class T>
 void fill_vector(std::vector<T>& vec, const T& val)
 {
-  std::vector<T>::iterator i;
+  typename std::vector<T>::iterator i;
   for(i = vec.begin(); i != vec.end(); ++i)
     *i = val;
 }

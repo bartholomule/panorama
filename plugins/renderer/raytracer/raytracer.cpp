@@ -162,7 +162,7 @@ bool TRaytracer::traceShadowRay (const TRay& rktRAY, const TLight& rktLIGHT, TCo
   //
   // Set light location as a limit for intersection tests.
   //
-  tRay.setLimit (Distance (tRay.location(), rktLIGHT.location()));
+  tRay.setRange (FX_EPSILON, Distance (tRay.location(), rktLIGHT.location()));
 
   while ( ptScene->world()->findFirstIntersection (tRay, tSurfaceData) )
   {
@@ -198,7 +198,8 @@ bool TRaytracer::traceShadowRay (const TRay& rktRAY, const TLight& rktLIGHT, TCo
       //
       tSurfaceData = tList.last();
       tRay.setLocation (tSurfaceData.point());
-      tRay.setLimit (tRay.limit() - tSurfaceData.distance());
+      tRay.setRange (tRay.range().min(),
+		     tRay.maxLimit() - tSurfaceData.distance());
     }
   }
 
@@ -222,7 +223,7 @@ bool TRaytracer::traceShadowRay ( const TRay& rktRAY, const TObject& rktALight, 
   //
   // Set light location as a limit for intersection tests.
   //
-  tRay.setLimit (Distance (tRay.location(), light_location));
+  tRay.setRange (FX_EPSILON, Distance (tRay.location(), light_location));
 
   while ( ptScene->world()->findFirstIntersection (tRay, tSurfaceData) )
   {
@@ -270,7 +271,8 @@ bool TRaytracer::traceShadowRay ( const TRay& rktRAY, const TObject& rktALight, 
       //
       tSurfaceData = tList.last();
       tRay.setLocation (tSurfaceData.point());
-      tRay.setLimit (tRay.limit() - tSurfaceData.distance());
+      tRay.setRange (tRay.range().min(),
+		     tRay.maxLimit() - tSurfaceData.distance());
     }
   }
 
@@ -1037,7 +1039,7 @@ TColor TRaytracer::specularReflectedLight (const TSurfaceData& rktDATA, Word wDE
   if ( wDEPTH-- )
   {
     tRay = rktDATA.ray();
-    tRay.setLimit (SCALAR_MAX);
+    tRay.setRange (FX_EPSILON, SCALAR_MAX);
     tRay.setLocation (rktDATA.point());
 
     if ( ptMaterial->transparent (rktDATA) && dotProduct (rktDATA.ray().direction(), tNormal) > 0 )
@@ -1077,7 +1079,7 @@ TColor TRaytracer::specularTransmittedLight (const TSurfaceData& rktDATA, Word w
 
   if ( wDEPTH-- )
   {
-    tRay.setLimit (SCALAR_MAX);
+    tRay.setRange (FX_EPSILON, SCALAR_MAX);
 
     gEntering = tRay.refract (tNormal, ptMaterial->ior (rktDATA), gTIR);
 

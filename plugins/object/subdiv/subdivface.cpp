@@ -343,7 +343,7 @@ bool TSubdivFace::findLocalIntersections (const TSubdiv& rktSUBDIV,
                                     ptLast->tPosition, ptCurrent->tPosition,
                                     T, U, V) )
     {
-      if ( ( T > FX_EPSILON ) && ( T < rktRAY.limit() ) )
+      if( rktRAY.range().inside(T) )
       {
         gFoundIntersection = true;
 

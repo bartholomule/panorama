@@ -123,10 +123,13 @@ bool TSphere::findFirstIntersection (const TRay& rktRAY, TSurfaceData& rtDATA) c
 
   tFactor = tRayIT.applyTransform (ptInverseMatrix);
 
-  if ( rktRAY.limit() < SCALAR_MAX )
-  {
-    tRayIT.setLimit (rktRAY.limit() / tFactor);
-  }
+  // [CHECKME!]
+  // >>>>>>>>>>>>>>>> 100.99
+  //  if ( rktRAY.limit() < SCALAR_MAX )
+  //  {
+  //    tRayIT.setLimit (rktRAY.limit() / tFactor);
+  //  }
+  tRayIT.applyRangeFactor( 1.0 / tFactor );
 
   tCenter       = (-tRayIT.location());
   tDistance2    = dotProduct (tCenter, tCenter);
@@ -140,7 +143,8 @@ bool TSphere::findFirstIntersection (const TRay& rktRAY, TSurfaceData& rtDATA) c
 
     s1 = tProjection + sqrt (tIntersection2);
 
-    if ( ( s1 >= FX_EPSILON ) && ( s1 <= tRayIT.limit() ) )
+    //    if ( ( s1 >= FX_EPSILON ) && ( s1 <= tRayIT.limit() ) )
+    if( tRayIT.range().inside(s1) )
     {
       rtDATA.setup (this, rktRAY);
       rtDATA.setPoint (tFactor * s1);
@@ -170,7 +174,8 @@ bool TSphere::findFirstIntersection (const TRay& rktRAY, TSurfaceData& rtDATA) c
     s1 = tProjection - sqrt (tIntersection2);
     s2 = tProjection + sqrt (tIntersection2);
 
-    if ( ( s1 >= FX_EPSILON ) && ( s1 <= tRayIT.limit() ) )
+    //    if ( ( s1 >= FX_EPSILON ) && ( s1 <= tRayIT.limit() ) )
+    if( tRayIT.range().inside(s1) )
     {
       rtDATA.setup (this, rktRAY);
       rtDATA.setPoint (tFactor * s1);
@@ -178,7 +183,8 @@ bool TSphere::findFirstIntersection (const TRay& rktRAY, TSurfaceData& rtDATA) c
       return true;
     }
 
-    if ( ( s2 >= FX_EPSILON ) && ( s2 <= tRayIT.limit() ) )
+    //    if ( ( s2 >= FX_EPSILON ) && ( s2 <= tRayIT.limit() ) )
+    if( tRayIT.range().inside(s2) )
     {
       rtDATA.setup (this, rktRAY);
       rtDATA.setPoint (tFactor * s2);
@@ -209,10 +215,13 @@ bool TSphere::findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) const
 
   tFactor = tRayIT.applyTransform (ptInverseMatrix);
 
-  if ( rktRAY.limit() < SCALAR_MAX )
-  {
-    tRayIT.setLimit (rktRAY.limit() / tFactor);
-  }
+  // [CHECKME!]
+  // >>>>>>>>>>>>>>>> 100.99
+  //  if ( rktRAY.limit() < SCALAR_MAX )
+  //  {
+  //    tRayIT.setLimit (rktRAY.limit() / tFactor);
+  //  }
+  tRayIT.applyRangeFactor( 1.0 / tFactor );
 
   tCenter       = (-tRayIT.location());
   tDistance2    = dotProduct (tCenter, tCenter);
@@ -251,7 +260,8 @@ bool TSphere::findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) const
 
   tSurfaceData.setup (this, rktRAY);
 
-  if ( ( s1 >= FX_EPSILON ) && ( s1 <= tRayIT.limit() ) )
+  //  if ( ( s1 >= FX_EPSILON ) && ( s1 <= tRayIT.limit() ) )
+  if( tRayIT.range().inside(s1) )
   {
     if ( tSurfaceData.setPoint (tFactor * s1) )
     {
@@ -260,7 +270,8 @@ bool TSphere::findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) const
     }
   }
 
-  if ( ( s2 >= FX_EPSILON ) && ( s2 <= tRayIT.limit() ) )
+  //  if ( ( s2 >= FX_EPSILON ) && ( s2 <= tRayIT.limit() ) )
+  if( tRayIT.range().inside(s2) )
   {
     if ( tSurfaceData.setPoint (tFactor * s2) )
     {

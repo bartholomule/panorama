@@ -70,7 +70,7 @@ bool THeightField::checkIntersection (int iCELLX, int iCELLZ, const TRay& rktRAY
 
     tSol = -(dotProduct (tNormal, rktRAY.location()) + D) / tDen;
 
-    if ( ( tSol >= FX_EPSILON ) && ( tSol <= rktRAY.limit()) )
+    if( rktRAY.range().inside(tSol) )
     {
       TVector   tPoint = rktRAY.location() + rktRAY.direction() * tSol;
 
@@ -102,7 +102,7 @@ bool THeightField::checkIntersection (int iCELLX, int iCELLZ, const TRay& rktRAY
 
     tSol = -(dotProduct (tNormal, rktRAY.location()) + D) / tDen;
 
-    if ( ( tSol >= FX_EPSILON ) && ( tSol <= rktRAY.limit()) )
+    if( rktRAY.range().inside(tSol) )
     {
       TVector   tPoint = rktRAY.location() + rktRAY.direction() * tSol;
 
@@ -460,7 +460,7 @@ bool THeightField::findFirstIntersection (const TRay& rktRAY, TSurfaceData& rtDA
   tInt.set (tInt.min() / tFactor, tInt.max() / tFactor);
   
   tRayIT.setLocation (tRayIT.location() + tRayIT.direction() * tInt.min());
-  tRayIT.setLimit (tInt.max());
+  tRayIT.setRange (tInt);
 
   if ( traverseGrid (tRayIT, rtDATA) )
   {
@@ -495,10 +495,13 @@ bool THeightField::findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) 
   
   tFactor = tRayIT.applyTransform (ptInverseMatrix);
 
-  if ( rktRAY.limit() < SCALAR_MAX )
-  {
-    tRayIT.setLimit (rktRAY.limit() / tFactor);
-  }
+  // [CHECKME!]
+  //  if ( rktRAY.limit() < SCALAR_MAX )
+  //  {
+  //    tRayIT.setLimit (rktRAY.limit() / tFactor);
+  //  }
+  tRayIT.applyRangeFactor( 1.0 / tFactor );
+  
 
   if ( fabs (tRayIT.direction().x()) < FX_EPSILON )
   {
@@ -554,8 +557,10 @@ bool THeightField::findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) 
   }
 
   tSurfaceData.setup (this, rktRAY);
-  
-  if ( ( tIntTmp.min() >= FX_EPSILON ) && ( tIntTmp.min() <= rktRAY.limit() ) )
+
+  // [CHECKME!]
+  //  if ( ( tIntTmp.min() >= FX_EPSILON ) && ( tIntTmp.min() <= rktRAY.limit() ) )
+  if( rktRAY.range().inside( tIntTmp.min() ) )
   {
     if ( tSurfaceData.setPoint (tIntTmp.min() * tFactor) )
     {
@@ -563,7 +568,10 @@ bool THeightField::findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) 
       gIntersection = true;
     }
   }
-  if ( ( tIntTmp.max() >= FX_EPSILON ) && ( tIntTmp.max() <= rktRAY.limit() ) )
+  
+  // [CHECKME!]
+  //  if ( ( tIntTmp.max() >= FX_EPSILON ) && ( tIntTmp.max() <= rktRAY.limit() ) )
+  if( rktRAY.range().inside(tIntTmp.max()) )
   {
     if ( tSurfaceData.setPoint (tIntTmp.max() * tFactor) )
     {

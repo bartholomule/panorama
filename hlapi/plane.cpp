@@ -58,7 +58,10 @@ bool TPlane::findFirstIntersection (const TRay& rktRAY, TSurfaceData& rtDATA) co
   
   tSol = -(dotProduct (tNormal, rktRAY.location()) + D) / tDen;
 
-  if ( ( tSol >= FX_EPSILON ) && ( tSol <= rktRAY.limit() ) )
+  // [CHECKME!]
+  // >>>>>>>>>>>>>>>> 100.99  
+  //  if ( ( tSol >= FX_EPSILON ) && ( tSol <= rktRAY.limit() ) )
+  if( rktRAY.range().inside(tSol) )
   {
     tPoint = rktRAY.location() + (rktRAY.direction() * tSol);
 
@@ -104,7 +107,10 @@ bool TPlane::findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) const
   
   tSol = -(dotProduct (tNormal, rktRAY.location()) + D) / tDen;
 
-  if ( ( tSol >= FX_EPSILON ) && ( tSol <= rktRAY.limit() ) )
+  // [CHECKME!]
+  // >>>>>>>>>>>>>>>> 100.99  
+  //  if ( ( tSol >= FX_EPSILON ) && ( tSol <= rktRAY.limit() ) )
+  if( rktRAY.range().inside(tSol) )
   {
     tPoint = rktRAY.location() + (rktRAY.direction() * tSol);
 

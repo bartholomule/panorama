@@ -84,7 +84,8 @@ bool TBoundingBox::intersects (const TRay& rktRAY) const
   {
     tIntX = TInterval ((tPoint1.x() - rktRAY.location().x()) / rktRAY.direction().x(),
                        (tPoint2.x() - rktRAY.location().x()) / rktRAY.direction().x());
-    if ( ( tIntX < TScalar (0) ) || ( tIntX > rktRAY.limit() ) )
+    //    if ( ( tIntX < TScalar (0) ) || ( tIntX > rktRAY.limit() ) )
+    if( Disjoint(rktRAY.range(), tIntX) )
     {
       return false;
     }
@@ -105,7 +106,8 @@ bool TBoundingBox::intersects (const TRay& rktRAY) const
   {
     tIntY = TInterval ((tPoint1.y() - rktRAY.location().y()) / rktRAY.direction().y(),
                        (tPoint2.y() - rktRAY.location().y()) / rktRAY.direction().y());
-    if ( ( tIntY < TScalar (0) ) || ( tIntY > rktRAY.limit() ) )
+    //    if ( ( tIntY < TScalar (0) ) || ( tIntY > rktRAY.limit() ) )
+    if( Disjoint(rktRAY.range(), tIntY) )
     {
       return false;
     }
@@ -130,7 +132,8 @@ bool TBoundingBox::intersects (const TRay& rktRAY) const
   {
     tIntZ = TInterval ((tPoint1.z() - rktRAY.location().z()) / rktRAY.direction().z(), 
                        (tPoint2.z() - rktRAY.location().z()) / rktRAY.direction().z());
-    if ( ( tIntZ < TScalar (0) ) || ( tIntZ > rktRAY.limit() ) )
+    //    if ( ( tIntZ < TScalar (0) ) || ( tIntZ > rktRAY.limit() ) )
+    if( Disjoint(rktRAY.range(), tIntZ) )
     {
       return false;
     }
@@ -158,7 +161,8 @@ TInterval TBoundingBox::clipRay (const TRay& rktRAY) const
     {
       return TInterval();
     }
-    tIntX.set (0, rktRAY.limit());
+    //    tIntX.set (0, rktRAY.limit());
+    tIntX = rktRAY.range();
   }
   else
   {
@@ -173,7 +177,8 @@ TInterval TBoundingBox::clipRay (const TRay& rktRAY) const
     {
       return TInterval();
     }
-    tIntY.set (0, rktRAY.limit());
+    //    tIntY.set (0, rktRAY.limit());
+    tIntY = rktRAY.range();
   }
   else
   {
@@ -188,7 +193,8 @@ TInterval TBoundingBox::clipRay (const TRay& rktRAY) const
     {
       return TInterval();
     }
-    tIntZ.set (0, rktRAY.limit());
+    //    tIntZ.set (0, rktRAY.limit());
+    tIntZ = rktRAY.range();
   }
   else
   {
@@ -196,7 +202,8 @@ TInterval TBoundingBox::clipRay (const TRay& rktRAY) const
                (tInt.max() - rktRAY.location().z()) / rktRAY.direction().z());
   }
 
-  tInt.set (0, rktRAY.limit());
+  //  tInt.set (0, rktRAY.limit());
+  tInt = rktRAY.range();
   tInt = Intersection (tInt, tIntX);
   tInt = Intersection (tInt, tIntY);
   tInt = Intersection (tInt, tIntZ);

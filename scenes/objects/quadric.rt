@@ -1,3 +1,8 @@
+// This is intended to look exactly like the one in sphere.rt (for now). 
+// It is mainly for use in debugging the quadrics, which are a
+// work-in-progress. 
+
+
 #include "materials.inc"
 #include "cameras.inc"
 #include "shapes.inc"
@@ -10,20 +15,23 @@ define c pas_35mm
   look_at = <0,0,0>;
 };
 
-define s sphere 
+define s class Quadric 
 {
+  setCoefsV(0, <1,1,1>);
+  setCoef(9, -1);
+
   translate( <0,0,0> );
-  radius = 1;
  
   material = MPlastic
   {
     color = CGreen;
   };
+  name = "quadric";
 };
 
-s { translate(<0,2,0>); };
-s { translate(<-2,0,0>); material = MPlastic { color = CRed; }; };
-s { translate(< 2,0,0>); material = MPlastic { color = CBlue; }; };
+s { translate(<0,2,0>); name = "green"; };
+s { translate(<-2,0,0>); name = "red"; material = MPlastic { color = CRed; }; };
+s { translate(< 2,0,0>); name = "blue"; material = MPlastic { color = CBlue; }; };
 
 class Cone 
 { 
@@ -34,7 +42,6 @@ class Cone
 
   material = MPlastic { color = CMagenta; };
 };
-
 
 circle { translate( <2,-3,2> );  radius=3; material = MPlastic { color = CYellow; }; };
 
@@ -48,6 +55,6 @@ scene
   camera = c;
   width = 200;
   height = 200;
-  output = class png { name = "sphere.png"; };
+  output = class png { name = "quadric.png"; };
   renderer = class Raytracer { };
 };

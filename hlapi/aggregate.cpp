@@ -84,7 +84,9 @@ bool TAggregate::findFirstIntersection (const TRay& rktRAY, TSurfaceData& rtDATA
   {
     if ( (*tIter)->findFirstIntersection (tRay, rtDATA) )
     {
-      tRay.setLimit (rtDATA.distance());
+      // Set the maximum distance in the distance to filter out all subsequent
+      // hits at larger distances.
+      tRay.setRange (tRay.range().min(), rtDATA.distance());
       gIntersection = true;
     }
   }

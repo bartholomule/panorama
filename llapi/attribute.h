@@ -213,6 +213,59 @@ struct TAttribVector2 : public TAttribute
   
 };  /* struct TAttribVector2 */
 
+struct TAttribArray : public TAttribute
+{
+  std::vector<TScalar> tValue;
+
+  TAttribArray (void) { eType = FX_ARRAY; }
+  TAttribArray (TScalar s): tValue(1)
+  {
+    eType = FX_ARRAY;
+    tValue[0] = s;
+  }
+  TAttribArray (const TVector2& v): tValue(2)
+  {
+    eType = FX_ARRAY;
+    tValue[0] = v.x();
+    tValue[1] = v.y();
+  }
+  TAttribArray (const TVector& v): tValue(3)
+  {
+    eType = FX_ARRAY;
+    tValue[0] = v.x();
+    tValue[1] = v.y();
+    tValue[2] = v.z();    
+  }
+  
+  TAttribArray (const std::vector<TScalar>& va): tValue(va) { eType = FX_ARRAY; }
+  virtual string AttributeName() const { return "array"; }
+  TATTRIB_CLONE_NEW_DEF(TAttribArray);
+  
+  virtual string toString() const
+  {
+    string retval;
+    char buffer[1024];
+    retval = "[ ";
+
+    size_t i;
+    // all of the elements that need a trailing comma (if any)
+    for(i = 0; i < tValue.size() - 1; ++i)
+    {
+      sprintf(buffer, "%06.4f, ", tValue[i]);
+      retval += string(buffer);
+    }
+    // the remaining elements (if any)
+    if(i < tValue.size())
+    {
+      sprintf(buffer, "%06.4f", tValue[i]);      
+      retval += string(buffer);
+    }    
+    retval += " ]";
+    return retval;
+  }
+    
+};  /* struct TAttribArray */
+
 
 magic_pointer<TAttribInt>     get_int(const magic_pointer<TAttribute> attr);
 magic_pointer<TAttribReal>    get_real(const magic_pointer<TAttribute> attr);
@@ -222,6 +275,7 @@ magic_pointer<TAttribStringList> get_stringlist(const magic_pointer<TAttribute> 
 magic_pointer<TAttribColor>   get_color(const magic_pointer<TAttribute> attr);
 magic_pointer<TAttribVector>  get_vector(const magic_pointer<TAttribute> attr);
 magic_pointer<TAttribVector2> get_vector2(const magic_pointer<TAttribute> attr);
+magic_pointer<TAttribArray> get_array(const magic_pointer<TAttribute> attr);
 
 magic_pointer<TAttribute> base_to_attr(const magic_pointer<TBaseClass> base);
 magic_pointer<TBaseClass> attr_to_base(const magic_pointer<TAttribute> attr);

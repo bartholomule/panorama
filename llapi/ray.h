@@ -20,6 +20,7 @@
 #define _RAY__
 
 #include "llapi/llapi_defs.h"
+#include "llapi/interval.h"
 #include "generic/magic_pointer.h"
 
 class TRay
@@ -30,32 +31,33 @@ class TRay
     TVector   tLocation;
     TVector   tDirection;
     TScalar   tIor;
-    TScalar   tLimit;
+  //    TScalar   tLimit;
+    TInterval tRange;
     
   public:
  
     TRay (void) :
       tIor (FX_MEDIUM_IOR),
-      tLimit (SCALAR_MAX) {}
+      tRange (FX_EPSILON, SCALAR_MAX) {}
 
     TRay (const TVector& rktLOC, const TVector& rktDIR) :
       tLocation (rktLOC),
       tDirection (rktDIR),
       tIor (FX_MEDIUM_IOR),
-      tLimit (SCALAR_MAX) {}
+      tRange (FX_EPSILON, SCALAR_MAX) {}
 
     TRay (const TRay& rktRAY) :
       tLocation (rktRAY.location()),
       tDirection (rktRAY.direction()),
       tIor (rktRAY.ior()),
-      tLimit (rktRAY.limit()) {}
+      tRange (rktRAY.range()) {}
 
     TRay& operator = (const TRay& rktRAY)
     {
       tLocation  = rktRAY.location();
       tDirection = rktRAY.direction();
       tIor       = rktRAY.ior();
-      tLimit     = rktRAY.limit();
+      tRange     = rktRAY.range();
 
       return *this;
     }
@@ -63,13 +65,17 @@ class TRay
     TVector location (void) const { return tLocation; }
     TVector direction (void) const { return tDirection; }
     TVector destination (void) const { return (tLocation + tDirection); }
-    TScalar limit (void) const { return tLimit; }
+    const TInterval& range (void) const { return tRange; }
+    TScalar maxLimit (void) const { return tRange.max(); }  
     TScalar ior (void) const { return tIor; }
 
     void setLocation (const TVector& rktLOC) { tLocation = rktLOC; }
     void setDirection (const TVector& rktDIR) { tDirection = rktDIR; }
     void setDestination (const TVector& rktDEST) { tDirection = (rktDEST - tLocation); }
-    void setLimit (TScalar tLIMIT) { tLimit = tLIMIT; }
+    void setRange (TInterval tRANGE) { tRange = tRANGE; }
+    void setRange (TScalar tMin, TScalar tMax) { tRange = TInterval(tMin, tMax); }
+    // apply a factor (=multiply) the parts of the range by the factor.
+    void applyRangeFactor(TScalar fact);
 
     void normalize (void)
     {

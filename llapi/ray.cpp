@@ -120,6 +120,22 @@ TScalar TRay::applyTransform (const TMatrix& rktMATRIX)
   
 }  /* applyTransform() */
 
+void TRay::applyRangeFactor(TScalar fact)
+{
+  TScalar min = tRange.min();
+  TScalar max = tRange.max();
+  
+  // If it is an epsilon, preserve it.
+  if( min == FX_EPSILON )
+  {
+    tRange.set(FX_EPSILON, max * fact );
+  }
+  else
+  {
+    tRange.set(min * fact, max * fact );    
+  }
+}
+
 
 void TRay::printDebug (const string& indent) const
 {
@@ -131,7 +147,7 @@ void TRay::printDebug (const string& indent) const
   cerr << new_indent << "Location  : "; tLocation.printDebug(new_indent); cerr << endl;
   cerr << new_indent << "Direction : "; tDirection.printDebug(new_indent); cerr << endl;
   cerr << new_indent << "IOR       : " << tIor << endl;
-  cerr << new_indent << "Limit     : " << tLimit << endl;
+  cerr << new_indent << "Range     : " << tRange << endl;
   
   TDebug::_pop();
 

@@ -305,7 +305,7 @@ TColor TAtmosphericObject::filterRadiance (const TSurfaceData& rktDATA, const TC
 
   if ( rktDATA.object() )
   {
-    tRay.setLimit (rktDATA.distance());
+    tRay.setRange( FX_EPSILON, rktDATA.distance() );
   }
 
   tInt = tBoundingBox.clipRay (tRay);

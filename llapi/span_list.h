@@ -22,14 +22,17 @@
 #include <map>
 #include "llapi/surface_data.h"
 
-class TSpanList : public map<TScalar, TSurfaceData, less <TScalar> >
+class TSpanList : public std::multimap<TScalar, TSurfaceData, less <TScalar> >
 {
 
   public:
 
     void add (const TSurfaceData& rktDATA)
     {
-      (*this) [rktDATA.distance()] = rktDATA;
+
+      value_type entry = value_type(rktDATA.distance(), rktDATA);
+      insert(entry);
+      
     }
 
     TSurfaceData first (void) const

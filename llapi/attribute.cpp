@@ -88,7 +88,7 @@ magic_pointer<TAttribReal>    get_real(magic_pointer<TAttribute> attr)
 	const char* scp = s.c_str();
 	char* ptr;
 
-	double value = strtod(scp, &ptr);
+	TScalar value = strtod(scp, &ptr);
 
 	if( (ptr - scp) == int(s.length()) )
 	{
@@ -222,7 +222,7 @@ magic_pointer<TAttribColor>   get_color(magic_pointer<TAttribute> attr)
     switch(attr->eType)
     {
     case FX_INTEGER:
-      retval = (magic_pointer<TAttribColor>)new TAttribColor((double)rcp_static_cast<TAttribInt>(attr)->tValue);
+      retval = (magic_pointer<TAttribColor>)new TAttribColor((TScalar)rcp_static_cast<TAttribInt>(attr)->tValue);
       break;      
     case FX_REAL:
       retval = (magic_pointer<TAttribColor>)new TAttribColor(rcp_static_cast<TAttribReal>(attr)->tValue);
@@ -249,7 +249,7 @@ magic_pointer<TAttribVector>  get_vector(magic_pointer<TAttribute> attr)
     switch(attr->eType)
     {
     case FX_INTEGER:
-      retval = (magic_pointer<TAttribVector>)new TAttribVector((double)rcp_static_cast<TAttribInt>(attr)->tValue);
+      retval = (magic_pointer<TAttribVector>)new TAttribVector((TScalar)rcp_static_cast<TAttribInt>(attr)->tValue);
       break;      
     case FX_REAL:
       retval = (magic_pointer<TAttribVector>)new TAttribVector(rcp_static_cast<TAttribReal>(attr)->tValue);
@@ -273,13 +273,43 @@ magic_pointer<TAttribVector2> get_vector2(magic_pointer<TAttribute> attr)
     switch(attr->eType)
     {
     case FX_INTEGER:
-      retval = (magic_pointer<TAttribVector2>)new TAttribVector2((double)rcp_static_cast<TAttribInt>(attr)->tValue);
+      retval = (magic_pointer<TAttribVector2>)new TAttribVector2((TScalar)rcp_static_cast<TAttribInt>(attr)->tValue);
       break;      
     case FX_REAL:
       retval = (magic_pointer<TAttribVector2>)new TAttribVector2(rcp_static_cast<TAttribReal>(attr)->tValue);
       break;
     case FX_VECTOR2:
       retval = rcp_static_cast<TAttribVector2>(attr);
+      break;      
+    default:
+      // Retval is NULL!!!
+      break;
+    }
+  }
+  return retval;  
+}
+
+magic_pointer<TAttribArray> get_array(magic_pointer<TAttribute> attr)
+{
+  magic_pointer<TAttribArray> retval;
+  if( !!attr )
+  {
+    switch(attr->eType)
+    {
+    case FX_INTEGER:
+      retval = (magic_pointer<TAttribArray>)new TAttribArray((TScalar)rcp_static_cast<TAttribInt>(attr)->tValue);
+      break;      
+    case FX_REAL:
+      retval = (magic_pointer<TAttribArray>)new TAttribArray(rcp_static_cast<TAttribReal>(attr)->tValue);
+      break;
+    case FX_VECTOR2:
+      retval = (magic_pointer<TAttribArray>)new TAttribArray(rcp_static_cast<TAttribVector2>(attr)->tValue);
+      break;
+    case FX_VECTOR:
+      retval = (magic_pointer<TAttribArray>)new TAttribArray(rcp_static_cast<TAttribVector>(attr)->tValue);
+      break;      
+    case FX_ARRAY:
+      retval = rcp_static_cast<TAttribArray>(attr);
       break;      
     default:
       // Retval is NULL!!!

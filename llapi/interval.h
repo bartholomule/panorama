@@ -55,7 +55,10 @@ class TBaseInterval
     }
 
     void set (TItem tVALUE1, TItem tVALUE2);
-    TItem adjustValue (TItem tVALUE) const;
+  
+    // clamp the given value to fit within this interval.
+    TItem clamp (TItem tVALUE) const;  
+    inline TItem adjustValue (TItem tVALUE) const { return clamp(tVALUE); }
 
     TItem min (void) const { return tMin; }
     TItem max (void) const { return tMax; }
@@ -64,6 +67,9 @@ class TBaseInterval
     bool empty (void) const { return gEmpty; }
 
     bool inside (TItem tVALUE) const;
+    bool outside (TItem tVALUE) const;  
+    bool overlaps(TBaseInterval& tINTERVAL) const;
+    bool subset(TBaseInterval& tINTERVAL) const;
 
     void printDebug (const string& indent) const;
     
@@ -83,8 +89,6 @@ template <class TItem>
 inline void TBaseInterval<TItem>::set (TItem tVALUE1, TItem tVALUE2)
 {
 
-  gEmpty = false;
-
   if ( tVALUE1 < tVALUE2 )
   {
     tMin = tVALUE1;
@@ -95,6 +99,15 @@ inline void TBaseInterval<TItem>::set (TItem tVALUE1, TItem tVALUE2)
     tMin = tVALUE2;
     tMax = tVALUE1;
   }
+
+  // [CHECKME!]
+  // Question -- If the interval has the same top and bottom values, is it in
+  // fact an interval?  Should the interval be empty in that case?
+  // If I do set the interval to be empty, there are some problems with
+  // indirect use of intervals from within certain objects not being visible
+  // (cones, for example).
+  //  gEmpty = tMin != tMax;
+  gEmpty = false;
 
 }  /* set() */
 
@@ -111,9 +124,42 @@ inline bool TBaseInterval<TItem>::inside (TItem tVALUE) const
 
 }  /* inside() */
 
+template <class TItem>
+inline bool TBaseInterval<TItem>::outside (TItem tVALUE) const
+{
+
+  if ( !gEmpty )
+  {
+    return ( ( tVALUE < tMin ) || ( tVALUE > tMax ) );
+  }
+  return false;
+
+}  /* outside() */
 
 template <class TItem>
-inline TItem TBaseInterval<TItem>::adjustValue (TItem tVALUE) const
+inline bool TBaseInterval<TItem>::overlaps(TBaseInterval& tINTERVAL) const
+{
+  if( empty() || tINTERVAL.empty() )
+  {
+    return false;
+  }
+  return ( inside(tINTERVAL.min()) || inside(tINTERVAL.max()) );
+  
+} /* overlaps() */
+
+template <class TItem>
+inline bool TBaseInterval<TItem>::subset(TBaseInterval& tINTERVAL) const
+{
+  if( empty() || tINTERVAL.empty() )
+  {
+    return false;
+  }
+  return ( inside(tINTERVAL.min()) && inside(tINTERVAL.max()) );
+  
+} /* subset() */
+
+template <class TItem>
+inline TItem TBaseInterval<TItem>::clamp (TItem tVALUE) const
 {
   // Return value not specified if interval is empty
 
@@ -128,7 +174,7 @@ inline TItem TBaseInterval<TItem>::adjustValue (TItem tVALUE) const
 
   return tVALUE;
 
-}  /* adjustValue() */
+}  /* clamp() */
 
 
 template <class TItem>
@@ -219,6 +265,65 @@ inline bool operator < (TBaseInterval<TItem> tINT1, TBaseInterval<TItem> tINT2)
 
 }  /* operator < () */
 
+template <class TItem>
+inline bool operator > (TBaseInterval<TItem> tINT1, TBaseInterval<TItem> tINT2)
+{
+
+  return ( tINT1.min() > tINT2.max() );
+
+}  /* operator < () */
+
+template <class TItem>
+inline bool operator <= (TBaseInterval<TItem> tINT, TItem tVALUE)
+{
+
+  return ( tINT.max() <= tVALUE );
+
+}  /* operator <= () */
+
+
+template <class TItem>
+inline bool operator >= (TBaseInterval<TItem> tINT, TItem tVALUE)
+{
+
+  return ( tINT.min() >= tVALUE );
+
+}  /* operator >= () */
+
+
+template <class TItem>
+inline bool operator <= (TItem tVALUE, TBaseInterval<TItem> tINT)
+{
+
+  return ( tVALUE <= tINT.min() );
+
+}  /* operator <= () */
+
+
+template <class TItem>
+inline bool operator >= (TItem tVALUE, TBaseInterval<TItem> tINT)
+{
+
+  return ( tVALUE >= tINT.max() );
+
+}  /* operator >= () */
+
+
+template <class TItem>
+inline bool operator <= (TBaseInterval<TItem> tINT1, TBaseInterval<TItem> tINT2)
+{
+
+  return ( tINT1.max() <= tINT2.min() );
+
+}  /* operator <= () */
+
+template <class TItem>
+inline bool operator >= (TBaseInterval<TItem> tINT1, TBaseInterval<TItem> tINT2)
+{
+
+  return ( tINT1.min() >= tINT2.max() );
+
+}  /* operator >= () */
 
 template <class TItem>
 inline bool Disjoint (TBaseInterval<TItem> tINT1, TBaseInterval<TItem> tINT2)
@@ -266,5 +371,21 @@ inline TBaseInterval<TItem> Intersection (TBaseInterval<TItem> tINT1, TBaseInter
   return tInt;
 
 }  /* Intersection() */
+
+template <class T>
+std::ostream& operator << (std::ostream& o, const TBaseInterval<T>& i)
+{
+  o << "[";    
+  if(i.empty())
+  {
+    o << "empty";
+  }
+  else
+  {
+    o << i.min() << "," << i.max();
+  }
+  o << "]";
+  return o;
+} // ::operator << (ostream&,const interval&)
 
 #endif  /* _INTERVAL__ */

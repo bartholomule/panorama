@@ -226,7 +226,7 @@ bool TABVH::findFirstIntersection (const TRay& rktRAY, TSurfaceData& rtDATA) con
 
       if ( ptObj->findFirstIntersection (tRay, rtDATA) )
       {
-        tRay.setLimit (rtDATA.distance());
+	tRay.setRange (tRay.range().min(), rtDATA.distance());
         gIntersection = true;
       }
     }

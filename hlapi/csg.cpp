@@ -89,7 +89,7 @@ void TCsg::mergeUnion (TSpanList& rtLIST1, const TSpanList& rktLIST2, const TVec
       }
       else
       {
-        rtLIST1[(*tIter2).second.distance()] = (*tIter2).second;
+	rtLIST1.insert( TSpanList::value_type((*tIter2).second.distance(), (*tIter2).second) );
         tIter2++;
       }
     }
@@ -186,7 +186,7 @@ void TCsg::mergeIntersection (TSpanList& rtLIST1, const TSpanList& rktLIST2, con
       }
       else
       {
-        rtLIST1[(*tIter2).second.distance()] = (*tIter2).second;
+        rtLIST1.insert( TSpanList::value_type((*tIter2).second.distance(), (*tIter2).second) );
         tIter2++;
       }
     }
@@ -283,7 +283,7 @@ void TCsg::mergeDifference (TSpanList& rtLIST1, const TSpanList& rktLIST2, const
       }
       else
       {
-        rtLIST1[(*tIter2).first] = (*tIter2).second;
+        rtLIST1.insert( TSpanList::value_type((*tIter2).first, (*tIter2).second) );
 
         TSpanList::iterator   tIterTemp = rtLIST1.find ((*tIter2).first);
 
@@ -477,23 +477,14 @@ int TCsg::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eT
   return FX_ATTRIB_OK;
 } /* setAttribute() */
 
+
 int TCsg::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 {
   if ( rktNAME == "type" )
   {
-    static map<ECsgOp,string> csg_type_strings;
-    static vector<string> csg_type_choices;
-
-    if( csg_type_strings.empty() )
+    if( csg_type_strings.empty() || csg_type_choices.empty() )
     {
-      csg_type_strings[FX_CSG_UNION] = "union";
-      csg_type_strings[FX_CSG_INTERSECTION] = "intersection";
-      csg_type_strings[FX_CSG_DIFFERENCE] = "difference";
-
-      csg_type_choices.erase(csg_type_choices.begin(), csg_type_choices.end());
-      csg_type_choices.push_back (csg_type_strings[FX_CSG_UNION]);
-      csg_type_choices.push_back (csg_type_strings[FX_CSG_INTERSECTION]);
-      csg_type_choices.push_back (csg_type_strings[FX_CSG_DIFFERENCE]);      
+      generate_strings();
     }
     rnVALUE = (user_arg_type)new TAttribStringList(csg_type_choices, csg_type_strings[eOperation]);
 
@@ -513,3 +504,29 @@ void TCsg::getAttributeList (TAttributeList& rtLIST) const
   rtLIST ["type"] = FX_STRING_LIST;
   
 } /* getAttributeList() */
+
+void TCsg::generate_strings()
+{
+  csg_type_strings[FX_CSG_UNION] = "union";
+  csg_type_strings[FX_CSG_INTERSECTION] = "intersection";
+  csg_type_strings[FX_CSG_DIFFERENCE] = "difference";
+  
+  csg_type_choices.erase(csg_type_choices.begin(), csg_type_choices.end());
+  csg_type_choices.push_back (csg_type_strings[FX_CSG_UNION]);
+  csg_type_choices.push_back (csg_type_strings[FX_CSG_INTERSECTION]);
+  csg_type_choices.push_back (csg_type_strings[FX_CSG_DIFFERENCE]);        
+}
+void TCsg::printDebug (const string& indent) const
+{
+  if( csg_type_strings.empty() )
+  {
+    generate_strings();
+  }
+  
+  TAggregate::printDebug(indent);
+  cerr << TDebug::Indent(indent)
+       << "CSG Type : " << csg_type_strings[eOperation] << endl;
+}
+
+map<ECsgOp,string> TCsg::csg_type_strings;
+vector<string> TCsg::csg_type_choices;  

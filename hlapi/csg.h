@@ -33,7 +33,11 @@ class TCsg : public TAggregate
     void mergeUnion (TSpanList& rtLIST1, const TSpanList& rktLIST2, const TVector& rktRAY_DIR) const;
     void mergeIntersection (TSpanList& rtLIST1, const TSpanList& rktLIST2, const TVector& rktRAY_DIR) const;
     void mergeDifference (TSpanList& rtLIST1, const TSpanList& rktLIST2, const TVector& rktRAY_DIR) const;
-    
+
+    static map<ECsgOp,string> csg_type_strings;
+    static vector<string> csg_type_choices;  
+    static void generate_strings();
+  
   public:
 
     TCsg();
@@ -54,6 +58,7 @@ class TCsg : public TAggregate
     bool findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) const;
 
     string className (void) const { return "Csg"; }
+    void printDebug (const string& indent) const;  
 
 };  /* class TCsg */
 

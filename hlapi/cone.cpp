@@ -74,10 +74,13 @@ bool TCone::intersectionsWithCanonicalCone (const TRay& rktRAY, TSpanList& rtLIS
 
   tFactor = tRayIT.applyTransform (ptInverseMatrix);
 
-  if ( rktRAY.limit() < SCALAR_MAX )
-  {
-    tRayIT.setLimit (rktRAY.limit() / tFactor);
-  }
+  // [CHECKME!]
+  // >>>>>>>>>>>>>>>> 100.99
+  //  if ( rktRAY.limit() < SCALAR_MAX )
+  //  {
+  //    tRayIT.setLimit (rktRAY.limit() / tFactor);
+  //  }
+  tRayIT.applyRangeFactor (1.0 / tFactor);
 
   tSurfaceData.setup (this, rktRAY);
   
@@ -89,8 +92,9 @@ bool TCone::intersectionsWithCanonicalCone (const TRay& rktRAY, TSpanList& rtLIS
     s1     = (1 - tRayIT.location().y()) / tRayIT.direction().y();
     tPoint = tRayIT.location() + (tRayIT.direction() * s1);
     if ( ( (tPoint.x() * tPoint.x() + tPoint.z() * tPoint.z()) <= 1 ) &&
-         ( s1 >= FX_EPSILON )                                         &&
-         ( s1 <= tRayIT.limit() )                                          )
+	 //         ( s1 >= FX_EPSILON ) && ( s1 <= tRayIT.limit() )
+	 tRayIT.range().inside(s1)
+       )
     {
       if ( tSurfaceData.setPoint (tFactor * s1) )
       {
@@ -124,7 +128,8 @@ bool TCone::intersectionsWithCanonicalCone (const TRay& rktRAY, TSpanList& rtLIS
     s1 = (-b + d) / (2.0 * a);
     s2 = (-b - d) / (2.0 * a);
 
-    if ( ( s1 >= FX_EPSILON ) && ( s1 <= tRayIT.limit() ) )
+    //    if ( ( s1 >= FX_EPSILON ) && ( s1 <= tRayIT.limit() ) )
+    if( tRayIT.range().inside(s1) )
     {
       tPoint = tRayIT.location() + (tRayIT.direction() * s1);
       if ( ( tPoint.y() > 0 ) && ( tPoint.y() < 1 ) )
@@ -136,7 +141,8 @@ bool TCone::intersectionsWithCanonicalCone (const TRay& rktRAY, TSpanList& rtLIS
         }
       }
     }
-    if ( ( s2 >= FX_EPSILON ) && ( s2 <= tRayIT.limit() ) )
+    //    if ( ( s2 >= FX_EPSILON ) && ( s2 <= tRayIT.limit() ) )
+    if( tRayIT.range().inside(s2) )
     {
       tPoint = tRayIT.location() + (tRayIT.direction() * s2);
       if ( ( tPoint.y() > 0 ) && ( tPoint.y() < 1 ) )
@@ -168,11 +174,14 @@ bool TCone::intersectionsWithRootCone (const TRay& rktRAY, TSpanList& rtLIST) co
   Byte           bCapIntersections = 0;
 
   tFactor = tRayIT.applyTransform (ptInverseMatrix);
-
-  if ( rktRAY.limit() < SCALAR_MAX )
-  {
-    tRayIT.setLimit (rktRAY.limit() / tFactor);
-  }
+  
+  // [CHECKME!]
+  // >>>>>>>>>>>>>>>> 100.99
+  //  if ( rktRAY.limit() < SCALAR_MAX )
+  //  {
+  //    tRayIT.setLimit (rktRAY.limit() / tFactor);
+  //  }
+  tRayIT.applyRangeFactor(1.0 / tFactor);
 
   tSurfaceData.setup (this, rktRAY);
   
@@ -184,8 +193,9 @@ bool TCone::intersectionsWithRootCone (const TRay& rktRAY, TSpanList& rtLIST) co
     s1     = (tHeight - tRayIT.location().y()) / tRayIT.direction().y();
     tPoint = tRayIT.location() + (tRayIT.direction() * s1);
     if ( ( (tPoint.x() * tPoint.x() + tPoint.z() * tPoint.z()) <= tMaxRadius2 ) &&
-         ( s1 >= FX_EPSILON )                                                   &&
-         ( s1 <= tRayIT.limit() )                                                    )
+	 //    ( s1 >= FX_EPSILON ) && ( s1 <= tRayIT.limit() )
+	 tRayIT.range().inside(s1)
+       )
     {
       if ( tSurfaceData.setPoint (tFactor * s1) )
       {
@@ -201,8 +211,9 @@ bool TCone::intersectionsWithRootCone (const TRay& rktRAY, TSpanList& rtLIST) co
     s1     = (tHeightToMinCircle - tRayIT.location().y()) / tRayIT.direction().y();
     tPoint = tRayIT.location() + (tRayIT.direction() * s1);
     if ( ( (tPoint.x() * tPoint.x() + tPoint.z() * tPoint.z()) <= tMinRadius2 ) &&
-         ( s1 >= FX_EPSILON )                                                   &&
-         ( s1 <= tRayIT.limit() )                                                    )
+	 //         ( s1 >= FX_EPSILON ) && ( s1 <= tRayIT.limit() )
+	 tRayIT.range().inside(s1)
+       )
     {
       if ( tSurfaceData.setPoint (tFactor * s1) )
       {
@@ -245,7 +256,8 @@ bool TCone::intersectionsWithRootCone (const TRay& rktRAY, TSpanList& rtLIST) co
     s1 = (-b + d) / (2.0 * a);
     s2 = (-b - d) / (2.0 * a);
 
-    if ( ( s1 >= FX_EPSILON ) && ( s1 <= tRayIT.limit() ) )
+    //    if ( ( s1 >= FX_EPSILON ) && ( s1 <= tRayIT.limit() ) )
+    if( tRayIT.range().inside(s1) )
     {
       tPoint = tRayIT.location() + (tRayIT.direction() * s1);
       if ( ( tPoint.y() > tHeightToMinCircle ) && ( tPoint.y() < tHeight ) )
@@ -257,7 +269,8 @@ bool TCone::intersectionsWithRootCone (const TRay& rktRAY, TSpanList& rtLIST) co
         }
       }
     }
-    if ( ( s2 >= FX_EPSILON ) && ( s2 <= tRayIT.limit() ) )
+    //    if ( ( s2 >= FX_EPSILON ) && ( s2 <= tRayIT.limit() ) )
+    if( tRayIT.range().inside(s2) )
     {
       tPoint = tRayIT.location() + (tRayIT.direction() * s2);
       if ( ( tPoint.y() > tHeightToMinCircle ) && ( tPoint.y() < tHeight ) )

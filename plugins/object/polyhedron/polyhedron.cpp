@@ -193,10 +193,13 @@ bool TPolyhedron::findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) c
 
   tFactor = tRayIT.applyTransform (ptInverseMatrix);
 
-  if ( rktRAY.limit() < SCALAR_MAX )
-  {
-    tRayIT.setLimit (rktRAY.limit() / tFactor);
-  }
+  // [CHECKME!]
+  //  if ( rktRAY.limit() < SCALAR_MAX )
+  //  {
+  //    tRayIT.setLimit (rktRAY.limit() / tFactor);
+  //  }
+  tRayIT.applyRangeFactor( 1.0 / tFactor );
+  
 
   tSurfaceData.setup (this, rktRAY);
 
@@ -252,7 +255,7 @@ bool TPolyhedron::findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) c
 //  cout << "near : " << tNear << endl;
 //  cout << "far  : " << tFar << endl;
 
-  if ( ( tNear > FX_EPSILON ) && ( tNear < tRayIT.limit() ) )
+  if( tRayIT.range().inside(tNear) )
   {
     tNormalNear.applyTransform (ptMatrix);
     tNormalNear.normalize();
@@ -263,7 +266,7 @@ bool TPolyhedron::findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) c
     gIntersection = true;
   }
 
-  if ( ( tFar > FX_EPSILON ) && ( tFar < tRayIT.limit() ) )
+  if( tRayIT.range().inside(tFar) )
   {
     tNormalFar.applyTransform (ptMatrix);
     tNormalFar.normalize();

@@ -99,6 +99,11 @@ class TBoundingBox : public TVolume
     TInterval clipRay (const TRay& rktRAY) const;
     
     TScalar cost (void) const;
+
+    const TVector& corner1() const { return tPoint1; }
+    const TVector& corner2() const { return tPoint2; }
+    TVector& corner1() { return tPoint1; }
+    TVector& corner2() { return tPoint2; }    
     
     void printDebug (const string& indent) const;
     

@@ -58,8 +58,12 @@ enum EAttribType
   FX_OBJECT_FILTER,
   FX_IMAGE_FILTER,
   FX_SCENE,
-  FX_IMAGE_IO
-
+  FX_IMAGE_IO,
+  
+#if defined(NEW_ATTRIBUTES)
+  FX_ARRAY = FX_IMAGE_IO + 1 // Requires new attributes
+#endif
+  
 };  /* enum EAttribType */
 
 #include <string>

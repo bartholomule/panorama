@@ -1,0 +1,56 @@
+/*
+*  Aggregate test -- Very small, for use in testing.
+*/
+
+#include "materials.inc"
+#include "shapes.inc"
+#include "cameras.inc"
+
+define c Camera
+{
+  translate( <0, 0, -8> );
+  look_at  = <0,   0,   0>;
+};
+
+Light
+{
+  translate( <0, 0, -8> );
+  color = CWhite;
+};
+
+define a aggregate
+{
+  sphere {
+    translate(<-1,0,0>);
+    radius = 1;
+    material = MPlastic { color = CRed; };
+  };
+  sphere {
+    translate(<1,0,0>);
+    radius = 1;
+    material = MPlastic { color = CGreen; };
+  };
+};
+
+
+a {
+  translate(<0,1,0>);
+};
+
+a {
+  translate(<0,-1,0>);
+  rotate(<0,180,0>);
+};
+
+
+scene
+{
+  camera = c;
+  width  = 200;
+  height = 200;
+  background = CSummerSky;
+  output = class png { name = "aggregate2.png"; };
+  setRenderer( class Raytracer { sampling="uniform"; aa_depth=1;} );
+};
+
+

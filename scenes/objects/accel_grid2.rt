@@ -1,0 +1,67 @@
+/*
+*  A much smaller AccellGrid test.
+*/
+
+#include "materials.inc"
+#include "cameras.inc"
+#include "shapes.inc"
+
+define c Camera
+{
+  translate ( <0, 0, -8> );
+  look_at   = <0, 0,  0>;
+};
+
+define l Light
+{
+  translate ( <10, 15, -8> );
+  color = CWhite;
+};
+
+
+plane
+{
+  translate ( <0, -5, 0> );
+  normal    = <0,    1, 0>;
+  material = MChecker
+  {
+    color = class PatternChecker
+    {
+      color = CBlue;
+      base_color = CYellow;
+      size  = 50;
+    };
+    specular = 0;
+  };
+};
+
+class AccelGrid
+{
+//  translate ( <0, 0, 4> );
+
+  addObject( sphere { translate ( <-4 + rand() * 8, -4 + rand() * 8, -4 + rand() * 8> ); radius = 1; } );
+  addObject( sphere { translate ( <-4 + rand() * 8, -4 + rand() * 8, -4 + rand() * 8> ); radius = 1; } );
+  addObject( sphere { translate ( <-4 + rand() * 8, -4 + rand() * 8, -4 + rand() * 8> ); radius = 1; } );
+  addObject( sphere { translate ( <-4 + rand() * 8, -4 + rand() * 8, -4 + rand() * 8> ); radius = 1; } );
+  addObject( sphere { translate ( <-4 + rand() * 8, -4 + rand() * 8, -4 + rand() * 8> ); radius = 1; } );
+
+  material = MLambertian
+  {
+    color = CRed;
+  };
+}; // aggregate uniform grid
+
+scene
+{
+  camera = c;
+  light	 = l;
+  width	 = 400;
+  height = 400;
+  background = CSummerSky;
+  output = class png
+  {
+    name = "accel_grid2.png";
+  };
+  renderer = class Raytracer {};
+};
+

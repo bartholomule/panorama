@@ -86,10 +86,15 @@ bool TBox::findFirstIntersection (const TRay& rktRAY, TSurfaceData& rtDATA) cons
   
   tFactor = tRayIT.applyTransform (ptInverseMatrix);
 
-  if ( rktRAY.limit() < SCALAR_MAX )
-  {
-    tRayIT.setLimit (rktRAY.limit() / tFactor);
-  }
+  // [CHECKME!]
+  // >>>>>>>>>>>>>>>> 100.99
+  // I [KH] have removed this test, as I don't see the purpose.  If the ray
+  // had a limit of +inf, then why shouldn't the new sub-ray?
+  //  if ( rktRAY.range() < SCALAR_MAX )
+  //  {
+  //    tRayIT.setRange (FX_EPSILON, rktRAY.maxLimit() / tFactor);
+  //  }
+  tRayIT.applyRangeFactor(1.0 / tFactor);
 
   if ( fabs (tRayIT.direction().x()) < FX_EPSILON )
   {
@@ -144,22 +149,23 @@ bool TBox::findFirstIntersection (const TRay& rktRAY, TSurfaceData& rtDATA) cons
     return false;
   }
 
-  if ( ( tIntTmp.min() >= FX_EPSILON ) && ( tIntTmp.min() <= tRayIT.limit() ) )
+  // [CHECKME!]  >>>>>>>>>>>>>>>> 100.99
+  // if ( ( tIntTmp.min() >= FX_EPSILON ) && ( tIntTmp.min() <= tRayIT.limit() ) )
+  if( tRayIT.range().inside(tIntTmp.min()) )
   {
     rtDATA.setup (this, rktRAY);
     rtDATA.setPoint (tIntTmp.min() * tFactor);
 
     return true;
   }
-  
-  if ( ( tIntTmp.max() >= FX_EPSILON ) && ( tIntTmp.max() <= tRayIT.limit() ) )
+  // if ( ( tIntTmp.max() >= FX_EPSILON ) && ( tIntTmp.max() <= tRayIT.limit() ) )
+  if( tRayIT.range().inside(tIntTmp.max()) )
   {
     rtDATA.setup (this, rktRAY);
     rtDATA.setPoint (tIntTmp.max() * tFactor);
 
     return true;
-  }
-
+  } 
   return false;
 
 }  /* findFirstIntersection() */
@@ -181,10 +187,13 @@ bool TBox::findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) const
   
   tFactor = tRayIT.applyTransform (ptInverseMatrix);
 
-  if ( rktRAY.limit() < SCALAR_MAX )
-  {
-    tRayIT.setLimit (rktRAY.limit() / tFactor);
-  }
+  // [Checkme!]
+  // >>>>>>>>>>>>>>>> 100.99  
+  //  if ( rktRAY.limit() < SCALAR_MAX )
+  //  {
+  //    tRayIT.setLimit (rktRAY.limit() / tFactor);
+  //  }
+  tRayIT.applyRangeFactor(1.0 / tFactor);
 
   if ( fabs (tRayIT.direction().x()) < FX_EPSILON )
   {
@@ -240,8 +249,11 @@ bool TBox::findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) const
   }
 
   tSurfaceData.setup (this, rktRAY);
-  
-  if ( ( tIntTmp.min() >= FX_EPSILON ) && ( tIntTmp.min() <= tRayIT.limit() ) )
+
+  // [Checkme!]
+  //  >>>>>>>>>>>>>>>> 100.99
+  //  if ( ( tIntTmp.min() >= FX_EPSILON ) && ( tIntTmp.min() <= tRayIT.limit() ) )
+  if( tRayIT.range().inside(tIntTmp.min()) )
   {
     if ( tSurfaceData.setPoint (tIntTmp.min() * tFactor) )
     {
@@ -249,7 +261,8 @@ bool TBox::findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) const
       gIntersection = true;
     }
   }
-  if ( ( tIntTmp.max() >= FX_EPSILON ) && ( tIntTmp.max() <= tRayIT.limit() ) )
+  //  if ( ( tIntTmp.max() >= FX_EPSILON ) && ( tIntTmp.max() <= tRayIT.limit() ) )
+  if( tRayIT.range().inside(tIntTmp.max()) )  
   {
     if ( tSurfaceData.setPoint (tIntTmp.max() * tFactor) )
     {

@@ -29,7 +29,9 @@ OBJ = aggregate.o \
       scene_manager.o \
       sphere.o \
       torus.o \
-      triangle.o
+      triangle.o \
+      quadric.o \
+      grid.o
 
 ALL_FILES = $(strip $(wildcard $(OBJ:%.o=%.cpp)))
 

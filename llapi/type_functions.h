@@ -650,6 +650,117 @@ inline magic_pointer<TAttribute> get_attrib<const TVector2&>()
 
 
 // ---------------------------------------------------------------------------
+//  vector<TScalar>
+// ---------------------------------------------------------------------------
+template <>
+inline EAttribType type_to_etype<std::vector<TScalar> >( std::vector<TScalar> v)
+{
+  return FX_ARRAY;
+}
+
+template <>
+inline magic_pointer<TAttribute> type_to_attrib<std::vector<TScalar> >( std::vector<TScalar> v)
+{
+  return magic_pointer<TAttribute>(new TAttribArray(v));
+}
+
+template <>
+inline  std::vector<TScalar>
+attrib_to_type<std::vector<TScalar> >(magic_pointer<TAttribute> atp,
+				magic_pointer<TAttribute>& data)
+{
+  magic_pointer<TAttribArray> vec = get_array(atp);
+  if( !!vec )
+  {
+    data = rcp_static_cast<TAttribute>(vec);
+    return vec->tValue;
+  }
+  cerr << "Error: Cannot extract array." << endl;
+  exit(1);
+}
+
+template <>
+inline magic_pointer<TAttribute> get_attrib<std::vector<TScalar> >()
+{
+  return magic_pointer<TAttribute>(new TAttribArray());
+}
+
+// ---------------------------------------------------------------------------
+//  vector<TScalar>&
+// ---------------------------------------------------------------------------
+template <>
+inline EAttribType type_to_etype<std::vector<TScalar>&>( std::vector<TScalar>& v)
+{
+  return FX_ARRAY;
+}
+
+template <>
+inline magic_pointer<TAttribute> type_to_attrib<std::vector<TScalar>&>( std::vector<TScalar>& v)
+{
+  return magic_pointer<TAttribute>(new TAttribArray(v));
+}
+
+template <>
+inline  std::vector<TScalar>&
+attrib_to_type<std::vector<TScalar>&>(magic_pointer<TAttribute> atp,
+				magic_pointer<TAttribute>& data)
+{
+  magic_pointer<TAttribArray> vec = get_array(atp);
+  if( !!vec )
+  {
+    data = rcp_static_cast<TAttribute>(vec);
+    return vec->tValue;
+  }
+  cerr << "Error: Cannot extract array." << endl;
+  exit(1);
+}
+
+template <>
+inline magic_pointer<TAttribute> get_attrib<std::vector<TScalar>&>()
+{
+  return magic_pointer<TAttribute>(new TAttribArray());
+}
+
+
+// ---------------------------------------------------------------------------
+// const vector<TScalar>&
+// ---------------------------------------------------------------------------
+template <>
+inline EAttribType type_to_etype<const std::vector<TScalar>&>(const std::vector<TScalar>& v)
+{
+  return FX_ARRAY;
+}
+
+template <>
+inline magic_pointer<TAttribute> type_to_attrib<const std::vector<TScalar>&>(const std::vector<TScalar>& v)
+{
+  return magic_pointer<TAttribute>(new TAttribArray(v));
+}
+
+template <>
+inline const std::vector<TScalar>&
+attrib_to_type<const std::vector<TScalar>&>(magic_pointer<TAttribute> atp,
+				magic_pointer<TAttribute>& data)
+{
+  magic_pointer<TAttribArray> vec = get_array(atp);
+  if( !!vec )
+  {
+    data = rcp_static_cast<TAttribute>(vec);
+    return vec->tValue;
+  }
+  cerr << "Error: Cannot extract array." << endl;
+  exit(1);
+}
+
+template <>
+inline magic_pointer<TAttribute> get_attrib<const std::vector<TScalar>&>()
+{
+  return magic_pointer<TAttribute>(new TAttribArray());
+}
+
+
+
+// ---------------------------------------------------------------------------
 // Double
 // ---------------------------------------------------------------------------
 template <>

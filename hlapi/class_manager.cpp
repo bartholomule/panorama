@@ -52,12 +52,19 @@ TBaseClass* TClassManager::_newObject (const string& rktCLASS, const TBaseClass*
   STATIC_CLASS (TPerturbation, "Perturbation");
   STATIC_CLASS (TPhongTriangle, "PhongTriangle");
   STATIC_CLASS (TPlane, "Plane");
+  STATIC_CLASS (TQuadric, "Quadric");  
   STATIC_CLASS (TRectangle, "Rectangle");
   STATIC_CLASS (TSphere, "Sphere");
   STATIC_CLASS (TTorus, "Torus");
   STATIC_CLASS (TTriangle, "Triangle");
-  STATIC_CLASS (TScene, "Scene");  
+  STATIC_CLASS (TScene, "Scene");
+  
+#if ( USE_EXPERIMENTAL == 1 )  
+  STATIC_CLASS (accel_grid, "AccelGrid");
+#endif /* USE_EXPERIMENTAL */
 
+
+  
 #if ( STATIC_LINK == 1 )
   STATIC_CLASS (TAtmConst, "AtmConst");
   STATIC_CLASS (TBsdfCookTorrance, "BsdfCookTorrance");
@@ -103,16 +110,16 @@ TBaseClass* TClassManager::_newObject (const string& rktCLASS, const TBaseClass*
   STATIC_CLASS (TOF_ConvertToGrey, "OF_ConvertToGrey");
   STATIC_CLASS (TRaytracer, "Raytracer");
 
-#if ( EXPERIMENTAL == 1 )
+#if ( USE_EXPERIMENTAL == 1 )
   STATIC_CLASS (TABVH, "ABVH");
   STATIC_CLASS (TSubdiv, "SubdivisionSurface");
   STATIC_CLASS (THeightField, "HeightField");
   STATIC_CLASS (TLightWaveObject, "LightWaveObject");
   STATIC_CLASS (TPolyhedron, "Polyhedron");
   STATIC_CLASS (TZBufferRenderer, "ZBufferRenderer");
-#endif
+#endif /* USE_EXPERIMENTALl */
 
-#endif
+#endif /* STATIC_LINK  */
 
   return tPluginManager.newObject (rktCLASS, pktPARENT);
   

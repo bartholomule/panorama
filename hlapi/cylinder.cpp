@@ -126,10 +126,13 @@ bool TCylinder::findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) con
 
   tFactor = tRayIT.applyTransform (ptInverseMatrix);
 
-  if ( rktRAY.limit() < SCALAR_MAX )
-  {
-    tRayIT.setLimit (rktRAY.limit() / tFactor);
-  }
+  // [CHECKME!]
+  // >>>>>>>>>>>>>>>> 100.99
+  //  if ( rktRAY.limit() < SCALAR_MAX )
+  //  {
+  //    tRayIT.setLimit (rktRAY.limit() / tFactor);
+  //  }
+  tRayIT.applyRangeFactor( 1.0 / tFactor );
 
   tSurfaceData.setup (this, rktRAY);
   
@@ -141,8 +144,9 @@ bool TCylinder::findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) con
     s1     = -(1 + tRayIT.location().y()) / tRayIT.direction().y();
     tPoint = tRayIT.location() + (tRayIT.direction() * s1);
     if ( ( (tPoint.x() * tPoint.x() + tPoint.z() * tPoint.z()) <= 1 ) &&
-         ( s1 >= FX_EPSILON )                                         &&
-         ( s1 <= tRayIT.limit() )                                      )
+	 //         ( s1 >= FX_EPSILON ) && ( s1 <= tRayIT.limit() )
+	 tRayIT.range().inside(s1)
+       )
     {
       if ( tSurfaceData.setPoint (tFactor * s1) )
       {
@@ -158,8 +162,9 @@ bool TCylinder::findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) con
     s1     = (1 - tRayIT.location().y()) / tRayIT.direction().y();
     tPoint = tRayIT.location() + (tRayIT.direction() * s1);
     if ( ( (tPoint.x() * tPoint.x() + tPoint.z() * tPoint.z()) <= 1 ) &&
-         ( s1 >= FX_EPSILON )                                         &&
-         ( s1 <= tRayIT.limit() )                                      )
+	 //         ( s1 >= FX_EPSILON ) && ( s1 <= tRayIT.limit() )
+	 tRayIT.range().inside(s1)
+       )
     {
       if ( tSurfaceData.setPoint (tFactor * s1) )
       {
@@ -196,7 +201,8 @@ bool TCylinder::findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) con
     s1 = (-b + d) / (2.0 * a);
     s2 = (-b - d) / (2.0 * a);
 
-    if ( ( s1 >= FX_EPSILON ) && ( s1 <= tRayIT.limit() ) )
+    //    if ( ( s1 >= FX_EPSILON ) && ( s1 <= tRayIT.limit() ) )
+    if( tRayIT.range().inside(s1) )
     {
       tPoint = tRayIT.location() + (tRayIT.direction() * s1);
       if ( ( tPoint.y() > -1 ) && ( tPoint.y() < 1 ) )
@@ -209,7 +215,8 @@ bool TCylinder::findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) con
       }
     }
 
-    if ( ( s2 >= FX_EPSILON ) && ( s2 <= tRayIT.limit() ) )
+    //    if ( ( s2 >= FX_EPSILON ) && ( s2 <= tRayIT.limit() ) )
+    if( tRayIT.range().inside(s2) )
     {
       tPoint = tRayIT.location() + (tRayIT.direction() * s2);
       if ( ( tPoint.y() > -1 ) && ( tPoint.y() < 1 ) )

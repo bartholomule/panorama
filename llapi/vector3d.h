@@ -19,7 +19,10 @@
 #ifndef _VECTOR_3D__
 #define _VECTOR_3D__
 
+#if defined(FX_NO_BOUNDS_CHECKING)
 #include <cassert>
+#endif
+
 #include <cmath>
 #include <iostream>
 #include "llapi/base_class.h"
@@ -35,64 +38,94 @@ class TVector3D : public TBaseClass
 {
 
   protected:
+    /* class that has 3 Ts stored directly */
+    struct vector3_direct { TItem x; TItem y; TItem z; };
+    /* class that has 3 Ts stored in an array */
+    struct vector3_array { TItem coords[3]; };
+    /* union to allow accesses to both indirectly through an array, and
+       directly athrough a name, without adding any extra processing time or
+       space requirements */   
+    union  vector3_union
+    {
+      vector3_union() {}
+      vector3_union(TItem x, TItem y, TItem z)
+      {
+	direct.x = x;
+	direct.y = y;
+	direct.z = z;
+      } 
+      inline TItem& operator[](Byte index)      { return(array.coords[index]); }
+      inline TItem  operator[](Byte index)const { return(array.coords[index]); }
+      vector3_direct direct;
+      vector3_array  array;
+    };
 
-    TItem   vx, vy, vz;
+    vector3_union vec;
+
+  //  TItem   vx, vy, vz;
 
   public:
 
     TVector3D (TItem X = 0, TItem Y = 0, TItem Z = 0) :
-      vx (X), vy (Y), vz (Z) {}
+      vec(X, Y, Z) { }
 
     TVector3D (const TVector3D& rktVECTOR) :
-      vx (rktVECTOR.x()), vy (rktVECTOR.y()), vz (rktVECTOR.z()) {}
+      vec (rktVECTOR.x(), rktVECTOR.y(), rktVECTOR.z()) {}
 
     TVector3D& operator = (const TVector3D& rktVECTOR)
     {
-      vx = rktVECTOR.x();
-      vy = rktVECTOR.y();
-      vz = rktVECTOR.z();
+      vec.direct.x = rktVECTOR.x();
+      vec.direct.y = rktVECTOR.y();
+      vec.direct.z = rktVECTOR.z();
       
       return *this;
     }
 
     TItem& operator [] (Byte bVAL)
     {
+#if !defined(FX_NO_BOUNDS_CHECKING)
       assert ( bVAL < 3 );
-      
-      return ( bVAL == 0 ) ? vx : (( bVAL == 1 ) ? vy : vz);
+#endif
+
+      return vec[bVAL];
     }
 
     TItem operator [] (Byte bVAL) const
     {
+#if !defined(FX_NO_BOUNDS_CHECKING)
       assert ( bVAL < 3 );
-
-      return ( bVAL == 0 ) ? vx : (( bVAL == 1 ) ? vy : vz);
+#endif
+      
+      return vec[bVAL];
     }
 
-    TItem x (void) const { return vx; }
-    TItem y (void) const { return vy; }
-    TItem z (void) const { return vz; }
+    inline TItem x (void) const { return vec.direct.x; }
+    inline TItem y (void) const { return vec.direct.y; }
+    inline TItem z (void) const { return vec.direct.z; }
+    inline TItem& x (void) { return vec.direct.x; }
+    inline TItem& y (void) { return vec.direct.y; }
+    inline TItem& z (void) { return vec.direct.z; }  
 
     void set (TItem X = 0, TItem Y = 0, TItem Z = 0)
     {
-      vx = X;
-      vy = Y;
-      vz = Z;
+      vec.direct.x = X;
+      vec.direct.y = Y;
+      vec.direct.z = Z;
     }
 
     void setX (TItem X = 0)
     {
-      vx = X;
+      vec.direct.x = X;
     }
 
     void setY (TItem Y = 0)
     {
-      vy = Y;
+      vec.direct.y = Y;
     }
 
     void setZ (TItem Z = 0)
     {
-      vz = Z;
+      vec.direct.z = Z;
     }
 
     TVector3D<TItem>& operator += (const TVector3D<TItem>& rktVECTOR);
@@ -110,7 +143,7 @@ class TVector3D : public TBaseClass
     void normalize (void);
 
     void applyTransform (const magic_pointer<TBaseMatrix<TItem> > pktMATRIX);
-    void applyTransform (const TBaseMatrix<TItem>& rktMATRIX);  
+    void applyTransform (const TBaseMatrix<TItem>& rktMATRIX);
 
     virtual void printDebug (const string& indent) const;
 
@@ -124,7 +157,7 @@ template <class TItem>
 inline TItem TVector3D<TItem>::norm (void) const
 {
 
-  return sqrt (vx * vx + vy * vy + vz * vz);
+  return sqrt (x() * x() + y() * y() + z() * z());
 
 }  /* norm() */
 
@@ -137,9 +170,9 @@ inline void TVector3D<TItem>::normalize (void)
 
   assert ( tNorm > 0.0 );
   
-  vx /= tNorm;
-  vy /= tNorm;
-  vz /= tNorm;
+  vec.direct.x /= tNorm;
+  vec.direct.y /= tNorm;
+  vec.direct.z /= tNorm;
 
 }  /* normalize() */
 
@@ -152,21 +185,21 @@ inline void TVector3D<TItem>::applyTransform (const magic_pointer<TBaseMatrix<TI
   {
     TItem   tx, ty, tz;
   
-    tx = pktMATRIX->atElement[0][0] * vx +
-         pktMATRIX->atElement[1][0] * vy +
-         pktMATRIX->atElement[2][0] * vz;
+    tx = pktMATRIX->atElement[0][0] * x() +
+         pktMATRIX->atElement[1][0] * y() +
+         pktMATRIX->atElement[2][0] * z();
 
-    ty = pktMATRIX->atElement[0][1] * vx +
-         pktMATRIX->atElement[1][1] * vy +
-         pktMATRIX->atElement[2][1] * vz;
+    ty = pktMATRIX->atElement[0][1] * x() +
+         pktMATRIX->atElement[1][1] * y() +
+         pktMATRIX->atElement[2][1] * z();
 
-    tz = pktMATRIX->atElement[0][2] * vx +
-         pktMATRIX->atElement[1][2] * vy +
-         pktMATRIX->atElement[2][2] * vz;
+    tz = pktMATRIX->atElement[0][2] * x() +
+         pktMATRIX->atElement[1][2] * y() +
+         pktMATRIX->atElement[2][2] * z();
 
-    vx = tx;
-    vy = ty;
-    vz = tz;
+    vec.direct.x = tx;
+    vec.direct.y = ty;
+    vec.direct.z = tz;
   }
 
 }  /* applyTransform() */
@@ -177,21 +210,21 @@ inline void TVector3D<TItem>::applyTransform (const TBaseMatrix<TItem>& rktMATRI
   
   TItem   tx, ty, tz;
   
-  tx = rktMATRIX.atElement[0][0] * vx +
-       rktMATRIX.atElement[1][0] * vy +
-       rktMATRIX.atElement[2][0] * vz;
+  tx = rktMATRIX.atElement[0][0] * x() +
+       rktMATRIX.atElement[1][0] * y() +
+       rktMATRIX.atElement[2][0] * z();
   
-  ty = rktMATRIX.atElement[0][1] * vx +
-       rktMATRIX.atElement[1][1] * vy +
-       rktMATRIX.atElement[2][1] * vz;
+  ty = rktMATRIX.atElement[0][1] * x() +
+       rktMATRIX.atElement[1][1] * y() +
+       rktMATRIX.atElement[2][1] * z();
   
-  tz = rktMATRIX.atElement[0][2] * vx +
-       rktMATRIX.atElement[1][2] * vy +
-       rktMATRIX.atElement[2][2] * vz;
+  tz = rktMATRIX.atElement[0][2] * x() +
+       rktMATRIX.atElement[1][2] * y() +
+       rktMATRIX.atElement[2][2] * z();
   
-  vx = tx;
-  vy = ty;
-  vz = tz;
+  vec.direct.x = tx;
+  vec.direct.y = ty;
+  vec.direct.z = tz;
 
 }  /* applyTransform() */
 
@@ -200,18 +233,17 @@ template <class TItem>
 inline void TVector3D<TItem>::printDebug (const string& indent) const
 {
 
-  cerr << "TVector3D <" << vx << ", " << vy << ", " << vz << ">";
+  cerr << "TVector3D <" << x() << ", " << y() << ", " << z() << ">";
 
 }  /* printDebug() */
-
 
 template <class TItem>
 inline TVector3D<TItem>& TVector3D<TItem>::operator += (const TVector3D<TItem>& rktVECTOR)
 {
 
-  vx += rktVECTOR.x();
-  vy += rktVECTOR.y();
-  vz += rktVECTOR.z();
+  vec.direct.x += rktVECTOR.x();
+  vec.direct.y += rktVECTOR.y();
+  vec.direct.z += rktVECTOR.z();
 
   return *this;
 
@@ -222,9 +254,9 @@ template <class TItem>
 inline TVector3D<TItem>& TVector3D<TItem>::operator -= (const TVector3D<TItem>& rktVECTOR)
 {
 
-  vx -= rktVECTOR.x();
-  vy -= rktVECTOR.y();
-  vz -= rktVECTOR.z();
+  vec.direct.x -= rktVECTOR.x();
+  vec.direct.y -= rktVECTOR.y();
+  vec.direct.z -= rktVECTOR.z();
 
   return *this;
 
@@ -235,9 +267,9 @@ template <class TItem>
 inline TVector3D<TItem>& TVector3D<TItem>::operator *= (const TVector3D<TItem>& rktVECTOR)
 {
 
-  vx *= rktVECTOR.x();
-  vy *= rktVECTOR.y();
-  vz *= rktVECTOR.z();
+  vec.direct.x *= rktVECTOR.x();
+  vec.direct.y *= rktVECTOR.y();
+  vec.direct.z *= rktVECTOR.z();
 
   return *this;
 
@@ -248,9 +280,9 @@ template <class TItem>
 inline TVector3D<TItem>& TVector3D<TItem>::operator /= (const TVector3D<TItem>& rktVECTOR)
 {
 
-  vx /= rktVECTOR.x();
-  vy /= rktVECTOR.y();
-  vz /= rktVECTOR.z();
+  vec.direct.x /= rktVECTOR.x();
+  vec.direct.y /= rktVECTOR.y();
+  vec.direct.z /= rktVECTOR.z();
 
   return *this;
 
@@ -261,9 +293,9 @@ template <class TItem>
 inline TVector3D<TItem>& TVector3D<TItem>::operator += (TItem tITEM)
 {
 
-  vx += tITEM;
-  vy += tITEM;
-  vz += tITEM;
+  vec.direct.x += tITEM;
+  vec.direct.y += tITEM;
+  vec.direct.z += tITEM;
 
   return *this;
 
@@ -274,9 +306,9 @@ template <class TItem>
 inline TVector3D<TItem>& TVector3D<TItem>::operator -= (TItem tITEM)
 {
 
-  vx -= tITEM;
-  vy -= tITEM;
-  vz -= tITEM;
+  vec.direct.x -= tITEM;
+  vec.direct.y -= tITEM;
+  vec.direct.z -= tITEM;
 
   return *this;
 
@@ -287,9 +319,9 @@ template <class TItem>
 inline TVector3D<TItem>& TVector3D<TItem>::operator *= (TItem tITEM)
 {
 
-  vx *= tITEM;
-  vy *= tITEM;
-  vz *= tITEM;
+  vec.direct.x *= tITEM;
+  vec.direct.y *= tITEM;
+  vec.direct.z *= tITEM;
 
   return *this;
 
@@ -300,9 +332,9 @@ template <class TItem>
 inline TVector3D<TItem>& TVector3D<TItem>::operator /= (TItem tITEM)
 {
 
-  vx /= tITEM;
-  vy /= tITEM;
-  vz /= tITEM;
+  vec.direct.x /= tITEM;
+  vec.direct.y /= tITEM;
+  vec.direct.z /= tITEM;
 
   return *this;
 
@@ -444,5 +476,12 @@ inline TVector3D<TItem> crossProduct (const TVector3D<TItem>& rktVECTOR1, const 
                            rktVECTOR1.x() * rktVECTOR2.y() - rktVECTOR1.y() * rktVECTOR2.x());
 
 }  /* crossProduct() */
+
+template <class TItem>
+inline ostream& operator<<(ostream& o, const TVector3D<TItem>& vec)
+{
+  o << "<" << vec.x() << "," << vec.y() << "," << vec.z() << ">";
+  return o;
+} /* operator << */
 
 #endif  /* _VECTOR_3D__ */

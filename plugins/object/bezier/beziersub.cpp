@@ -704,7 +704,7 @@ bool TBezierSubsurface::findFlatIntersection (const TRay& rktRAY,
     return false;
   }
 
-  if ( ( T < FX_EPSILON ) || ( T > rktRAY.limit() ) )
+  if( rktRAY.range().inside(T) )
   {
     return false;
   }

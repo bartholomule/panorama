@@ -169,10 +169,13 @@ bool TTorus::findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) const
 
   tFactor = tRayIT.applyTransform (ptInverseMatrix);
 
-  if ( rktRAY.limit() < SCALAR_MAX )
-  {
-    tRayIT.setLimit (rktRAY.limit() / tFactor);
-  }
+  // [CHECKME!]
+  // >>>>>>>>>>>>>>>> 100.99
+  //  if ( rktRAY.limit() < SCALAR_MAX )
+  //  {
+  //    tRayIT.setLimit (rktRAY.limit() / tFactor);
+  //  }
+  tRayIT.applyRangeFactor( 1.0 / tFactor );
 
   tSurfaceData.setup (this, rktRAY);
 
@@ -189,7 +192,8 @@ bool TTorus::findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) const
 
   if ( iRoots > 0 )
   {
-    if ( ( s[0] > FX_EPSILON ) && ( s[0] <= tRayIT.limit() ) )
+    //    if ( ( s[0] > FX_EPSILON ) && ( s[0] <= tRayIT.limit() ) )
+    if( tRayIT.range().inside(s[0]) )
     {
       if ( tSurfaceData.setPoint (tFactor * s[0]) )
       {
@@ -198,7 +202,8 @@ bool TTorus::findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) const
       }
     }
     
-    if ( ( s[1] > FX_EPSILON ) && ( s[1] <= tRayIT.limit() ) )
+    //    if ( ( s[1] > FX_EPSILON ) && ( s[1] <= tRayIT.limit() ) )
+    if( tRayIT.range().inside(s[1]) )
     {
       if ( tSurfaceData.setPoint (tFactor * s[1]) )
       {
@@ -210,7 +215,8 @@ bool TTorus::findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) const
 
   if ( iRoots > 2 )
   {
-    if ( ( s[2] > FX_EPSILON ) && ( s[2] <= tRayIT.limit() ) )
+    //    if ( ( s[2] > FX_EPSILON ) && ( s[2] <= tRayIT.limit() ) )
+    if( tRayIT.range().inside(s[2]) )
     {
       if ( tSurfaceData.setPoint (tFactor * s[2]) )
       {
@@ -219,7 +225,8 @@ bool TTorus::findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) const
       }
     }
     
-    if ( ( s[3] > FX_EPSILON ) && ( s[3] <= tRayIT.limit() ) )
+    //    if ( ( s[3] > FX_EPSILON ) && ( s[3] <= tRayIT.limit() ) )
+    if( tRayIT.range().inside(s[3]) )
     {
       if ( tSurfaceData.setPoint (tFactor * s[3]) )
       {

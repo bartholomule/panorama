@@ -1,0 +1,32 @@
+define usecolor <0,0,1>;
+
+define useme class Material
+{
+  bsdf    = class BsdfLambertian { };
+  color   = usecolor;
+  ambient = 0.9;
+  diffuse = 0.6;
+};
+
+
+define c class PinholeCamera
+{
+  translate( <0, 0, -1> );
+  look_at  = <0, 0, 0>;
+};
+
+
+define p class Plane
+{
+  translate( <0, 0, 0> );
+  normal   = <0, 0,-1>;
+  material = useme;
+};
+
+addObject(p);
+setCamera(c);
+setWidth(100);
+setHeight(100);
+
+setImageIO(class png { name = "plane.png"; });
+setRenderer(class Raytracer{});

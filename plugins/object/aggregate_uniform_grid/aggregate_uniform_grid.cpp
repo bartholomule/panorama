@@ -127,7 +127,8 @@ bool TAggregateUniformGrid::findFirstIntersection (const TRay& rktRAY, TSurfaceD
   {
     if ( (*tIter)->findFirstIntersection (tRay, rtDATA) )
     {
-      tRay.setLimit (rtDATA.distance());
+      //      tRay.setLimit (rtDATA.distance());
+      tRay.setRange(tRay.range().min(), rtDATA.distance());
       gIntersection = true;
     }
   }

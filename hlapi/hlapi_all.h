@@ -33,3 +33,9 @@
 #include "hlapi/sphere.h"
 #include "hlapi/torus.h"
 #include "hlapi/triangle.h"
+#include "hlapi/quadric.h"
+
+#if ( USE_EXPERIMENTAL == 1 )  
+#include "hlapi/grid.h"
+#endif /* USE_EXPERIMENTAL */
+

@@ -32,7 +32,7 @@ bool TUniformGrid::boundingBoxIntersection (const TRay& rktRAY, TVector& rtVECT)
   TScalar   tLimitY2  = tBoundingBoxPoint2.y();
   TScalar   tLimitZ1  = tBoundingBoxPoint1.z();
   TScalar   tLimitZ2  = tBoundingBoxPoint2.z();
-  TScalar   tRayLimit = rktRAY.limit();
+  TInterval tRayRange = rktRAY.range();
   TScalar   tTmp      = 0;
 
   if ( fabs (rktRAY.direction().x()) < FX_EPSILON )
@@ -115,7 +115,8 @@ bool TUniformGrid::boundingBoxIntersection (const TRay& rktRAY, TVector& rtVECT)
     return false;
   }
 
-  if ( ( tMax > 0 ) && ( tMax < tRayLimit ) )
+  //  if ( ( tMax > 0 ) && ( tMax < tRayRange ) )
+  if( tRayRange.inside(tMax) )
   {
     rtVECT = rktRAY.location() + (rktRAY.direction() * tMax);
     return true;
@@ -151,7 +152,7 @@ bool TUniformGrid::findIntersectionInsideVoxel (TUGLatticeCoord tVOXEL_X, TUGLat
         {
           if ( (*tIter1)->findFirstIntersection (tRayTmp, rtDATA) )
           {
-            tRayTmp.setLimit (rtDATA.distance());
+            tRayTmp.setRange (tRayTmp.range().min(), rtDATA.distance());
             gIntersection = true;
           }
         }
@@ -187,7 +188,7 @@ void TUniformGrid::boundingPointRayDestination1 (const TRay& rktRAY, TUGLatticeC
   TScalar           tLastRayPointLCX, tLastRayPointLCY, tLastRayPointLCZ;
   TUGLatticeCoord   tVoxelLastX, tVoxelLastY, tVoxelLastZ;
   TUGLatticeCoord   tVoxelLastNewX, tVoxelLastNewY, tVoxelLastNewZ;
-  TScalar           tRayLimit = rktRAY.limit();
+  TScalar           tRayLimit = rktRAY.maxLimit();
 
   if ( tRayLimit < SCALAR_MAX )
   {
@@ -275,7 +276,7 @@ void TUniformGrid::boundingPointRayDestination2 (const TRay& rktRAY, TUGLatticeC
   TScalar           tLastRayPointLCX, tLastRayPointLCY, tLastRayPointLCZ;
   TUGLatticeCoord   tVoxelLastX, tVoxelLastZ;
   TUGLatticeCoord   tVoxelLastNewX, tVoxelLastNewZ;
-  TScalar           tRayLimit = rktRAY.limit();
+  TScalar           tRayLimit = rktRAY.maxLimit();
 
   if ( tRayLimit < SCALAR_MAX )
   {
@@ -346,7 +347,7 @@ void TUniformGrid::boundingPointRayDestination3 (const TRay& rktRAY, TUGLatticeC
   TScalar           tLastRayPointLCX, tLastRayPointLCY, tLastRayPointLCZ;
   TUGLatticeCoord   tVoxelLastY, tVoxelLastZ;
   TUGLatticeCoord   tVoxelLastNewY, tVoxelLastNewZ;
-  TScalar           tRayLimit = rktRAY.limit();
+  TScalar           tRayLimit = rktRAY.maxLimit();
 
   if ( tRayLimit < SCALAR_MAX )
   {
@@ -417,7 +418,7 @@ void TUniformGrid::boundingPointRayDestination4 (const TRay& rktRAY, TUGLatticeC
   TScalar           tLastRayPointLCX, tLastRayPointLCY, tLastRayPointLCZ;
   TUGLatticeCoord   tVoxelLastX, tVoxelLastY;
   TUGLatticeCoord   tVoxelLastNewX, tVoxelLastNewY;
-  TScalar           tRayLimit = rktRAY.limit();
+  TScalar           tRayLimit = rktRAY.maxLimit();
 
   if ( tRayLimit < SCALAR_MAX )
   {
@@ -488,7 +489,7 @@ void TUniformGrid::boundingPointRayDestination5 (const TRay& rktRAY, TUGLatticeC
   TScalar           tLastRayPointLCX, tLastRayPointLCY, tLastRayPointLCZ;
   TUGLatticeCoord   tVoxelLastY;
   TUGLatticeCoord   tVoxelLastNewY;
-  TScalar           tRayLimit = rktRAY.limit();
+  TScalar           tRayLimit = rktRAY.maxLimit();
 
   if ( tRayLimit < SCALAR_MAX )
   {
@@ -542,7 +543,7 @@ void TUniformGrid::boundingPointRayDestination6 (const TRay& rktRAY, TUGLatticeC
   TScalar           tLastRayPointLCX, tLastRayPointLCY, tLastRayPointLCZ;
   TUGLatticeCoord   tVoxelLastX;
   TUGLatticeCoord   tVoxelLastNewX;
-  TScalar           tRayLimit = rktRAY.limit();
+  TScalar           tRayLimit = rktRAY.maxLimit();
 
   if ( tRayLimit < SCALAR_MAX )
   {
@@ -596,7 +597,7 @@ void TUniformGrid::boundingPointRayDestination7 (const TRay& rktRAY, TUGLatticeC
   TScalar           tLastRayPointLCX, tLastRayPointLCY, tLastRayPointLCZ;
   TUGLatticeCoord   tVoxelLastZ;
   TUGLatticeCoord   tVoxelLastNewZ;
-  TScalar           tRayLimit = rktRAY.limit();
+  TScalar           tRayLimit = rktRAY.maxLimit();
 
   if ( tRayLimit < SCALAR_MAX )
   {
