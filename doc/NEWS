@@ -1,9 +1,16 @@
 
+ - Added support for GIMP gradients (done by Peter Barnett).
+ 
+ - Added sparse convolution noise (done by Peter Barnett).
+ 
+ - Fixed transformations in aggregates.
+ 
  - Implemented truncated cone object.
 
  - Fixed problem in Bezier patches (done by Matt Kimball).
 
- - Added MaterialBrick, MaterialCrackle and MaterialMarble (done by Peter Barnett).
+ - Added MaterialBrick, MaterialCrackle and MaterialMarble, MaterialWood and
+   MaterialParquet (done by Peter Barnett).
 
 >> Version 0.10.1 released.
 
