@@ -21,31 +21,66 @@
 
 #include "llapi/procedural.h"
 #include "llapi/surface_data.h"
+#include "llapi/object.h"
+
+enum EWarps
+{
+
+  FX_NO_WARP = 0,
+  FX_SPHERICAL_WARP,
+  FX_CYLINDRICAL_WARP
+
+};  /* enum EWarps */
 
 class TPattern : public TProcedural
 {
 
   protected:
 
+    TVector          tRotation;
+    TVector          tScaling;
+    TVector          tTranslation;
+    TVector          tRSTScaling;
+    EWarps           eWarp;
+
     mutable TColor   tColor;
+
+    TMatrix          tMatrix;
+    TMatrix          tInverseMatrix;
+    TMatrix          tMatrixRotation;
+
+    bool             gTransformIdentity;
+
+    void initialize (void);
+    
+    void recalculateMatrix (void);
+
+    void sphericalWarp (TVector& rtPOINT) const;
+    void cylindricalWarp (TVector& rtPOINT) const;
+
+    void sphericalAntiWarp (TVector& rtPOINT) const;
+    void cylindricalAntiWarp (TVector& rtPOINT) const;
 
   public:
 
-    TPattern (void) {}
+    TPattern (void) 
+    {
+      initialize();
+    }
     TPattern (const TColor& rktCOLOR) :
-      tColor (rktCOLOR) {}
+      tColor (rktCOLOR) 
+    {
+      initialize();
+    }
     TPattern (const TScalar& rktSCALAR) 
     {
       setScalar (rktSCALAR);
+
+      initialize();
     }
 
     virtual TScalar scalar (const TSurfaceData& rktDATA) const { return color (rktDATA).average(); }
-    virtual TColor  color  (const TSurfaceData& rktDATA) const
-    { 
-      tColor = pattern (rktDATA);
-
-      return tColor;
-    }
+    virtual TColor  color  (const TSurfaceData& rktDATA) const;
 
     virtual TColor pattern (const TSurfaceData& rktDATA) const { return tColor; }
 
@@ -56,9 +91,16 @@ class TPattern : public TProcedural
       tColor.setGreen (rktSCALAR);
       tColor.setBlue (rktSCALAR);
     }
+
+    TVector warp (const TVector& rktPOINT) const;
+    TVector antiWarp (const TVector& rktPOINT) const;
     
     TColor  lastColor  (void) const { return tColor; }
     TScalar lastScalar (void) const { return tColor.average(); }
+
+    int setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
+    int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
+    void getAttributeList (TAttributeList& rtLIST) const;
 
     EClass classType (void) const { return FX_PATTERN_CLASS; }
     string className (void) const { return "Pattern"; }
