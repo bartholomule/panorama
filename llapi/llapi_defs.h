@@ -32,6 +32,11 @@
 #define FX_EPSILON (1e-5)
 
 //
+// Huge scalar value
+//
+#define FX_HUGE (1e8)
+
+//
 // Base type used in coordinates and limit values of this type
 //
 typedef double   TScalar;

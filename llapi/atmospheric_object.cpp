@@ -73,7 +73,7 @@ TColor TAtmosphericObject::evaluateInterval (const TVector& rktPOINT1,
     TSurfaceData   tSurfaceData    = rktDATA;
 
     tSurfaceData.setPoint (tMidPoint);
-    
+
     tLastScattering = evaluateInterval (rktPOINT1,
                                         tMidPoint,
                                         tSTEP_SIZE * 0.5,
@@ -97,10 +97,10 @@ TColor TAtmosphericObject::evaluateInterval (const TVector& rktPOINT1,
 
     rtTRANSPARENCY *= exp (-tSTEP_SIZE * tSampleData.tExtinction);
     rtTOTAL_SCAT    = rtTOTAL_SCAT + tIntervalScattering * tSampleData.tAlbedo * rtTRANSPARENCY;
-    
+
     wSamplesTaken++;
   }
-  
+
   return tScattering2;
   
 }  /* evaluateInterval() */
@@ -245,7 +245,7 @@ TColor TAtmosphericObject::filterRadiance (const TSurfaceData& rktDATA, const TC
 
   tInt = tBoundingBox.clipRay (tRay);
   
-  if ( tInt.size() > FX_EPSILON )
+  if ( ( tInt.size() > FX_EPSILON ) & ( tInt.size() < FX_HUGE ) )
   {
     tStart = rktDATA.ray().location() + rktDATA.ray().direction() * tInt.min();
 
@@ -266,7 +266,7 @@ TColor TAtmosphericObject::filterRadiance (const TSurfaceData& rktDATA, const TC
       TVector   tNextPoint = tPoint + tStep;
 
       tSurfaceData.setPoint (tNextPoint);
-      
+
       tLastScattering = evaluateInterval (tPoint,
                                           tNextPoint,
                                           tStepSize,
@@ -281,7 +281,10 @@ TColor TAtmosphericObject::filterRadiance (const TSurfaceData& rktDATA, const TC
   }
 
 //  cout << "Samples : " << wSamplesTaken << endl;
-  
+
   return tTotalScattering + rktRAD * tTransparency;
-  
+
 }  /* filterRadiance() */
+
+
+
