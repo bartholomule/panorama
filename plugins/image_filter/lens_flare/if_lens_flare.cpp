@@ -137,7 +137,8 @@ void TIF_Lens_Flare::generateNormalFlares (void)
 void TIF_Lens_Flare::generateFarFlares (void)
 {
 
-  float  fPosition;
+  float    fPosition;
+  size_t   I;
 
   //
   // Equals a 35 mm lens flare
@@ -151,7 +152,7 @@ void TIF_Lens_Flare::generateFarFlares (void)
 
   fPosition = -1.65;
 
-  for (size_t I = 0; ( I < 6 ) ;I++)
+  for (I = 0; ( I < 6 ) ;I++)
   {
     aptArtefactTable [ iNoArtefacts++ ] = new TFlare_Decreasing (TColor(0.000f, 0.025f, 0.029f), eForm, fScale * 0.034f, fPosition, 0.07f, ptCurrentImage);
 
@@ -160,7 +161,7 @@ void TIF_Lens_Flare::generateFarFlares (void)
 
   fPosition = -1.42;
 
-  for (size_t I = 0; ( I < 4 ) ;I++)
+  for (I = 0; ( I < 4 ) ;I++)
   {
     aptArtefactTable [ iNoArtefacts++ ] = new TFlare_Hard       (TColor(0.000f, 0.125f, 0.121f), eForm, fScale * 0.020f, fPosition, ptCurrentImage);
 
@@ -178,7 +179,7 @@ void TIF_Lens_Flare::generateFarFlares (void)
 
   fPosition = 0.69;
 
-  for (size_t I = 0; ( I < 5 ) ;I++)
+  for (I = 0; ( I < 5 ) ;I++)
   {
     aptArtefactTable [ iNoArtefacts++ ] = new TFlare_Std        (TColor(0.035f, 0.020f, 0.000f), eForm, fScale * 0.075f, fPosition, ptCurrentImage);
 
@@ -297,10 +298,11 @@ void TIF_Lens_Flare::markArea (int X, int Y)
 void TIF_Lens_Flare::flaresByReflections (void)
 {
 
-  float   fXScrOffset;
-  float   fYScrOffset;
-  float   fMaxImageIntensity;
-  bool    gExceeded;
+  float    fXScrOffset;
+  float    fYScrOffset;
+  float    fMaxImageIntensity;
+  bool     gExceeded;
+  size_t   I;
 
   fMaxImageIntensity = ptCurrentImage->maxIntensity();
 
@@ -313,7 +315,7 @@ void TIF_Lens_Flare::flaresByReflections (void)
 
   ptImageCopy  = new TImage (ptCurrentImage->width(), ptCurrentImage->height());
 
-  for (size_t I = 0; ( I < ptCurrentImage->width() ) ;I++)
+  for (I = 0; ( I < ptCurrentImage->width() ) ;I++)
   {
     for (size_t J = 0; ( J < ptCurrentImage->height() ) ;J++)
     {
@@ -323,7 +325,7 @@ void TIF_Lens_Flare::flaresByReflections (void)
     } 
   }
 
-  for (size_t I = 0; ( I < ptCurrentImage->width() ) ;I++)
+  for (I = 0; ( I < ptCurrentImage->width() ) ;I++)
   {
     for (size_t J = 0; ( J < ptCurrentImage->height() ) ;J++)
     {

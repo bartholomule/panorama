@@ -83,12 +83,13 @@ TNoiseData TPerlinNoise::interpolate (Byte bLEVEL, Byte bPOS) const
 TPerlinNoise::TPerlinNoise (void)
 {
 
-  int   iTemp, iPos;
+  int      iTemp, iPos;
+  size_t   J;
   
   //
   // Fill data array with pseudo-random numbers between 0 and 1 and normalized vectors.
   //
-  for (size_t J = 0; ( J < FX_NOISE_SIZE ) ;J++)
+  for (J = 0; ( J < FX_NOISE_SIZE ) ;J++)
   {
     atData[J].tValue   = frand();
     atData[J].tTangent = RandomVectorInSphere();
@@ -97,11 +98,11 @@ TPerlinNoise::TPerlinNoise (void)
   //
   // Fill permutation array with [0..(n-1)] and then shuffle it
   //
-  for (size_t J = 0; ( J < FX_NOISE_SIZE ) ;J++)
+  for (J = 0; ( J < FX_NOISE_SIZE ) ;J++)
   {
     aiPermutation [J] = J;
   }
-  for (size_t J = 0; ( J < FX_NOISE_SIZE ) ;J++)
+  for (J = 0; ( J < FX_NOISE_SIZE ) ;J++)
   {
     iPos                 = int (frand() * FX_NOISE_SIZE);
     iTemp                = aiPermutation [J];

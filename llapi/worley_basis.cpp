@@ -153,6 +153,7 @@ TWorleyBasis::TWorleyBasis (Byte bNEAREST_POINTS, TScalar tLAMBDA) :
 {
 
   int       iTemp, iPos;
+  size_t    J;
   TScalar   tSum = 0;
 
   assert ( bNEAREST_POINTS < 10 );
@@ -160,16 +161,16 @@ TWorleyBasis::TWorleyBasis (Byte bNEAREST_POINTS, TScalar tLAMBDA) :
   //
   // Calculate probabilities array
   //
-  for (int J = 0; ( J < 8 ) ;J++)
+  for (int I = 0; ( I < 8 ) ;I++)
   {
-    tSum              += 1 / (pow (tLAMBDA, -(J + 1)) * exp (tLAMBDA) * factorial (J + 1));
-    atProbabilities[J] = tSum;
+    tSum              += 1 / (pow (tLAMBDA, -(I + 1)) * exp (tLAMBDA) * factorial (I + 1));
+    atProbabilities[I] = tSum;
   }
   
   //
   // Fill data array with pseudo-random numbers between 0 and 1.
   //
-  for (size_t J = 0; ( J < FX_RANDOM_TABLE_SIZE ) ;J++)
+  for (J = 0; ( J < FX_RANDOM_TABLE_SIZE ) ;J++)
   {
     atData[J] = frand();
   }
@@ -177,11 +178,11 @@ TWorleyBasis::TWorleyBasis (Byte bNEAREST_POINTS, TScalar tLAMBDA) :
   //
   // Fill permutation array with [0..(n-1)] and then shuffle it
   //
-  for (size_t J = 0; ( J < FX_RANDOM_TABLE_SIZE ) ;J++)
+  for (J = 0; ( J < FX_RANDOM_TABLE_SIZE ) ;J++)
   {
     aiPermutation [J] = J;
   }
-  for (size_t J = 0; ( J < FX_RANDOM_TABLE_SIZE ) ;J++)
+  for (J = 0; ( J < FX_RANDOM_TABLE_SIZE ) ;J++)
   {
     iPos                 = int (frand() * FX_RANDOM_TABLE_SIZE);
     iTemp                = aiPermutation [J];
