@@ -31,7 +31,7 @@ DEFINE_PLUGIN ("Raytracer", FX_RENDERER_CLASS, TRaytracer);
 *  traceRay()
 *
 */
-inline void TRaytracer::traceRay (TRay& rtRAY, TSurfaceData& rtDATA) const
+void TRaytracer::traceRay (TRay& rtRAY, TSurfaceData& rtDATA) const
 {
 
   //
@@ -53,7 +53,7 @@ inline void TRaytracer::traceRay (TRay& rtRAY, TSurfaceData& rtDATA) const
 *  getRadiance()
 *
 */
-inline TColor TRaytracer::getRadiance (TSurfaceData& rtDATA, Word wDEPTH) const
+TColor TRaytracer::getRadiance (TSurfaceData& rtDATA, Word wDEPTH) const
 {
 
   TColor   tRadiance;
@@ -112,7 +112,7 @@ inline TColor TRaytracer::getRadiance (TSurfaceData& rtDATA, Word wDEPTH) const
 *  traceShadowRay()
 *
 */
-inline bool TRaytracer::traceShadowRay (const TRay& rktRAY, const TLight& rktLIGHT, TColor& rtRADIANCE) const
+bool TRaytracer::traceShadowRay (const TRay& rktRAY, const TLight& rktLIGHT, TColor& rtRADIANCE) const
 {
 
   TColor           tLightColor;
@@ -191,7 +191,7 @@ inline bool TRaytracer::traceShadowRay (const TRay& rktRAY, const TLight& rktLIG
 }  /* traceShadowRay() */
 
 
-inline TColor TRaytracer::shadePrimaryRay (TScalar I, TScalar J, TSurfaceData& rtDATA)
+TColor TRaytracer::shadePrimaryRay (TScalar I, TScalar J, TSurfaceData& rtDATA)
 {
 
   TRay   tRay;
@@ -205,7 +205,7 @@ inline TColor TRaytracer::shadePrimaryRay (TScalar I, TScalar J, TSurfaceData& r
 }  /* shadePrimaryRay() */
 
                                            
-inline void TRaytracer::superSampleUniform (TScalar I, TScalar J, SBuffers& rsBUFFERS)
+void TRaytracer::superSampleUniform (TScalar I, TScalar J, SBuffers& rsBUFFERS)
 {
 
   TColor         tRadiance;
@@ -245,7 +245,7 @@ inline void TRaytracer::superSampleUniform (TScalar I, TScalar J, SBuffers& rsBU
 }  /* superSampleUniform() */
 
 
-inline void TRaytracer::singleSample (TScalar I, TScalar J, SBuffers& rsBUFFERS)
+void TRaytracer::singleSample (TScalar I, TScalar J, SBuffers& rsBUFFERS)
 {
 
   TColor         tRadiance;
@@ -268,7 +268,7 @@ inline void TRaytracer::singleSample (TScalar I, TScalar J, SBuffers& rsBUFFERS)
 }  /* singleSample() */
 
 
-inline void TRaytracer::superSampleStochastic (TScalar I, TScalar J, SBuffers& rsBUFFERS)
+void TRaytracer::superSampleStochastic (TScalar I, TScalar J, SBuffers& rsBUFFERS)
 {
 
   TColor         tRadiance;
@@ -392,7 +392,7 @@ TColor TRaytracer::recursiveSampleAdaptive (TScalar I, TScalar J, TScalar tSIZE,
 }  /* recursiveSampleAdaptive() */
 
 
-inline void TRaytracer::superSampleAdaptive (TScalar I, TScalar J, SBuffers& rsBUFFERS)
+void TRaytracer::superSampleAdaptive (TScalar I, TScalar J, SBuffers& rsBUFFERS)
 {
 
   TColor         tRadiance;
@@ -421,7 +421,7 @@ inline void TRaytracer::superSampleAdaptive (TScalar I, TScalar J, SBuffers& rsB
 }  /* superSampleAdaptive() */
 
 
-inline void TRaytracer::sampleFalseColor (TScalar I, TScalar J, SBuffers& rsBUFFERS)
+void TRaytracer::sampleFalseColor (TScalar I, TScalar J, SBuffers& rsBUFFERS)
 {
 
   TColor         tRadiance;
@@ -663,7 +663,7 @@ void TRaytracer::render (SBuffers& rsBUFFERS)
 }  /* render() */
 
 
-inline TColor TRaytracer::mediaRadiance (const TSurfaceData& rktDATA, const TColor& rktRAD) const
+TColor TRaytracer::mediaRadiance (const TSurfaceData& rktDATA, const TColor& rktRAD) const
 {
 
   TColor   tRad = rktRAD;
@@ -683,7 +683,7 @@ inline TColor TRaytracer::mediaRadiance (const TSurfaceData& rktDATA, const TCol
 }  /* mediaRadiance() */
 
 
-inline TColor TRaytracer::ambientLight (const TSurfaceData& rktDATA, Word wDEPTH) const
+TColor TRaytracer::ambientLight (const TSurfaceData& rktDATA, Word wDEPTH) const
 {
 
   TMaterial*   ptMat = rktDATA.object()->material();
@@ -694,7 +694,7 @@ inline TColor TRaytracer::ambientLight (const TSurfaceData& rktDATA, Word wDEPTH
 }  /* ambientLight() */
 
 
-inline TColor TRaytracer::directLight (const TSurfaceData& rktDATA) const
+TColor TRaytracer::directLight (const TSurfaceData& rktDATA) const
 {
 
   TLight*   ptLight;
@@ -711,7 +711,7 @@ inline TColor TRaytracer::directLight (const TSurfaceData& rktDATA) const
 }  /* directLight() */
 
 
-inline TColor TRaytracer::directLight (const TSurfaceData& rktDATA, const TLight* pktLIGHT) const
+TColor TRaytracer::directLight (const TSurfaceData& rktDATA, const TLight* pktLIGHT) const
 {
 
   TScalar   tCosNL;
