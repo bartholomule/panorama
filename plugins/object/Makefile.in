@@ -3,4 +3,11 @@ BUILD_TOP = ../..
 
 DIRS = bezier
 
+ifeq (1, @EXPERIMENTAL@)
+DIRS += abvh \
+        height_field \
+	lwo \
+	polyhedron
+endif
+
 include ${BUILD_TOP}/Makefile.targets
