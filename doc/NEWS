@@ -1,4 +1,8 @@
 
+ - Several changes to the API, in order to implement the new procedural language.
+ 
+ - Several bug fixes.
+
  - Added support for GIMP gradients (done by Peter Barnett).
  
  - Added sparse convolution noise (done by Peter Barnett).
