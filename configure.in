@@ -15,7 +15,6 @@ dnl Checks for programs.
 dnl ---------------------------------------------------------------------------
 AC_PROG_CXX
 AC_LANG(C++)
-AC_PROG_INSTALL
 AC_PROG_LEX
 AC_PROG_YACC
 AC_PROG_MAKE_SET
@@ -679,6 +678,18 @@ fi
 
 AC_SUBST(ARCH_MAKE_SHARED_OPTS)
 AC_SUBST(ARCH_PROG_SETLIBPATH)
+
+dnl ------
+dnl The method autoconf uses to find a working install program is:
+AC_PROG_INSTALL
+dnl This is the method that I think should be used (for now).
+dnl INSTALL="$PWD/install-sh -c"
+dnl INSTALL_DATA="$INSTALL -m 644"
+dnl INSTALL_PROGRAM="$INSTALL -m 755"
+dnl AC_SUBST(INSTALL)
+dnl AC_SUBST(INSTALL_DATA)
+dnl AC_SUBST(INSTALL_PROGRAM)
+dnl ------
   
 AC_OUTPUT(\
 	Makefile \
@@ -782,3 +793,4 @@ AC_OUTPUT(\
 
 dnl AC_CONFIG_LINKS(Makefile.deps:Makefile.deps)
 ln -s $ac_aux_dir/Makefile.deps . 2>/dev/null
+ln -s $ac_aux_dir/install-sh . 2>/dev/null
