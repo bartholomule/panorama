@@ -32,6 +32,15 @@ TBsdfSchlickDouble::TBsdfSchlickDouble (void)
 }  /* TBsdfSchlickDouble() */
 
 
+TBsdfSchlickDouble::~TBsdfSchlickDouble (void)
+{
+
+  delete ptLayerOne;
+  delete ptLayerTwo;
+
+}  /* ~TBsdfSchlickDouble() */
+
+
 int TBsdfSchlickDouble::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
 

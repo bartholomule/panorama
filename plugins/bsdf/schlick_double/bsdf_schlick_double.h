@@ -39,6 +39,7 @@ class TBsdfSchlickDouble : public TBsdf
     static TBaseClass* _create (const TBaseClass* pktPARENT);
  
     TBsdfSchlickDouble (void);
+    ~TBsdfSchlickDouble (void);
 
     TColor evaluateReflection (const TSurfaceData& rktDATA, const TVector& rktLIGHT, TScalar tCOSNL, TColor tRAD) const;
 
@@ -98,7 +99,8 @@ inline TColor TBsdfSchlickDouble::evaluateReflection (const TSurfaceData& rktDAT
   // Find halfway vector projected perpendicular onto the normal
   // 
 
-  tHalfwayProj = crossProduct (crossProduct (rktDATA.normal(), tHalfway), rktDATA.normal());
+  tHalfwayProj = tHalfway - (rktDATA.normal() * dotProduct (rktDATA.normal(), tHalfway));
+  tHalfwayProj.normalize();
 
   tCosTI = dotProduct (tTangent, tHalfwayProj);
 
@@ -147,6 +149,7 @@ inline TColor TBsdfSchlickDouble::evaluateReflection (const TSurfaceData& rktDAT
 }  /* evaluateReflection() */
 
 #endif  /* _BSDF_SCHLICK_DOUBLE__ */
+
 
 
 
