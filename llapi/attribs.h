@@ -1,5 +1,5 @@
 /*
-*  Copyright (C) 1999 Angel Jimenez Jimenez
+*  Copyright (C) 1999 Angel Jimenez Jimenez and Carlos Jimenez Moreno
 *
 *  This program is free software; you can redistribute it and/or modify
 *  it under the terms of the GNU General Public License as published by
