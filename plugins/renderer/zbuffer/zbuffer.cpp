@@ -479,9 +479,9 @@ void TZBufferRenderer::render (SBuffers& rsBUFFERS)
     }
   }
 
-  for (list<TMesh*>::iterator tIter = tMeshList.begin(); ( tIter != tMeshList.end() ) ;tIter++)
+  for (list<TMesh*>::iterator tIter2 = tMeshList.begin(); ( tIter2 != tMeshList.end() ) ;tIter2++)
   {
-    delete (*tIter);
+    delete (*tIter2);
   }
   
 }  /* render() */
