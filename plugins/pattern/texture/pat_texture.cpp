@@ -38,30 +38,6 @@ TPatternTexture::TPatternTexture (void) :
 }  /* TPatternTexture() */
 
 
-
-int TPatternTexture::correctTexel (int iVALUE, const int kiMAX) const
-{
-
-  int  i = iVALUE % kiMAX;
-
-  if ( iVALUE < 0 ) 
-  {
-    i += (kiMAX - 1);
-  }
-
-  if ( gMirror )
-  { 
-    if ( (ifloor (iVALUE, kiMAX) & 1) )
-    {
-      i = (kiMAX - 1) - i;
-    }
-  }
-
-  return i;
-
-}  /* correctTexel() */
-
-
 TColor TPatternTexture::lerpTexel (const TVector2& rktUVCOORD) const
 {
  
@@ -71,6 +47,10 @@ TColor TPatternTexture::lerpTexel (const TVector2& rktUVCOORD) const
   float    uv, iuv, uiv, iuiv;
   double   iiu, iiv;
   double   fu, fv;
+  bool     gUWrapped;
+  bool     gU2Wrapped;
+  bool     gVWrapped;
+  bool     gV2Wrapped;
 
   u = rktUVCOORD.x() * dTextureWidth;
   v = rktUVCOORD.y() * dTextureHeight;  
@@ -83,10 +63,10 @@ TColor TPatternTexture::lerpTexel (const TVector2& rktUVCOORD) const
   iu = (int) iiu;
   iv = (int) iiv;
 
-  iu2 = correctTexel (iu + 1, zTextureWidth );
-  iv2 = correctTexel (iv + 1, zTextureHeight);
-  iu  = correctTexel (iu, zTextureWidth );
-  iv  = correctTexel (iv, zTextureHeight);
+  iu2 = correctTexel (iu + 1, gU2Wrapped, zTextureWidth );
+  iv2 = correctTexel (iv + 1, gV2Wrapped, zTextureHeight);
+  iu  = correctTexel (iu    , gUWrapped , zTextureWidth );
+  iv  = correctTexel (iv    , gVWrapped , zTextureHeight);
 
   if ( fu < 0.0 ) 
   {
@@ -102,10 +82,10 @@ TColor TPatternTexture::lerpTexel (const TVector2& rktUVCOORD) const
   uiv  = fu * (1.0 - fv);
   iuiv = (1.0 - fu) * (1.0 - fv);
 
-  tLerpColor  = ptImage->getPixel (iu , iv ) * iuiv;
-  tLerpColor += ptImage->getPixel (iu2, iv ) * uiv;
-  tLerpColor += ptImage->getPixel (iu , iv2) * iuv;
-  tLerpColor += ptImage->getPixel (iu2, iv2) * uv;
+  tLerpColor  = getColor ((gUWrapped  | gVWrapped ), iu , iv ) * iuiv;
+  tLerpColor += getColor ((gU2Wrapped | gVWrapped ), iu2, iv ) * uiv;
+  tLerpColor += getColor ((gUWrapped  | gV2Wrapped), iu , iv2) * iuv;
+  tLerpColor += getColor ((gU2Wrapped | gV2Wrapped), iu2, iv2) * uv;
 
   return tLerpColor;
 
@@ -117,9 +97,9 @@ void TPatternTexture::sphericalMap (const TVector& rktPOINT, TVector2& rtUVCOORD
   
   TVector   tVector;
   TScalar   x, y, z;
-  TScalar   len;
-  TScalar   rtPhi;
-  TScalar   rtTheta;
+  TScalar   tLength;
+  TScalar   tPhi;
+  TScalar   tTheta;
 
   tVector = rktPOINT;
   tVector.normalize();
@@ -128,13 +108,13 @@ void TPatternTexture::sphericalMap (const TVector& rktPOINT, TVector2& rtUVCOORD
   y = tVector.y();
   z = tVector.z();
   
-  rtPhi = asin (y) / PI;
+  tPhi = asin (y) / PI;
 
-  len = sqrt (x * x + z * z);
+  tLength = sqrt (x * x + z * z);
 
-  if ( len < FX_EPSILON )
+  if ( tLength < FX_EPSILON )
   {
-    rtTheta = 0.0;
+    tTheta = 0.0;
   }
   else
   {
@@ -142,27 +122,27 @@ void TPatternTexture::sphericalMap (const TVector& rktPOINT, TVector2& rtUVCOORD
     {
       if ( x > 0 )
       {
-	rtTheta = 0.0;
+	tTheta = 0.0;
       }
       else
       {
-	rtTheta = PI;
+	tTheta = PI;
       }
     }
     else
     {
-      rtTheta = acos (x / len);
+      tTheta = acos (x / tLength);
 
       if ( z < 0.0 )
       {
-	rtTheta = (PI * 2) - rtTheta;
+	tTheta = (PI * 2) - tTheta;
       }
     }
 
-    rtTheta /= (PI * 2);
+    tTheta *= (1.0 / (PI * 2));
   }
 
-  rtUVCOORD.set (rtTheta - 0.5, rtPhi);
+  rtUVCOORD.set (tTheta - 0.5, tPhi);
   
 }  /* sphericalMap() */
 
@@ -172,8 +152,8 @@ void TPatternTexture::cylindricalMap (const TVector& rktPOINT, TVector2& rtUVCOO
   
   TVector   tVector;
   TScalar   x, y, z;
-  TScalar   len;
-  TScalar   rtTheta;
+  TScalar   tLength;
+  TScalar   tTheta;
 
   tVector = rktPOINT;
 
@@ -181,11 +161,11 @@ void TPatternTexture::cylindricalMap (const TVector& rktPOINT, TVector2& rtUVCOO
   y = tVector.y();
   z = tVector.z();
   
-  len = sqrt (x * x + z * z);
+  tLength = sqrt (x * x + z * z);
 
-  if ( len < FX_EPSILON )
+  if ( tLength < FX_EPSILON )
   {
-    rtTheta = 0.0;
+    tTheta = 0.0;
   }
   else
   {
@@ -193,29 +173,91 @@ void TPatternTexture::cylindricalMap (const TVector& rktPOINT, TVector2& rtUVCOO
     {
       if ( x > 0 )
       {
-	rtTheta = 0.0;
+	tTheta = 0.0;
       }
       else
       {
-	rtTheta = PI;
+	tTheta = PI;
       }
     }
     else
     {
-      rtTheta = acos (x / len);
+      tTheta = acos (x / tLength);
 
       if ( z < 0.0 )
       {
-	rtTheta = (PI * 2) - rtTheta;
+	tTheta = (PI * 2) - tTheta;
       }
     }
 
-    rtTheta /= (PI * 2);
+    tTheta *= (1.0 / (PI * 2));
   }
 
-  rtUVCOORD.set (rtTheta - 0.5, y * 0.5);
+  rtUVCOORD.set (tTheta - 0.5, y * 0.5);
   
 }  /* cylindricalMap() */
+
+
+void TPatternTexture::torusMap (const TVector& rktPOINT, TVector2& rtUVCOORD) const
+{
+  
+  TVector   tVector;
+  TScalar   x, y, z;
+  TScalar   tLength;
+  TScalar   tPhi;
+  TScalar   tTheta;
+
+  tVector = rktPOINT;
+
+  x = tVector.x();
+  y = tVector.y();
+  z = tVector.z();
+  
+  tLength = sqrt (x * x + z * z);
+
+  if ( tLength < FX_EPSILON )
+  {
+    tTheta = 0.0;
+  }
+  else
+  {
+    if ( fabs (z) < FX_EPSILON )
+    {
+      if ( x > 0 )
+      {
+	tTheta = 0.0;
+      }
+      else
+      {
+	tTheta = PI;
+      }
+    }
+    else
+    {
+      tTheta = acos (x / tLength);
+
+      if ( z < 0.0 )
+      {
+	tTheta = tTheta - (PI * 2);
+      }
+    }
+  }
+  
+  x = tLength - tTubeCenter;
+
+  tPhi = acos (-x / sqrt (x * x + y * y));
+
+  if (y > 0.0)
+  {
+    tPhi = (PI * 2) - tPhi;
+  }
+
+  tTheta *= (1.0 / (PI * 2));
+  tPhi   *= (1.0 / (PI * 2));
+
+  rtUVCOORD.set (0.5 - tTheta, tPhi);
+  
+}  /* torusMap() */
 
 
 void TPatternTexture::planarMap (const TVector& rktPOINT, TVector2& rtUVCOORD) const
@@ -250,13 +292,17 @@ TColor TPatternTexture::pattern (const TSurfaceData& rktDATA) const
 
   switch (eMapping) 
   {
-    case (FX_PLANAR) :
-      planarMap (tPoint, tUVcoord);
-      break; 
-
     case (FX_CYLINDRICAL) :
       cylindricalMap (tPoint, tUVcoord);
       break;
+
+    case (FX_TORUS) :
+      torusMap (tPoint, tUVcoord);
+      break;
+
+    case (FX_PLANAR) :
+      planarMap (tPoint, tUVcoord);
+      break; 
  
     default:
       sphericalMap (tPoint, tUVcoord);
@@ -264,17 +310,6 @@ TColor TPatternTexture::pattern (const TSurfaceData& rktDATA) const
 
   tUVcoord *= tTiling;
 
-  if ( !gTile )
-  {
-    TScalar  u = tUVcoord.x();
-    TScalar  v = tUVcoord.y();
-
-    if ( ( u < -0.5 ) || ( u > 0.5 ) || ( v < -0.5 ) || ( v > 0.5 ) )
-    {
-      return tColor;
-    }
-  }
-    
   tUVcoord += tOffset;
   tUVcoord += 0.5;
 
@@ -380,6 +415,10 @@ int TPatternTexture::setAttribute (const string& rktNAME, NAttribute nVALUE, EAt
       {
         eMapping = FX_CYLINDRICAL;
       }
+      else if ( tMapping == "torus" )
+      {
+        eMapping = FX_TORUS;
+      }
       else if ( tMapping == "planar" )
       {
         eMapping = FX_PLANAR;
@@ -388,6 +427,17 @@ int TPatternTexture::setAttribute (const string& rktNAME, NAttribute nVALUE, EAt
       {
         return FX_ATTRIB_WRONG_VALUE;
       } 
+    }
+    else
+    {
+      return FX_ATTRIB_WRONG_TYPE;
+    }
+  }
+  else if ( rktNAME == "tube_center" )
+  {
+    if ( eTYPE == FX_REAL )
+    {
+      tTubeCenter = nVALUE.dValue;
     }
     else
     {
@@ -435,17 +485,25 @@ int TPatternTexture::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
   {
     switch (eMapping) 
     {
-      case (FX_PLANAR) :
-        rnVALUE.pvValue = (void *) "planar";
-        break; 
-
       case (FX_CYLINDRICAL) :
         rnVALUE.pvValue = (void *) "cylindrical";
         break;
  
+      case (FX_TORUS) :
+        rnVALUE.pvValue = (void *) "torus";
+        break;
+
+      case (FX_PLANAR) :
+        rnVALUE.pvValue = (void *) "planar";
+        break; 
+ 
       default:
         rnVALUE.pvValue = (void *) "spherical";
     }
+  }
+  else if ( rktNAME == "tube_center" )
+  {
+    rnVALUE.dValue = tTubeCenter;
   }
   else
   {
@@ -469,6 +527,7 @@ void TPatternTexture::getAttributeList (TAttributeList& rtLIST) const
   rtLIST ["mirror"]      = FX_BOOL;
   rtLIST ["tile"]        = FX_BOOL;
   rtLIST ["mapping"]     = FX_STRING;
+  rtLIST ["tube_center"] = FX_REAL;
 
 }  /* getAttributeList() */
 

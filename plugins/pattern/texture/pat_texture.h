@@ -31,6 +31,7 @@ enum EMappings
 
   FX_SPHERICAL = 0,
   FX_CYLINDRICAL,
+  FX_TORUS,
   FX_PLANAR
 
 };  /* enum EMappings */
@@ -47,16 +48,19 @@ class TPatternTexture : public TPattern
     bool        gMirror;
     bool        gTile;
     EMappings   eMapping;
+    TScalar     tTubeCenter;
 
     size_t      zTextureWidth, zTextureHeight;
     double      dTextureWidth, dTextureHeight;
  
-    int correctTexel (int iVALUE, const int kiMAX) const;
-    
+    inline int correctTexel (int kiVALUE, bool& rgWRAPPED, int kiMAX) const;
+    inline TColor getColor (bool gWRAPPED, int U, int V) const; 
+   
     TColor lerpTexel (const TVector2& rktUVCOORD) const;
 
     void sphericalMap (const TVector& rktPOINT, TVector2& rtUVCOORD) const;
     void cylindricalMap (const TVector& rktPOINT, TVector2& rtUVCOORD) const;
+    void torusMap (const TVector& rktPOINT, TVector2& rtUVCOORD) const;
     void planarMap (const TVector& rktPOINT, TVector2& rtUVCOORD) const;
     
   public:
@@ -74,6 +78,50 @@ class TPatternTexture : public TPattern
     string className (void) const { return "PatternTexture"; }
 
 };  /* class TPatternTexture */
+
+
+inline TColor TPatternTexture::getColor (bool gWRAPPED, int U, int V) const
+{
+
+  if ( ( !gTile ) && ( gWRAPPED )  )
+  {
+    return tColor;
+  }
+
+  return ptImage->getPixel (U, V);
+
+}  /* correctTexel() */
+
+
+inline int TPatternTexture::correctTexel (int iVALUE, bool& rgWRAPPED, int iMAX) const
+{
+
+  int  i = iVALUE % iMAX;
+
+  rgWRAPPED = false;
+
+  if ( iVALUE < 0 ) 
+  {
+    i += (iMAX - 1);
+
+    rgWRAPPED = true;
+  }
+  else if ( iVALUE >= iMAX )
+  {
+    rgWRAPPED = true;
+  }
+
+  if ( gMirror )
+  { 
+    if ( (ifloor (iVALUE, iMAX) & 1) )
+    {
+      i = (iMAX - 1) - i;
+    }
+  }
+
+  return i;
+
+}  /* correctTexel() */
 
 #endif  /* _PATTERN_TEXTURE__ */
 
