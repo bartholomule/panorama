@@ -1,4 +1,6 @@
 
+ - Changed rotation angles from radians to degrees.
+
  - Updated C++ coding style.
  
  - Added MaterialLeopard (done by Peter Barnett).
