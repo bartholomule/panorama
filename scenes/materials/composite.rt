@@ -1,0 +1,94 @@
+/*
+*  Composite pattern test
+*/
+
+#include "materials.inc"
+
+define camera c
+{
+  translate	<-250, 0, 400>
+  look_at	<0, 0, 400>
+}
+
+define light l
+{
+  translate	<-250, 0, 400>
+  color		CWhite
+}
+
+define material MComposite : extends MPlastic
+{
+  specular      0
+  diffuse       0.8
+}
+
+define pattern PNoise_red : class PatternNoise
+{
+  base_color    CWhite
+  color         CRed
+  zoom          <0.4, 0.4, 0.4>
+}
+
+define pattern PChecker_blue : class PatternChecker
+{
+  base_color    CBlack
+  color         CBlue
+  size          0.4
+  border        0
+}
+
+define pattern PComposite : class PatternComposite 
+{
+  pattern1      PNoise_red
+  pattern2      PChecker_blue
+  amount1       0.8
+  amount2       0.8
+}
+
+cylinder
+{
+  scale         <30, 70, 30>
+  translate	<0, 0, 330>
+
+  material : extends MComposite
+  {
+    color       PNoise_red
+  }
+}
+
+cylinder
+{
+  scale         <30, 70, 30>
+  translate	<30, 0, 399>
+
+  material : extends MComposite
+  {
+    color       PChecker_blue
+  }
+}
+
+cylinder
+{
+  scale         <30, 70, 30>
+  translate	<0, 0, 470>
+
+  material : extends MComposite
+  {
+    color       PComposite
+  }
+}
+
+scene
+{
+  camera	c
+  light		l
+  width		400
+  height	400
+  background    CSummerSky
+  output
+  {
+    type        "png"
+    name	"composite.png"
+  }
+  renderer : class Raytracer {}
+}
