@@ -23,7 +23,7 @@
 #include "hlapi/class_manager.h"
 #include "llapi/transform_object.h"
 
-class TAggregate : public TTransformObject
+class TAggregate : public TObject
 {
 
   protected:
@@ -33,10 +33,10 @@ class TAggregate : public TTransformObject
   public:
 
     TAggregate (void) :
-      TTransformObject() {}
+      TObject() {}
       
     TAggregate (const TAggregate& rktAGGREGATE) :
-      TTransformObject()
+      TObject()
     {
       copy (rktAGGREGATE.tObjectList);
     }

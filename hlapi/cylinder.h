@@ -21,7 +21,7 @@
 
 #include "llapi/transform_object.h"
 
-class TCylinder : public TTransformObject
+class TCylinder : public TObject
 {
 
   protected:
@@ -31,7 +31,7 @@ class TCylinder : public TTransformObject
   public:
 
     TCylinder (void) :
-      TTransformObject()
+      TObject()
     {
       sCapabilities.gInfinite = false;
     }

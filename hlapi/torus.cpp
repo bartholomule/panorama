@@ -78,7 +78,7 @@ int TTorus::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType 
   }
   else
   {
-    return TTransformObject::setAttribute (rktNAME, nVALUE, eTYPE);
+    return TObject::setAttribute (rktNAME, nVALUE, eTYPE);
   }
 
   return FX_ATTRIB_OK;
@@ -99,7 +99,7 @@ int TTorus::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
   }
   else
   {
-    return TTransformObject::getAttribute (rktNAME, rnVALUE);
+    return TObject::getAttribute (rktNAME, rnVALUE);
   }
 
   return FX_ATTRIB_OK;
@@ -110,7 +110,7 @@ int TTorus::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 void TTorus::getAttributeList (TAttributeList& rtLIST) const
 {
 
-  TTransformObject::getAttributeList (rtLIST);
+  TObject::getAttributeList (rtLIST);
 
   rtLIST ["radius_a"] = FX_REAL;
   rtLIST ["radius_b"] = FX_REAL;

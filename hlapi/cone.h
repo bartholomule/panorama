@@ -21,7 +21,7 @@
 
 #include "llapi/transform_object.h"
 
-class TCone : public TTransformObject
+class TCone : public TObject
 {
 
   protected:
@@ -44,7 +44,7 @@ class TCone : public TTransformObject
   public:
 
     TCone (void) :
-      TTransformObject()
+      TObject()
     {
       sCapabilities.gInfinite = false;
       tMinRadius              = 0;

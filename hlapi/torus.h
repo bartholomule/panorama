@@ -21,7 +21,7 @@
 
 #include "llapi/transform_object.h"
 
-class TTorus : public TTransformObject
+class TTorus : public TObject
 {
 
   protected:
@@ -34,7 +34,7 @@ class TTorus : public TTransformObject
   public:
 
     TTorus (void) :
-      TTransformObject()
+      TObject()
     {
       tRadiusA  = 1;
       tRadiusA2 = tRadiusA * tRadiusA;

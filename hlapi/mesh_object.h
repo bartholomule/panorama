@@ -23,7 +23,7 @@
 #include "llapi/transform_object.h"
 #include "hlapi/triangle.h"
 
-class TMeshObject : public TTransformObject
+class TMeshObject : public TObject
 {
 
   protected:
@@ -34,7 +34,7 @@ class TMeshObject : public TTransformObject
   public:
 
     TMeshObject (void) :
-      TTransformObject()
+      TObject()
     {
       sCapabilities.gInfinite = false;
     }

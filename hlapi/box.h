@@ -21,7 +21,7 @@
 
 #include "llapi/transform_object.h"
 
-class TBox : public TTransformObject
+class TBox : public TObject
 {
 
   protected:
@@ -31,7 +31,7 @@ class TBox : public TTransformObject
   public:
 
     TBox (void) :
-      TTransformObject()
+      TObject()
     {
       sCapabilities.gInfinite = false;
     }
