@@ -1,5 +1,6 @@
 /*
 *  Copyright (C) 1998 Angel Jimenez Jimenez and Carlos Jimenez Moreno
+*  Copyright (C) 1999 Jon Frydensbjerg
 *
 *  This program is free software; you can redistribute it and/or modify
 *  it under the terms of the GNU General Public License as published by
@@ -34,6 +35,10 @@ class TImageTga : public TImageIO
     TImage* load (void);
 
     string className (void) const { return "ImageTga"; }
+
+  protected:
+
+    void grabRGB (Byte bPixelSize, ifstream &sTGAStream, Byte& bRed, Byte& bGreen, Byte& bBlue); 
     
 };  /* class TImageTga */
 
