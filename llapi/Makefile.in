@@ -23,6 +23,7 @@ OBJ = atmosphere.o \
       debug.o \
       file.o \
       gradient.o \
+      heap_manager.o \
       image.o \
       image_io.o \
       light.o \
