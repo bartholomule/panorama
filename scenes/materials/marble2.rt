@@ -13,8 +13,8 @@ define material Marble : class MaterialMarble
     exponent 5 
   }
   ambient  0.2
-  diffuse  0.6
-  specular 0.2
+  diffuse  0.8
+  specular 0.0
 }
 
 define camera c
@@ -23,53 +23,36 @@ define camera c
   look_at	  <0, 70,   0>
 }
 
-define light l_ambient
+define light l1 
 {
-  translate	<-400, 1000, 0>
-  volumetric    off
-  shadow        off
+  translate <550, 1000,-5000>
+  intensity    0.5
 }
 
-define light l //: class WarnLight
+define light l2
 {
-  //translate	<-400, 500, 1000>
-  translate	<-4000, 500, 0>
+  translate	<5000, 500, 0>
   intensity     1.0
-}
-
-plane
-{
-  translate     <0, 0, 0>
-  normal	<0, 1, 0>
-  material : extends MNoise
-  {
-    color       CMySea
-    base_color  CMySea
-    zoom        <5, 5, 5>
-    bump        0.1
-    ambient     0.1
-    diffuse     0.4
-    specular    0.6
-  }
 }
 
 define aggregate column
 {
   box
   {
-    scale      < 60, 20, 60>
-    translate  <-75, 10,  0>
+    point1     <-30,-10,-30>
+    point2     < 30, 10, 30>
+    translate  <  0, 10,  0>
   }
   torus
   {
     radius_a  20
     radius_b   6
-    translate <-75, 20, 0>
+    translate < 0, 20, 0>
   }
   cone
   {
-    max_circle_point <-75,  10, 0>
-    min_circle_point <-75, 200, 0>
+    max_circle_point < 0,  10, 0>
+    min_circle_point < 0, 200, 0>
     max_radius       20
     min_radius       14
   }
@@ -77,12 +60,13 @@ define aggregate column
   {
     radius_a  14
     radius_b   6
-    translate <-75, 200, 0>
+    translate < 0, 200, 0>
   }
   box
   {
-    scale      <50,  10, 50>
-    translate  <-75, 205,  0>
+    point1     <-25,-5,-25>
+    point2     < 25, 5, 25>
+    translate  <  0, 205,  0>
   }
   material : extends Marble
   {
@@ -90,45 +74,70 @@ define aggregate column
     base_color  "marble1"
     zoom        <5, 5, 5>
     bump        0
+    octaves     5
+    diffuse     0.7
   }
 }
 
 aggregate : extends column 
-{ 
-  translate <-50, 0, 50>
+{
+  rotate < 0, 0, 0>
+  translate <-125, 0, 50>
 }
 
 aggregate : extends column 
 { 
-  translate <-50, 0, -150>
+  rotate < 0, 90, 0>
+  translate <-125, 0, -150>
 }
 
 aggregate : extends column 
 { 
-  translate <-50, 0, -350>
+  rotate < 0, 180, 0>
+  translate <-125, 0, -350>
 }
 
 aggregate : extends column 
 { 
-  translate <-50, 0, -550>
+  rotate < 0, 270, 0>
+  translate <-125, 0, -550>
 }
 
 aggregate : extends column 
 { 
-  translate <-50, 0, -750>
+  rotate < 0, 0, 0>
+  translate <-125, 0, -750>
 }
 
 aggregate : extends column 
 { 
-  translate <-50, 0, -950>
+  rotate < 0, 90, 0>
+  translate <-125, 0, -950>
 }
 
 aggregate : extends column 
 { 
-  translate <-50, 0, -1150>
+  rotate < 0, 180, 0>
+  translate <-125, 0, -1150>
 }
 
-sphere
+plane // the water
+{
+  translate     <0, 0, 0>
+  normal	<0, 1, 0>
+  material : extends MNoise
+  {
+    color       CMySea
+    base_color  CMySea
+    zoom        <3, 3, 3>
+    bump        0.1
+    ambient     0.1
+    diffuse     0.4
+    specular    0.6
+  }
+}
+
+sphere // marble parameters set to make a lunar surface
 {
   translate <1000, 2000,-9000>
   radius     1200
@@ -136,19 +145,20 @@ sphere
   {
     color       CLightGrey
     base_color  CWhite
-    zoom        <300, 300, 300>
-    ambient     0.8
-    diffuse     0.2
+    zoom        <500, 500, 500>
+    ambient     0.3
+    diffuse     0.7
     specular    0.0
-    bump        0.8 //0.3
+    bump        0.3
     lacunarity  2.17
-    octaves     4
+    octaves     5
     offset      0.250
-    multiplier  0.50
+    multiplier  0.5 //0.750
   }
+  rotate < 0, 45, 0>
 }
 
-sphere
+sphere // marble parameters set to make a starfield
 {
   translate     <0, 0, 0>
   radius        10000
@@ -170,8 +180,8 @@ sphere
 scene
 {
   camera	c
-  light		l
-  light		l_ambient
+  light		l1
+  light         l2
   width		400
   height	400
   background	CSummerSky
@@ -182,6 +192,6 @@ scene
   }
   renderer : class Raytracer 
   {
-    sampling "adaptive"
+//    sampling "adaptive"
   }
 }

@@ -152,7 +152,7 @@ scene
   }
   renderer : class Raytracer 
   {
-    sampling "adaptive"
+//    sampling "adaptive"
   }
 }
 
