@@ -1445,6 +1445,7 @@ trap 'rm -fr `echo "\
 	Makefile.vars \
 	Makefile.targets \
         data/Makefile \
+        data/gradient/Makefile \
         data/include/Makefile \
         data/texture/Makefile \
         doc/Makefile \
@@ -1477,6 +1478,8 @@ trap 'rm -fr `echo "\
         plugins/material/leopard/Makefile:Makefile.plugin.in \
         plugins/material/marble/Makefile:Makefile.plugin.in \
         plugins/material/noise/Makefile:Makefile.plugin.in \
+        plugins/material/parquet/Makefile:Makefile.plugin.in \
+        plugins/material/wood/Makefile:Makefile.plugin.in \
         plugins/material/worley/Makefile:Makefile.plugin.in \
         plugins/object/Makefile \
         plugins/object/bezier/Makefile:Makefile.plugin.in \
@@ -1580,6 +1583,7 @@ CONFIG_FILES=\${CONFIG_FILES-"\
 	Makefile.vars \
 	Makefile.targets \
         data/Makefile \
+        data/gradient/Makefile \
         data/include/Makefile \
         data/texture/Makefile \
         doc/Makefile \
@@ -1612,6 +1616,8 @@ CONFIG_FILES=\${CONFIG_FILES-"\
         plugins/material/leopard/Makefile:Makefile.plugin.in \
         plugins/material/marble/Makefile:Makefile.plugin.in \
         plugins/material/noise/Makefile:Makefile.plugin.in \
+        plugins/material/parquet/Makefile:Makefile.plugin.in \
+        plugins/material/wood/Makefile:Makefile.plugin.in \
         plugins/material/worley/Makefile:Makefile.plugin.in \
         plugins/object/Makefile \
         plugins/object/bezier/Makefile:Makefile.plugin.in \
