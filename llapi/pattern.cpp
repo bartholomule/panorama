@@ -232,12 +232,16 @@ TColor TPattern::color (const TSurfaceData& rktDATA) const
     tPoint = *rktDATA.object()->transformMatrix() * tPoint;
 
     tData.setPoint  (tPoint);
-    tData.setNormal (tNormal);
+    tData.setUnperturbedNormal (tNormal);
   }
   else
   {
-    tData.setPoint  ( tPoint);
-    tData.setNormal (-tPoint);
+    tData.setPoint (tPoint);
+
+    tNormal = -tPoint;
+    tNormal.normalize();
+
+    tData.setUnperturbedNormal (tNormal);
   }
 
   tColor = pattern (tData);
