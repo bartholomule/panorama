@@ -1,8 +1,11 @@
 
 BUILD_TOP = ../..
 
-DIRS = checker \
+DIRS = brick \
+       checker \
+       crackle \
        leopard \
+       marble \
        noise \
        worley
 
