@@ -1714,9 +1714,43 @@ EOF
 
 fi
 
+echo $ac_n "checking for fileno being properly defined with C++""... $ac_c" 1>&6
+echo "configure:1719: checking for fileno being properly defined with C++" >&5
+if eval "test \"`echo '$''{'ac_cv_fileno_ok'+set}'`\" = set"; then
+  echo $ac_n "(cached) $ac_c" 1>&6
+else
+  cat > conftest.$ac_ext <<EOF
+#line 1724 "configure"
+#include "confdefs.h"
+#include <stdio.h>
+
+int main() {
+int s = fileno(STDOUT)
+; return 0; }
+EOF
+if { (eval echo configure:1732: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+  rm -rf conftest*
+  ac_cv_fileno_ok=yes
+else
+  echo "configure: failed program was:" >&5
+  cat conftest.$ac_ext >&5
+  rm -rf conftest*
+  ac_cv_fileno_ok=no
+fi
+rm -f conftest*
+fi
+
+echo "$ac_t""$ac_cv_fileno_ok" 1>&6
+if test $ac_cv_fileno_ok = no; then
+  cat >> confdefs.h <<\EOF
+#define BROKEN_FILENO_INCLUDE 1
+EOF
+
+fi
+
 
 echo $ac_n "checking whether to link statically or not""... $ac_c" 1>&6
-echo "configure:1720: checking whether to link statically or not" >&5
+echo "configure:1754: checking whether to link statically or not" >&5
 # Check whether --enable-static-link or --disable-static-link was given.
 if test "${enable_static_link+set}" = set; then
   enableval="$enable_static_link"
@@ -1735,7 +1769,7 @@ fi
 echo "$ac_t""$STATIC_VAL" 1>&6
 
 echo $ac_n "checking whether to add profiling information or not""... $ac_c" 1>&6
-echo "configure:1739: checking whether to add profiling information or not" >&5
+echo "configure:1773: checking whether to add profiling information or not" >&5
 # Check whether --enable-profile or --disable-profile was given.
 if test "${enable_profile+set}" = set; then
   enableval="$enable_profile"
@@ -1754,7 +1788,7 @@ fi
 echo "$ac_t""$PROFILE_VAL" 1>&6
 
 echo $ac_n "checking whether to enable debug info or not""... $ac_c" 1>&6
-echo "configure:1758: checking whether to enable debug info or not" >&5
+echo "configure:1792: checking whether to enable debug info or not" >&5
 # Check whether --enable-debug or --disable-debug was given.
 if test "${enable_debug+set}" = set; then
   enableval="$enable_debug"
@@ -1773,7 +1807,7 @@ fi
 echo "$ac_t""$DEBUG_VAL" 1>&6
 
 echo $ac_n "checking whether to enable experimental code or not""... $ac_c" 1>&6
-echo "configure:1777: checking whether to enable experimental code or not" >&5
+echo "configure:1811: checking whether to enable experimental code or not" >&5
 # Check whether --enable-experimental or --disable-experimental was given.
 if test "${enable_experimental+set}" = set; then
   enableval="$enable_experimental"
@@ -1797,6 +1831,13 @@ case $host in
 alpha-dec-osf*)
 	echo "Adding shared library rules for DEC Alpha system"
 	ARCH_MAKE_SHARED_OPTS="-Wl,-expect_unresolved,\*"
+	ARCH_PROG_SETLIBPATH="-Wl,-rpath,\${LIB_DIR}"
+	have_so_reg=yes
+	;;
+mips-sgi-irix6*)
+	echo "Adding shared library rules for IRIX 6.* system"
+	#ARCH_MAKE_SHARED_OPTS="-Wl,-expect_unresolved,\*"
+	ARCH_MAKE_SHARED_OPTS=""
 	ARCH_PROG_SETLIBPATH="-Wl,-rpath,\${LIB_DIR}"
 	have_so_reg=yes
 	;;
@@ -1983,6 +2024,7 @@ trap 'rm -fr `echo "\
         plugins/material/worley/Makefile:Makefile.plugin.in \
         plugins/object/Makefile \
         plugins/object/abvh/Makefile:Makefile.plugin.in \
+        plugins/object/aggregate_uniform_grid/Makefile:Makefile.plugin.in \
         plugins/object/bezier/Makefile:Makefile.plugin.in \
         plugins/object/subdiv/Makefile:Makefile.plugin.in \
         plugins/object/height_field/Makefile:Makefile.plugin.in \
@@ -2162,6 +2204,7 @@ CONFIG_FILES=\${CONFIG_FILES-"\
         plugins/material/worley/Makefile:Makefile.plugin.in \
         plugins/object/Makefile \
         plugins/object/abvh/Makefile:Makefile.plugin.in \
+        plugins/object/aggregate_uniform_grid/Makefile:Makefile.plugin.in \
         plugins/object/bezier/Makefile:Makefile.plugin.in \
         plugins/object/subdiv/Makefile:Makefile.plugin.in \
         plugins/object/height_field/Makefile:Makefile.plugin.in \
