@@ -20,9 +20,9 @@
 #define _ENTITY__
 
 #include "llapi/llapi_defs.h"
-#include "llapi/base_class.h"
+#include "llapi/procedural.h"
 
-class TEntity : public TBaseClass
+class TEntity : public TProcedural
 {
 
   protected:

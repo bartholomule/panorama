@@ -21,8 +21,9 @@
 
 #include "llapi/span_list.h"
 #include "llapi/bsdf.h"
+#include "llapi/procedural.h"
 
-class TMaterial : public TBaseClass
+class TMaterial : public TProcedural
 {
 
   protected:

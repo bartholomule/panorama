@@ -19,12 +19,12 @@
 #ifndef _IMAGE_FILTER__
 #define _IMAGE_FILTER__
 
-#include "llapi/base_class.h"
+#include "llapi/procedural.h"
 #include "llapi/llapi_defs.h"
 
 struct SBuffers;
 
-class TImageFilter : public TBaseClass
+class TImageFilter : public TProcedural
 {
 
   protected:

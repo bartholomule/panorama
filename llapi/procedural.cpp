@@ -1,5 +1,5 @@
 /*
-*  Copyright (C) 1998 Angel Jimenez Jimenez and Carlos Jimenez Moreno
+*  Copyright (C) 1999 Angel Jimenez Jimenez
 *
 *  This program is free software; you can redistribute it and/or modify
 *  it under the terms of the GNU General Public License as published by
@@ -16,25 +16,21 @@
 *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef _BSDF__
-#define _BSDF__
-
 #include "llapi/procedural.h"
-#include "llapi/color.h"
-#include "llapi/llapi_defs.h"
 
-class TSurfaceData;
+string   TProcedural::_tUserErrorMessage = "";
 
-class TBsdf : public TProcedural
+void TProcedural::sendEvent (const string& rktEVENT)
 {
 
-  public:
+  cout << "Object <" << className() << "> send event <" << rktEVENT << ">" << endl;
 
-    virtual TColor evaluateReflection (const TSurfaceData& rktDATA, const TVector& rktLIGHT, TScalar tCOSNL, TColor tRAD) const = 0;
-    virtual TColor evaluateTransmission (const TSurfaceData& rktDATA, const TVector& rktLIGHT, TColor tRAD) const;
+}  /* sendEvent() */
 
-    EClass classType (void) const { return FX_BSDF_CLASS; }
-    
-};  /* class TBsdf */
 
-#endif  /* _BSDF__ */
+void TProcedural::sendEvent (const string& rktEVENT, NAttribute nAttrib)
+{
+
+  cout << "Object <" << className() << "> send event <" << rktEVENT << "> with argument" << endl;
+
+}  /* sendEvent() */

@@ -19,15 +19,7 @@
 #ifndef _BASE_CLASS__
 #define _BASE_CLASS__
 
-#include <map>
 #include <string>
-#include "llapi/debug.h"
-
-#define FX_ATTRIB_OK             0
-#define FX_ATTRIB_WRONG_PARAM   -1
-#define FX_ATTRIB_WRONG_TYPE    -2
-#define FX_ATTRIB_WRONG_VALUE   -3
-#define FX_ATTRIB_USER_ERROR     1
 
 enum EClass
 {
@@ -51,66 +43,15 @@ enum EClass
 
 };  /* enum EClass */
 
-
-enum EAttribType
-{
-
-  FX_NONE,
-
-  FX_REAL,
-  FX_BOOL,
-  FX_STRING,
-  FX_COLOR,
-  FX_VECTOR,
-  FX_VECTOR2,
-
-  FX_IMAGE,
-
-  FX_BSDF,
-  FX_CAMERA,
-  FX_LIGHT,
-  FX_MATERIAL,
-  FX_RENDERER,
-  FX_OBJECT,
-  FX_AGGREGATE,
-  FX_OBJECT_FILTER,
-  FX_IMAGE_FILTER
-
-};  /* enum EAttribType */
-
-typedef map<string, EAttribType, less<string> >   TAttributeList;
-
-union NAttribute
-{
-
-  bool     gValue;
-  double   dValue;
-  void*    pvValue;
-
-};  /* union NAttribute */
-
-
 class TBaseClass
 {
 
   public:
 
-    static string _tUserErrorMessage;
-
     static string classTypeString (EClass eCLASS);
       
     virtual ~TBaseClass (void) {}
     
-    virtual int setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
-    {
-      return FX_ATTRIB_WRONG_PARAM;
-    }
-    virtual int getAttribute (const string& rktNAME, NAttribute& rnVALUE)
-    {
-      return FX_ATTRIB_WRONG_PARAM;
-    }
-    virtual void getAttributeList (TAttributeList& rtLIST) const {}
-
     virtual void printDebug (void) const {};
 
     virtual EClass classType (void) const = 0;

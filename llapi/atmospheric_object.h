@@ -34,7 +34,7 @@ struct TAtmSampleData
 };  /* struct TAtmSampleData */
 
 
-class TAtmosphericObject : public TBaseClass
+class TAtmosphericObject : public TProcedural
 {
 
   protected:
@@ -60,7 +60,7 @@ class TAtmosphericObject : public TBaseClass
   public:
 
     TAtmosphericObject (void) :
-      TBaseClass(),
+      TProcedural(),
       wSamples (10),
       tJitter (0),
       tTransparencyThreshold (0.01),

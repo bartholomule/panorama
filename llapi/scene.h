@@ -46,7 +46,7 @@ struct SBuffers
 };  /* struct SBuffers */
 
 
-class TScene : public TBaseClass
+class TScene : public TProcedural
 {
 
   protected:
@@ -64,6 +64,7 @@ class TScene : public TBaseClass
     vector<TLight*>       tLightList;
     list<TImageFilter*>   tFilterList;
     TImageIO*             ptImageIO;
+    TProgram              tGlobalData;
 
   public:
 
@@ -81,6 +82,7 @@ class TScene : public TBaseClass
     TRenderer* renderer (void) { return ptRenderer; }
     TAtmosphere* atmosphere (void) { return &tAtmosphere; }
     TImageIO* imageIO (void) { return ptImageIO; }
+    TProgram* globalData (void) { return &tGlobalData; }
 
     int setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
     int getAttribute (const string& rktNAME, NAttribute& rnVALUE);

@@ -221,7 +221,7 @@ int TMaterial::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribTy
   }
   else
   {
-    return TBaseClass::setAttribute (rktNAME, nVALUE, eTYPE);
+    return TProcedural::setAttribute (rktNAME, nVALUE, eTYPE);
   }
 
   return FX_ATTRIB_OK;
@@ -270,7 +270,7 @@ int TMaterial::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
   }
   else
   {
-    return TBaseClass::getAttribute (rktNAME, rnVALUE);
+    return TProcedural::getAttribute (rktNAME, rnVALUE);
   }
 
   return FX_ATTRIB_OK;
@@ -281,7 +281,7 @@ int TMaterial::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 void TMaterial::getAttributeList (TAttributeList& rtLIST) const
 {
 
-  TBaseClass::getAttributeList (rtLIST);
+  TProcedural::getAttributeList (rtLIST);
 
   rtLIST ["color"]    = FX_COLOR;
   rtLIST ["opacity"]  = FX_REAL;

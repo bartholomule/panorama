@@ -45,6 +45,8 @@
 #include "llapi/object_filter.h"
 #include "llapi/perlin_noise.h"
 #include "llapi/priority_queue.h"
+#include "llapi/procedural.h"
+#include "llapi/program.h"
 #include "llapi/ray.h"
 #include "llapi/renderer.h"
 #include "llapi/root_solver.h"

@@ -18,8 +18,6 @@
 
 #include "llapi/base_class.h"
 
-string   TBaseClass::_tUserErrorMessage = "";
-
 string TBaseClass::classTypeString (EClass eCLASS)
 {
 

@@ -27,6 +27,8 @@ OBJ = atmosphere.o \
       mesh.o \
       object.o \
       perlin_noise.o \
+      procedural.o \
+      program.o \
       ray.o \
       root_solver.o \
       sc_noise.o \

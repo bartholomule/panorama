@@ -22,14 +22,14 @@
 #include "llapi/frame.h"
 #include "llapi/surface_data.h"
 #include "llapi/light.h"
-#include "llapi/base_class.h"
+#include "llapi/procedural.h"
 
 typedef void (TUserFunction) (size_t, void*);
 
 struct SBuffers;
 class TScene;
 
-class TRenderer : public TBaseClass
+class TRenderer : public TProcedural
 {
 
   protected:

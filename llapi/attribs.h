@@ -1,5 +1,5 @@
 /*
-*  Copyright (C) 1998 Angel Jimenez Jimenez and Carlos Jimenez Moreno
+*  Copyright (C) 1999 Angel Jimenez Jimenez
 *
 *  This program is free software; you can redistribute it and/or modify
 *  it under the terms of the GNU General Public License as published by
@@ -16,25 +16,42 @@
 *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef _BSDF__
-#define _BSDF__
+#ifndef _ATTRIBUTES__
+#define _ATTRIBUTES__
 
-#include "llapi/procedural.h"
-#include "llapi/color.h"
-#include "llapi/llapi_defs.h"
-
-class TSurfaceData;
-
-class TBsdf : public TProcedural
+enum EAttribType
 {
 
-  public:
+  FX_NONE,
 
-    virtual TColor evaluateReflection (const TSurfaceData& rktDATA, const TVector& rktLIGHT, TScalar tCOSNL, TColor tRAD) const = 0;
-    virtual TColor evaluateTransmission (const TSurfaceData& rktDATA, const TVector& rktLIGHT, TColor tRAD) const;
+  FX_REAL,
+  FX_BOOL,
+  FX_STRING,
+  FX_COLOR,
+  FX_VECTOR,
+  FX_VECTOR2,
 
-    EClass classType (void) const { return FX_BSDF_CLASS; }
-    
-};  /* class TBsdf */
+  FX_IMAGE,
 
-#endif  /* _BSDF__ */
+  FX_BSDF,
+  FX_CAMERA,
+  FX_LIGHT,
+  FX_MATERIAL,
+  FX_RENDERER,
+  FX_OBJECT,
+  FX_AGGREGATE,
+  FX_OBJECT_FILTER,
+  FX_IMAGE_FILTER
+
+};  /* enum EAttribType */
+
+union NAttribute
+{
+
+  bool     gValue;
+  double   dValue;
+  void*    pvValue;
+
+};  /* union NAttribute */
+
+#endif  /* _ATTRIBUTES__ */

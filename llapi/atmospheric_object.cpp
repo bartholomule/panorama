@@ -166,7 +166,7 @@ int TAtmosphericObject::setAttribute (const string& rktNAME, NAttribute nVALUE, 
   }
   else
   {
-    return TBaseClass::setAttribute (rktNAME, nVALUE, eTYPE);
+    return TProcedural::setAttribute (rktNAME, nVALUE, eTYPE);
   }
 
   return FX_ATTRIB_OK;
@@ -199,7 +199,7 @@ int TAtmosphericObject::getAttribute (const string& rktNAME, NAttribute& rnVALUE
   }
   else
   {
-    return TBaseClass::getAttribute (rktNAME, rnVALUE);
+    return TProcedural::getAttribute (rktNAME, rnVALUE);
   }
 
   return FX_ATTRIB_OK;
@@ -210,7 +210,7 @@ int TAtmosphericObject::getAttribute (const string& rktNAME, NAttribute& rnVALUE
 void TAtmosphericObject::getAttributeList (TAttributeList& rtLIST) const
 {
 
-  TBaseClass::getAttributeList (rtLIST);
+  TProcedural::getAttributeList (rtLIST);
 
   rtLIST ["samples"]       = FX_REAL;
   rtLIST ["jitter"]        = FX_REAL;

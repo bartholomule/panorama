@@ -34,7 +34,7 @@ int TImageIO::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribTyp
   }
   else
   {
-    return TBaseClass::setAttribute (rktNAME, nVALUE, eTYPE);
+    return TProcedural::setAttribute (rktNAME, nVALUE, eTYPE);
   }
 
   return FX_ATTRIB_OK;
@@ -51,7 +51,7 @@ int TImageIO::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
   }
   else
   {
-    return TBaseClass::getAttribute (rktNAME, rnVALUE);
+    return TProcedural::getAttribute (rktNAME, rnVALUE);
   }
 
   return FX_ATTRIB_OK;
@@ -62,7 +62,7 @@ int TImageIO::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 void TImageIO::getAttributeList (TAttributeList& rtLIST) const
 {
 
-  TBaseClass::getAttributeList (rtLIST);
+  TProcedural::getAttributeList (rtLIST);
 
   rtLIST ["name"] = FX_STRING;
 

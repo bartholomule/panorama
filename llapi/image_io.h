@@ -21,9 +21,9 @@
 
 #include <string>
 #include "llapi/image.h"
-#include "llapi/base_class.h"
+#include "llapi/procedural.h"
 
-class TImageIO : public TBaseClass
+class TImageIO : public TProcedural
 {
 
   protected:
