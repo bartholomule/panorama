@@ -25,20 +25,39 @@ class TCone : public TTransformObject
 {
 
   protected:
-  
-    TVector localNormal (const TVector& rktPOINT) const;
 
+    TVector   tMaxCirclePoint;      // set by user
+    TVector   tMinCirclePoint;      // set by user
+    TScalar   tMaxRadius;           // set by user
+    TScalar   tMinRadius;           // set by user
+    TScalar   tHeightToMinCircle;
+    TScalar   tHeight;
+
+    TScalar   tMaxRadiusByHeight2;
+    TScalar   tMaxRadius2;
+    TScalar   tMinRadius2;
+    
+    TVector localNormal (const TVector& rktPOINT) const;
+    bool intersectionsWithCanonicalCone (const TRay& rktRAY, TSpanList& rtLIST) const;
+    bool intersectionsWithRootCone (const TRay& rktRAY, TSpanList& rtLIST) const;
+      
   public:
 
     TCone (void) :
       TTransformObject()
     {
       sCapabilities.gInfinite = false;
+      tMinRadius              = 0;
+      tHeightToMinCircle      = 0;
     }
       
     void initialize (void);
     
     bool findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) const;
+
+    int setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
+    int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
+    void getAttributeList (TAttributeList& rtLIST) const;
 
     string className (void) const { return "Cone"; }
 

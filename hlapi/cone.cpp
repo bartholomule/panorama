@@ -21,45 +21,52 @@
 TVector TCone::localNormal (const TVector& rktPOINT) const
 {
 
-  if ( fabs (rktPOINT.y() - 1) < FX_EPSILON )
+  if ( tMinRadius == 0 )
   {
-    return TVector (0, 1, 0);
+    if ( fabs (rktPOINT.y() - 1) < FX_EPSILON )
+    {
+      return TVector (0, 1, 0);
+    }
+  
+    TVector   tVect (rktPOINT.x(), rktPOINT.y() - 1, rktPOINT.z());
+    TVector   tNormal = crossProduct (tVect, rktPOINT);
+  
+    tNormal = crossProduct (rktPOINT, tNormal);
+  
+    return tNormal;
   }
-
-  TVector   tVect (rktPOINT.x(), rktPOINT.y() - 1, rktPOINT.z());
-  TVector   tNormal = crossProduct (tVect, rktPOINT);
-
-  tNormal = crossProduct (rktPOINT, tNormal);
-
-  return tNormal;
+  else
+  {
+    if ( fabs (rktPOINT.y() - tHeight) < FX_EPSILON )
+    {
+      return TVector (0, 1, 0);
+    }
+    if ( fabs (rktPOINT.y() - tHeightToMinCircle) < FX_EPSILON )
+    {
+      return TVector (0, -1, 0);
+    }
+  
+    TVector   tVect (rktPOINT.x(), rktPOINT.y() - tHeight, rktPOINT.z());
+    TVector   tNormal = crossProduct (tVect, rktPOINT);
+  
+    tNormal = crossProduct (rktPOINT, tNormal);
+  
+    return tNormal;
+  }
 
 }  /* localNormal() */
 
 
-void TCone::initialize (void)
-{
-
-  tBoundingBox.set (TVector (-1, 0, -1), TVector (1, 1, 1));
-  tBoundingBox.applyTransform (*ptMatrix);
-
-}  /* initialize() */
-
-
-bool TCone::findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) const
+bool TCone::intersectionsWithCanonicalCone (const TRay& rktRAY, TSpanList& rtLIST) const
 {
 
   TSurfaceData   tSurfaceData;
   TScalar        a, b, c, d;
   TScalar        s1, s2;
-  TScalar        tFactor;
   TVector        tPoint;
+  TScalar        tFactor;
   TRay           tRayIT        = rktRAY;
   bool           gIntersection = false;
-
-  if ( !tBoundingBox.intersects (rktRAY) )
-  {
-    return false;
-  }
 
   tFactor = tRayIT.applyTransform (ptInverseMatrix);
 
@@ -79,7 +86,7 @@ bool TCone::findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) const
     tPoint = tRayIT.location() + (tRayIT.direction() * s1);
     if ( ( (tPoint.x() * tPoint.x() + tPoint.z() * tPoint.z()) <= 1 ) &&
          ( s1 >= FX_EPSILON )                                         &&
-         ( s1 <= tRayIT.limit() )                                      )
+         ( s1 <= tRayIT.limit() )                                          )
     {
       if ( tSurfaceData.setPoint (tFactor * s1) )
       {
@@ -141,4 +148,307 @@ bool TCone::findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) const
 
   return gIntersection;
 
+}  /* intersectionsWithCanonicalCone() */
+
+
+bool TCone::intersectionsWithRootCone (const TRay& rktRAY, TSpanList& rtLIST) const
+{
+
+  TSurfaceData   tSurfaceData;
+  TScalar        a, b, c, d;
+  TScalar        s1, s2;
+  TVector        tPoint;
+  TScalar        tFactor;
+  TRay           tRayIT            = rktRAY;
+  bool           gIntersection     = false;
+  Byte           bCapIntersections = 0;
+
+  tFactor = tRayIT.applyTransform (ptInverseMatrix);
+
+  if ( rktRAY.limit() < SCALAR_MAX )
+  {
+    tRayIT.setLimit (rktRAY.limit() / tFactor);
+  }
+
+  tSurfaceData.setup (this, rktRAY);
+  
+  if ( !( fabs (tRayIT.direction().y()) < FX_EPSILON ) )
+  {
+    //
+    // Intersection with Max circle
+    //
+    s1     = (tHeight - tRayIT.location().y()) / tRayIT.direction().y();
+    tPoint = tRayIT.location() + (tRayIT.direction() * s1);
+    if ( ( (tPoint.x() * tPoint.x() + tPoint.z() * tPoint.z()) <= tMaxRadius2 ) &&
+         ( s1 >= FX_EPSILON )                                                   &&
+         ( s1 <= tRayIT.limit() )                                                    )
+    {
+      if ( tSurfaceData.setPoint (tFactor * s1) )
+      {
+        rtLIST.add (tSurfaceData);
+        bCapIntersections++;
+        gIntersection = true;
+      }
+    }
+
+    //
+    // Intersection with Min circle
+    //
+    s1     = (tHeightToMinCircle - tRayIT.location().y()) / tRayIT.direction().y();
+    tPoint = tRayIT.location() + (tRayIT.direction() * s1);
+    if ( ( (tPoint.x() * tPoint.x() + tPoint.z() * tPoint.z()) <= tMinRadius2 ) &&
+         ( s1 >= FX_EPSILON )                                                   &&
+         ( s1 <= tRayIT.limit() )                                                    )
+    {
+      if ( tSurfaceData.setPoint (tFactor * s1) )
+      {
+        rtLIST.add (tSurfaceData);
+        bCapIntersections++;
+        gIntersection = true;
+      }
+    }
+  }
+
+  if ( bCapIntersections == 2 )
+  {
+    //
+    // Ray intersects both caps, so there are no more intersections
+    //
+    return gIntersection;
+  }
+  
+  a = tRayIT.direction().x() * tRayIT.direction().x() +
+      tRayIT.direction().z() * tRayIT.direction().z() -
+      tRayIT.direction().y() * tRayIT.direction().y() * tMaxRadiusByHeight2;
+  b = (tRayIT.location().x() * tRayIT.direction().x() +
+       tRayIT.location().z() * tRayIT.direction().z() -
+       tRayIT.location().y() * tRayIT.direction().y() * tMaxRadiusByHeight2) * 2.0;
+  c = tRayIT.location().x() * tRayIT.location().x() +
+      tRayIT.location().z() * tRayIT.location().z() -
+      tRayIT.location().y() * tRayIT.location().y() * tMaxRadiusByHeight2;
+  d = (b * b) - (4 * a * c);
+
+  if ( d <= FX_EPSILON ) 
+  {
+    //
+    // If there is no intersection or the intersection is in a single point.
+    //
+    return gIntersection;
+  }
+  else
+  {
+    d  = sqrt (d);
+    s1 = (-b + d) / (2.0 * a);
+    s2 = (-b - d) / (2.0 * a);
+
+    if ( ( s1 >= FX_EPSILON ) && ( s1 <= tRayIT.limit() ) )
+    {
+      tPoint = tRayIT.location() + (tRayIT.direction() * s1);
+      if ( ( tPoint.y() > tHeightToMinCircle ) && ( tPoint.y() < tHeight ) )
+      {
+        if ( tSurfaceData.setPoint (tFactor * s1) )
+        {
+          rtLIST.add (tSurfaceData);
+          gIntersection = true;
+        }
+      }
+    }
+    if ( ( s2 >= FX_EPSILON ) && ( s2 <= tRayIT.limit() ) )
+    {
+      tPoint = tRayIT.location() + (tRayIT.direction() * s2);
+      if ( ( tPoint.y() > tHeightToMinCircle ) && ( tPoint.y() < tHeight ) )
+      {
+        if ( tSurfaceData.setPoint (tFactor * s2) )
+        {
+          rtLIST.add (tSurfaceData);
+          gIntersection = true;
+        }
+      }
+    }
+  }
+
+  return gIntersection;
+
+}  /* intersectionsWithRootCone() */
+
+
+void TCone::initialize (void)
+{
+
+  if ( tMinRadius != 0 )
+  {
+    TVector   tTmp;
+    TVector   tAxis   = tMaxCirclePoint - tMinCirclePoint;
+    TMatrix   tMatrix = *ptMatrix;
+    
+    tHeight = tAxis.norm();
+
+    // We need that tMaxRadius > tMinRadius for the construction of the bounding box
+    // We need that tMaxRadius - tMinRadius > FX_EPSILON for the next division
+    // Joining both conditions...
+    assert ( tMaxRadius - tMinRadius > FX_EPSILON );
+    tHeightToMinCircle = tMinRadius * tHeight / (tMaxRadius - tMinRadius);
+    tHeight           += tHeightToMinCircle;
+    assert ( fabs (tHeight) > FX_EPSILON );
+    tMaxRadiusByHeight2 = tMaxRadius2 / (tHeight * tHeight);
+
+    if ( ( fabs (tAxis.x()) < FX_EPSILON ) && ( fabs (tAxis.z()) < FX_EPSILON ) )
+    {
+      if ( dotProduct (tAxis, TVector (0, 1, 0)) < 0 )
+      {
+        rotate (TVector (180, 0, 0));
+      }
+    }
+    else
+    {
+      TVector   tTmpX;
+      TVector   tTmpZ;
+      TScalar   tAxisYProyection;
+      TScalar   tAxistTmpZProyection;
+      
+      tTmpX = crossProduct (TVector (0, 1, 0), tAxis);
+      tTmpX.normalize();
+      tTmpZ = crossProduct (tTmpX, TVector (0, 1, 0));
+      tTmpZ.normalize();
+      tAxisYProyection     = dotProduct (tAxis, TVector (0, 1, 0));
+      tAxistTmpZProyection = dotProduct (tAxis, tTmpZ);
+
+      rotate (tTmpX * 1.0, tTmpX * 2.0, atan2 (tAxistTmpZProyection, tAxisYProyection) * 180 / PI);
+    }
+
+    tTmp = (*ptMatrix) * TVector (0, tHeightToMinCircle, 0);
+    translate ((tMatrix * tMinCirclePoint) - tTmp);
+
+    tBoundingBox.set (TVector (-tMaxRadius, tHeightToMinCircle, -tMaxRadius), TVector (tMaxRadius, tHeight, tMaxRadius));
+    tBoundingBox.applyTransform (*ptMatrix);
+  }
+  else
+  {
+    tBoundingBox.set (TVector (-1, 0, -1), TVector (1, 1, 1));
+    tBoundingBox.applyTransform (*ptMatrix);
+  }
+
+}  /* initialize() */
+
+
+bool TCone::findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) const
+{
+
+  if ( !tBoundingBox.intersects (rktRAY) )
+  {
+    return false;
+  }
+
+  if ( tMinRadius == 0 )
+  {
+    return intersectionsWithCanonicalCone (rktRAY, rtLIST);
+  }
+  else
+  {
+    return intersectionsWithRootCone (rktRAY, rtLIST);
+  }
+
+  return false;
+  
 }  /* findAllIntersections() */
+
+
+int TCone::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
+{
+
+  if ( rktNAME == "max_circle_point" )
+  {
+    if ( eTYPE == FX_VECTOR )
+    {
+     tMaxCirclePoint = *((TVector*) nVALUE.pvValue);
+    }
+    else
+    {
+      return FX_ATTRIB_WRONG_TYPE;
+    }
+  }
+  else if ( rktNAME == "min_circle_point" )
+  {
+    if ( eTYPE == FX_VECTOR )
+    {
+      tMinCirclePoint = *((TVector*) nVALUE.pvValue);
+    }
+    else
+    {
+      return FX_ATTRIB_WRONG_TYPE;
+    }
+  }
+  else if ( rktNAME == "max_radius" )
+  {
+    if ( eTYPE == FX_REAL )
+    {
+      tMaxRadius  = nVALUE.dValue;
+      tMaxRadius2 = tMaxRadius * tMaxRadius;
+    }
+    else
+    {
+      return FX_ATTRIB_WRONG_TYPE;
+    }
+  }
+  else if ( rktNAME == "min_radius" )
+  {
+    if ( eTYPE == FX_REAL )
+    {
+      tMinRadius  = nVALUE.dValue;
+      tMinRadius2 = tMinRadius * tMinRadius;
+    }
+    else
+    {
+      return FX_ATTRIB_WRONG_TYPE;
+    }
+  }
+  else
+  {
+    return TObject::setAttribute (rktNAME, nVALUE, eTYPE);
+  }
+
+  return FX_ATTRIB_OK;
+
+}  /* setAttribute() */
+
+
+int TCone::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
+{
+
+  if ( rktNAME == "max_circle_point" )
+  {
+    rnVALUE.pvValue = &tMaxCirclePoint;
+  }
+  else if ( rktNAME == "min_circle_point" )
+  {
+    rnVALUE.pvValue = &tMinCirclePoint;
+  }
+  else if ( rktNAME == "max_radius" )
+  {
+    rnVALUE.dValue = tMaxRadius;
+  }
+  else if ( rktNAME == "min_radius" )
+  {
+    rnVALUE.dValue = tMinRadius;
+  }
+  else
+  {
+    return TObject::getAttribute (rktNAME, rnVALUE);
+  }
+
+  return FX_ATTRIB_OK;
+
+}  /* getAttribute() */
+
+
+void TCone::getAttributeList (TAttributeList& rtLIST) const
+{
+
+  TObject::getAttributeList (rtLIST);
+
+  rtLIST ["max_circle_point"] = FX_VECTOR;
+  rtLIST ["min_circle_point"] = FX_VECTOR;
+  rtLIST ["max_radius"]       = FX_REAL;
+  rtLIST ["min_radius"]       = FX_REAL;
+
+}  /* getAttributeList() */
