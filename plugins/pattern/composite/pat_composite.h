@@ -52,8 +52,8 @@ class TPatternComposite : public TPattern
 	exit (1);
       }
       
-      tColor  = ptPattern1->pattern (rktDATA) * tPattern1Amount;
-      tColor += ptPattern2->pattern (rktDATA) * tPattern2Amount;
+      tColor  = ptPattern1->color (rktDATA) * tPattern1Amount;
+      tColor += ptPattern2->color (rktDATA) * tPattern2Amount;
 
       return tColor;
     }

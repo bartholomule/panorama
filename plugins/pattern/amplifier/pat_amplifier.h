@@ -51,7 +51,7 @@ class TPatternAmplifier : public TPattern
 	exit (1);
       }
 
-      tColor = ptPattern->pattern (rktDATA);
+      tColor = ptPattern->color (rktDATA);
 
       tColor *= tAmplification;
       tColor += tOffset;

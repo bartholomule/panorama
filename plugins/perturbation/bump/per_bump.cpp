@@ -76,18 +76,18 @@ TVector TPerturbationBump::perturbNormal (const TSurfaceData& rktDATA) const
 
     tData = rktDATA;
 
-    tColor1 = ptPattern->pattern (rktDATA);
+    tColor1 = ptPattern->color (rktDATA);
     tHeight = tColor1.average();
 
     tTemp = rktDATA.point() + tGradientU;
     tData.setPoint (tTemp);
-    tColor2 = ptPattern->pattern (tData);
+    tColor2 = ptPattern->color (tData);
 
     r *= tColor2.average() - tHeight;
 
     tTemp = rktDATA.point() + tGradientV;
     tData.setPoint (tTemp);
-    tColor2 = ptPattern->pattern (tData);
+    tColor2 = ptPattern->color (tData);
 
     t *= tColor2.average() - tHeight;
 
