@@ -39,6 +39,23 @@ cone
   }
 }
 
+cone
+{
+//  scale              <2, 1, 1.5>   // Try it
+//  translate          <0, 110, 0>   // Try it
+//  rotate             <180, 0, 0>   // Try it
+
+  max_circle_point   <40, 150, -40>
+  min_circle_point   <0, 100, 0>
+  max_radius         100
+  min_radius         50
+
+  material : extends MPlastic
+  {
+    color	CWhite
+  }
+}
+
 scene
 {
   camera	c
