@@ -57,7 +57,7 @@ bool TGradient::loadGradient (const string& rktNAME)
     iter = tConfigData.find ("GradientPath");
     while ( ( iter != tConfigData.end() ) && ( (*iter).first == "GradientPath" ) )
     {
-      string   tAux ((*iter).second + "/" + rktNAME);
+      tAux = (*iter).second + "/" + rktNAME;
       
       if ( FileExists (tAux) )
       {
