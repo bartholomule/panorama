@@ -1,54 +1,41 @@
 /*
-*  Cornell Box test
+*  Bump mapping test
 */
 
 #include "materials.inc"
 
 define camera c
 {
-  translate	<-190, 20, 400>
+  translate	<-200, 0, 400>
   look_at	<0, 0, 400>
 }
 
 define light l
 {
-  translate	<-400, 70, 400>
+  translate	<-400, 200, 400>
   color		CWhite
-}
-
-
-define pattern tex_map : class PatternTexture
-{
-  texture   "supernova.tga"
-}
-
-define pattern amped_tex : class PatternAmplifier
-{
-  source          tex_map
-  amplification   2.0
 }
 
 sphere
 {
   translate	<0, 0, 400>
   radius	60
+
   material : extends MPlastic
   {
-    color	tex_map
+    color  CRed
 
     perturb_func : class PerturbationBump
     {
-      source : class PatternNoise
+      source : class PatternTexture
       {
-        color        CBlack
-	base_color   CWhite
-        zoom         <2.2, 3.8, 2.7>
+        texture   "supernova.tga"
+        tiling    <8,8>
+        mirror    on
       }
-      grad_disp   <1.4, 1.1>
-      bump        2.3
-    }
 
-    specular 0.1
+      bump        -4
+    }
   }
 }
 
@@ -64,7 +51,5 @@ scene
     type        "png"
     name	"bump.png"
   }
-  renderer : class Raytracer {
-//    sampling    "adaptive"
-  }
+  renderer : class Raytracer {}
 }
