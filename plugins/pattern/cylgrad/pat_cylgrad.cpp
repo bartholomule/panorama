@@ -16,16 +16,11 @@
 *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-
 #include "pat_cylgrad.h"
-
-#ifndef M_PI
-  #define M_PI 3.141592653589793238467
-#endif
 
 DEFINE_PLUGIN ("PatternCylGrad", FX_PATTERN_CLASS, TPatternCylGrad);
 
-inline TScalar mod (TScalar a, TScalar b)
+TScalar mod (TScalar a, TScalar b)
 {
     int n = (int) (a/b);
 
@@ -39,7 +34,8 @@ inline TScalar mod (TScalar a, TScalar b)
     return a;
 }
 
-inline TColor TPatternCylGrad::evaluate (const TVector& rktPOINT) const
+
+TColor TPatternCylGrad::evaluate (const TVector& rktPOINT) const
 {
   TScalar  tX = rktPOINT.x();
   TScalar  tY = rktPOINT.y();
@@ -51,7 +47,7 @@ inline TColor TPatternCylGrad::evaluate (const TVector& rktPOINT) const
 
   // get angle of the point about the y-axis
   
-  tAngle = atan2 (tZ, tX) / (M_PI + M_PI);
+  tAngle = atan2 (tZ, tX) / (PI + PI);
   if( tAngle < 0.0 ) tAngle += 1.0;
 
   // swirl if required
