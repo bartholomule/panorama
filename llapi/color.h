@@ -314,6 +314,16 @@ inline bool operator == (const TColor& rktCOLOR1, const TColor& rktCOLOR2)
 }  /* operator == () */
 
 
+inline bool operator != (const TColor& rktCOLOR1, const TColor& rktCOLOR2)
+{
+
+  return ( ( rktCOLOR1.red()   != rktCOLOR2.red() )   ||
+           ( rktCOLOR1.green() != rktCOLOR2.green() ) ||
+           ( rktCOLOR1.blue()  != rktCOLOR2.blue() )  );
+
+}  /* operator != () */
+
+
 inline float MaxColorDiff (const TColor& rktCOLOR1, const TColor& rktCOLOR2)
 {
 

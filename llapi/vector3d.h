@@ -395,6 +395,17 @@ inline bool operator == (const TVector3D<TItem>& rktVECTOR1, const TVector3D<TIt
 
 
 template <class TItem>
+inline bool operator != (const TVector3D<TItem>& rktVECTOR1, const TVector3D<TItem>& rktVECTOR2)
+{
+
+  return ( (rktVECTOR1.x() != rktVECTOR2.x()) ||
+           (rktVECTOR1.y() != rktVECTOR2.y()) ||
+           (rktVECTOR1.z() != rktVECTOR2.z()) );
+
+}  /* operator |= () */
+
+
+template <class TItem>
 inline TVector3D<TItem> crossProduct (const TVector3D<TItem>& rktVECTOR1, const TVector3D<TItem>& rktVECTOR2)
 {
 
