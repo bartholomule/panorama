@@ -55,7 +55,7 @@ bool TBezierSurface::findAllIntersections (const TRay& rktRAY,
 
   for (vector<TBezierSubsurface*>::const_iterator tIter = tSurfaceList.begin(); ( tIter != tSurfaceList.end() ) ;tIter++)
   {
-    bool gFoundMoreIntersections = (*tIter)->findAllIntersections (tTransformRay, rktRAY, rtLIST);
+    bool gFoundMoreIntersections = (*tIter)->findAllIntersections (tTransformRay, tFactor, rktRAY, rtLIST);
 
     gFoundIntersection = gFoundIntersection || gFoundMoreIntersections;
   }
@@ -97,6 +97,8 @@ int TBezierSurface::setAttribute (const string& rktNAME, NAttribute nVALUE,
 
     if ( iBuildV >= 4 )
     {
+      ptCurrentSurface->calculateSubdivisionDepth();
+
       tSurfaceList.push_back (ptCurrentSurface);
       ptCurrentSurface = NULL;
     }

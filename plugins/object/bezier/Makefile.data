@@ -1,3 +1,6 @@
 PLUGIN_NAME = bezier
 OBJ         = bezier.o beziersub.o
 
+bezier.o: bezier.h beziersub.h
+beziersub.o: beziersub.h
+

@@ -20,7 +20,6 @@
 #include "beziersub.h"
 
 #define MAX_DEVIATION   1e-2
-#define MARGIN          3e-2
 
 bool TBezierSubsurface::_findTriangleIntersection (const TRay& rktRAY,
                                                    const TVector& rktVECA,
@@ -90,7 +89,7 @@ bool TBezierSubsurface::_findTriangleIntersection (const TRay& rktRAY,
   U *= tDet;
   V *= tDet;
 
-  if ( ( U < 0.0 - MARGIN )  || ( V < 0.0 - MARGIN ) || ( V + U > 1.0 + MARGIN ) )
+  if ( ( U < 0.0 )  || ( V < 0.0 ) || ( V + U > 1.0 ) )
   {
     return false;
   }
@@ -100,18 +99,102 @@ bool TBezierSubsurface::_findTriangleIntersection (const TRay& rktRAY,
 }  /* _findTriangleIntersection() */
 
 
+//
+//  Calculate the distance of a point from a line segment as a fraction
+//  of the total length of the line segment.
+//
+TScalar TBezierSubsurface::_lineDistance (const TVector& tPOINT,
+                                          const TVector& tBEGIN, 
+                                          const TVector& tEND)
+{
+  TScalar tDist, tPos, tSegLen;
+  TVector tSeg, tPt;
+
+  tSeg    = tEND - tBEGIN;
+  tSegLen = tSeg.norm();
+  tPt     = tPOINT - tBEGIN;
+
+  if(tSegLen < FX_EPSILON && tPt.norm() < FX_EPSILON)
+  {
+    return 0.0;
+  }
+
+  tPos = dotProduct(tPOINT - tBEGIN, tSeg) / (tSegLen * tSegLen);
+
+  tPos = tPos > 1.0 ? 1.0 : tPos;
+  tPos = tPos < 0.0 ? 0.0 : tPos;
+
+  tDist = (tPOINT - (tBEGIN + tPos * tSeg)).norm();
+
+  return tDist;
+
+}  /*  _lineDistance()  */
+
+
+
+//
+//  Calculate the subdivision depth required to find a good representation
+//  of this particular cubic Bezier curve.  Each subdivision level cuts
+//  the curve in half.
+//
+Byte TBezierSubsurface::_curveSubdivisionDepth (const TVector& C0,
+                                                const TVector& C1,
+                                                const TVector& C2,
+                                                const TVector& C3)
+{
+  Byte bDepth, bSecondDepth;
+  bool gCloseEnough;
+
+  gCloseEnough = true;
+
+  if ( _lineDistance (C1, C0, C3) <= MAX_DEVIATION 
+       && _lineDistance (C2, C0, C3) <= MAX_DEVIATION )
+  {
+    return 0;
+  }
+
+  bDepth = _curveSubdivisionDepth (C0, 
+                                   0.5 * C0 + 0.5 * C1,
+                                   0.25 * C0 + 2.0 * 0.25 * C1 + 0.25 * C2,
+                                   0.125 * C0 + 3.0 * 0.125 * C1 
+                                   + 3.0 * 0.125 * C2 + 0.125 * C3);
+
+  bSecondDepth = _curveSubdivisionDepth (0.125 * C0 + 3.0 * 0.125 * C1
+                                         + 3.0 * 0.125 * C2 + 0.125 * C3,
+                                         0.25 * C1 + 2.0 * 0.25 * C2
+                                         + 0.25 * C3,
+                                         0.5 * C2 + 0.5 * C3,
+                                         C3);
+  if ( bSecondDepth > bDepth )
+  {
+    bDepth = bSecondDepth;
+  }
+
+  if ( bDepth == 255 )
+  {
+    return bDepth;
+  }
+  return bDepth + 1;
+
+}  /* _curveSubdivisionDepth() */
+
 TBezierSubsurface::TBezierSubsurface (TBezierSurface* ptOBJECT)
 {
 
   ptObject = ptOBJECT;
 
-  gBoundingBoxCurrent = false;
-  gFlatEnough         = false;
-  gSubdivided         = false;
+  gBoundingBoxCurrent    = false;
+  gSubdivided            = false;
+  bPatchSubdivisionDepth = 0;
+  ptAncestor             = this;
+  tParametricPos         = TVector2(0.0, 0.0);
+  tParametricVecU        = TVector2(1.0, 0.0);
+  tParametricVecV        = TVector2(0.0, 1.0);
 
   for (Byte N = 0; ( N < 4 ) ;N++)
   {
-    aptChildren[N] = NULL;
+    aptChildren[N]           = NULL;
+    bEdgeSubdivisionDepth[N] = 0;
   }
 
   for (Byte N = 0; ( N < 4 ) ;N++)
@@ -160,7 +243,6 @@ void TBezierSubsurface::setPoint (Byte S, Byte T, const TVector& rktVECT)
   //  things we may have precomputed about this patch.
   //
   gBoundingBoxCurrent = false;
-  gFlatEnough         = false;
 
   if ( gSubdivided )
   {
@@ -186,15 +268,32 @@ void TBezierSubsurface::subpatch (TVector& C0, TVector& C1,
                                   TVector& C8, TVector& C9,
                                   TVector& C10, TVector& C11,
                                   TVector& C12, TVector& C13,
-                                  TVector& C14, TVector& C15)
+                                  TVector& C14, TVector& C15,
+                                  bool gSubdivideTop, bool gSubdivideLeft)
 {
   atControlPoints[0][0] = C0;
-  atControlPoints[1][0] = 0.5 * C0 + 0.5 * C1;
-  atControlPoints[2][0] = 0.25 * C0 + 2.0 * 0.25 * C1 + 0.25 * C2;
-  atControlPoints[3][0] = 0.125 * C0 + 3.0 * 0.125 * C1 + 
-                          3.0 * 0.125 * C2 + 0.125 * C3;
+  if ( gSubdivideTop )
+  {
+    atControlPoints[1][0] = 0.5 * C0 + 0.5 * C1;
+    atControlPoints[2][0] = 0.25 * C0 + 2.0 * 0.25 * C1 + 0.25 * C2;
+    atControlPoints[3][0] = 0.125 * C0 + 3.0 * 0.125 * C1 + 
+                            3.0 * 0.125 * C2 + 0.125 * C3;
+  }
+  else
+  {
+    atControlPoints[1][0] = 5.0 / 6.0 * C0 + 1.0 / 6.0 * C3;
+    atControlPoints[2][0] = 4.0 / 6.0 * C0 + 2.0 / 6.0 * C3;
+    atControlPoints[3][0] = 1.0 / 2.0 * C0 + 1.0 / 2.0 * C3;
+  }
 
-  atControlPoints[0][1] = 0.5 * C0 + 0.5 * C4;
+  if ( gSubdivideLeft )
+  {
+    atControlPoints[0][1] = 0.5 * C0 + 0.5 * C4;
+  }
+  else
+  {
+    atControlPoints[0][1] = 5.0 / 6.0 * C0 + 1.0 / 6.0 * C12;
+  }
   atControlPoints[1][1] = 0.5 * (0.5 * C0 + 0.5 * C1) +
                           0.5 * (0.5 * C4 + 0.5 * C5);
   atControlPoints[2][1] = 0.5 * (0.25 * C0 + 2.0 * 0.25 * C1 + 0.25 * C2) +
@@ -204,7 +303,14 @@ void TBezierSubsurface::subpatch (TVector& C0, TVector& C1,
                           0.5 * (0.125 * C4 + 3.0 * 0.125 * C5 + 
                                  3.0 * 0.125 * C6 + 0.125 * C7);
 
-  atControlPoints[0][2] = 0.25 * C0 + 2.0 * 0.25 * C4 + 0.25 * C8;
+  if ( gSubdivideLeft )
+  {
+    atControlPoints[0][2] = 0.25 * C0 + 2.0 * 0.25 * C4 + 0.25 * C8;
+  }
+  else
+  {
+    atControlPoints[0][2] = 4.0 / 6.0 * C0 + 2.0 / 6.0 * C12;
+  }
   atControlPoints[1][2] = 0.25 * (0.5 * C0 + 0.5 * C1) +
                           2.0 * 0.25 * (0.5 * C4 + 0.5 * C5) +
                           0.25 * (0.5 * C8 + 0.5 * C9);
@@ -218,8 +324,15 @@ void TBezierSubsurface::subpatch (TVector& C0, TVector& C1,
                           0.25 * (0.125 * C8 + 3.0 * 0.125 * C9 + 
                                   3.0 * 0.125 * C10 + 0.125 * C11);
 
-  atControlPoints[0][3] = 0.125 * C0 + 3.0 * 0.125 * C4 + 
-                          3.0 * 0.125 * C8 + 0.125 * C12;
+  if ( gSubdivideLeft )
+  {
+    atControlPoints[0][3] = 0.125 * C0 + 3.0 * 0.125 * C4 + 
+                            3.0 * 0.125 * C8 + 0.125 * C12;
+  }
+  else
+  {
+    atControlPoints[0][3] = 1.0 / 2.0 * C0 + 1.0 / 2.0 * C12;
+  }
   atControlPoints[1][3] = 0.125 * (0.5 * C0 + 0.5 * C1) +
                           3.0 * 0.125 * (0.5 * C4 + 0.5 * C5) +
                           3.0 * 0.125 * (0.5 * C8 + 0.5 * C9) +
@@ -290,80 +403,10 @@ void TBezierSubsurface::findBoundingBox (void)
     }
   }
 
-  TVector   tMargin = (tMax - tMin) * MARGIN;
-
-  tBoundingBox.set (tMin - tMargin, tMax + tMargin);
+  tBoundingBox.set (tMin, tMax);
   gBoundingBoxCurrent = true;
 
 }  /* findBoundingBox() */
-
-
-//
-//  This is called when we want to determine whether we are flat
-//  enough to approximate our surface with a plane.  The test finds a
-//  plane with three of the corner control points, and then tests all
-//  of the control points for their deviation from that plane.
-//
-void TBezierSubsurface::testFlatness (void)
-{
-
-  TVector   tPlaneNormal;
-  TScalar   tPlaneConst; 
-  TVector   tTangent1, tTangent2;
-
-  for (Byte N = 0; ( N < 4 ) ;N++)
-  {
-    for (Byte M = 0; ( M < 4 ) ;M++)
-    {
-      tTangent1 = atControlPoints[N][M] - atControlPoints[0][0];
-
-      //  Break out of the loop as soon as we have found a tangent
-      //  with some length.
-      if ( dotProduct (tTangent1, tTangent1) > (MAX_DEVIATION * MAX_DEVIATION) )
-      {
-	break;
-      }
-    }
-  }
-
-  for (Byte N = 0; ( N < 4 ) ;N++)
-  {
-    for (Byte M = 0; ( M < 4 ) ;M++)
-    {
-      tTangent2    = atControlPoints[N][M] - atControlPoints[0][0];
-      tPlaneNormal = crossProduct (tTangent1, tTangent2);
-
-      //  Break out of the loop as soon as we have found another
-      //  tangent with some length, and one that isn't parallel 
-      //  to the original tangent.
-      if ( dotProduct (tPlaneNormal, tPlaneNormal) > (MAX_DEVIATION * MAX_DEVIATION) )
-      {
-	break;
-      }
-    }
-  }
-
-  tPlaneNormal.normalize();
-  tPlaneConst = dotProduct (tPlaneNormal, atControlPoints[0][0]);  
-
-  gFlatEnough = true;
-
-  for (Byte N = 0; ( N < 4 ) ;N++)
-  {
-    for (Byte M = 0; ( M < 4 ) ;M++)
-    {
-      TScalar   tControlPointDist;
-
-      tControlPointDist = dotProduct (tPlaneNormal, atControlPoints[N][M]) - tPlaneConst;
-
-      if ( fabs (tControlPointDist) > MAX_DEVIATION )
-      {
-        gFlatEnough = false;
-      }
-    }
-  }
-
-}  /* testFlatness() */
 
 
 //
@@ -374,14 +417,7 @@ void TBezierSubsurface::testFlatness (void)
 void TBezierSubsurface::subdivide (void)
 {
 
-  if ( gSubdivided || gFlatEnough )
-  {
-    return;
-  }
-
-  testFlatness();
-
-  if ( gFlatEnough )
+  if ( gSubdivided || bPatchSubdivisionDepth == 0 )
   {
     return;
   }
@@ -405,7 +441,29 @@ void TBezierSubsurface::subdivide (void)
                             atControlPoints[2][2], atControlPoints[3][2],
  
                             atControlPoints[0][3], atControlPoints[1][3],
-                            atControlPoints[2][3], atControlPoints[3][3]);
+                            atControlPoints[2][3], atControlPoints[3][3],
+
+                            bEdgeSubdivisionDepth[0], bEdgeSubdivisionDepth[3]);
+
+  if ( bPatchSubdivisionDepth ) 
+  {
+    aptChildren[0]->bPatchSubdivisionDepth = bPatchSubdivisionDepth - 1;
+  }
+  if ( bEdgeSubdivisionDepth[0] )
+  {
+    aptChildren[0]->bEdgeSubdivisionDepth[0] = bEdgeSubdivisionDepth[0] - 1;
+  }
+  if ( bEdgeSubdivisionDepth[3] )
+  {
+    aptChildren[0]->bEdgeSubdivisionDepth[3] = bEdgeSubdivisionDepth[3] - 1;
+  }
+  aptChildren[0]->bEdgeSubdivisionDepth[1] = aptChildren[0]->bPatchSubdivisionDepth;
+  aptChildren[0]->bEdgeSubdivisionDepth[2] = aptChildren[0]->bPatchSubdivisionDepth;
+
+  aptChildren[0]->ptAncestor      = ptAncestor;
+  aptChildren[0]->tParametricPos  = tParametricPos;
+  aptChildren[0]->tParametricVecU = 0.5 * tParametricVecU;
+  aptChildren[0]->tParametricVecV = 0.5 * tParametricVecV;
 
   aptChildren[1]->subpatch (atControlPoints[3][0], atControlPoints[3][1], 
                             atControlPoints[3][2], atControlPoints[3][3],
@@ -417,19 +475,57 @@ void TBezierSubsurface::subdivide (void)
                             atControlPoints[1][2], atControlPoints[1][3],
  
                             atControlPoints[0][0], atControlPoints[0][1],
-                            atControlPoints[0][2], atControlPoints[0][3]);
+                            atControlPoints[0][2], atControlPoints[0][3],
+
+                            bEdgeSubdivisionDepth[1], bEdgeSubdivisionDepth[0]);
+
+  aptChildren[1]->bPatchSubdivisionDepth = aptChildren[0]->bPatchSubdivisionDepth;
+  if ( bEdgeSubdivisionDepth[1] )
+  {
+    aptChildren[1]->bEdgeSubdivisionDepth[0] = bEdgeSubdivisionDepth[1] - 1;
+  }
+  if ( bEdgeSubdivisionDepth[0] )
+  {
+    aptChildren[1]->bEdgeSubdivisionDepth[3] = bEdgeSubdivisionDepth[0] - 1;
+  }
+  aptChildren[1]->bEdgeSubdivisionDepth[1] = aptChildren[0]->bPatchSubdivisionDepth;
+  aptChildren[1]->bEdgeSubdivisionDepth[2] = aptChildren[0]->bPatchSubdivisionDepth;
+
+  aptChildren[1]->ptAncestor      = ptAncestor;
+  aptChildren[1]->tParametricPos  = tParametricPos + tParametricVecU;
+  aptChildren[1]->tParametricVecU =  0.5 * tParametricVecV;
+  aptChildren[1]->tParametricVecV = -0.5 * tParametricVecU;
 
   aptChildren[2]->subpatch (atControlPoints[3][3], atControlPoints[2][3], 
                             atControlPoints[1][3], atControlPoints[0][3],
  
                             atControlPoints[3][2], atControlPoints[2][2],
                             atControlPoints[1][2], atControlPoints[0][2],
- 
+
                             atControlPoints[3][1], atControlPoints[2][1],
                             atControlPoints[1][1], atControlPoints[0][1],
  
                             atControlPoints[3][0], atControlPoints[2][0],
-                            atControlPoints[1][0], atControlPoints[0][0]);
+                            atControlPoints[1][0], atControlPoints[0][0],
+
+                            bEdgeSubdivisionDepth[2], bEdgeSubdivisionDepth[1]);
+
+  aptChildren[2]->bPatchSubdivisionDepth = aptChildren[0]->bPatchSubdivisionDepth;
+  if ( bEdgeSubdivisionDepth[2] )
+  {
+    aptChildren[2]->bEdgeSubdivisionDepth[0] = bEdgeSubdivisionDepth[2] - 1;
+  }
+  if ( bEdgeSubdivisionDepth[1] )
+  {
+    aptChildren[2]->bEdgeSubdivisionDepth[3] = bEdgeSubdivisionDepth[1] - 1;
+  }
+  aptChildren[2]->bEdgeSubdivisionDepth[1] = aptChildren[0]->bPatchSubdivisionDepth;
+  aptChildren[2]->bEdgeSubdivisionDepth[2] = aptChildren[0]->bPatchSubdivisionDepth;
+
+  aptChildren[2]->ptAncestor      = ptAncestor;
+  aptChildren[2]->tParametricPos  = tParametricPos + tParametricVecU + tParametricVecV;
+  aptChildren[2]->tParametricVecU = -0.5 * tParametricVecU;
+  aptChildren[2]->tParametricVecV = -0.5 * tParametricVecV;
 
   aptChildren[3]->subpatch (atControlPoints[0][3], atControlPoints[0][2], 
                             atControlPoints[0][1], atControlPoints[0][0],
@@ -441,7 +537,26 @@ void TBezierSubsurface::subdivide (void)
                             atControlPoints[2][1], atControlPoints[2][0],
  
                             atControlPoints[3][3], atControlPoints[3][2],
-                            atControlPoints[3][1], atControlPoints[3][0]);
+                            atControlPoints[3][1], atControlPoints[3][0],
+
+                            bEdgeSubdivisionDepth[3], bEdgeSubdivisionDepth[2]);
+
+  aptChildren[3]->bPatchSubdivisionDepth = aptChildren[0]->bPatchSubdivisionDepth;
+  if ( bEdgeSubdivisionDepth[3] )
+  {
+    aptChildren[3]->bEdgeSubdivisionDepth[0] = bEdgeSubdivisionDepth[3] - 1;
+  }
+  if ( bEdgeSubdivisionDepth[2] )
+  {
+    aptChildren[3]->bEdgeSubdivisionDepth[3] = bEdgeSubdivisionDepth[2] - 1;
+  }
+  aptChildren[3]->bEdgeSubdivisionDepth[1] = aptChildren[0]->bPatchSubdivisionDepth;
+  aptChildren[3]->bEdgeSubdivisionDepth[2] = aptChildren[0]->bPatchSubdivisionDepth;
+
+  aptChildren[3]->ptAncestor      = ptAncestor;
+  aptChildren[3]->tParametricPos  = tParametricPos + tParametricVecV;
+  aptChildren[3]->tParametricVecU = -0.5 * tParametricVecV;
+  aptChildren[3]->tParametricVecV =  0.5 * tParametricVecU;
   
   gSubdivided = true;
 
@@ -566,6 +681,7 @@ TVector TBezierSubsurface::getTangentT (const TVector2 &rktPOS)
 //  matrix.
 //
 bool TBezierSubsurface::findFlatIntersection (const TRay& rktRAY, 
+                                              const TScalar& rktSCALE,
                                               const TRay& rktORIG_RAY,
                                               TSpanList& rtLIST,
                                               const TVector& rktVECA, 
@@ -579,7 +695,7 @@ bool TBezierSubsurface::findFlatIntersection (const TRay& rktRAY,
   TScalar        T, U, V;
   TSurfaceData   tDATA;
   TVector        tTangentU, tTangentV, tNormal;
-  TVector2       tIntersectionPos;
+  TVector2       tIntersectionPos, tAncestorPos;
 
   if ( !_findTriangleIntersection (rktRAY, rktVECA, rktVECB, rktVECC,
                                    T, U, V) )
@@ -594,12 +710,14 @@ bool TBezierSubsurface::findFlatIntersection (const TRay& rktRAY,
 
   tIntersectionPos = rktPOSA + U * (rktPOSB - rktPOSA) + 
                                V * (rktPOSC - rktPOSA);
+  tAncestorPos = tParametricPos + tIntersectionPos.x() * tParametricVecU
+                                + tIntersectionPos.y() * tParametricVecV;
 
   tDATA.setup (ptObject, rktORIG_RAY);
-  tDATA.setPoint (T);
+  tDATA.setPoint (T * rktSCALE);
 
-  tTangentU = getTangentS (tIntersectionPos);
-  tTangentV = getTangentT (tIntersectionPos);
+  tTangentU = ptAncestor->getTangentS (tAncestorPos);
+  tTangentV = ptAncestor->getTangentT (tAncestorPos);
 
   tTangentU.applyTransform (ptObject->ptInverseMatrix);
   tTangentV.applyTransform (ptObject->ptInverseMatrix);
@@ -630,41 +748,30 @@ bool TBezierSubsurface::findFlatIntersection (const TRay& rktRAY,
 //  triangles defined by the control points.
 //
 bool TBezierSubsurface::findFlatIntersection (const TRay& rktRAY,
+                                              const TScalar& rktSCALE,
                                               const TRay& rktORIG_RAY,
 					      TSpanList& rtLIST)
 {
-
-  for (Byte N = 0; ( N < 3 ) ;N++)
+  if ( findFlatIntersection (rktRAY, rktSCALE, rktORIG_RAY, rtLIST, 
+			     atControlPoints[0][0],
+			     TVector2 (0.0, 0.0),
+			     atControlPoints[3][0],
+			     TVector2 (1.0, 0.0),
+			     atControlPoints[0][3],
+			     TVector2 (0.0, 1.0)) )
   {
-    for (Byte M = 0; ( M < 3 ) ;M++)
-    {
-      if ( findFlatIntersection (rktRAY, rktORIG_RAY, rtLIST, 
-				 atControlPoints[N][M],
-				 TVector2 (N / 3.0, M / 3.0),
-				 atControlPoints[N + 1][M],
-				 TVector2 ((N + 1) / 3.0, 
-					   M / 3.0),
-				 atControlPoints[N][M + 1],
-				 TVector2 (N / 3.0, 
-					   (M + 1) / 3.0)) )
-      {
-        return true;
-      }
-
-      if ( findFlatIntersection (rktRAY, rktORIG_RAY, rtLIST, 
-				 atControlPoints[N][M + 1],
-				 TVector2 (N / 3.0, 
-					   (M + 1) / 3.0),
-				 atControlPoints[N + 1][M],
-				 TVector2 ((N + 1) / 3.0, 
-					   M / 3.0),
-				 atControlPoints[N + 1][M + 1],
-				 TVector2 ((N + 1) / 3.0, 
-					   (M + 1) / 3.0)) )
-      {
-        return true;
-      }
-    }
+    return true;
+  }
+    
+  if ( findFlatIntersection (rktRAY, rktSCALE, rktORIG_RAY, rtLIST, 
+			     atControlPoints[0][3],
+			     TVector2 (0.0, 1.0),
+			     atControlPoints[3][0],
+			     TVector2 (1.0, 0.0),
+			     atControlPoints[3][3],
+			     TVector2 (1.0, 1.0)) )
+  {
+    return true;
   }
 
   return false;
@@ -673,10 +780,68 @@ bool TBezierSubsurface::findFlatIntersection (const TRay& rktRAY,
 
 
 //
+//  Calculate the maximum subdivion depth for each of the edges of
+//  this patch, and for the surface as a whole.
+// 
+void TBezierSubsurface::calculateSubdivisionDepth (void)
+{
+  Byte N, bDepth;
+
+  bPatchSubdivisionDepth = 0;
+
+  for (N = 0; ( N < 4 ) ;N++)
+  {
+    bDepth = _curveSubdivisionDepth (atControlPoints[0][N], 
+                                     atControlPoints[1][N],
+                                     atControlPoints[2][N],
+                                     atControlPoints[3][N]);
+    if ( bDepth > bPatchSubdivisionDepth )
+    {
+      bPatchSubdivisionDepth = bDepth;
+    }
+    
+    if ( N == 0 )
+    {
+      bEdgeSubdivisionDepth[0] = bDepth;
+    }
+    
+    if ( N == 3 )
+    {
+      bEdgeSubdivisionDepth[2] = bDepth;
+    }
+  }
+
+  for (N = 0; ( N < 4 ) ;N++)
+  {
+    bDepth = _curveSubdivisionDepth (atControlPoints[N][0], 
+                                     atControlPoints[N][1],
+                                     atControlPoints[N][2],
+                                     atControlPoints[N][3]);
+    if ( bDepth > bPatchSubdivisionDepth )
+    {
+      bPatchSubdivisionDepth = bDepth;
+    }
+    
+    if ( N == 0 )
+    {
+      bEdgeSubdivisionDepth[3] = bDepth;
+    }
+    
+    if ( N == 3 )
+    {
+      bEdgeSubdivisionDepth[1] = bDepth;
+    }
+  }
+
+}  /* calculateSubdivionDepth() */
+
+
+//
 //  Called when we need an intersection with this subsurface.  
 //  It may trigger subdivision.
 //
 bool TBezierSubsurface::findAllIntersections (const TRay& rktRAY, 
+                                              const TScalar& rktSCALE,
                                               const TRay& rktORIG_RAY,
                                               TSpanList& rtLIST)
 {
@@ -695,16 +860,16 @@ bool TBezierSubsurface::findAllIntersections (const TRay& rktRAY,
 
     for (Byte N = 0; ( N < 4 ) ;N++)
     {
-      bool   gFoundMoreIntersections = aptChildren[N]->findAllIntersections (rktRAY, rktORIG_RAY, rtLIST);
+      bool   gFoundMoreIntersections = aptChildren[N]->findAllIntersections (rktRAY, rktSCALE, rktORIG_RAY, rtLIST);
 
       gFoundAnyIntersections = gFoundAnyIntersections || gFoundMoreIntersections;
     }
 
     return gFoundAnyIntersections;
   } 
-  else if ( gFlatEnough )
+  else if ( bPatchSubdivisionDepth == 0 )
   {
-    if ( findFlatIntersection (rktRAY, rktORIG_RAY, rtLIST) )
+    if ( findFlatIntersection (rktRAY, rktSCALE, rktORIG_RAY, rtLIST) )
     {
       return true;
     }
