@@ -193,8 +193,8 @@ static const short yyrline[] = { 0,
    531,   538,   545,   558,   566,   572,   585,   591,   597,   604,
    611,   616,   621,   626,   631,   636,   639,   663,   690,   721,
    741,   758,   767,   782,   803,   811,   820,   825,   829,   836,
-   841,   889,   894,   898,   904,   936,   969,  1004,  1008,  1015,
-  1020,  1025,  1030,  1035,  1040,  1045,  1050,  1055,  1060
+   841,   889,   894,   898,   904,   936,   977,  1012,  1016,  1023,
+  1028,  1033,  1038,  1043,  1048,  1053,  1058,  1063,  1068
 };
 #endif
 
@@ -1686,7 +1686,15 @@ case 66:
 			    magic_pointer<TObject> obj = check_get_object(yyvsp[0].ptAttribute);
 			    if( !!obj )
 			    {
-			      SCENE->addLight (rcp_static_cast<TLight>(obj)->clone_new());
+			      if( !WORLD->containsObject( obj ) )
+			      {
+				WORLD->add ( obj );
+			      }
+			      // The following does not work anymore, as lights
+			      // added in this manor do not go through the
+			      // re-translation process.  Check to see if it
+			      // breaks anything!
+			      // SCENE->addLight (rcp_static_cast<TLight>(obj)->clone_new());
 			    }
 			    else
 			    {
@@ -1696,7 +1704,7 @@ case 66:
 			;
     break;}
 case 67:
-#line 970 "parser.y"
+#line 978 "parser.y"
 {
 			  report_reduction("scene_param <-- OUTPUT = instance");
 			  FIXME("Image output");
@@ -1731,82 +1739,82 @@ case 67:
 			;
     break;}
 case 68:
-#line 1005 "parser.y"
+#line 1013 "parser.y"
 {
 			  report_reduction("potential_name <-- name");
 			;
     break;}
 case 69:
-#line 1009 "parser.y"
+#line 1017 "parser.y"
 {
 			  report_reduction("potential_name <-- reserved_words");
 			;
     break;}
 case 70:
-#line 1016 "parser.y"
+#line 1024 "parser.y"
 {
 			    report_reduction("reserved_words <-- BLUE");
 			    yyval.sIdent = yyvsp[0].sIdent;
 			  ;
     break;}
 case 71:
-#line 1021 "parser.y"
+#line 1029 "parser.y"
 {
 			    report_reduction("reserved_words <-- CLASS");
 			    yyval.sIdent = yyvsp[0].sIdent;
 			  ;
     break;}
 case 72:
-#line 1026 "parser.y"
+#line 1034 "parser.y"
 {
 			    report_reduction("reserved_words <-- DEFINE");
 			    yyval.sIdent = yyvsp[0].sIdent;
 			  ;
     break;}
 case 73:
-#line 1031 "parser.y"
+#line 1039 "parser.y"
 {
 			    report_reduction("reserved_words <-- DIFFERENCE");
 			    yyval.sIdent = yyvsp[0].sIdent;
 			  ;
     break;}
 case 74:
-#line 1036 "parser.y"
+#line 1044 "parser.y"
 {
 			    report_reduction("reserved_words <-- EXTENDS");
 			    yyval.sIdent = yyvsp[0].sIdent;
 			  ;
     break;}
 case 75:
-#line 1041 "parser.y"
+#line 1049 "parser.y"
 {
 			    report_reduction("reserved_words <-- GREEN");
 			    yyval.sIdent = yyvsp[0].sIdent;
 			  ;
     break;}
 case 76:
-#line 1046 "parser.y"
+#line 1054 "parser.y"
 {
 			    report_reduction("reserved_words <-- INTERSECTION");
 			    yyval.sIdent = yyvsp[0].sIdent;
 			  ;
     break;}
 case 77:
-#line 1051 "parser.y"
+#line 1059 "parser.y"
 {
 			    report_reduction("reserved_words <-- RED");
 			    yyval.sIdent = yyvsp[0].sIdent;
 			  ;
     break;}
 case 78:
-#line 1056 "parser.y"
+#line 1064 "parser.y"
 {
 			    report_reduction("reserved_words <-- RENDERER");
 			    yyval.sIdent = yyvsp[0].sIdent;
 			  ;
     break;}
 case 79:
-#line 1061 "parser.y"
+#line 1069 "parser.y"
 {
 			    report_reduction("reserved_words <-- UNION");
 			    yyval.sIdent = yyvsp[0].sIdent;
@@ -2034,7 +2042,7 @@ yyerrhandle:
     }
   return 1;
 }
-#line 1067 "parser.y"
+#line 1075 "parser.y"
 
 
 void rt_error (const char* pkcTEXT)

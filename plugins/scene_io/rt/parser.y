@@ -958,7 +958,15 @@ scene_param		: T_LIGHT '=' instance
 			    magic_pointer<TObject> obj = check_get_object($3);
 			    if( !!obj )
 			    {
-			      SCENE->addLight (rcp_static_cast<TLight>(obj)->clone_new());
+			      if( !WORLD->containsObject( obj ) )
+			      {
+				WORLD->add ( obj );
+			      }
+			      // The following does not work anymore, as lights
+			      // added in this manor do not go through the
+			      // re-translation process.  Check to see if it
+			      // breaks anything!
+			      // SCENE->addLight (rcp_static_cast<TLight>(obj)->clone_new());
 			    }
 			    else
 			    {
