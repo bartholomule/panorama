@@ -1,0 +1,13 @@
+/* print("Recursing, depth_left="+max_depth); */
+
+define max_depth max_depth - 1;
+
+if( max_depth > 0 )
+{
+  #include "recurse_body.rt"
+}
+define total total + max_depth;
+
+define max_depth max_depth + 1; 
+
+/* print("Returning, depth_left="+max_depth); */

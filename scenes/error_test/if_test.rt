@@ -1,0 +1,27 @@
+print(envnull("ICK"));
+
+if ( envnull("ICK") != "" )
+{
+  define ick "DEFINED";
+}
+else
+{
+  define ick "UNDEFINED";
+}
+
+print(ick);
+
+/*
+if( 0 < 1 )
+{
+  define result "It Worked!";
+}
+else
+{
+  define result "It Failed!";
+}
+
+print(result);
+*/
+
+halt();
