@@ -10,6 +10,7 @@ FILES = cornell_box.rt \
 	lens_flare.rt \
 	plastic_cornell_box.rt \
         projector_cartoon.rt \
+        train.rt \
         xmas-tree.rt
 
 all:
