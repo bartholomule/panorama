@@ -1,0 +1,82 @@
+/*
+*  Bezier test
+*/
+
+#include "materials.inc"
+
+define camera c
+{
+  translate	<0, 200, 500>
+  look_at	<0, 100, 0>
+}
+
+define light l
+{
+  translate	<-500, 300, 500>
+  color		CWhite
+}
+
+define light l2
+{
+  translate	<0, 1000, 0>
+  color		CWhite
+}
+
+/*
+plane
+{
+  translate	<0, 0, 0>
+  normal	<0, 1, 0>
+  material : extends MChecker
+  {
+    color : class PatternChecker
+    {
+      color	CBlue
+      base_color  CYellow
+      size        50
+    }
+    specular    0
+  }
+}
+*/
+
+object: class BezierSurface
+{
+  control <-150,   0,-150>
+  control < -75,   0,-150>
+  control <  75,   0,-150>
+  control < 150,   0,-150>
+  control <-150,   0,- 75>
+  control < -75, 100,- 75>
+  control <  75, 100,- 75>
+  control < 150,   0,- 75>
+  control <-150,   0,  75>
+  control <- 75, 100,  75>
+  control <  75, 100,  75>
+  control < 150,   0,  75>
+  control <-150,   0, 150>
+  control <- 75,   0, 150>
+  control <  75,   0, 150>
+  control < 150,   0, 150>
+  material : extends MPlastic
+  {
+    color	CRed
+  }
+}
+
+object : extends l { }
+object : extends l2 { }
+
+scene
+{
+  camera	c
+  width		400
+  height	400
+  background	CSummerSky
+  output
+  {
+    type        "png"
+    name	"bezier.png"
+  }
+  renderer : class Raytracer {}
+}
