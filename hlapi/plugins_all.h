@@ -17,12 +17,17 @@
 */
 
 #include "plugins/atm_object/atm_const/atm_const.h"
+#include "plugins/bsdf/cook_torrance/bsdf_cook_torrance.h"
 #include "plugins/bsdf/lambertian/bsdf_lambertian.h"
 #include "plugins/bsdf/phong/bsdf_phong.h"
+#include "plugins/bsdf/schlick/bsdf_schlick.h"
+#include "plugins/bsdf/schlick_double/bsdf_schlick_double.h"
+#include "plugins/bsdf/ward/bsdf_ward.h"
 #include "plugins/camera/pinhole/pinhole.h"
 #include "plugins/image_filter/cartoon/if_cartoon.h"
 #include "plugins/image_filter/convert_to_grey/if_convert_to_grey.h"
 #include "plugins/image_filter/fog/if_fog.h"
+#include "plugins/image_filter/lens_flare/if_lens_flare.h"
 #include "plugins/image_filter/text/if_text.h"
 #include "plugins/light/point_light/point_light.h"
 #include "plugins/light/projector/projector.h"
