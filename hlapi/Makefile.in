@@ -10,7 +10,8 @@ VPATH = @srcdir@
 
 LIBNAME = libhlapi.so.0
 
-OBJ = box.o \
+OBJ = aggregate.o \
+      box.o \
       circle.o \
       cone.o \
       class_manager.o \

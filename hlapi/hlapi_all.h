@@ -16,6 +16,7 @@
 *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "hlapi/aggregate.h"
 #include "hlapi/box.h"
 #include "hlapi/circle.h"
 #include "hlapi/class_manager.h"
