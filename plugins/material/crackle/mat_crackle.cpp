@@ -29,6 +29,7 @@ DEFINE_PLUGIN ("MaterialCrackle", FX_MATERIAL_CLASS, TMaterialCrackle);
 
 TVoronoi::TVoronoi()
 {
+  lRandomSeed = 12345L;
   lLastHashValue = 0x80000000;
 
   // build hash table for use by Hash3d
@@ -42,7 +43,7 @@ TVoronoi::TVoronoi()
 
   for (int i = 0; i <= HASHMASK; i++)
   {
-    int iTemp, iIndex = rand() & HASHMASK;
+    int iTemp, iIndex = Random() & HASHMASK;
     iTemp = aiHashTable[iIndex];
     aiHashTable[iIndex] = aiHashTable[i];
     aiHashTable[i] = iTemp;
@@ -71,6 +72,34 @@ inline long TVoronoi::Random1()
 }
 */
 
+long TVoronoi::Random() const
+{
+  #ifdef USE_NEWRAND
+  lRandomSeed = lRandomSeed * 17231723L + 2001L;
+  return((lRandomSeed >> 16) & 0x7fff);
+  #else
+  return rand();
+  #endif
+}
+
+double TVoronoi::Drandom() const
+{
+  #ifdef USE_NEWRAND
+  return (double)Random() / 0x7fff;
+  #else
+  return (double)Random() / RAND_MAX;
+  #endif
+}
+
+inline void TVoronoi::SeedRandom(long lSeed) const
+{
+  #ifdef USE_NEWRAND
+  lRandomSeed = lSeed;
+  #else
+  srand(lSeed);
+  #endif
+}
+
 inline int TVoronoi::Hash3d(int iX, int iY, int iZ) const
 {
   return aiHashTable[aiHashTable[aiHashTable[iX & HASHMASK] ^ (iY & HASHMASK)] ^ (iZ & HASHMASK)];
@@ -90,7 +119,7 @@ long TVoronoi::GeneratePointInCube( const TVector& rktPoint, TVector& tNewPoint)
 
   SeedRandom (lSeed);
 
-  tNewPoint.set (tFloorX + frand(), tFloorY + frand(), tFloorZ + frand());
+  tNewPoint.set (tFloorX + Drandom(), tFloorY + Drandom(), tFloorZ + Drandom());
   
   return lSeed;
 }
@@ -124,11 +153,11 @@ void TVoronoi::BuildPointCache(const TVector& rktPOINT) const
   iPointsInCache = iCount;
 }
 
-TScalar TVoronoi::GetValueAtPoint (const TVector& rktPOINT) const
+TScalar TVoronoi::GetValueAtPoint (const TVector& rktPOINT, TVector* ptGRADIENT) const
 {
   int     iCount;
   long    lHashValue;
-  TVector tDummy,tDifference;
+  TVector tDummy,tDifference, tNearest1, tNearest2;
   TScalar tTemp, tDistSquared, tMinDistSquared1, tMinDistSquared2;
 
   lHashValue = GeneratePointInCube (rktPOINT, tDummy);
@@ -146,10 +175,12 @@ TScalar TVoronoi::GetValueAtPoint (const TVector& rktPOINT) const
  
   tDifference = atPointCache[0] - rktPOINT;
   tMinDistSquared1 = dotProduct (tDifference, tDifference);
-
+  tNearest1 = atPointCache[0];
+  
   tDifference = atPointCache[1] - rktPOINT;
   tMinDistSquared2 = dotProduct (tDifference, tDifference);
-
+  tNearest2 = atPointCache[2];
+  
   // make sure tMinDistSquared1 < tMinDistSquared2
 
   if (tMinDistSquared1 > tMinDistSquared2)
@@ -157,6 +188,8 @@ TScalar TVoronoi::GetValueAtPoint (const TVector& rktPOINT) const
     tTemp = tMinDistSquared1;
     tMinDistSquared1 = tMinDistSquared2;
     tMinDistSquared2 = tTemp;
+    tNearest1 = atPointCache[1];
+    tNearest2 = atPointCache[0];
   }
   // iterate through point cache to find the two nearest points
   
@@ -169,44 +202,32 @@ TScalar TVoronoi::GetValueAtPoint (const TVector& rktPOINT) const
     {
       tMinDistSquared2 = tMinDistSquared1;
       tMinDistSquared1 = tDistSquared;
+      tNearest2 = tNearest1;
+      tNearest1 = atPointCache[iCount];
     }
     else
     {
       if (tDistSquared < tMinDistSquared2)
       {
         tMinDistSquared2 = tDistSquared;
+        tNearest2 = atPointCache[iCount];
       }
     }
   }
 
+  if ( ptGRADIENT != NULL )
+  {
+    *ptGRADIENT = tNearest2 - tNearest1;
+  }
+  
   return sqrt (tMinDistSquared2) - sqrt (tMinDistSquared1);
 }
 
 inline TScalar TMaterialCrackle::evaluate (const TVector& rktPOINT, TVector* ptGRADIENT) const
 {
-  TScalar tValue = tVoronoi.GetValueAtPoint (rktPOINT);
-
-  if ( ptGRADIENT )
-  {
-    TVector tTemp;
-    const TScalar ktINC = 1.0E-6;
-    TScalar tX = rktPOINT.x(), tY = rktPOINT.y(), tZ = rktPOINT.z();
-    TScalar tX1, tY1, tZ1;
-
-    tTemp.set (tX + ktINC, tY, tZ);
-    tX1 = tValue - tVoronoi.GetValueAtPoint (tTemp);
-    tTemp.set (tX, tY + ktINC, tZ);
-    tY1 = tValue - tVoronoi.GetValueAtPoint (tTemp);
-    tTemp.set (tX, tY, tZ + ktINC);
-    tZ1 = tValue - tVoronoi.GetValueAtPoint (tTemp);
-
-    ptGRADIENT->set (tX1, tY1, tZ1);   
-    ptGRADIENT->normalize();
-  }
-  
-  return tValue;
-
+  return tVoronoi.GetValueAtPoint (rktPOINT, ptGRADIENT);
 }  /* evaluate() */
+
 
 inline TVector TMaterialCrackle::perturbNormal (const TSurfaceData& rktDATA) const
 {
@@ -236,6 +257,10 @@ int TMaterialCrackle::setAttribute (const string& rktNAME, NAttribute nVALUE, EA
     if ( eTYPE == FX_COLOR )
     {
       setBaseColor (*((TColor*) nVALUE.pvValue));
+    }
+    else if ( eTYPE == FX_STRING )
+    {
+      bGradientLoaded = tGradient.loadGradient((char *) nVALUE.pvValue);
     }
     else
     {

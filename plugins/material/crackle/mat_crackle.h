@@ -1,6 +1,5 @@
 /*
 *  Copyright (C) 1998 Angel Jimenez Jimenez and Carlos Jimenez Moreno
-*  Copyright (C) 1998 Pete Barnett
 *
 *  This program is free software; you can redistribute it and/or modify
 *  it under the terms of the GNU General Public License as published by
@@ -22,26 +21,32 @@
 #define _MAT_CRACKLE__
 
 #include "llapi/material.h"
+#include "llapi/gradient.h"
 #include "hlapi/plugin_manager.h"
 
 #define CACHESIZE 81
 #define HASHMASK 0xfff
+#define USE_NEWRAND
 
 class TVoronoi
 {
   protected:
     mutable TVector atPointCache[CACHESIZE];
     int             aiHashTable[HASHMASK + 1];
+    mutable long    lRandomSeed;
     mutable long    lLastHashValue;
     mutable int     iPointsInCache;
     
+    long   Random () const;
+    double Drandom () const;
+    void   SeedRandom (long lSeed) const;
     int    Hash3d (int iX, int iY, int iZ) const;
     long   GeneratePointInCube (const TVector& rktCorner, TVector& tPoint) const;
     void   BuildPointCache (const TVector& rktPOINT) const;
 
   public:
     TVoronoi();
-    TScalar   GetValueAtPoint (const TVector& rktPOINT) const;
+    TScalar   GetValueAtPoint (const TVector& rktPOINT, TVector* ptGRADIENT = NULL) const;
 }; /* class TVoronoi */
 
 class TMaterialCrackle : public TMaterial
@@ -49,11 +54,13 @@ class TMaterialCrackle : public TMaterial
 
   protected:
 
-    TColor    tBaseColor;
-    TVector   tZoom;
-    TScalar   tBumpFactor;
-    TVoronoi  tVoronoi;
-
+    TColor      tBaseColor;
+    TVector     tZoom;
+    TScalar     tBumpFactor;
+    bool        bGradientLoaded;
+    TVoronoi    tVoronoi;
+    TGradient   tGradient;
+    
     TScalar evaluate (const TVector& rktPOINT, TVector* ptGRADIENT = NULL) const;
     TScalar eval ( TScalar tX, TScalar tY, TScalar tZ, int iDebug = 0 ) const;
   public:
@@ -64,6 +71,7 @@ class TMaterialCrackle : public TMaterial
       TMaterial(),
       tZoom (1, 1, 1),
       tBumpFactor (0),
+      bGradientLoaded (false),
       tVoronoi() {}
       
     TColor color (const TSurfaceData& rktDATA) const
@@ -71,7 +79,14 @@ class TMaterialCrackle : public TMaterial
       TVector   tPoint      = rktDATA.localPoint() * tZoom;
       TScalar   tNoiseValue = evaluate (tPoint);
 
-      return lerp (tBaseColor, tColor, tNoiseValue);
+      if ( bGradientLoaded )
+      {
+        return tGradient.getColorAt (tNoiseValue);
+      }
+      else
+      {
+        return lerp (tBaseColor, tColor, tNoiseValue);
+      }
     }
     
     TVector perturbNormal (const TSurfaceData& rktDATA) const;

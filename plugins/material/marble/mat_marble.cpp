@@ -1,6 +1,5 @@
 /*
 *  Copyright (C) 1998 Angel Jimenez Jimenez and Carlos Jimenez Moreno
-*  Copyright (C) 1998 Pete Barnett
 *
 *  This program is free software; you can redistribute it and/or modify
 *  it under the terms of the GNU General Public License as published by
@@ -33,6 +32,10 @@ int TMaterialMarble::setAttribute (const string& rktNAME, NAttribute nVALUE, EAt
     {
       setBaseColor (*((TColor*) nVALUE.pvValue));
     }
+    else if ( eTYPE == FX_STRING )
+    {
+      bGradientLoaded = tGradient.loadGradient((char *) nVALUE.pvValue);
+    }
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -61,19 +64,13 @@ int TMaterialMarble::setAttribute (const string& rktNAME, NAttribute nVALUE, EAt
       return FX_ATTRIB_WRONG_TYPE;
     }
   }
-  else if ( rktNAME == "start_freq" )
+  else if ( rktNAME == "falloff" )
   {
     if ( eTYPE == FX_REAL )
     {
       if ( nVALUE.dValue > 0.0 )
       {
-        tStartFreq = nVALUE.dValue;
-        tEndFreq   = tStartFreq;
-        
-        for (int i = 0; i < (int) tNumOctaves; i++)
-        {
-          tEndFreq *= 2.17;
-        }
+        tFalloff = nVALUE.dValue;
       }
       else
       {
@@ -103,10 +100,6 @@ int TMaterialMarble::setAttribute (const string& rktNAME, NAttribute nVALUE, EAt
       {
         return FX_ATTRIB_WRONG_VALUE;
       }
-    }
-    else
-    {
-      return FX_ATTRIB_WRONG_TYPE;
     }
   }
   else

@@ -1,6 +1,5 @@
 /*
 *  Copyright (C) 1998 Angel Jimenez Jimenez and Carlos Jimenez Moreno
-*  Copyright (C) 1998 Pete Barnett
 *
 *  This program is free software; you can redistribute it and/or modify
 *  it under the terms of the GNU General Public License as published by
@@ -22,6 +21,7 @@
 
 #include "llapi/perlin_noise.h"
 #include "llapi/material.h"
+#include "llapi/gradient.h"
 #include "hlapi/plugin_manager.h"
 
 class TMaterialMarble : public TMaterial
@@ -35,8 +35,11 @@ class TMaterialMarble : public TMaterial
     TScalar        tStartFreq;
     TScalar        tEndFreq;
     TScalar        tNumOctaves;
-    TPerlinNoise   tNoise;
+    bool           bGradientLoaded;
+    TScalar        tFalloff;
     
+    TPerlinNoise   tNoise;
+    TGradient      tGradient;
     TScalar evaluate (const TVector& rktPOINT, TVector* ptGRADIENT = NULL) const;
 
   public:
@@ -49,7 +52,9 @@ class TMaterialMarble : public TMaterial
       tBumpFactor (0),
       tStartFreq (0.75),
       tEndFreq (4.0),
-      tNumOctaves (3.0){}
+      tNumOctaves (3.0),
+      bGradientLoaded (false),
+      tFalloff (2.15) {}
       
     TColor color (const TSurfaceData& rktDATA) const;    
     TVector perturbNormal (const TSurfaceData& rktDATA) const;
@@ -72,7 +77,36 @@ inline TScalar TMaterialMarble::evaluate (const TVector& rktPOINT, TVector* ptGR
   //TScalar   tValue = tNoise.turbulence (rktPOINT, 0.5, 4.0);
   //TScalar   tValue = tNoise.turbulence (rktPOINT, 0.75, 4.0);
 
-  TScalar   tValue = tNoise.turbulence (rktPOINT, tStartFreq, tEndFreq);
+  TScalar   tValue;
+  TScalar   tFreq;
+  int       i;
+  int       iNumOctaves = (int) tNumOctaves;
+  
+  tValue = 0;
+  tFreq  = 1;
+  
+  for (i = 0; i < iNumOctaves ; i++)
+  {
+    tValue += tNoise.snoise (rktPOINT * tFreq) / tFreq;
+    tFreq *= tFalloff;
+  }
+  
+  //tValue /= tFreq; 
+  tValue = 0.5 - tValue / 2.7;
+  
+  static TScalar tMax = -1e6;
+  static TScalar tMin = 1e6;
+  
+  if ( tValue > tMax )
+  {
+    tMax = tValue;
+    cout << "\t" << tMax << " " << tMin << endl;
+  }
+  else if ( tValue < tMin )
+  {
+    tMin = tValue;
+    cout << "\t" << tMax << " " << tMin << endl;
+  }
   
   if (ptGRADIENT)
   {
@@ -100,7 +134,14 @@ inline TColor TMaterialMarble::color (const TSurfaceData& rktDATA) const
   TVector tPoint = rktDATA.localPoint() * tZoom;
   TScalar tValue = evaluate (tPoint);
   
-  return lerp (tBaseColor, tColor, tValue);
+  if ( bGradientLoaded == true )
+  {
+    return tGradient.getColorAt (tValue);
+  }
+  else
+  {
+    return lerp (tColor, tBaseColor, tValue);
+  }
 }
 
 inline TVector TMaterialMarble::perturbNormal (const TSurfaceData& rktDATA) const
