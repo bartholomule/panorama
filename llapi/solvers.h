@@ -318,9 +318,9 @@ vector<base_type> simple_roots(base_type min, base_type max, data_fn dat,
 template <class base_type, class data_fn>
 vector<base_type> solve(base_type min, base_type max, data_fn dat,
 			base_type value,
+			int num_roots = 5,			
 			base_type epsilon = base_type(double(1e-13)),
-			const vector<base_type>& guesses = vector<base_type>(),
-			int num_roots = 5)  
+			const vector<base_type>& guesses = vector<base_type>())  
 {
   return simple_roots<base_type,data_fn>(min, max, dat, value,
 #if       defined(KH_SECANT_SOLVER)					 
@@ -342,11 +342,11 @@ vector<base_type> solve(base_type min, base_type max, data_fn dat,
 template <class base_type, class data_fn, class guess_fn, class solve_fn>
 vector<base_type> solve(base_type min, base_type max, data_fn dat,
 			base_type value,
+			int num_roots = 5,
 		        guess_fn get_next_guess = &newton_next_guess<base_type, data_fn>,
 			base_type epsilon = base_type(double(1e-13)),
 			solve_fn method = &simple_roots<base_type, data_fn, guess_fn>,
-			const vector<base_type>& guesses = vector<base_type>(),
-			int num_roots = 5)
+			const vector<base_type>& guesses = vector<base_type>())
 {
   return method(min, max, dat, value, get_next_guess, epsilon, guesses, num_roots);
 } /* solve() */
