@@ -606,15 +606,15 @@ int TIF_Lens_Flare::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
     switch (eType) 
     {
       case (FX_NEAR) :
-        rnVALUE.pvValue = "near";
+        rnVALUE.pvValue = (void *) "near";
         break; 
 
       case (FX_FAR) :
-        rnVALUE.pvValue = "far";
+        rnVALUE.pvValue = (void *) "far";
         break;
  
       default:
-        rnVALUE.pvValue = "normal";
+        rnVALUE.pvValue = (void *) "normal";
     }
   }
   else if ( rktNAME == "lf_form" )
@@ -622,15 +622,15 @@ int TIF_Lens_Flare::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
     switch (eForm) 
     {
       case (FX_PENTAGON) :
-        rnVALUE.pvValue = "pentagons";
+        rnVALUE.pvValue = (void *) "pentagons";
         break;
 
       case (FX_HEXAGON) :
-        rnVALUE.pvValue = "hexagons";
+        rnVALUE.pvValue = (void *) "hexagons";
         break; 
  
       default:
-        rnVALUE.pvValue = "circles";
+        rnVALUE.pvValue = (void *) "circles";
     }
   }
   else if ( rktNAME == "lf_scale" )

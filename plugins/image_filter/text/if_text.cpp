@@ -148,8 +148,7 @@ void TIF_Text::filter (SBuffers& rsBUFFERS)
   tPixmap.cols = (tPixmap.width + 3) & -4;
   tPixmap.flow = TT_Flow_Down;
   tPixmap.size = tPixmap.rows * tPixmap.cols;
-  tPixmap.bitmap = new Byte[tPixmap.size];
-  memset (tPixmap.bitmap, 0, tPixmap.size);
+  tPixmap.bitmap = calloc(1, tPixmap.size);
   
   tXPos = (unsigned int) tTranslate.x();
   tYPos = ptImage->height() - ((unsigned int) tTranslate.y());
@@ -203,7 +202,7 @@ void TIF_Text::filter (SBuffers& rsBUFFERS)
   }
 
   //  Clean up
-  delete tPixmap.bitmap;
+  free(tPixmap.bitmap);
   
 }  /* filter() */
 
