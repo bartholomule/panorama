@@ -1,4 +1,12 @@
 
+>> Version 0.13.1 released
+
+ - Changes in psl scene plugin (still unfinished).
+
+ - Added halo lights.
+
+>> Version 0.13 released
+
  - Added object identifier in TProcedural.
  
  - Added user data map in TProcedural.
