@@ -73,6 +73,7 @@ class TMaterialBrick : public TMaterial
     }
 
     string className (void) const { return "MaterialBrick"; }
+
 };  /* class TMaterialBrick */
 
 #endif
