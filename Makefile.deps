@@ -1,0 +1,70 @@
+# Makefile.deps -- Kevin Harris 28Jul2001
+#
+# This is a makefile which should be included at the BOTTOM of a makefile which
+# creates object files.  Note that this assumes the ALL_FILES var is set.  To
+# set it, assuming you have an OBJ var set (containing all .o files), use
+# something like:
+#
+# ALL_FILES = $(strip $(wildcard $(OBJ:%.o=%.cpp)))
+#
+# It is important to note that the above assumes the .o files are generated
+# from .cpp files (which is the case for all of the base panorama code).  If
+# your addition differs, it must be fixed.
+
+#
+# The rule to create the dep files (which works with gcc-3.0) is shown here:
+# Rules for generating dependency files
+#%.d: %.cpp
+#	@echo "Making dependency file for $<"                              ;\
+#        $(CXX) -c $(CXXFLAGS) -MMD $(FLAGS) -E $(@:%.d=%.cpp) -o $@ > /dev/null ;\
+#        cat $@ | sed -e 's/:/ $(@:%.d=%.o) $@:/g' > tmp$$                 ;\
+#        mv -f tmp$$ $@  
+#
+# A rule which used to work for gcc-2.9x.x (and others later than 2.8.0) is:
+# 
+# Rules for generating dependency files
+#%.d: %.cpp
+#	@echo "Making dependency file for $<"                          ;\
+#        $(CXX) -c $(CXXFLAGS) -MMD $(FLAGS) -E $(@:%.d=%.cpp) -o /dev/null ;\
+#        cat $@ | sed -e 's/:/ $@:/g' > tmp$$                           ;\
+#        mv -f tmp$$ $@
+#
+# If you want to use dep files for working on panorama, you may need to create
+# the rule similar to the latter (if you have an older compiler).
+
+
+# Names of all of the dependancy files.
+DEP_FILES = $(ALL_FILES:%.cpp=%.d)
+
+# A more complete set of dependancies follows (if make dep has been run).
+EXISTING_DEP_FILES = $(strip $(wildcard $(DEP_FILES)))
+
+# Used to be similar to some other standard make targets.
+dep: deps
+
+# A rule that does no action, but indirectly causes all of the dependency files
+# to be generated.
+deps: $(ALL_FILES) $(DEP_FILES)
+	echo "Dependency files generated" 
+
+# A rule which can be placed in makefiles which are in directories containing
+# only subdirectories:
+#
+#deps: 
+#	@set -e                           ; \
+#	for i in $(DIRS); do                \
+#          $(MAKE) $$i deps                ; \
+#        done                              ; \
+#	echo "Dependency files generated" 
+
+# A rule which can be placed in makefiles which contain NO compilable files
+# (include directories, data directories, etc):
+#
+#deps:
+#
+#
+
+# Include all of the dep files, if they exist.
+ifneq "$(EXISTING_DEP_FILES)" ""
+include $(EXISTING_DEP_FILES)
+endif
