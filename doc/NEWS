@@ -1,4 +1,6 @@
 
+ - Implemented vector as variables (like colors).
+
  - Fixed object filters in aggregates.
 
  - Added new OF_ConvertToGrey object filter plugin.
