@@ -4,34 +4,35 @@
 
 #include "materials.inc"
 
-define camera c
+define c class PinholeCamera
 {
-  translate	<0, 0, 1>
-}
+  translate( <0, 0, 1> );
+};
 
-scene
+class Scene
 {
-  camera	c
-  width         640
-  height        480
-  background    CBlack
-  output
+  camera     = c;
+  width      = 640;
+  height     = 480;
+  background = CBlack;
+  output = class png
   {
-    type        "png"
-    name	"text.png"
-  }
-  renderer : class Raytracer {}
-  filter : class IF_Text {
-    color	CWhite
-    size	50
-    text	"Panoramas text plugin"
-    xlate	<0,240>
+    name = "text.png";
+  };
+  renderer = class Raytracer {};
+  print("Fixme!  Image filters do not work!");
+  halt();
+  filter = class IF_Text {
+    color = CWhite;
+    size  = 50;
+    text  = "Panoramas text plugin";
+    xlate = <0,240>;
     
     // Remember that you can setup the local path to True Type Fonts by editing
     // your 'config'-file, and adding a 'FontPath=foo/bar/...' entry.
-    fontfile    "cour.ttf"
-  }
-}
+    fontfile = "cour.ttf";
+  };
+};
 
 
 

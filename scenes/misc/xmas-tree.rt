@@ -4,37 +4,36 @@
  * Distribute under GPL
  */
 
-
 #include "materials.inc"
-
+#include "shapes.inc"
 
 /*
  * Materials
  */
 
-define material MTree : extends MLambertian
+define MTree MLambertian
 {
-  color CGreen
-}
+  color = CGreen;
+};
 
-define material MTrunk : extends MLambertian
+define MTrunk MLambertian
 {
-  color CBrown
-  ambient 0.05
-}
+  color   = CBrown;
+  ambient = 0.05;
+};
 
-define material MBall : extends MMirror
+define MBall MMirror
 {
-  color    CRed
-  diffuse  0.6
-  ambient  0.1
-  specular 0.3
-}
+  color    = CRed;
+  diffuse  = 0.6;
+  ambient  = 0.1;
+  specular = 0.3;
+};
 
-define material MPot : extends MPlastic
+define MPot MPlastic
 {
-  color CBlack
-}
+  color = CBlack;
+};
 
 
 /*
@@ -43,12 +42,12 @@ define material MPot : extends MPlastic
 
 cone
 {
-  max_circle_point <0, 15, 0>
-  min_circle_point <0, 0, 0>
-  max_radius       40
-  min_radius       30
-  material : extends MPot {}
-}
+  max_circle_point = <0, 15, 0>;
+  min_circle_point = <0, 0, 0>;
+  max_radius       = 40;
+  min_radius       = 30;
+  material = MPot {};
+};
 
 
 /*
@@ -57,12 +56,12 @@ cone
 
 cone
 {
-  max_circle_point <0, 0, 0>
-  min_circle_point <0, 170, 0>
-  max_radius       5
-  min_radius       1
-  material : extends MTrunk {}
-}
+  max_circle_point = <0, 0, 0>;
+  min_circle_point = <0, 170, 0>;
+  max_radius       = 5;
+  min_radius       = 1;
+  material = MTrunk {};
+};
 
 
 /*
@@ -71,26 +70,26 @@ cone
 
 cone
 {
-  max_circle_point <0, 20, 0>
-  min_circle_point <0, 40, 0>
-  max_radius       60
-  min_radius       50
-  material : extends MTree {}
-}
+  max_circle_point = <0, 20, 0>;
+  min_circle_point = <0, 40, 0>;
+  max_radius       = 60;
+  min_radius       = 50;
+  material = MTree {};
+};
 
 sphere
 {
-  translate <60, 15.5, 0>
-  radius    4.5
-  material : extends MBall {}
-}
+  translate( <60, 15.5, 0> );
+  radius   = 4.5;
+  material = MBall {};
+};
 
 sphere
 {
-  translate <-60, 15.5, 0>
-  radius    4.5
-  material : extends MBall {}
-}
+  translate( <-60, 15.5, 0> );
+  radius   = 4.5;
+  material = MBall {};
+};
 
 
 /*
@@ -99,26 +98,26 @@ sphere
 
 cone
 {
-  max_circle_point <0, 50, 0>
-  min_circle_point <0, 70, 0>
-  max_radius       50
-  min_radius       40
-  material : extends MTree {}
-}
+  max_circle_point = <0, 50, 0>;
+  min_circle_point = <0, 70, 0>;
+  max_radius       = 50;
+  min_radius       = 40;
+  material = MTree {};
+};
 
 sphere
 {
-  translate <0, 45.5, 50>
-  radius    4.5
-  material : extends MBall {}
-}
+  translate( <0, 45.5, 50> );
+  radius   = 4.5;
+  material = MBall {};
+};
 
 sphere
 {
-  translate <0, 45.5, -50>
-  radius    4.5
-  material : extends MBall {}
-}
+  translate( <0, 45.5, -50> );
+  radius   = 4.5;
+  material = MBall {};
+};
 
 
 /*
@@ -127,26 +126,26 @@ sphere
 
 cone
 {
-  max_circle_point <0, 80, 0>
-  min_circle_point <0, 100, 0>
-  max_radius       40
-  min_radius       30
-  material : extends MTree {}
-}
+  max_circle_point = <0, 80, 0>;
+  min_circle_point = <0, 100, 0>;
+  max_radius       = 40;
+  min_radius       = 30;
+  material = MTree {};
+};
 
 sphere
 {
-  translate <40, 75.5, 0>
-  radius    4.5
-  material : extends MBall {}
-}
+  translate( <40, 75.5, 0> );
+  radius   = 4.5;
+  material = MBall {};
+};
 
 sphere
 {
-  translate <-40, 75.5, 0>
-  radius    4.5
-  material : extends MBall {}
-}
+  translate( <-40, 75.5, 0> );
+  radius   = 4.5;
+  material = MBall {};
+};
 
 
 /*
@@ -155,26 +154,26 @@ sphere
 
 cone
 {
-  max_circle_point <0, 110, 0>
-  min_circle_point <0, 130, 0>
-  max_radius       30
-  min_radius       20
-  material : extends MTree {}
-}
+  max_circle_point = <0, 110, 0>;
+  min_circle_point = <0, 130, 0>;
+  max_radius       = 30;
+  min_radius       = 20;
+  material = MTree {};
+};
 
 sphere
 {
-  translate <0, 105.5, 30>
-  radius    4.5
-  material : extends MBall {}
-}
+  translate( <0, 105.5, 30> );
+  radius   = 4.5;
+  material = MBall {};
+};
 
 sphere
 {
-  translate <0, 105.5, -30>
-  radius    4.5
-  material : extends MBall {}
-}
+  translate( <0, 105.5, -30> );
+  radius   = 4.5;
+  material = MBall {};
+};
 
 
 /*
@@ -183,26 +182,26 @@ sphere
 
 cone
 {
-  max_circle_point <0, 140, 0>
-  min_circle_point <0, 160, 0>
-  max_radius       20
-  min_radius       10
-  material : extends MTree {}
-}
+  max_circle_point = <0, 140, 0>;
+  min_circle_point = <0, 160, 0>;
+  max_radius       = 20;
+  min_radius       = 10;
+  material = MTree {};
+};
 
 sphere
 {
-  translate <20, 135.5, 0>
-  radius    4.5
-  material : extends MBall {}
-}
+  translate( <20, 135.5, 0> );
+  radius   = 4.5;
+  material = MBall {};
+};
 
 sphere
 {
-  translate <-20, 135.5, 0>
-  radius    4.5
-  material : extends MBall {}
-}
+  translate( <-20, 135.5, 0> );
+  radius   = 4.5;
+  material = MBall {};
+};
 
 
 /*
@@ -211,26 +210,26 @@ sphere
 
 cone
 {
-  max_circle_point <0, 170, 0>
-  min_circle_point <0, 190, 0>
-  max_radius       10
-  min_radius       1
-  material : extends MTree {}
-}
+  max_circle_point = <0, 170, 0>;
+  min_circle_point = <0, 190, 0>;
+  max_radius       = 10;
+  min_radius       = 1;
+  material = MTree {};
+};
 
 sphere
 {
-  translate <0, 165.5, 10>
-  radius    4.5
-  material : extends MBall {}
-}
+  translate( <0, 165.5, 10> );
+  radius   = 4.5;
+  material = MBall {};
+};
 
 sphere
 {
-  translate <0, 165.5, -10>
-  radius    4.5
-  material : extends MBall {}
-}
+  translate( <0, 165.5, -10> );
+  radius   = 4.5;
+  material = MBall {};
+};
 
 
 /*
@@ -239,10 +238,10 @@ sphere
 
 sphere
 {
-  translate <0, 195, 0>
-  radius    5
-  material : extends MBall {}
-}
+  translate( <0, 195, 0> );
+  radius   = 5;
+  material = MBall {};
+};
 
 
 /*
@@ -251,49 +250,48 @@ sphere
 
 rectangle
 {
-  vertex <100, 0, 100>
-  vertex <-100, 0, 100>
-  vertex <-100, 0, -100>
-  vertex <100, 0, -100>
-  material : extends MChecker
+  addVertex( < 100, 0,  100> );
+  addVertex( <-100, 0,  100> );
+  addVertex( <-100, 0, -100> );
+  addVertex( < 100, 0, -100> );
+  material = MChecker
   {
-    color : class PatternChecker 
+    color = class PatternChecker 
     {
-      color        CWhite
-      base_color   CBlack
-      size         25
+      color      = CWhite;
+      base_color = CBlack;
+      size       = 25;
     }
-    specular   0.1
-  }
-}
-
+    specular = 0.1;
+  };
+};
 
 /*
  * Set
  */
 
-define camera XmasCamera
+define XmasCamera class PinholeCamera
 {
-  translate <150, 90, 150>
-  look_at   <0, 90, 0>
-}
+  translate( <150, 90, 150> );
+  look_at = <0, 90, 0>;
+};
 
-define light XmasLight1 : class WarnLight
+define XmasLight1 class WarnLight
 {
-  translate <300, 250, 500>
-  point_at  <0, 100, 0>
-  exponent  30
-  axis      <0, 0, 0>
-  angle_th  30
-  intensity 1
-  color     CWhite
-}
+  translate( <300, 250, 500> );
+  point_at  = <0, 100, 0>;
+  exponent  = 30;
+  axis      = <0, 0, 0>;
+  angle_th  = 30;
+  intensity = 1;
+  color     = CWhite;
+};
 
-define light XmasLight2
+define XmasLight2 class PointLight
 {
-  translate <-300, 250, -500>
-  color     { red 0.1 green 0.1 blue 0.1 }
-}
+  translate( <-300, 250, -500> );
+  color = { red 0.1 green 0.1 blue 0.1 };
+};
 
 
 /*
@@ -302,23 +300,25 @@ define light XmasLight2
 
 scene
 {
-  camera     XmasCamera
-  light      XmasLight1
-  light      XmasLight2
-  width      400
-  height     600
-  background CMidnight
-  output
+  camera     = XmasCamera;
+  light      = XmasLight1;
+  light      = XmasLight2;
+  width      = 400;
+  height     = 600;
+  background = CMidnight;
+  output = class png
   {
-    type        "png"
-    name        "xmas-tree.png"
-  }
-  renderer : class Raytracer
+    name = "xmas-tree.png";
+  };
+  renderer = class Raytracer
   {
-//    sampling "adaptive"
-  }
-  filter : class IF_Cartoon
+//    sampling = "adaptive";
+  };
+  print("FIXME! Image filters are not working yet!");
+/*
+  filter = class IF_Cartoon
   {
-    levels      5
-  }
-}
+    levels = 5;
+  };
+*/
+};

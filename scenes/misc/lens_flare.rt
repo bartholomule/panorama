@@ -4,36 +4,37 @@
 
 #include "materials.inc"
 
-define camera c
+define c class PinholeCamera
 {
-  translate	<0, 0, 400>
-}
+  translate( <0, 0, 400> );
+};
 
-define light l
+define l class PointLight
 {
-  translate	<-57, -40, 40>
-  intensity     0.8
-}
+  translate( <-57, -40, 40> );
+  intensity = 0.8;
+};
 
-scene
+class Scene
 {
-  camera	c
-  light         l
-  width         640
-  height        480
-  background    CBlack
-  output
+  camera = c;
+  light  = l;
+  width  = 640;
+  height = 480;
+  background = CBlack;
+  output = class png
   {
-    type        "png"
-    name	"lens_flare.png"
-  }
-  renderer : class Raytracer {}
-  filter : class IF_Lens_Flare {
-    lf_type     "normal"
-    intensity   1.0
-    lf_scale    1.0
-  }
-}
+    name = "lens_flare.png";
+  };
+  renderer = class Raytracer {};
+  print("FIXME! Image filters do not work!");
+  halt();
+  filter = class IF_Lens_Flare {
+    lf_type   = "normal";
+    intensity = 1.0;
+    lf_scale  = 1.0;
+  };
+};
 
 
 

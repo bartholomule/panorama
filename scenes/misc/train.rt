@@ -3,133 +3,140 @@
 */
 
 #include "materials.inc"
+#include "shapes.inc"
+#include "cameras.inc"
 
-define material MWood
+define MWood class Material
 {
-  bsdf : class BsdfPhong
+  bsdf = class BsdfPhong
   {
-    exponent 50
-  }
-  ambient	0.05
-  diffuse	0.6
-  specular	0.25
-}
+    exponent = 50;
+  };
+  ambient  = 0.05;
+  diffuse  = 0.6;
+  specular = 0.25;
+};
 
-define camera c
+define c Camera
 {
-  translate	<0, 600, 1200>
-  //look_at	<0, 0, 0>
-  look_at	<-25, 100, 0>
-}
+  translate( <0, 600, 1200> );
+  //look_at = <0, 0, 0>;
+  look_at = <-25, 100, 0>;
+};
+
 /*
-define light l_ambient
+define l_ambient class PointLight
 {
-  name "Ambient"
-  translate	< 0, 1500, 700>
-//  translate	<0, 600, 1200>
-//  translate	< 400, 500, 1000>
-  volumetric    off
-  shadow        off
-  intensity 0.25
-}
+  name = "Ambient";
+  translate( < 0, 1500, 700> );
+//  translate( <0, 600, 1200> );
+//  translate( < 400, 500, 1000> );
+  volumetric = off;
+  shadow     = off;
+  intensity  = 0.25;
+};
 */
-define light l_ambient
-{
-  name "Ambient"
-  translate	< -500, 500, 700>
-//  translate	<0, 600, 1200>
-//  translate	< 400, 500, 1000>
-//  volumetric    off
-//  shadow        off
-  intensity 0.75
-}
 
-define light l : class WarnLight
+define l_ambient class PointLight
 {
-  name "Main"
-  translate	< 700, 1500, 700>
-  point_at	<0, 0, 0>
-  exponent      40
-  axis          <0, 0, 0>
-  angle_th      15
-  intensity     1.2 //1
-}
+  name = "Ambient";
+  translate( < -500, 500, 700> );
+//  translate( <0, 600, 1200> );
+//  translate( < 400, 500, 1000> );
+//  volumetric = off;
+//  shadow     = off;
+  intensity = 0.75;
+};
+
+define l class WarnLight
+{
+  name = "Main";
+  translate( < 700, 1500, 700> );
+  point_at  = <0, 0, 0>;
+  exponent  = 40;
+  axis      = <0, 0, 0>;
+  angle_th  = 15;
+  intensity = 1.2; //1; //
+};
 
 plane
 {
-  name "Floor"
-  translate     <0, 0, 0>
-  normal	<0, 1, 0>
-  material : extends MWood
+  name = "Floor";
+  translate( <0, 0, 0> );
+  normal = <0, 1, 0>;
+  material = MWood
   {
-    color : class PatternWood 
+    color = class PatternWood 
     {
-      color       COrange
-      base_color  CBlack
-      zoom        <100, 100, 100>    
-    }
-  }
-  rotate <0,90,0>
-}
+      color      = COrange;
+      base_color = CBlack;
+      zoom       = <100, 100, 100>;
+    };
+  };
+  rotate( <0,90,0> );
+};
 
 /*
 plane
 {
-  translate     <0, 0, 0>
-  normal	<0, 1, 0>
-  material : extends MPlastic
+  translate( <0, 0, 0> );
+  normal = <0, 1, 0>;
+  material = MPlastic
   {
-    color       CWhite
-  }
-  rotate <0,90,0>
-}
+    color = CWhite;
+  };
+  rotate( <0,90,0> );
+};
 */
 
-define aggregate cabin
+define cabin aggregate
 {
-  name "Cabin"
+  name = "Cabin";
   difference // Hollow box with circular cutouts
   {
     difference // Hollow box
     {
       box
       {
-        point1 <-100,-100,-100>
-        point2 <  70, 150, 100>
-      }
+        point1 = <-100,-100,-100>;
+        point2 = <  70, 150, 100>;
+      };
       box
       {
-        point1 < -90, -90, -90>
-        point2 <  71, 140,  90>
-      }
-    }
+        point1 = < -90, -90, -90>;
+        point2 = <  71, 140,  90>;
+      };
+    };
     union
     {
       cylinder
       {
-        scale     <  65, 101,  65>
-        rotate    <  90,   0,   0>
-        translate <  70,  65,   0> 
-      }
+        scale    = <  65, 101,  65>;
+        rotate   ( <  90,   0,   0> );
+        translate( <  70,  65,   0> );
+      };
       cylinder
       {
-        scale     <  30, 101,   30>
-        rotate    <   0,   0,   90>
-        translate <   0, 110,   60>
-      }               
+        scale    = <  30, 101,   30>;
+        rotate   ( <   0,   0,   90> );
+        translate( <   0, 110,   60> );
+      };
       cylinder
       {
-        scale     <  30, 101,   30>
-        rotate    <   0,   0,   90>
-        translate <   0, 110,  -60>
-      }
-    }
-  }
-  material : extends MPlastic
+        scale    = <  30, 101,   30>;
+        rotate   ( <   0,   0,   90> );
+        translate( <   0, 110,  -60> );
+      };
+    };
+  };
+  material = MPlastic
   {
-    color CRed
-  }
-}
+    color = CRed;
+  };
+};
+
+print("Continue tweaking from here!");
+halt();
 
 define aggregate cabin_roof
 {
