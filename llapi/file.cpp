@@ -21,7 +21,7 @@
 bool FileExists (const string& rktNAME)
 {
 
-  ifstream   sFile (rktNAME.c_str(), ios::nocreate);
+  ifstream   sFile (rktNAME.c_str());
 
   if ( !sFile )
   {
