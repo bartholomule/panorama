@@ -361,7 +361,7 @@ void TIF_Lens_Flare::flaresByLightsources (void)
 {
 
   TCamera*       ptSceneCamera;
-  TLight*        ptLight;
+  const TLight*  ptLight;
   TVector2       tScreenPosition;
   TVector        tPosition;
   TRay           tRay;
@@ -384,7 +384,7 @@ void TIF_Lens_Flare::flaresByLightsources (void)
 
     if ( ptLight->className() == "PointLight" )
     {
-      tPosition = ptLight->location();
+      tPosition = ptLight->location();      
 
       gOnImagePlane = ptSceneCamera->getPlaneProjection(tPosition, tScreenPosition);
 
