@@ -149,8 +149,3 @@ inline TColor TBsdfSchlickDouble::evaluateReflection (const TSurfaceData& rktDAT
 }  /* evaluateReflection() */
 
 #endif  /* _BSDF_SCHLICK_DOUBLE__ */
-
-
-
-
-
