@@ -61,6 +61,7 @@ TVector TPerturbationBump::perturbNormal (const TSurfaceData& rktDATA) const
     TScalar        tTDampingTotal;
     TScalar        tRTotal;
     TScalar        tTTotal;
+    TMatrix        tObjectTransform = *rktDATA.object()->transformMatrix();
 
     if ( !ptPattern )
     {
@@ -126,10 +127,10 @@ TVector TPerturbationBump::perturbNormal (const TSurfaceData& rktDATA) const
       for (size_t ix = 0; ( ix < (size_t) tSamples.x() ); ix++)
       {
         tTemp = ptPattern->warp (rktDATA.localPoint()) + (tGradientU * x) + (tGradientV * y);
-        tData.setPoint (tTemp);
+        tData.setPoint (tObjectTransform * tTemp);
         tColor = ptPattern->color (tData);
 
-        tHeightDiff = tColor.average() - tHeight;
+        tHeightDiff = tHeight - tColor.average();
 
         tRDampingAbs = (1.0 - (x * x) * 0.8);	
 
