@@ -6,7 +6,8 @@ include ${BUILD_TOP}/Makefile.vars
 INSTALL = @INSTALL@
 SRC_DIR = @srcdir@
 
-FILES = cornell_box.rt \
+FILES = bump \
+        cornell_box.rt \
 	lens_flare.rt \
 	plastic_cornell_box.rt \
         projector_cartoon.rt \
