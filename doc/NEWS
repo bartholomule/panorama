@@ -1,4 +1,8 @@
 
+>> Version 0.11 released
+
+ - Added several experimental plugins (ABVH, HeightField, lwo, polyhedra, psl, zbuffer).
+
  - Several changes to the API, in order to implement the new procedural language.
  
  - Several bug fixes.
