@@ -10,3 +10,11 @@ compilation):
  plugins/renderer/zbuffer      ZBuffer renderer
  plugins/scene_io/psl          Procedural scene language
 
+ You will have to add them to your pluginrc file, in order to load them.
+
+ Notes:
+ ------
+ 
+ * You will have to remove rt_io.plg from your pluginrc if you want to test
+ psl, i.e. only one of them can be loaded at any time. This will be fixed in
+ future releases.

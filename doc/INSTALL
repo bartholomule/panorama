@@ -10,7 +10,7 @@
    Enter project directory.
  
  $ ./configure [--prefix=<project_directory>] [--enable-static-link]
-   [--enable-debug]
+   [--enable-debug] [--enable-experimental]
 
    This generates all makefiles, setting project main directory to
   <project_directory>. If you don't specify this parameter, it will default to
@@ -23,6 +23,9 @@
    If '--enable-debug' option is given, all the source files will be compiled
   with debug information for GNU debugger (gdb). This option can be used with
   dynamic or static linking.
+
+   If '--enable-experimental' option is given, experimental (not finished)
+  plugins will be included in the compilation.
 
  $ make
 
