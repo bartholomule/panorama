@@ -245,7 +245,7 @@ TColor TAtmosphericObject::filterRadiance (const TSurfaceData& rktDATA, const TC
 
   tInt = tBoundingBox.clipRay (tRay);
   
-  if ( ( tInt.size() > FX_EPSILON ) & ( tInt.size() < FX_HUGE ) )
+  if ( ( tInt.size() > FX_EPSILON ) && ( tInt.size() < FX_HUGE ) )
   {
     tStart = rktDATA.ray().location() + rktDATA.ray().direction() * tInt.min();
 
