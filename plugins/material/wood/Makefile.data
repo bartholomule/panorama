@@ -1,0 +1,2 @@
+PLUGIN_NAME = mat_wood
+OBJ         = mat_wood.o
