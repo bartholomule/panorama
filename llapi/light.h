@@ -77,6 +77,11 @@ class TLight : public TEntity
       return tColor * tIntensity;
     }
 
+    virtual TColor scatteredLight (const TSurfaceData& rktDATA) const
+    {
+      return TColor::_null();
+    }
+    
     bool shadow (void) const { return tProperties.gShadow; }
     bool volumetric (void) const { return tProperties.gVolumetric; }
     bool raytraced (void) const { return tProperties.gRaytraced; }
