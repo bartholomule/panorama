@@ -131,6 +131,7 @@ class TObject : public TVolume
     void translate (const TVector& rktNEW_POS);
     void rotate (const TVector& rktAXISPOINT1, const TVector& rktAXISPOINT2, TScalar tANGLE);
     void rotate (const TVector& rktANGLESXYZ);
+    void rotate (const TQuaternion& rktQUAT);
     void scale (const TVector& rktSCALING_XYZ, const TVector& rktPOINT);
 
     virtual TVector normal (const TSurfaceData& rktDATA) const;

@@ -105,6 +105,23 @@ void TObject::rotate (const TVector& rktANGLESXYZ)
     
 }  /* rotate() */
 
+void TObject::rotate (const TQuaternion& rktQUAT)
+{
+  TMatrix mat = matrixFromQuaternion (rktQUAT);
+  
+  (*ptMatrix) = mat * (*ptMatrix);
+  (*ptInverseMatrix) = (*ptInverseMatrix) * invert(mat);
+  
+#if DEBUG_IT
+  cerr << "mat=";
+  mat.printDebug();
+  
+  cerr << "rotate... m,i=";
+  ptMatrix->printDebug();
+  ptInverseMatrix->printDebug();
+#endif /* DEBUG_IT */
+}
+
 
 void TObject::scale (const TVector& rktSCALING_XYZ, const TVector& rktPOINT)
 {

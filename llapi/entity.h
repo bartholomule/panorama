@@ -40,6 +40,8 @@ class TEntity : public TProcedural
     }
     virtual void rotate (const TVector& rktAXISPOINT1, const TVector& rktAXISPOINT2, TScalar tANGLE) {}
     virtual void rotate (const TVector& rktANGLESXYZ) {}
+  
+    virtual void rotate (const TQuaternion& rktQUAT) {}  
 
     inline TVector location (void) const { return tLocation; }
 

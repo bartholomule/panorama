@@ -25,6 +25,7 @@
 #include "llapi/frame.h"
 #include "llapi/matrix.h"
 #include "llapi/interval.h"
+#include "llapi/quaternion.h"
 
 //
 // Minimum distance between scalar values
@@ -51,7 +52,7 @@ typedef TVector3D<TScalar>          TVector;
 typedef TVector2D<TScalar>          TVector2;
 typedef TBaseMatrix<TScalar>        TMatrix;
 typedef TBaseInterval<TScalar>      TInterval;
-
+typedef quaternion<TScalar>         TQuaternion;
 typedef TFrame<float>               TZBuffer;
 typedef TFrame<TVector>             TNBuffer;
 
