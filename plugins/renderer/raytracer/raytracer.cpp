@@ -790,32 +790,28 @@ TColor TRaytracer::specularTransmittedLight (const TSurfaceData& rktDATA, Word w
   TVector        tNormal    = rktDATA.normal();
   TMaterial*     ptMaterial = rktDATA.object()->material();
 
-  tRay.setLimit (SCALAR_MAX);
-
   if ( wDEPTH-- )
   {
+    tRay.setLimit (SCALAR_MAX);
+
     gEntering = tRay.refract (tNormal, ptMaterial->ior (rktDATA), gTIR);
 
     tRay.setLocation (rktDATA.point());
 
-    traceRay (tRay, tSurfaceData);
+    if ( !gTIR )
+    {
+      traceRay (tRay, tSurfaceData);
+    }
 
     if ( pzOBJ_CODE )
     {
       *pzOBJ_CODE = tSurfaceData.objectCode();
     }
     
-    tRadiance = getRadiance (tSurfaceData, wDEPTH);
+    rho = ptMaterial->bsdf()->evaluateTransmission (rktDATA, tRay.direction(), tRadiance);
 
-    if ( gTIR )
-    {
-      tRadiance = TColor::_null();
-    }
-    else
-    {
-      rho        = ptMaterial->bsdf()->evaluateTransmission (rktDATA, tRay.direction(), tRadiance);
-      tRadiance *= rho;
-    }
+    tRadiance  = rho * ptMaterial->opacity(rktDATA);
+    tRadiance += getRadiance (tSurfaceData, wDEPTH) * (1.0 - ptMaterial->opacity(rktDATA));
   }
 
   return tRadiance;
