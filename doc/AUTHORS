@@ -27,4 +27,9 @@
                                                        Schlick BSDF
                                                        SchlickDouble BSDF
                                                        Cook-Torrance BSDF
+
+   Kevin Harris (kharris@usa.net)                      Area lights
+                                                       Thin-lens camera
+                                                       Generic root solvers
                                                        
+
