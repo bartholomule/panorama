@@ -1,0 +1,157 @@
+/*
+*  Wood material test
+*/
+
+#include "materials.inc"
+
+define material MWood : class MaterialWood
+{
+  bsdf : class BsdfPhong
+  {
+    exponent 50
+  }
+  ambient	0.2
+  diffuse	0.6
+  specular	0.25
+}
+
+define material Marble : class MaterialMarble
+{
+  bsdf : class BsdfPhong
+  {
+    exponent 50 
+  }
+  ambient  0.2
+  diffuse  0.6
+  specular 0.25
+}
+
+define camera c
+{
+  translate	<0, 400, 600>
+  look_at	<0, 0, 0>
+}
+
+define light l_ambient
+{
+  translate	<-400, 500, 1000>
+  volumetric    off
+  shadow        off
+}
+
+define light l : class WarnLight
+{
+  translate	<-40, 500, 1000>
+  point_at	<0, 0, 0>
+  exponent      20
+  axis          <0, 0, 0>
+  angle_th      15
+  intensity     1
+}
+
+cylinder
+{
+  translate <-2.5, 0, -0.5>
+  scale < 75, 150, 75>
+
+  material : extends Marble
+  {
+    color       CMediumWood
+    base_color  "marble1"
+    zoom        <.2, .2, .2>
+    bump        0
+    octaves     7
+    falloff     2.17
+  }
+}
+
+cylinder
+{
+  translate <2.5, 0, -0.5>
+  scale < 75, 150, 75>
+
+  material : extends Marble
+  {
+    color       CMediumWood
+    base_color  "marble2"
+    zoom        <.7, .1, .7>
+    bump        0.2
+    octaves     6
+    falloff     4.1
+  }
+}
+
+box
+{
+  scale         <150, 150, 150>
+  rotate        <0, 120, 0>
+  translate     <0, 75, -50>
+  material : extends MWood
+  {
+    base_color  "wood1"
+    zoom        <.2, .2, .2>
+    bump        0
+    grain       1
+    ringscale   20
+  }
+}
+
+sphere
+{
+  translate     <120, 75, 200>
+  radius        75
+  material : extends MWood
+  {
+    color       CMediumWood
+    base_color  "wood2"
+    zoom        <85, 10, 75>
+    bump        0
+    grain       0.5
+    ringscale   30
+  }
+}
+
+torus
+{
+  translate     <-120, 35, 150>
+  rotate        <0, 0, 0>
+  radius_a      75
+  radius_b      35
+  material : extends MWood
+  {
+    base_color  "wood5"
+    zoom        <50, 50, 50>
+    bump        0
+  }
+}
+
+plane
+{
+  translate     <0, 0, 0>
+  normal	<0, 1, 0>
+  material : extends MWood
+  {
+    color       COrange
+    base_color  "wood3"
+    zoom        <50, 50, 50>
+  }
+}
+
+scene
+{
+  camera	c
+  light		l
+  light		l_ambient
+  width		300
+  height	200
+  background	CSummerSky
+  output
+  {
+    name	"wood.tga"
+  }
+  renderer : class Raytracer 
+  {
+    sampling "adaptive"
+  }
+}
+
