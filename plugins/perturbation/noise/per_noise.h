@@ -60,7 +60,7 @@ class TPerturbationNoise : public TPerturbation
 inline TVector TPerturbationNoise::perturbNormal (const TSurfaceData& rktDATA) const
 {
 
-  TVector   tNewNormal = rktDATA.normal();
+  TVector   tNewNormal = rktDATA.unperturbedNormal();
 
   if ( tBumpFactor )
   {
@@ -77,7 +77,7 @@ inline TVector TPerturbationNoise::perturbNormal (const TSurfaceData& rktDATA) c
 
     ptNoisePattern->tNoise.noise (tPoint, &tGradient);
 
-    tNewNormal = rktDATA.normal() + tGradient * tBumpFactor;
+    tNewNormal += tGradient * tBumpFactor;
     tNewNormal.normalize();
   }
   

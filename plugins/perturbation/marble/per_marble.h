@@ -59,7 +59,7 @@ class TPerturbationMarble : public TPerturbation
 inline TVector TPerturbationMarble::perturbNormal (const TSurfaceData& rktDATA) const
 {
 
-  TVector   tNewNormal = rktDATA.normal();
+  TVector   tNewNormal = rktDATA.unperturbedNormal();
 
   if ( tBumpFactor )
   {
@@ -76,7 +76,7 @@ inline TVector TPerturbationMarble::perturbNormal (const TSurfaceData& rktDATA) 
 
     ptMarblePattern->evaluate (tPoint, &tGradient);
 
-    tNewNormal = rktDATA.normal() + tGradient * tBumpFactor;
+    tNewNormal += tGradient * tBumpFactor;
     tNewNormal.normalize();
   }
   

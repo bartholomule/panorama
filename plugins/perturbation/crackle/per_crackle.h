@@ -59,7 +59,7 @@ class TPerturbationCrackle : public TPerturbation
 inline TVector TPerturbationCrackle::perturbNormal (const TSurfaceData& rktDATA) const
 {
 
-  TVector   tNewNormal = rktDATA.normal();
+  TVector   tNewNormal = rktDATA.unperturbedNormal();
 
   if ( fabs(tBumpFactor) > FX_EPSILON )
   {
@@ -76,7 +76,7 @@ inline TVector TPerturbationCrackle::perturbNormal (const TSurfaceData& rktDATA)
 
     ptCracklePattern->evaluate (tPoint, &tGradient);
 
-    tNewNormal = rktDATA.normal() + tGradient * tBumpFactor;
+    tNewNormal += tGradient * tBumpFactor;
     tNewNormal.normalize();
   }
   

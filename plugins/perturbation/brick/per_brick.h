@@ -58,7 +58,7 @@ class TPerturbationBrick : public TPerturbation
 inline TVector TPerturbationBrick::perturbNormal (const TSurfaceData& rktDATA) const
 {
 
-  TVector   tNewNormal = rktDATA.normal();
+  TVector   tNewNormal = rktDATA.unperturbedNormal();
 
   if ( fabs(tBumpFactor) > FX_EPSILON )
   {
@@ -75,7 +75,7 @@ inline TVector TPerturbationBrick::perturbNormal (const TSurfaceData& rktDATA) c
 
     ptBrickPattern->evaluate (tPoint, &tGradient);
 
-    tNewNormal = rktDATA.normal() + tGradient * tBumpFactor;
+    tNewNormal += tGradient * tBumpFactor;
     tNewNormal.normalize();
   }
   

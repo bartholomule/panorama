@@ -58,7 +58,7 @@ class TPerturbationLeopard : public TPerturbation
 inline TVector TPerturbationLeopard::perturbNormal (const TSurfaceData& rktDATA) const
 {
 
-  TVector   tNewNormal = rktDATA.normal();
+  TVector   tNewNormal = rktDATA.unperturbedNormal();
 
   if ( tBumpFactor )
   {
@@ -75,7 +75,7 @@ inline TVector TPerturbationLeopard::perturbNormal (const TSurfaceData& rktDATA)
 
     ptLeopardPattern->evaluate (tPoint, &tGradient);
 
-    tNewNormal = rktDATA.normal() + tGradient * tBumpFactor;
+    tNewNormal += tGradient * tBumpFactor;
     tNewNormal.normalize();
   }
   

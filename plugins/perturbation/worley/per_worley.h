@@ -60,7 +60,7 @@ inline TVector TPerturbationWorley::perturbNormal (const TSurfaceData& rktDATA) 
   TVector                                     tPoint;
   TVector                                     tVector;
   TPriorityQueue<TWorleyBasis::TPointData>*   ptPQueue;
-  TVector                                     tNewNormal = rktDATA.normal();
+  TVector                                     tNewNormal = rktDATA.unperturbedNormal();
 
   if ( tBumpFactor )
   {
@@ -75,7 +75,7 @@ inline TVector TPerturbationWorley::perturbNormal (const TSurfaceData& rktDATA) 
 
     tVector = (*ptPQueue)[0].tData.tVector;
     
-    tNewNormal = rktDATA.normal() + tVector * tBumpFactor;
+    tNewNormal += tVector * tBumpFactor;
     tNewNormal.normalize();
   
     delete ptPQueue;
