@@ -29,9 +29,6 @@ class TBaseMatrix
 
   friend class TVector3D<TItem>;
   
-  friend TBaseMatrix<TItem> operator *<TItem> (const TBaseMatrix<TItem>& rktMAT1, const TBaseMatrix<TItem>& rktMAT2);
-  friend TVector3D<TItem> operator *<TItem> (const TBaseMatrix<TItem>& rktMAT, const TVector3D<TItem>& rktVECTOR);
-
   protected:
   
     TItem   atElement[4][4];
@@ -414,11 +411,13 @@ TBaseMatrix<TItem> operator * (const TBaseMatrix<TItem>& rktMAT1, const TBaseMat
   {
     for (Byte J = 0; ( J < 4 ) ;J++)
     {
-      tMatrix.atElement[I][J] = TItem (0);
+      TItem   tItem (0);
+
       for (size_t K = 0; ( K < 4 ) ;K++)
       {
-        tMatrix.atElement[I][J] += rktMAT1.atElement[I][K] * rktMAT2.atElement[K][J];
+        tItem += rktMAT1.getElement (I, K) * rktMAT2.getElement (K, J);
       }
+      tMatrix.setElement (I, J, tItem);
     }
   }
 
@@ -431,18 +430,18 @@ template <class TItem>
 TVector3D<TItem> operator * (const TBaseMatrix<TItem>& rktMAT, const TVector3D<TItem>& rktVECTOR)
 {
 
-  TVector3D<TItem>   tVector (rktMAT.atElement[0][0] * rktVECTOR.x() +
-                              rktMAT.atElement[0][1] * rktVECTOR.y() +
-                              rktMAT.atElement[0][2] * rktVECTOR.z() +
-                              rktMAT.atElement[0][3],
-                              rktMAT.atElement[1][0] * rktVECTOR.x() +
-                              rktMAT.atElement[1][1] * rktVECTOR.y() +
-                              rktMAT.atElement[1][2] * rktVECTOR.z() +
-                              rktMAT.atElement[1][3],
-                              rktMAT.atElement[2][0] * rktVECTOR.x() +
-                              rktMAT.atElement[2][1] * rktVECTOR.y() +
-                              rktMAT.atElement[2][2] * rktVECTOR.z() +
-                              rktMAT.atElement[2][3]);
+  TVector3D<TItem>   tVector (rktMAT.getElement(0, 0) * rktVECTOR.x() +
+                              rktMAT.getElement(0, 1) * rktVECTOR.y() +
+                              rktMAT.getElement(0, 2) * rktVECTOR.z() +
+                              rktMAT.getElement(0, 3),
+                              rktMAT.getElement(1, 0) * rktVECTOR.x() +
+                              rktMAT.getElement(1, 1) * rktVECTOR.y() +
+                              rktMAT.getElement(1, 2) * rktVECTOR.z() +
+                              rktMAT.getElement(1, 3),
+                              rktMAT.getElement(2, 0) * rktVECTOR.x() +
+                              rktMAT.getElement(2, 1) * rktVECTOR.y() +
+                              rktMAT.getElement(2, 2) * rktVECTOR.z() +
+                              rktMAT.getElement(2, 3));
 
   return tVector;
 
