@@ -62,6 +62,7 @@ static double (*_pfFunction)(void);
 #define MESH		((TMeshObject*) _tDataStack.top())
 
 #define YYDEBUG 1
+#define YYERROR_VERBOSE 
 
 static TProcedural* NewObject (const string& rktCLASS, const TProcedural* pktPARENT);
 static void* InstanceObject (const string& rktNAME);
@@ -73,6 +74,8 @@ static void SetParameter (const string& rktATTRIB, EAttribType eTYPE);
 static void InitObjects (void);
 static void InitFunctions (void);
 
+static string EAttribType_to_str(EAttribType eat);
+ 
 %}
 
 %union {
@@ -100,49 +103,57 @@ static void InitFunctions (void);
 %token <acIdent> T_IDENTIFIER
 %token <acIdent> T_QUOTED_STRING
 
-%token T_AGGREGATE
-%token T_ATM_OBJECT
-%token T_BLUE
-%token T_BOX
-%token T_BSDF
-%token T_CAMERA
-%token T_CIRCLE
-%token T_CLASS
-%token T_COLOR
-%token T_CONE
-%token T_CYLINDER
-%token T_DEFINE
-%token T_DIFFERENCE
-%token T_EXTENDS
-%token T_FILTER
-%token T_GREEN
-%token T_IMAGE_FILTER
-%token T_INTERSECTION
-%token T_LIGHT
-%token T_MATERIAL
-%token T_MESH
-%token T_OBJECT
-%token T_OBJECT_FILTER
-%token T_OUTPUT
-%token T_PHONG_TRIANGLE
-%token T_PLANE
-%token T_RECTANGLE
-%token T_RED
-%token T_RENDERER
-%token T_ROTATE
-%token T_SCALE
-%token T_SCENE
-%token T_SPHERE
-%token T_TORUS
-%token T_TRANSLATE
-%token T_TRIANGLE
-%token T_TYPE
-%token T_UNION
-%token T_VECTOR
-%token T_VERTEX
-%token T_X
-%token T_Y
-%token T_Z
+/* "Reserved word" tokens.
+   Modified to all act the same as identifiers (KH--07Aug2000)  */
+%token <acIdent> T_AGGREGATE
+%token <acIdent> T_ATM_OBJECT
+%token <acIdent> T_BLUE
+%token <acIdent> T_BOX
+%token <acIdent> T_BSDF
+%token <acIdent> T_CAMERA
+%token <acIdent> T_CIRCLE
+%token <acIdent> T_CLASS
+%token <acIdent> T_COLOR
+%token <acIdent> T_CONE
+%token <acIdent> T_CYLINDER
+%token <acIdent> T_DEFINE
+%token <acIdent> T_DIFFERENCE
+%token <acIdent> T_EXTENDS
+%token <acIdent> T_FILTER
+%token <acIdent> T_GREEN
+%token <acIdent> T_IMAGE_FILTER
+%token <acIdent> T_INTERSECTION
+%token <acIdent> T_LIGHT
+%token <acIdent> T_MATERIAL
+%token <acIdent> T_MESH
+%token <acIdent> T_OBJECT
+%token <acIdent> T_OBJECT_FILTER
+%token <acIdent> T_OUTPUT
+%token <acIdent> T_PHONG_TRIANGLE
+%token <acIdent> T_PLANE
+%token <acIdent> T_RECTANGLE
+%token <acIdent> T_RED
+%token <acIdent> T_RENDERER
+%token <acIdent> T_ROTATE
+%token <acIdent> T_SCALE
+%token <acIdent> T_SCENE
+%token <acIdent> T_SPHERE
+%token <acIdent> T_TORUS
+%token <acIdent> T_TRANSLATE
+%token <acIdent> T_TRIANGLE
+%token <acIdent> T_TYPE
+%token <acIdent> T_UNION
+%token <acIdent> T_VECTOR
+%token <acIdent> T_VERTEX
+%token <acIdent> T_X
+%token <acIdent> T_Y
+%token <acIdent> T_Z
+/* Tokens to allow user requested information about types/attribute lists.
+   Added 06/Aug/2000 */ 
+%token <acIdent> T_ATTR_LIST
+%token <acIdent> T_ATTR_TYPE
+%type <acIdent> reserved_words
+%type <acIdent> potential_string
 
 %type <dValue> real_expr
 %type <acIdent> name
@@ -452,11 +463,52 @@ params			: /* Nothing */
 			| params param
 			;
 
-param			: T_IDENTIFIER vector3
-			  {
-			    _nAttrib.pvValue = $2;
-			    SetParameter ($1, FX_VECTOR);
-			  }
+param			: T_ATTR_LIST '(' ')' 
+                        {
+                          /* Print out an attribute list [names w/types] for
+                             the current object */ 
+                             TAttributeList tal;
+                             DATA->getAttributeList(tal);
+        
+                          cout << "Requested attribute list for \""
+                               << DATA->className() << "\"" << endl;
+        
+                          for(TAttributeList::const_iterator i = tal.begin();
+                              i != tal.end();
+                              ++i)
+                          {
+                            cout << "  ("
+                                 << EAttribType_to_str(i->second)
+                                 << ") "
+                                 << i->first << endl;
+                          }
+                        }
+                        | T_ATTR_TYPE '(' potential_string ')' 
+                        {
+                          /* Print out the type of the given attribute */
+                          TAttributeList tal;
+                          DATA->getAttributeList(tal);
+        
+                          TAttributeList::const_iterator loc;
+                          loc = tal.find(string($3)); 
+         
+                          cout << "Requested attribute type for \"" << $3
+                               << "\" in \"" << DATA->className() << "\": ";
+        
+                          if( loc != tal.end() )
+                          {
+                            cout << EAttribType_to_str(loc->second) << endl;
+                          }
+                          else
+                          {
+                            cout << "no such attribute" << endl;
+                          }
+                        }
+                        | T_IDENTIFIER vector3
+                        {
+                          _nAttrib.pvValue = $2;
+                          SetParameter ($1, FX_VECTOR);
+                        }
 			| T_IDENTIFIER vector2
 			  {
 			    _nAttrib.pvValue = $2;
@@ -1415,6 +1467,60 @@ csg_instance     	: name
 			  }
 			;
 
+potential_string:
+		        T_IDENTIFIER
+			| reserved_words
+			;
+
+
+reserved_words:
+                        T_AGGREGATE 
+			| T_ATM_OBJECT
+			| T_BLUE
+			| T_BOX
+			| T_BSDF
+			| T_CAMERA
+			| T_CIRCLE
+			| T_CLASS
+			| T_COLOR
+			| T_CONE
+			| T_CYLINDER
+			| T_DEFINE
+			| T_DIFFERENCE
+			| T_EXTENDS
+			| T_FILTER
+			| T_GREEN
+			| T_IMAGE_FILTER
+			| T_INTERSECTION
+			| T_LIGHT
+			| T_MATERIAL
+			| T_MESH
+			| T_OBJECT
+			| T_OBJECT_FILTER
+			| T_OUTPUT
+			| T_PHONG_TRIANGLE
+			| T_PLANE
+			| T_RECTANGLE
+			| T_RED
+			| T_RENDERER
+			| T_ROTATE
+			| T_SCALE
+			| T_SCENE
+			| T_SPHERE
+			| T_TORUS
+			| T_TRANSLATE
+			| T_TRIANGLE
+			| T_TYPE
+			| T_UNION
+			| T_VECTOR
+			| T_VERTEX
+			| T_X
+			| T_Y
+		        | T_Z
+			| T_ATTR_LIST
+			| T_ATTR_TYPE
+			;
+
 %%
 
 void rt_error (const char* pkcTEXT)
@@ -1600,3 +1706,29 @@ void SetParameter (const string& rktATTRIB, EAttribType eTYPE)
   }
 
 }  /* SetParameter() */
+
+static string EAttribType_to_str(EAttribType eat)
+{
+  /* This function is pretty dumb, but I (KH) couldn't find another one
+     anywhere else.  Added on 07Aug2000  */ 
+  switch( eat )
+  {
+  case FX_NONE: return "none";
+  case FX_REAL: return "real";
+  case FX_BOOL: return "bool";
+  case FX_STRING: return "string";
+  case FX_COLOR: return "color";
+  case FX_VECTOR: return "vector";
+  case FX_VECTOR2: return "2d_vector";
+  case FX_IMAGE: return "image";
+  case FX_BSDF: return "bsdf";
+  case FX_CAMERA: return "camera";
+  case FX_LIGHT: return "light";
+  case FX_MATERIAL: return "material";
+  case FX_RENDERER: return "renderer";
+  case FX_OBJECT: return "object";
+  case FX_OBJECT_FILTER: return "object_filter";
+  case FX_IMAGE_FILTER: return "image_filter";
+  default: return "unknown";
+  }
+} /* EAttribType_to_str */

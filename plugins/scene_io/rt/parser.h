@@ -64,7 +64,9 @@ typedef union {
 #define	T_X	301
 #define	T_Y	302
 #define	T_Z	303
-#define	UNARY_MINUS	304
+#define	T_ATTR_LIST	304
+#define	T_ATTR_TYPE	305
+#define	UNARY_MINUS	306
 
 
 extern YYSTYPE rt_lval;

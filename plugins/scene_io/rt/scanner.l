@@ -65,6 +65,16 @@ static TIncludeFileData   _tIncludeFileData;
 static TIncludeFileData   _atIncludeStack [MAX_INCLUDE_DEPTH];
 static Byte               _bIncludeLevel = 0;
 
+// Macro to allow reserved words to be returned with their actual text.  This
+// is useful for words that are considered reserved words but may be needed as
+// strings at some point in the parser.
+#define RESERVED(x)                 \
+{                                   \
+  strcpy (rt_lval.acIdent, yytext); \
+  rt_lval.acIdent [yyleng] = '\0';  \
+  return x;                         \
+} 
+ 
 %}
 
 alpha			[a-zA-Z]
@@ -81,50 +91,65 @@ real			{float}({exponent})?
 
 %%
 
-aggregate               return T_AGGREGATE;
-atm_object              return T_ATM_OBJECT;
-blue			return T_BLUE;
-box			return T_BOX;
-bsdf			return T_BSDF;
-camera			return T_CAMERA;
-circle			return T_CIRCLE;
-class			return T_CLASS;
-color			return T_COLOR;
-colour			return T_COLOR;
-cone                    return T_CONE;
-cylinder		return T_CYLINDER;
-define			return T_DEFINE;
-difference              return T_DIFFERENCE;
-extends			return T_EXTENDS;
-filter			return T_FILTER;
-green			return T_GREEN;
-image_filter            return T_IMAGE_FILTER;
-intersection            return T_INTERSECTION;
-light			return T_LIGHT;
-material		return T_MATERIAL;
-mesh			return T_MESH;
-object			return T_OBJECT;
-object_filter           return T_OBJECT_FILTER;
-output                  return T_OUTPUT;
-phong_triangle		return T_PHONG_TRIANGLE;
-plane			return T_PLANE;
-rectangle		return T_RECTANGLE;
-red			return T_RED;
-renderer		return T_RENDERER;
-rotate			return T_ROTATE;
-scale                   return T_SCALE;
-scene			return T_SCENE;
-sphere			return T_SPHERE;
-torus                   return T_TORUS;
-translate		return T_TRANSLATE;
-triangle		return T_TRIANGLE;
-type			return T_TYPE;
-union                   return T_UNION;
-vector			return T_VECTOR;
-vertex			return T_VERTEX;
-x                       return T_X;
-y                       return T_Y;
-z                       return T_Z;
+aggregate               RESERVED (T_AGGREGATE);
+atm_object              RESERVED (T_ATM_OBJECT);
+attribute_list          RESERVED (T_ATTR_LIST);
+attribute_type          RESERVED (T_ATTR_TYPE);
+blue			RESERVED (T_BLUE);
+box			RESERVED (T_BOX);
+bsdf			RESERVED (T_BSDF);
+camera			RESERVED (T_CAMERA);
+circle			RESERVED (T_CIRCLE);
+class			RESERVED (T_CLASS);
+color			RESERVED (T_COLOR);
+colour			RESERVED (T_COLOR);
+cone                    RESERVED (T_CONE);
+cylinder		RESERVED (T_CYLINDER);
+define			RESERVED (T_DEFINE);
+difference              RESERVED (T_DIFFERENCE);
+extends			RESERVED (T_EXTENDS);
+filter			RESERVED (T_FILTER);
+green			RESERVED (T_GREEN);
+image_filter            RESERVED (T_IMAGE_FILTER);
+intersection            RESERVED (T_INTERSECTION);
+light			RESERVED (T_LIGHT);
+material		RESERVED (T_MATERIAL);
+mesh			RESERVED (T_MESH);
+object			RESERVED (T_OBJECT);
+object_filter           RESERVED (T_OBJECT_FILTER);
+output                  RESERVED (T_OUTPUT);
+phong_triangle		RESERVED (T_PHONG_TRIANGLE);
+plane			RESERVED (T_PLANE);
+rectangle		RESERVED (T_RECTANGLE);
+red			RESERVED (T_RED);
+renderer		RESERVED (T_RENDERER);
+rotate			RESERVED (T_ROTATE);
+scale                   RESERVED (T_SCALE);
+scene			RESERVED (T_SCENE);
+sphere			RESERVED (T_SPHERE);
+torus                   RESERVED (T_TORUS);
+translate		RESERVED (T_TRANSLATE);
+triangle		RESERVED (T_TRIANGLE);
+type			RESERVED (T_TYPE);
+union                   RESERVED (T_UNION);
+vector			RESERVED (T_VECTOR);
+vertex			RESERVED (T_VERTEX);
+x                       RESERVED (T_X);
+y                       RESERVED (T_Y);
+z                       RESERVED (T_Z);
+"halt()"                {
+                          /* This simple rule is an easy way to get panorama to
+			     terminate before any expensive calculations are
+			     performed.  This may be useful for checking the
+			     syntax of a source file and terminating before any
+			     work is done on it.
+			  */ 
+                          cout << "Terminating due to halt request on line "
+			       << TSceneRT::_dwLineNumber
+			       << "."
+			       << endl;
+			  exit(1);
+                        }
 
 on			{
 			  rt_lval.gValue = true;
