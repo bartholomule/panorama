@@ -1,5 +1,6 @@
 /*
 *  Copyright (C) 1998 Angel Jimenez Jimenez and Carlos Jimenez Moreno
+*  Copyright (C) 1999 Peter Barnett
 *
 *  This program is free software; you can redistribute it and/or modify
 *  it under the terms of the GNU General Public License as published by
@@ -21,6 +22,7 @@
 
 #include "llapi/perlin_noise.h"
 #include "llapi/material.h"
+#include "llapi/gradient.h"
 #include "hlapi/plugin_manager.h"
 
 class TMaterialNoise : public TMaterial
@@ -31,7 +33,9 @@ class TMaterialNoise : public TMaterial
     TColor         tBaseColor;
     TVector        tZoom;
     TScalar        tBumpFactor;
+    bool           bGradientLoaded;
     TPerlinNoise   tNoise;
+    TGradient      tGradient;
 
   public:
 
@@ -40,14 +44,22 @@ class TMaterialNoise : public TMaterial
     TMaterialNoise (void) :
       TMaterial(),
       tZoom (1, 1, 1),
-      tBumpFactor (0) {}
+      tBumpFactor (0),
+      bGradientLoaded (false) {}
       
     TColor color (const TSurfaceData& rktDATA) const
     {
-      TVector   tPoint      = rktDATA.localPoint() * tZoom;
-      TScalar   tNoiseValue = tNoise.noise (tPoint);
-
-      return lerp (tBaseColor, tColor, tNoiseValue);
+      TVector   tPoint = rktDATA.localPoint() * tZoom;
+      TScalar   tValue = tNoise.noise (tPoint);
+      
+      if ( bGradientLoaded == true )
+      {
+        return tGradient.getColorAt (tValue);
+      }
+      else
+      {
+        return lerp (tColor, tBaseColor, tValue);
+      }
     }
     
     TVector perturbNormal (const TSurfaceData& rktDATA) const;
@@ -74,8 +86,10 @@ inline TVector TMaterialNoise::perturbNormal (const TSurfaceData& rktDATA) const
   if ( tBumpFactor )
   {
     TVector   tGradient;
-    TVector   tPoint      = rktDATA.localPoint() * tZoom;
-    TScalar   tNoiseValue = tNoise.noise (tPoint);
+    TScalar   tNoiseValue;
+    TVector   tPoint = rktDATA.localPoint() * tZoom;
+
+    tNoiseValue = tNoise.noise (tPoint);
 
     tPoint      = tPoint + rktDATA.normal() * tNoiseValue;
     tNoiseValue = tNoise.noise (tPoint, &tGradient);

@@ -1,5 +1,6 @@
 /*
 *  Copyright (C) 1998 Angel Jimenez Jimenez and Carlos Jimenez Moreno
+*  Copyright (C) 1999 Peter Barnett
 *
 *  This program is free software; you can redistribute it and/or modify
 *  it under the terms of the GNU General Public License as published by
@@ -29,6 +30,10 @@ int TMaterialNoise::setAttribute (const string& rktNAME, NAttribute nVALUE, EAtt
     if ( eTYPE == FX_COLOR )
     {
       setBaseColor (*((TColor*) nVALUE.pvValue));
+    }
+    else if ( eTYPE == FX_STRING )
+    {
+      bGradientLoaded = tGradient.loadGradient((char *) nVALUE.pvValue);
     }
     else
     {
