@@ -1,0 +1,15 @@
+// env_test.rt - A simple test of retrieving environment variables.
+// 
+// When testing this, try defining X to take several values, where
+// not all of them are numeric.
+
+// Get an environment variable 'X' from the system.
+define x env("X");
+
+print(x);
+print(cos(x));
+
+print(cos(real(x)));
+//functionlist();
+
+halt();
