@@ -5,6 +5,13 @@
 
 #define YYBISON 1  /* Identify Bison output.  */
 
+#define yyparse rt_parse
+#define yylex rt_lex
+#define yyerror rt_error
+#define yylval rt_lval
+#define yychar rt_char
+#define yydebug rt_debug
+#define yynerrs rt_nerrs
 #define	T_BOOL	258
 #define	T_REAL	259
 #define	T_IDENTIFIER	260
@@ -96,15 +103,15 @@ static double (*_pfFunction)(void);
 
 #define YYDEBUG 1
 
-TProcedural* NewObject (const string& rktCLASS, const TProcedural* pktPARENT);
-void* InstanceObject (const string& rktNAME);
-void* UpdateObject (const string& rktNAME);
-void DefineObject (const string& rktNAME, const string& rktCLASS, const string& rktDEF_CLASS);
-void CreateObject (const string& rktCLASS, const string& rktDEF_CLASS);
-void SetParameter (const string& rktATTRIB, EAttribType eTYPE);
+static TProcedural* NewObject (const string& rktCLASS, const TProcedural* pktPARENT);
+static void* InstanceObject (const string& rktNAME);
+static void* UpdateObject (const string& rktNAME);
+static void DefineObject (const string& rktNAME, const string& rktCLASS, const string& rktDEF_CLASS);
+static void CreateObject (const string& rktCLASS, const string& rktDEF_CLASS);
+static void SetParameter (const string& rktATTRIB, EAttribType eTYPE);
 
-void InitObjects (void);
-void InitFunctions (void);
+static void InitObjects (void);
+static void InitFunctions (void);
 
 
 #line 76 "parser.y"
@@ -2752,15 +2759,15 @@ yyerrhandle:
 #line 1273 "parser.y"
 
 
-void yyerror (const char* pkcTEXT)
+void rt_error (const char* pkcTEXT)
 {
 
   cerr << endl << TSceneRT::_tInputFileName << "(" << TSceneRT::_dwLineNumber << ") Error: " << pkcTEXT << endl;
 
-}  /* yyerror() */
+}  /* rt_error() */
 
 
-void InitParser (void)
+void RT_InitParser (void)
 {
 
   InitObjects();
@@ -2770,15 +2777,15 @@ void InitParser (void)
   
   TSceneRT::_ptParsedScene->setWorld (_ptWorld);
   
-}  /* InitParser() */
+}  /* RT_InitParser() */
 
 
-void CloseParser (void)
+void RT_CloseParser (void)
 {
 
   _tObjectMap.clear();
 
-}  /* CloseParser() */
+}  /* RT_CloseParser() */
 
 
 void InitFunctions (void)

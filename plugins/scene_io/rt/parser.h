@@ -63,4 +63,4 @@ typedef union {
 #define	UNARY_MINUS	301
 
 
-extern YYSTYPE yylval;
+extern YYSTYPE rt_lval;

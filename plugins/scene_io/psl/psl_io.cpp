@@ -17,6 +17,7 @@
 */
 
 #include "hlapi/scene_manager.h"
+#include "parser_defs.h"
 #include "psl_io.h"
 
 DEFINE_SCENE_IO_PLUGIN ("psl", TScenePsl);
@@ -33,23 +34,23 @@ TScene* TScenePsl::_load (const string& rktNAME)
   _ptParsedScene  = new TScene();
   _tInputFileName = rktNAME;
 
-  yyin = fopen (_tInputFileName.c_str(), "rb");
+  psl_in = fopen (_tInputFileName.c_str(), "rb");
 
-  if ( !yyin )
+  if ( !psl_in )
   {
     cerr << "ERROR: Could not open scene file." << endl;
     return NULL;
   }
 
-  yydebug = 0;
+  psl_debug = 0;
 
-  InitParser();
+  PSL_InitParser();
 
-  iResult = yyparse();
-
-  CloseParser();
+  iResult = psl_parse();
   
-  fclose (yyin);
+  PSL_CloseParser();
+  
+  fclose (psl_in);
   
   if ( iResult != 0 )
   {

@@ -19,9 +19,7 @@
 #ifndef _RT_IO__
 #define _RT_IO__
 
-#include "llapi/machine.h"
 #include "hlapi/plugin_manager.h"
-#include "parser_defs.h"
 
 class TSceneRT : public TBaseClass
 {

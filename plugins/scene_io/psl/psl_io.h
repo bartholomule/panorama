@@ -20,7 +20,6 @@
 #define _PSL_IO__
 
 #include "hlapi/plugin_manager.h"
-#include "parser_defs.h"
 
 class TScenePsl : public TBaseClass
 {

@@ -54,4 +54,4 @@ typedef union {
 #define	UNARY_MINUS	298
 
 
-extern YYSTYPE yylval;
+extern YYSTYPE psl_lval;

@@ -28,17 +28,17 @@
 //
 //  Extern variables
 //
-extern FILE*   yyin;
-extern FILE*   yyout;
-extern int     yydebug;
+extern FILE*   psl_in;
+extern FILE*   psl_out;
+extern int     psl_debug;
 
 //
 //  Prototypes
 //
-void yyerror (const char* pkcTEXT);
-int yyparse (void);
-int yylex (void);
-void InitParser (void);
-void CloseParser (void);
+void psl_error (const char* pkcTEXT);
+int psl_parse (void);
+int psl_lex (void);
+void PSL_InitParser (void);
+void PSL_CloseParser (void);
 
 #endif  /* _PARSER_DEFS__ */

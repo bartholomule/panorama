@@ -5,6 +5,13 @@
 
 #define YYBISON 1  /* Identify Bison output.  */
 
+#define yyparse psl_parse
+#define yylex psl_lex
+#define yyerror psl_error
+#define yylval psl_lval
+#define yychar psl_char
+#define yydebug psl_debug
+#define yynerrs psl_nerrs
 #define	T_REAL	258
 #define	T_BOOL	259
 #define	T_COMPLEX_TYPE	260
@@ -83,17 +90,17 @@ static TEventCode*   _ptCurrentEvent = NULL;
 
 #define YYDEBUG 1
 
-string DefaultClass (const string& rktTYPE);
-TProcedural* NewObject (const string& rktCLASS, const TProcedural* pktPARENT);
-void* UpdateObject (const string& rktNAME);
-void DefineObject (const string& rktNAME, const string& rktCLASS, const string& rktDEF_CLASS);
-void CreateObject (const string& rktCLASS, const string& rktDEF_CLASS);
-EAttribType GetTypeCode (const string& rktNAME);
+static string DefaultClass (const string& rktTYPE);
+static TProcedural* NewObject (const string& rktCLASS, const TProcedural* pktPARENT);
+static void* UpdateObject (const string& rktNAME);
+static void DefineObject (const string& rktNAME, const string& rktCLASS, const string& rktDEF_CLASS);
+static void CreateObject (const string& rktCLASS, const string& rktDEF_CLASS);
+static EAttribType GetTypeCode (const string& rktNAME);
 
-void InitObjects (void);
+static void InitObjects (void);
 
-void AddVariable (const string& rktNAME);
-void AddInstruction (EInstructionCode eCODE, EAttribType eTYPE, NAttribute nPARAM);
+static void AddVariable (const string& rktNAME);
+static void AddInstruction (EInstructionCode eCODE, EAttribType eTYPE, NAttribute nPARAM);
 
 
 #line 68 "parser.y"
@@ -866,7 +873,7 @@ case 3:
 {
                             if ( ( yyvsp[-5].tExpressionData.eType != FX_REAL ) || ( yyvsp[-3].tExpressionData.eType != FX_REAL ) || ( yyvsp[-1].tExpressionData.eType != FX_REAL ) )
                             {
-                              yyerror ("wrong type for parameter (real expected).");
+                              psl_error ("wrong type for parameter (real expected).");
                               exit (1);
                             }
                             yyval.tExpressionData.eType          = FX_COLOR;
@@ -877,7 +884,7 @@ case 4:
 {
                             if ( ( yyvsp[-5].tExpressionData.eType != FX_REAL ) || ( yyvsp[-3].tExpressionData.eType != FX_REAL ) || ( yyvsp[-1].tExpressionData.eType != FX_REAL ) )
                             {
-                              yyerror ("wrong type for parameter (real expected).");
+                              psl_error ("wrong type for parameter (real expected).");
                               exit (1);
                             }
                             yyval.tExpressionData.eType         = FX_VECTOR;
@@ -888,7 +895,7 @@ case 5:
 {
                             if ( ( yyvsp[-3].tExpressionData.eType != FX_REAL ) || ( yyvsp[-1].tExpressionData.eType != FX_REAL ) )
                             {
-                              yyerror ("wrong type for parameter (real expected).");
+                              psl_error ("wrong type for parameter (real expected).");
                               exit (1);
                             }
                             yyval.tExpressionData.eType         = FX_VECTOR2;
@@ -1025,7 +1032,7 @@ case 38:
 {
                             if ( _eVarScope == FX_GLOBAL_SCOPE )
                             {
-                              yyerror ("cannot use a complex type for a global variable");
+                              psl_error ("cannot use a complex type for a global variable");
                               exit (1);
                             }
                             _eVarType = GetTypeCode (yyvsp[0].acString);
@@ -1034,7 +1041,7 @@ case 38:
 case 40:
 #line 313 "parser.y"
 {
-                            yyerror ("unknown type");
+                            psl_error ("unknown type");
                             exit (1);
                           ;
     break;}
@@ -1057,7 +1064,7 @@ case 45:
 {
                             if ( _eVarType != yyvsp[0].tExpressionData.eType )
                             {
-                              yyerror ("wrong type in assignment");
+                              psl_error ("wrong type in assignment");
                               cout << "left = " << _eVarType << ", right = " << yyvsp[0].tExpressionData.eType << endl;
                               exit (1);
                             }
@@ -1086,7 +1093,7 @@ case 50:
                             /*
                             if ( $1 != $3.eType )
                             {
-                              yyerror ("wrong type in assignment");
+                              psl_error ("wrong type in assignment");
                               exit (1);
                             }
                             */
@@ -1176,7 +1183,7 @@ case 70:
 {
                             if ( _tObjectMap.find (yyvsp[0].acString) == _tObjectMap.end() )
                             {
-			      yyerror ("trying to extend from non existing object");
+			      psl_error ("trying to extend from non existing object");
 			      exit (1);
                             }
                             _ptParent = _tObjectMap [yyvsp[0].acString];
@@ -1227,7 +1234,7 @@ case 76:
 {
                             if ( strcmp (yyvsp[-2].acString, "Object") && strcmp (yyvsp[-2].acString, "Aggregate") )
                             {
-                              yyerror ("only objects and scene can be instanced");
+                              psl_error ("only objects and scene can be instanced");
                               exit (1);
                             }
 			    CreateObject (yyvsp[-1].acString, "");
@@ -1459,32 +1466,32 @@ yyerrhandle:
 #line 520 "parser.y"
 
 
-void yyerror (const char* pkcTEXT)
+void psl_error (const char* pkcTEXT)
 {
 
   cerr << endl << TScenePsl::_tInputFileName << "(" << TScenePsl::_dwLineNumber << ") Error: " << pkcTEXT << endl;
 
-}  /* yyerror() */
+}  /* psl_error() */
 
 
-void InitParser (void)
+void PSL_InitParser (void)
 {
 
   InitObjects();
 
   _ptWorld = new TAggregate();
-  
+
   TScenePsl::_ptParsedScene->setWorld (_ptWorld);
   
-}  /* InitParser() */
+}  /* PSL_InitParser() */
 
 
-void CloseParser (void)
+void PSL_CloseParser (void)
 {
 
   _tObjectMap.clear();
 
-}  /* CloseParser() */
+}  /* PSL_CloseParser() */
 
 
 void InitObjects (void)
@@ -1566,7 +1573,7 @@ string DefaultClass (const string& rktTYPE)
   }
   else
   {
-    yyerror ("cannot use a simple type in define");
+    psl_error ("cannot use a simple type in define");
     exit (1);
   }
 
@@ -1584,7 +1591,7 @@ TProcedural* NewObject (const string& rktCLASS, const TProcedural* pktPARENT)
   if ( !ptChild )
   {
     string   tMessage = string ("class ") + rktCLASS + " does not exist";
-    yyerror (tMessage.c_str());
+    psl_error (tMessage.c_str());
     exit (1);
   }
 
@@ -1612,13 +1619,13 @@ void DefineObject (const string& rktNAME, const string& rktCLASS, const string& 
 
   if ( rktNAME == "" )
   {
-    yyerror ("defined object cannot be unnamed");
+    psl_error ("defined object cannot be unnamed");
     exit (1);
   }
 
   if ( _tObjectMap.find (rktNAME) != _tObjectMap.end() )
   {
-    yyerror ("cannot redefine an existing object");
+    psl_error ("cannot redefine an existing object");
     exit (1);
   }
 

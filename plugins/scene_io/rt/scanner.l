@@ -33,9 +33,9 @@ extern multimap<string, string>   tConfigData;
 //
 //  Prototypes
 //
-void DeleteComments (void);
-bool ProcessInclude (void);
-bool IncludeFile (void);
+static void DeleteComments (void);
+static bool ProcessInclude (void);
+static bool IncludeFile (void);
 
 //
 //  Types
@@ -115,12 +115,12 @@ union                   return T_UNION;
 vertex			return T_VERTEX;
 
 on			{
-			  yylval.gValue = true;
+			  rt_lval.gValue = true;
 			  return T_BOOL;
 			}
  
 off			{
-			  yylval.gValue = false;
+			  rt_lval.gValue = false;
 			  return T_BOOL;
 			}
 
@@ -131,8 +131,8 @@ off			{
 \n			TSceneRT::_dwLineNumber++;
 
 {identifier}		{
-			  strcpy (yylval.acIdent, yytext);
-			  yylval.acIdent [MAX_IDENTIFIER] = 0;
+			  strcpy (rt_lval.acIdent, yytext);
+			  rt_lval.acIdent [MAX_IDENTIFIER] = 0;
 			  return T_IDENTIFIER;
 			}
 
@@ -143,13 +143,13 @@ off			{
 #include		ProcessInclude();
 
 {real}			{
-			  yylval.dValue = atof (yytext);
+			  rt_lval.dValue = atof (yytext);
 			  return T_REAL;
 			}
 
 {quoted_string}		{
-			  strncpy (yylval.acIdent, yytext + 1, yyleng - 2);
-			  yylval.acIdent [yyleng - 2] = 0;
+			  strncpy (rt_lval.acIdent, yytext + 1, yyleng - 2);
+			  rt_lval.acIdent [yyleng - 2] = 0;
 			  return T_QUOTED_STRING;
 			}
 
@@ -195,7 +195,7 @@ void DeleteComments (void)
     {
       if ( iChar == EOF )
       {
-	yyerror ("EOF found inside multiline comment");
+	rt_error ("EOF found inside multiline comment");
 	exit (1);
       }
       if ( iChar == '\n' )
@@ -226,7 +226,7 @@ bool ProcessInclude (void)
 
   if ( iChar != '"' )
   {
-    yyerror ("'\"' expected");
+    rt_error ("'\"' expected");
     exit (1);
   }
   else
@@ -237,7 +237,7 @@ bool ProcessInclude (void)
     {
       if ( (iChar == '\n') || (iChar == EOF) )
       {
-        yyerror ("'\"' expected");
+        rt_error ("'\"' expected");
         exit (1);
       }
       _tIncludeFileName += char (iChar);
@@ -258,7 +258,7 @@ bool IncludeFile (void)
   _tIncludeFileData.yyBuffer     = YY_CURRENT_BUFFER;
   if ( _bIncludeLevel == MAX_INCLUDE_DEPTH )
   {
-    yyerror ("Maximum include level reached");
+    rt_error ("Maximum include level reached");
     exit (1);
   }
   else
@@ -291,7 +291,7 @@ bool IncludeFile (void)
 
   if ( !yyin )
   {
-    yyerror ("Include file could not be opened");
+    rt_error ("Include file could not be opened");
     exit (1);
   }
 

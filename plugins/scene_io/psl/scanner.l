@@ -32,10 +32,10 @@ extern multimap<string, string>   tConfigData;
 //
 //  Prototypes
 //
-int ComplexType (void);
-void DeleteComments (void);
-bool ProcessInclude (void);
-bool IncludeFile (void);
+static int ComplexType (void);
+static void DeleteComments (void);
+static bool ProcessInclude (void);
+static bool IncludeFile (void);
 
 //
 //  Types
@@ -100,12 +100,12 @@ ObjectFilter            return ComplexType();
 ImageFilter             return ComplexType();
 
 true                    {
-                          yylval.gValue = true;
+                          psl_lval.gValue = true;
                           return T_BOOL;
                         }
                         
 false                   {
-                          yylval.gValue = false;
+                          psl_lval.gValue = false;
                           return T_BOOL;
                         }
                         
@@ -116,8 +116,8 @@ false                   {
 \n			TScenePsl::_dwLineNumber++;
 
 {identifier}		{
-			  strcpy (yylval.acString, yytext);
-			  yylval.acString [MAX_IDENTIFIER] = 0;
+			  strcpy (psl_lval.acString, yytext);
+			  psl_lval.acString [MAX_IDENTIFIER] = 0;
 			  return T_IDENTIFIER;
 			}
 
@@ -128,13 +128,13 @@ false                   {
 #include		ProcessInclude();
 
 {real}			{
-			  yylval.dValue = atof (yytext);
+			  psl_lval.dValue = atof (yytext);
 			  return T_REAL;
 			}
 
 {quoted_string}		{
-			  strncpy (yylval.acString, yytext + 1, yyleng - 2);
-			  yylval.acString [yyleng - 2] = 0;
+			  strncpy (psl_lval.acString, yytext + 1, yyleng - 2);
+			  psl_lval.acString [yyleng - 2] = 0;
 			  return T_QUOTED_STRING;
 			}
 
@@ -170,8 +170,8 @@ int yywrap (void)
 int ComplexType (void)
 {
 
-  strcpy (yylval.acString, yytext);
-  yylval.acString [MAX_IDENTIFIER] = 0;
+  strcpy (psl_lval.acString, yytext);
+  psl_lval.acString [MAX_IDENTIFIER] = 0;
 
   return T_COMPLEX_TYPE;
 
@@ -191,7 +191,7 @@ void DeleteComments (void)
     {
       if ( iChar == EOF )
       {
-	yyerror ("EOF found inside multiline comment");
+	psl_error ("EOF found inside multiline comment");
 	exit (1);
       }
       if ( iChar == '\n' )
@@ -222,7 +222,7 @@ bool ProcessInclude (void)
 
   if ( iChar != '"' )
   {
-    yyerror ("'\"' expected");
+    psl_error ("'\"' expected");
     exit (1);
   }
   else
@@ -233,7 +233,7 @@ bool ProcessInclude (void)
     {
       if ( (iChar == '\n') || (iChar == EOF) )
       {
-        yyerror ("'\"' expected");
+        psl_error ("'\"' expected");
         exit (1);
       }
       _tIncludeFileName += char (iChar);
@@ -254,7 +254,7 @@ bool IncludeFile (void)
   _tIncludeFileData.yyBuffer     = YY_CURRENT_BUFFER;
   if ( _bIncludeLevel == MAX_INCLUDE_DEPTH )
   {
-    yyerror ("Maximum include level reached");
+    psl_error ("Maximum include level reached");
     exit (1);
   }
   else
@@ -287,7 +287,7 @@ bool IncludeFile (void)
 
   if ( !yyin )
   {
-    yyerror ("Include file could not be opened");
+    psl_error ("Include file could not be opened");
     exit (1);
   }
 

@@ -1,2 +1,4 @@
 PLUGIN_NAME = psl_io
 OBJ         = parser.o scanner.o psl_io.o
+BISONFLAGS  = --name-prefix=psl_
+LEXFLAGS   += -Ppsl_

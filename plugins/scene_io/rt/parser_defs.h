@@ -28,17 +28,17 @@
 //
 //  Extern variables
 //
-extern FILE*   yyin;
-extern FILE*   yyout;
-extern int     yydebug;
+extern FILE*   rt_in;
+extern FILE*   rt_out;
+extern int     rt_debug;
 
 //
 //  Prototypes
 //
-void yyerror (const char* pkcTEXT);
-int yyparse (void);
-int yylex (void);
-void InitParser (void);
-void CloseParser (void);
+void rt_error (const char* pkcTEXT);
+int rt_parse (void);
+int rt_lex (void);
+void RT_InitParser (void);
+void RT_CloseParser (void);
 
 #endif  /* _PARSER_DEFS__ */

@@ -51,17 +51,17 @@ static TEventCode*   _ptCurrentEvent = NULL;
 
 #define YYDEBUG 1
 
-string DefaultClass (const string& rktTYPE);
-TProcedural* NewObject (const string& rktCLASS, const TProcedural* pktPARENT);
-void* UpdateObject (const string& rktNAME);
-void DefineObject (const string& rktNAME, const string& rktCLASS, const string& rktDEF_CLASS);
-void CreateObject (const string& rktCLASS, const string& rktDEF_CLASS);
-EAttribType GetTypeCode (const string& rktNAME);
+static string DefaultClass (const string& rktTYPE);
+static TProcedural* NewObject (const string& rktCLASS, const TProcedural* pktPARENT);
+static void* UpdateObject (const string& rktNAME);
+static void DefineObject (const string& rktNAME, const string& rktCLASS, const string& rktDEF_CLASS);
+static void CreateObject (const string& rktCLASS, const string& rktDEF_CLASS);
+static EAttribType GetTypeCode (const string& rktNAME);
 
-void InitObjects (void);
+static void InitObjects (void);
 
-void AddVariable (const string& rktNAME);
-void AddInstruction (EInstructionCode eCODE, EAttribType eTYPE, NAttribute nPARAM);
+static void AddVariable (const string& rktNAME);
+static void AddInstruction (EInstructionCode eCODE, EAttribType eTYPE, NAttribute nPARAM);
 
 %}
 
@@ -166,7 +166,7 @@ color_expression        : T_TYPE_COLOR '(' expression ',' expression ',' express
                           {
                             if ( ( $3.eType != FX_REAL ) || ( $5.eType != FX_REAL ) || ( $7.eType != FX_REAL ) )
                             {
-                              yyerror ("wrong type for parameter (real expected).");
+                              psl_error ("wrong type for parameter (real expected).");
                               exit (1);
                             }
                             $$.eType          = FX_COLOR;
@@ -177,7 +177,7 @@ vector_expression       : T_TYPE_VECTOR '(' expression ',' expression ',' expres
                           {
                             if ( ( $3.eType != FX_REAL ) || ( $5.eType != FX_REAL ) || ( $7.eType != FX_REAL ) )
                             {
-                              yyerror ("wrong type for parameter (real expected).");
+                              psl_error ("wrong type for parameter (real expected).");
                               exit (1);
                             }
                             $$.eType         = FX_VECTOR;
@@ -188,7 +188,7 @@ vector2_expression      : T_TYPE_VECTOR2 '(' expression ',' expression ')'
                           {
                             if ( ( $3.eType != FX_REAL ) || ( $5.eType != FX_REAL ) )
                             {
-                              yyerror ("wrong type for parameter (real expected).");
+                              psl_error ("wrong type for parameter (real expected).");
                               exit (1);
                             }
                             $$.eType         = FX_VECTOR2;
@@ -303,7 +303,7 @@ variable                : T_TYPE_REAL
                           {
                             if ( _eVarScope == FX_GLOBAL_SCOPE )
                             {
-                              yyerror ("cannot use a complex type for a global variable");
+                              psl_error ("cannot use a complex type for a global variable");
                               exit (1);
                             }
                             _eVarType = GetTypeCode ($1);
@@ -311,7 +311,7 @@ variable                : T_TYPE_REAL
                           var_list ';'
                         | T_IDENTIFIER
                           {
-                            yyerror ("unknown type");
+                            psl_error ("unknown type");
                             exit (1);
                           }
                           var_list ';'
@@ -331,7 +331,7 @@ var                     : T_IDENTIFIER
                           {
                             if ( _eVarType != $3.eType )
                             {
-                              yyerror ("wrong type in assignment");
+                              psl_error ("wrong type in assignment");
                               cout << "left = " << _eVarType << ", right = " << $3.eType << endl;
                               exit (1);
                             }
@@ -360,7 +360,7 @@ assignment		: lvalue '=' expression
                             /*
                             if ( $1 != $3.eType )
                             {
-                              yyerror ("wrong type in assignment");
+                              psl_error ("wrong type in assignment");
                               exit (1);
                             }
                             */
@@ -444,7 +444,7 @@ class			: /* Nothing */
 			  {
                             if ( _tObjectMap.find ($3) == _tObjectMap.end() )
                             {
-			      yyerror ("trying to extend from non existing object");
+			      psl_error ("trying to extend from non existing object");
 			      exit (1);
                             }
                             _ptParent = _tObjectMap [$3];
@@ -489,7 +489,7 @@ object_instance		: T_COMPLEX_TYPE class '{'
 			  {
                             if ( strcmp ($1, "Object") && strcmp ($1, "Aggregate") )
                             {
-                              yyerror ("only objects and scene can be instanced");
+                              psl_error ("only objects and scene can be instanced");
                               exit (1);
                             }
 			    CreateObject ($2, "");
@@ -519,32 +519,32 @@ any_def			: T_COMPLEX_TYPE name class '{'
 
 %%
 
-void yyerror (const char* pkcTEXT)
+void psl_error (const char* pkcTEXT)
 {
 
   cerr << endl << TScenePsl::_tInputFileName << "(" << TScenePsl::_dwLineNumber << ") Error: " << pkcTEXT << endl;
 
-}  /* yyerror() */
+}  /* psl_error() */
 
 
-void InitParser (void)
+void PSL_InitParser (void)
 {
 
   InitObjects();
 
   _ptWorld = new TAggregate();
-  
+
   TScenePsl::_ptParsedScene->setWorld (_ptWorld);
   
-}  /* InitParser() */
+}  /* PSL_InitParser() */
 
 
-void CloseParser (void)
+void PSL_CloseParser (void)
 {
 
   _tObjectMap.clear();
 
-}  /* CloseParser() */
+}  /* PSL_CloseParser() */
 
 
 void InitObjects (void)
@@ -626,7 +626,7 @@ string DefaultClass (const string& rktTYPE)
   }
   else
   {
-    yyerror ("cannot use a simple type in define");
+    psl_error ("cannot use a simple type in define");
     exit (1);
   }
 
@@ -644,7 +644,7 @@ TProcedural* NewObject (const string& rktCLASS, const TProcedural* pktPARENT)
   if ( !ptChild )
   {
     string   tMessage = string ("class ") + rktCLASS + " does not exist";
-    yyerror (tMessage.c_str());
+    psl_error (tMessage.c_str());
     exit (1);
   }
 
@@ -672,13 +672,13 @@ void DefineObject (const string& rktNAME, const string& rktCLASS, const string& 
 
   if ( rktNAME == "" )
   {
-    yyerror ("defined object cannot be unnamed");
+    psl_error ("defined object cannot be unnamed");
     exit (1);
   }
 
   if ( _tObjectMap.find (rktNAME) != _tObjectMap.end() )
   {
-    yyerror ("cannot redefine an existing object");
+    psl_error ("cannot redefine an existing object");
     exit (1);
   }
 

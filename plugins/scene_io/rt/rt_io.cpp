@@ -17,6 +17,7 @@
 */
 
 #include "hlapi/scene_manager.h"
+#include "parser_defs.h"
 #include "rt_io.h"
 
 DEFINE_SCENE_IO_PLUGIN ("rt", TSceneRT);
@@ -33,23 +34,23 @@ TScene* TSceneRT::_load (const string& rktNAME)
   _ptParsedScene  = new TScene();
   _tInputFileName = rktNAME;
   
-  yyin = fopen (_tInputFileName.c_str(), "rb");
+  rt_in = fopen (_tInputFileName.c_str(), "rb");
 
-  if ( !yyin )
+  if ( !rt_in )
   {
     cerr << "ERROR: Could not open scene file." << endl;
     return NULL;
   }
 
-  yydebug = 0;
+  rt_debug = 0;
 
-  InitParser();
+  RT_InitParser();
   
-  iResult = yyparse();
+  iResult = rt_parse();
 
-  CloseParser();
+  RT_CloseParser();
   
-  fclose (yyin);
+  fclose (rt_in);
   
   if ( iResult != 0 )
   {
