@@ -268,7 +268,7 @@ void RemoveSwitches(int& argc, char** argv, string& munged_class, string& parent
       } break;
     case 'v':
       {
-	cout << "Class Stub Generator version $Revision: 1.1.2.1 $" << endl;
+	cout << "Class Stub Generator version $Revision: 1.1.2.2 $" << endl;
 	cout << "Copyright (C) 2003 Kevin Harris" << endl;
 	cout << endl;
 	cout << "This is free software, released under terms of the GNU Public License (GPL)" << endl;
@@ -277,7 +277,7 @@ void RemoveSwitches(int& argc, char** argv, string& munged_class, string& parent
       }
     case 'h':
       {
-	cout << "Class Stub Generator version $Revision: 1.1.2.1 $" << endl;
+	cout << "Class Stub Generator version $Revision: 1.1.2.2 $" << endl;
 	cout << "  This is a program to generate class stubs. \n\
   As arguments, it accepts one non-switch argument, which is the classname.\n\
   ie. giving it 'foo.baz' would generate a class baz in namespace foo.\n\
@@ -353,8 +353,6 @@ string GenerateNamespaceBegin(const vector<string>& namespaces, string& indent)
 string GenerateNamespaceEnd(const vector<string>& namespaces, string& indent)
 {
   string result;
-  //  string indent = string(' ', namespaces.size() * 2);
-
   
   if( !namespaces.empty() )
   {
@@ -390,7 +388,7 @@ string IncludeGuardMunger(string s)
 string GenerateIncludeGuardText(const vector<string>& namespaces, const string& output_root)
 {
   string s = "__";
-  for( int i = 0; i < (int(namespaces.size()) - 1); ++i)
+  for( int i = 0; i < int(namespaces.size()); ++i)
   {
     s += namespaces[i] + "  ";
   }
