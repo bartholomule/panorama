@@ -25,6 +25,7 @@
 #include "llapi/llapi_all.h"
 #include "hlapi/hlapi_all.h"
 #include "hlapi/class_manager.h"
+#include "hlapi/plugins_all.h"
 #include "parser_defs.h"
 #include "rt_io.h"
 
@@ -32,6 +33,7 @@ static map<string, TProcedural*, less<string> >       _tObjectMap;
 static map<string, TColor, less<string> >             _tColorMap;
 static map<string, TVector, less<string> >            _tVectorMap;
 static map<string, double(*)(void), less<string> >    _tFunctionMap;
+static map<string, EClass, less<string> >             _tTypeMap;
 static stack<TProcedural*>                            _tDataStack;
 
 static TProcedural*   _ptData;
@@ -71,10 +73,20 @@ static void DefineObject (const string& rktNAME, const string& rktCLASS, const s
 static void CreateObject (const string& rktCLASS, const string& rktDEF_CLASS);
 static void SetParameter (const string& rktATTRIB, EAttribType eTYPE);
 
+static void DefineColor (const string& rktNAME);
+static TColor* InstanceColor (const string& rktNAME);
+
+static void DefineVector (const string& rktNAME);
+static TVector* InstanceVector (const string& rktNAME);
+
+static void UpdateAttribute (const string& rktATTRIBUTE, const string& rktIDENT);
+
 static void InitObjects (void);
 static void InitFunctions (void);
 
-static string EAttribType_to_str(EAttribType eat);
+static EAttribType MapClassToAttribute (const TBaseClass* pktClass);
+
+static string EAttribType_to_str (EAttribType eat);
  
 %}
 
@@ -91,6 +103,8 @@ static string EAttribType_to_str(EAttribType eat);
          TLight*               ptLight;
          TBsdf*                ptBsdf;
          TMaterial*            ptMaterial;
+         TPattern*             ptPattern;
+         TPerturbation*        ptPerturbation; 
          TObject*              ptObject;
          TImageFilter*         ptIFilter;
          TObjectFilter*        ptOFilter;
@@ -129,6 +143,8 @@ static string EAttribType_to_str(EAttribType eat);
 %token <acIdent> T_OBJECT
 %token <acIdent> T_OBJECT_FILTER
 %token <acIdent> T_OUTPUT
+%token <acIdent> T_PATTERN
+%token <acIdent> T_PERTURBATION
 %token <acIdent> T_PHONG_TRIANGLE
 %token <acIdent> T_PLANE
 %token <acIdent> T_RECTANGLE
@@ -158,13 +174,14 @@ static string EAttribType_to_str(EAttribType eat);
 %type <dValue> real_expr
 %type <acIdent> name
 %type <acIdent> class
+%type <ptColor> color
 %type <ptVector> vector3
 %type <ptVector2> vector2
 %type <ptVector> vertex_instance
 %type <ptVector> vector_def
 %type <ptVector> vector_instance
 %type <ptColor> color_def
-%type <ptColor> color_instance
+//%type <ptColor> color_instance
 %type <ptScene> scene_def
 %type <ptScene> scene_instance
 %type <ptCamera> camera_def
@@ -177,6 +194,10 @@ static string EAttribType_to_str(EAttribType eat);
 %type <ptLight> light_instance
 %type <ptMaterial> material_def
 %type <ptMaterial> material_instance
+%type <ptPattern> pattern_def
+%type <ptPattern> pattern_instance
+%type <ptPerturbation> perturbation_def
+%type <ptPerturbation> perturbation_instance
 %type <ptIFilter> ifilter_def
 %type <ptIFilter> ifilter_instance
 %type <ptOFilter> ofilter_def
@@ -260,6 +281,10 @@ definition		: T_DEFINE T_COLOR color_def
 			| T_DEFINE T_RENDERER renderer_def
 			  {}
 			| T_DEFINE T_MATERIAL material_def
+			  {}
+			| T_DEFINE T_PATTERN pattern_def
+			  {}
+                        | T_DEFINE T_PERTURBATION perturbation_def
 			  {}
 			| T_DEFINE T_PLANE plane_def
 			  {}
@@ -375,7 +400,9 @@ real_expr		: T_REAL
 			      yyerror ("function does not exist");
 			      exit (1);
                             }
+
 			    _pfFunction = _tFunctionMap [$1];
+
 			    $$ = (*_pfFunction)();
 			  }
 			| real_expr '+' real_expr
@@ -403,6 +430,14 @@ real_expr		: T_REAL
 			    $$ = $2;
 			  }
 			;
+color                   : '{' T_RED real_expr T_GREEN real_expr T_BLUE real_expr '}'
+                          {
+			    _tColor.setRed ($3);
+			    _tColor.setGreen ($5);
+			    _tColor.setBlue ($7);
+			    $$ = (TColor*) &_tColor;
+			  }
+                       ;
 
 vector3			: '<' real_expr ',' real_expr ',' real_expr '>'
 			  {
@@ -464,51 +499,53 @@ params			: /* Nothing */
 			;
 
 param			: T_ATTR_LIST '(' ')' 
-                        {
-                          /* Print out an attribute list [names w/types] for
-                             the current object */ 
-                             TAttributeList tal;
-                             DATA->getAttributeList(tal);
-        
-                          cout << "Requested attribute list for \""
-                               << DATA->className() << "\"" << endl;
-        
-                          for(TAttributeList::const_iterator i = tal.begin();
-                              i != tal.end();
-                              ++i)
                           {
-                            cout << "  ("
-                                 << EAttribType_to_str(i->second)
-                                 << ") "
-                                 << i->first << endl;
-                          }
-                        }
+			    /* Print out an attribute list [names w/types] for
+			       the current object */ 
+			    TAttributeList   tal;
+			  
+			    DATA->getAttributeList (tal);
+			    
+			    cout << "Requested attribute list for \""
+				 << DATA->className() << "\"" << endl;
+			    
+			    for(TAttributeList::const_iterator i = tal.begin();
+				i != tal.end();
+				++i)
+			    {
+			      cout << "  ("
+				   << EAttribType_to_str (i->second)
+				   << ") "
+				   << i->first << endl;
+			    }
+			  }
                         | T_ATTR_TYPE '(' potential_string ')' 
-                        {
-                          /* Print out the type of the given attribute */
-                          TAttributeList tal;
-                          DATA->getAttributeList(tal);
-        
-                          TAttributeList::const_iterator loc;
-                          loc = tal.find(string($3)); 
-         
-                          cout << "Requested attribute type for \"" << $3
-                               << "\" in \"" << DATA->className() << "\": ";
-        
-                          if( loc != tal.end() )
                           {
-                            cout << EAttribType_to_str(loc->second) << endl;
-                          }
-                          else
-                          {
-                            cout << "no such attribute" << endl;
-                          }
-                        }
+			    /* Print out the type of the given attribute */
+			    TAttributeList                   tal;
+			    TAttributeList::const_iterator   loc;
+			    
+			    DATA->getAttributeList (tal);
+			    
+			    loc = tal.find (string($3)); 
+			    
+			    cout << "Requested attribute type for \"" << $3
+				 << "\" in \"" << DATA->className() << "\": ";
+			    
+			    if ( loc != tal.end() )
+			    {
+			      cout << EAttribType_to_str (loc->second) << endl;
+			    }
+			    else
+			    {
+			      cout << "no such attribute" << endl;
+			    }
+			  }
                         | T_IDENTIFIER vector3
-                        {
-                          _nAttrib.pvValue = $2;
-                          SetParameter ($1, FX_VECTOR);
-                        }
+                          {
+			    _nAttrib.pvValue = $2;
+			    SetParameter ($1, FX_VECTOR);
+                          }
 			| T_IDENTIFIER vector2
 			  {
 			    _nAttrib.pvValue = $2;
@@ -529,50 +566,58 @@ param			: T_ATTR_LIST '(' ')'
 			    _nAttrib.pvValue = $2;
 			    SetParameter ($1, FX_STRING);
 			  }
-			| T_IDENTIFIER color_instance
+			| T_IDENTIFIER pattern_instance
+			  {
+			    _nAttrib.pvValue = $2;
+			    SetParameter ($1, MapClassToAttribute ((TBaseClass*) $2));
+                          }
+			| T_IDENTIFIER perturbation_instance
+			  {
+			    _nAttrib.pvValue = $2;
+			    SetParameter ($1, MapClassToAttribute ((TBaseClass*) $2));
+                          }
+			| T_IDENTIFIER color
 			  {
 			    _nAttrib.pvValue = $2;
 			    SetParameter ($1, FX_COLOR);
 			  }
-			| T_COLOR color_instance
+			| T_IDENTIFIER name
+			  {
+			    UpdateAttribute ($1, $2);
+			  }
+			| T_COLOR name
+			  {
+			    UpdateAttribute ("color", $2);
+			  }
+			| T_COLOR real_expr
+			  {
+			    _nAttrib.dValue = $2;
+			    SetParameter ("color", FX_REAL);
+			  }
+			| T_COLOR color
 			  {
 			    _nAttrib.pvValue = $2;
 			    SetParameter ("color", FX_COLOR);
 			  }
+			| T_COLOR pattern_instance
+			  {
+			    _nAttrib.pvValue = $2;
+			    SetParameter ("color", FX_PATTERN);
+                          }
 			| T_VECTOR vector_instance
 			  {
 			    _nAttrib.pvValue = $2;
 			    SetParameter ("vector", FX_VECTOR);
-			  }
-			| T_IDENTIFIER vector_instance
-			  {
-			    _nAttrib.pvValue = $2;
-			    SetParameter ($1, FX_VECTOR);
-			  }
-			| T_IDENTIFIER camera_instance
-			  {
-			    _nAttrib.pvValue = $2;
-			    SetParameter ($1, FX_CAMERA);
 			  }
 			| T_CAMERA camera_instance
 			  {
 			    _nAttrib.pvValue = $2;
 			    SetParameter ("camera", FX_CAMERA);
 			  }
-			| T_IDENTIFIER renderer_instance
-			  {
-			    _nAttrib.pvValue = $2;
-			    SetParameter ($1, FX_RENDERER);
-			  }
 			| T_RENDERER renderer_instance
 			  {
 			    _nAttrib.pvValue = $2;
 			    SetParameter ("renderer", FX_RENDERER);
-			  }
-			| T_IDENTIFIER bsdf_instance
-			  {
-			    _nAttrib.pvValue = $2;
-			    SetParameter ($1, FX_BSDF);
 			  }
 			| T_BSDF bsdf_instance
 			  {
@@ -628,45 +673,22 @@ object_param		: T_MATERIAL material_instance
 
 color_def		: name class
 			  {
-                            if ( $1 == "" )
-                            {
-                              yyerror ("cannot define unnamed color");
-                              exit (1);
-                            }
-
-                            if ( _tColorMap.find ($1) != _tColorMap.end() )
-                            {
-                              yyerror ("cannot redefine an existing color");
-                              exit (1);
-                            }
-
-                            _tColor = TColor::_black();
-
-                            _ptParent = NULL;
+			    DefineColor ($1);
 			  }
 			  '{' color_params '}'
 			  {
                             _tColorMap [$1] = _tColor;
+			    _tTypeMap  [$1] = FX_COLOR_CLASS;
                             
                             $$ = &_tColor;
 			  }
 			;
 
+
+/*
 color_instance		: name
 			  {
-                            if ( $1 == "" )
-                            {
-                              yyerror ("instanced object cannot be unnamed");
-                              exit (1);
-                            }
-
-                            if ( _tColorMap.find ($1) == _tObjectMap.end() )
-                            {
-                              yyerror ("color does not exist");
-                              exit (1);
-                            }
-
-                            $$ = (TColor*) &(_tColorMap [$1]);
+			    $$ = InstanceColor ($1);
 			  }
 			| class
 			  {
@@ -677,6 +699,7 @@ color_instance		: name
 			    $$ = (TColor*) &_tColor;
 			  }
 			;
+*/
 
 color_params		: /* Nothing */
 			| color_params color_param
@@ -698,25 +721,12 @@ color_param		: T_RED real_expr
 
 vector_def		: name class
 			  {
-                            if ( $1 == "" )
-                            {
-                              yyerror ("cannot define unnamed vector");
-                              exit (1);
-                            }
-
-                            if ( _tVectorMap.find ($1) != _tVectorMap.end() )
-                            {
-                              yyerror ("cannot redefine an existing vector");
-                              exit (1);
-                            }
-
-                            _tVector = TVector (0, 0, 0);
-
-                            _ptParent = NULL;
+			    DefineVector ($1);
 			  }
-			  '{' vector_params '}'
+                          '{' vector_params '}'
 			  {
                             _tVectorMap [$1] = _tVector;
+			    _tTypeMap   [$1] = FX_VECTOR_CLASS;
                             
                             $$ = &_tVector;
 			  }
@@ -724,19 +734,7 @@ vector_def		: name class
 
 vector_instance		: name
 			  {
-                            if ( $1 == "" )
-                            {
-                              yyerror ("instanced object cannot be unnamed");
-                              exit (1);
-                            }
-
-                            if ( _tVectorMap.find ($1) == _tVectorMap.end() )
-                            {
-                              yyerror ("vector does not exist");
-                              exit (1);
-                            }
-
-                            $$ = (TVector*) &(_tVectorMap [$1]);
+			    $$ = InstanceVector ($1);
 			  }
 			| class
 			  {
@@ -843,30 +841,6 @@ scene_param		: T_LIGHT light_instance
 			| param
 			;
 
-camera_def		: name class
-			  {
-			    DefineObject ($1, $2, "PinholeCamera");
-			  }
-			  '{' entity_params '}'
-			  {
-			    $$ = (TCamera*) UpdateObject ($1);
-			  }
-			;
-
-camera_instance		: name
-			  {
-			    $$ = (TCamera*) InstanceObject ($1);
-			  }
-			| class
-			  {
-			    CreateObject ($1, "PinholeCamera");
-			  }
-			  '{' entity_params '}'
-			  {
-			    $$ = (TCamera*) _tDataStack.POP();
-			  }
-			;
-
 light_def		: name class
 			  {
 			    DefineObject ($1, $2, "PointLight");
@@ -893,7 +867,7 @@ light_instance		: name
 
 bsdf_def		: name class
 			  {
-			    DefineObject ($1, $2, "BsdfPhong");
+			    DefineObject ($1, $2, "Bsdf");
 			  }
 			  '{' params '}'
 			  {
@@ -907,7 +881,7 @@ bsdf_instance		: name
 			  }
 			| class
 			  {
-                            CreateObject ($1, "BsdfPhong");
+                            CreateObject ($1, "Bsdf");
 			  }
 			  '{' params '}'
 			  {
@@ -960,7 +934,54 @@ material_instance	: name
 			  '{' params '}'
 			  {
 			    $$ = (TMaterial*) _tDataStack.POP();
+			  }
+			;
 
+pattern_def		: name class
+			  {
+			    DefineObject ($1, $2, "Pattern");
+			  }
+			  '{' params '}'
+			  {
+                            $$ = (TPattern*) UpdateObject ($1);
+			  }
+			;
+
+pattern_instance	: name
+			  {
+			    $$ = (TPattern*) InstanceObject ($1);
+			  }
+			| class
+			  {
+			    CreateObject ($1, "Pattern");
+			  }
+			  '{' params '}'
+			  {
+			    $$ = (TPattern*) _tDataStack.POP();
+			  }
+			;
+
+perturbation_def       	: name class
+			  {
+			    DefineObject ($1, $2, "Perturbation");
+			  }
+			  '{' params '}'
+			  {
+                            $$ = (TPerturbation*) UpdateObject ($1);
+			  }
+			;
+
+perturbation_instance	: name
+			  {
+			    $$ = (TPerturbation*) InstanceObject ($1);
+			  }
+			| class
+			  {
+			    CreateObject ($1, "Perturbation");
+			  }
+			  '{' params '}'
+			  {
+			    $$ = (TPerturbation*) _tDataStack.POP();
 			  }
 			;
 
@@ -1009,6 +1030,30 @@ ofilter_instance	: name
 			  '{' params '}'
 			  {
 			    $$ = (TObjectFilter*) _tDataStack.POP();
+			  }
+			;
+
+camera_def		: name class
+			  {
+			    DefineObject ($1, $2, "PinholeCamera");
+			  }
+			  '{' entity_params '}'
+			  {
+			    $$ = (TCamera*) UpdateObject ($1);
+			  }
+			;
+
+camera_instance		: name
+			  {
+			    $$ = (TCamera*) InstanceObject ($1);
+			  }
+			| class
+			  {
+			    CreateObject ($1, "PinholeCamera");
+			  }
+			  '{' entity_params '}'
+			  {
+			    $$ = (TCamera*) _tDataStack.POP();
 			  }
 			;
 
@@ -1467,14 +1512,12 @@ csg_instance     	: name
 			  }
 			;
 
-potential_string:
-		        T_IDENTIFIER
+potential_string        : T_IDENTIFIER
 			| reserved_words
 			;
 
 
-reserved_words:
-                        T_AGGREGATE 
+reserved_words          : T_AGGREGATE 
 			| T_ATM_OBJECT
 			| T_BLUE
 			| T_BOX
@@ -1498,6 +1541,8 @@ reserved_words:
 			| T_OBJECT
 			| T_OBJECT_FILTER
 			| T_OUTPUT
+			| T_PATTERN
+			| T_PERTURBATION
 			| T_PHONG_TRIANGLE
 			| T_PLANE
 			| T_RECTANGLE
@@ -1570,7 +1615,7 @@ TProcedural* NewObject (const string& rktCLASS, const TProcedural* pktPARENT)
 
   TProcedural*   ptChild;
 
-//  cout << "New object : \"" << rktCLASS << "\"" << endl;
+  //  cout << "New object : \"" << rktCLASS << "\"" << endl;
 
   ptChild = (TProcedural*) TClassManager::_newObject (rktCLASS, pktPARENT);
   if ( !ptChild )
@@ -1614,11 +1659,12 @@ void* UpdateObject (const string& rktNAME)
 
   TProcedural*   ptObject;
 
-//  cout << "Updating object : \"" << rktNAME << "\"" << endl;
+  // cout << "Updating object : \"" << rktNAME << "\"" << endl;
 
   ptObject = _tDataStack.POP();
 
   _tObjectMap [rktNAME] = ptObject;
+  _tTypeMap   [rktNAME] = ptObject->classType();
 
   return ptObject;
 
@@ -1628,7 +1674,7 @@ void* UpdateObject (const string& rktNAME)
 void DefineObject (const string& rktNAME, const string& rktCLASS, const string& rktDEF_CLASS)
 {
 
-//  cout << "Defining object : \"" << rktNAME << "\", \"" << rktCLASS << "\", \"" << rktDEF_CLASS << "\"" << endl;
+  // cout << "Defining object : \"" << rktNAME << "\", \"" << rktCLASS << "\", \"" << rktDEF_CLASS << "\"" << endl;
 
   if ( rktNAME == "" )
   {
@@ -1636,7 +1682,14 @@ void DefineObject (const string& rktNAME, const string& rktCLASS, const string& 
     exit (1);
   }
 
-  if ( _tObjectMap.find (rktNAME) != _tObjectMap.end() )
+  if ( _tTypeMap.find (rktNAME) != _tTypeMap.end() )
+  {
+    yyerror ("cannot redefine an existing object");
+    exit (1);
+  }
+
+  if ( ( _tObjectMap.find (rktNAME) != _tObjectMap.end() ) ||
+       ( _tTypeMap  .find (rktNAME) != _tTypeMap.  end() ) )
   {
     yyerror ("cannot redefine an existing object");
     exit (1);
@@ -1660,7 +1713,7 @@ void DefineObject (const string& rktNAME, const string& rktCLASS, const string& 
 void CreateObject (const string& rktCLASS, const string& rktDEF_CLASS)
 {
 
-//  cout << "Creating object : \"" << rktCLASS << "\", \"" << rktDEF_CLASS << "\"" << endl;
+  // cout << "Creating object : \"" << rktCLASS << "\", \"" << rktDEF_CLASS << "\"" << endl;
   
   if ( rktCLASS == "" )
   {
@@ -1675,6 +1728,177 @@ void CreateObject (const string& rktCLASS, const string& rktDEF_CLASS)
   _ptParent = NULL;
 
 }  /* CreateObject() */
+
+
+void DefineColor (const string& rktNAME)
+{
+
+  if ( rktNAME == "" )
+  {
+    yyerror ("cannot define unnamed color");
+    exit (1);
+  }
+
+  if ( _tColorMap.find (rktNAME) != _tColorMap.end() )
+  {
+    yyerror ("cannot redefine an existing color");
+    exit (1);
+  }
+
+  if ( _tTypeMap.find (rktNAME) != _tTypeMap.end() )
+  {
+    yyerror ("cannot redefine an existing object");
+    exit (1);
+  }
+
+  _tColor = TColor::_black();
+  
+  _ptParent = NULL;
+
+}  /* DefineColor() */
+
+
+TColor* InstanceColor (const string& rktNAME)
+{
+
+  TColor*   ptColor;
+
+  if ( rktNAME == "" )
+  {
+    yyerror ("instanced object cannot be unnamed");
+    exit (1);
+  }
+  
+  if ( _tColorMap.find (rktNAME) == _tColorMap.end() )
+  {
+    yyerror ("pattern/color does not exist");
+    exit (1);
+  }
+  
+  ptColor = (TColor*) &(_tColorMap [rktNAME]);
+  
+  return ptColor;
+
+}  /* InstanceColor() */
+
+
+void DefineVector (const string& rktNAME)
+{
+
+  if ( rktNAME == "" )
+  {
+    yyerror ("cannot define unnamed vector");
+    exit (1);
+  }
+  
+  if ( _tVectorMap.find (rktNAME) != _tVectorMap.end() )
+  {
+    yyerror ("cannot redefine an existing vector");
+    exit (1);
+  }
+
+  if ( _tTypeMap.find (rktNAME) != _tTypeMap.end() )
+  {
+    yyerror ("cannot redefine an existing object");
+    exit (1);
+  }
+  
+  _tVector = TVector (0, 0, 0);
+  
+  _ptParent = NULL;
+
+}  /* DefineVector() */
+
+
+TVector* InstanceVector (const string& rktNAME)
+{
+
+  TVector*   ptVector;
+
+  if ( rktNAME == "" )
+  {
+    yyerror ("instanced object cannot be unnamed");
+    exit (1);
+  }
+  
+  if ( _tVectorMap.find (rktNAME) == _tVectorMap.end() )
+  {
+    yyerror ("vector does not exist");
+    exit (1);
+  }
+  
+  ptVector = (TVector*) &(_tVectorMap [rktNAME]);
+  
+  return ptVector;
+
+}  /* InstanceVector() */
+
+
+EAttribType MapClassToAttribute (const TBaseClass* pktClass)
+{
+
+  EClass   eIdentifierClass = pktClass->classType();
+
+  switch (eIdentifierClass) 
+  {
+    case FX_PATTERN_CLASS:
+      return FX_PATTERN;
+
+    case FX_PERTURBATION_CLASS:
+      return FX_PERTURBATION;
+
+    default:
+      return FX_NONE;
+  }
+
+}  /* MapClassToAttribute() */
+
+
+void UpdateAttribute (const string& rktATTRIBUTE, const string& rktIDENT)
+{
+
+  EClass        eIdentifierClass = _tTypeMap [rktIDENT];
+  EAttribType   eAttribute;
+  void*         vpInstance;
+  
+  switch (eIdentifierClass) 
+  {
+    case FX_COLOR_CLASS:
+      vpInstance = InstanceColor (rktIDENT);
+      eAttribute = FX_COLOR;
+      break;
+
+    case FX_VECTOR_CLASS:
+      vpInstance = InstanceVector (rktIDENT);
+      eAttribute = FX_VECTOR;
+      break;
+      
+    case FX_BSDF_CLASS:
+      vpInstance = InstanceObject (rktIDENT);
+      eAttribute = FX_BSDF;
+      break;
+
+    case FX_PATTERN_CLASS:
+      vpInstance = InstanceObject (rktIDENT);
+      eAttribute = FX_PATTERN;
+      break;
+
+    case FX_PERTURBATION_CLASS:
+      vpInstance = InstanceObject (rktIDENT);
+      eAttribute = FX_PERTURBATION;
+      break;
+
+    default:
+      vpInstance = NULL;
+      eAttribute = FX_NONE;
+
+      cerr << "Warning: identifier class not recognized." << endl;
+  }
+  
+  _nAttrib.pvValue = vpInstance;
+  SetParameter (rktATTRIBUTE, eAttribute);
+  
+}  /* UpdateAttribute() */
 
 
 void SetParameter (const string& rktATTRIB, EAttribType eTYPE)
@@ -1707,28 +1931,71 @@ void SetParameter (const string& rktATTRIB, EAttribType eTYPE)
 
 }  /* SetParameter() */
 
-static string EAttribType_to_str(EAttribType eat)
+
+string EAttribType_to_str (EAttribType eTYPE)
 {
+
   /* This function is pretty dumb, but I (KH) couldn't find another one
      anywhere else.  Added on 07Aug2000  */ 
-  switch( eat )
+
+  switch ( eTYPE )
   {
-  case FX_NONE: return "none";
-  case FX_REAL: return "real";
-  case FX_BOOL: return "bool";
-  case FX_STRING: return "string";
-  case FX_COLOR: return "color";
-  case FX_VECTOR: return "vector";
-  case FX_VECTOR2: return "2d_vector";
-  case FX_IMAGE: return "image";
-  case FX_BSDF: return "bsdf";
-  case FX_CAMERA: return "camera";
-  case FX_LIGHT: return "light";
-  case FX_MATERIAL: return "material";
-  case FX_RENDERER: return "renderer";
-  case FX_OBJECT: return "object";
-  case FX_OBJECT_FILTER: return "object_filter";
-  case FX_IMAGE_FILTER: return "image_filter";
-  default: return "unknown";
+    case FX_NONE: 
+      return "none";
+
+    case FX_REAL: 
+      return "real";
+
+    case FX_BOOL: 
+      return "bool";
+
+    case FX_STRING: 
+      return "string";
+
+    case FX_COLOR: 
+      return "color";
+
+    case FX_VECTOR: 
+      return "vector";
+
+    case FX_VECTOR2: 
+      return "2d_vector";
+
+    case FX_IMAGE: 
+      return "image";
+
+    case FX_BSDF: 
+      return "bsdf";
+
+    case FX_CAMERA: 
+      return "camera";
+
+    case FX_LIGHT: 
+      return "light";
+
+    case FX_MATERIAL: 
+      return "material";
+
+    case FX_PATTERN: 
+      return "pattern";
+
+    case FX_PERTURBATION: 
+      return "perturbation";
+
+    case FX_RENDERER: 
+      return "renderer";
+
+    case FX_OBJECT: 
+      return "object";
+
+    case FX_OBJECT_FILTER: 
+      return "object_filter";
+
+    case FX_IMAGE_FILTER: 
+      return "image_filter";
+
+    default: 
+      return "unknown";
   }
-} /* EAttribType_to_str */
+
+}  /* EAttribType_to_str() */

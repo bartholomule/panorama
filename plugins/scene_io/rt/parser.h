@@ -11,6 +11,8 @@ typedef union {
          TLight*               ptLight;
          TBsdf*                ptBsdf;
          TMaterial*            ptMaterial;
+         TPattern*             ptPattern;
+         TPerturbation*        ptPerturbation; 
          TObject*              ptObject;
          TImageFilter*         ptIFilter;
          TObjectFilter*        ptOFilter;
@@ -45,28 +47,30 @@ typedef union {
 #define	T_OBJECT	282
 #define	T_OBJECT_FILTER	283
 #define	T_OUTPUT	284
-#define	T_PHONG_TRIANGLE	285
-#define	T_PLANE	286
-#define	T_RECTANGLE	287
-#define	T_RED	288
-#define	T_RENDERER	289
-#define	T_ROTATE	290
-#define	T_SCALE	291
-#define	T_SCENE	292
-#define	T_SPHERE	293
-#define	T_TORUS	294
-#define	T_TRANSLATE	295
-#define	T_TRIANGLE	296
-#define	T_TYPE	297
-#define	T_UNION	298
-#define	T_VECTOR	299
-#define	T_VERTEX	300
-#define	T_X	301
-#define	T_Y	302
-#define	T_Z	303
-#define	T_ATTR_LIST	304
-#define	T_ATTR_TYPE	305
-#define	UNARY_MINUS	306
+#define	T_PATTERN	285
+#define	T_PERTURBATION	286
+#define	T_PHONG_TRIANGLE	287
+#define	T_PLANE	288
+#define	T_RECTANGLE	289
+#define	T_RED	290
+#define	T_RENDERER	291
+#define	T_ROTATE	292
+#define	T_SCALE	293
+#define	T_SCENE	294
+#define	T_SPHERE	295
+#define	T_TORUS	296
+#define	T_TRANSLATE	297
+#define	T_TRIANGLE	298
+#define	T_TYPE	299
+#define	T_UNION	300
+#define	T_VECTOR	301
+#define	T_VERTEX	302
+#define	T_X	303
+#define	T_Y	304
+#define	T_Z	305
+#define	T_ATTR_LIST	306
+#define	T_ATTR_TYPE	307
+#define	UNARY_MINUS	308
 
 
 extern YYSTYPE rt_lval;

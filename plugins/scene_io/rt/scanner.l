@@ -118,6 +118,8 @@ mesh			RESERVED (T_MESH);
 object			RESERVED (T_OBJECT);
 object_filter           RESERVED (T_OBJECT_FILTER);
 output                  RESERVED (T_OUTPUT);
+pattern                 RESERVED (T_PATTERN);
+perturbation            RESERVED (T_PERTURBATION);
 phong_triangle		RESERVED (T_PHONG_TRIANGLE);
 plane			RESERVED (T_PLANE);
 rectangle		RESERVED (T_RECTANGLE);
