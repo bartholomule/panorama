@@ -41,7 +41,7 @@ TImage* TImageManager::_load (const string& rktNAME, const string& rktFORMAT)
 
   if ( !ptImageIO )
   {
-    return NULL;
+    return 0;
   }
 
   nAttrib.pvValue = (char*) rktNAME.c_str();
