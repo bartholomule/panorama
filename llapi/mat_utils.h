@@ -21,15 +21,17 @@
 
 #include "llapi/llapi_defs.h"
 
-
 inline TScalar tfloor (TScalar tA)
 {
+
   return (TScalar) ((long)tA - ( tA < 0.0));
+
 }  /*  tfloor */
 
 
 inline TScalar smoothstep (TScalar tA, TScalar tB, TScalar tX)
 {
+
   if ( tX < tA )
   {
     return 0;
@@ -41,12 +43,15 @@ inline TScalar smoothstep (TScalar tA, TScalar tB, TScalar tX)
   }
 
   return (tX * tX * (3.0 - tX * 2));
+
 }  /* smoothstep */
 
 
 inline TScalar clamp (const TScalar tX, const TScalar tA, const TScalar tB)
 {
+
   return tX < tA ? tA : ( tX > tB ? tB : tX );
+
 }  /* clamp */
 
 
