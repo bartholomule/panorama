@@ -229,7 +229,10 @@ magic_pointer<TAttribColor>   get_color(magic_pointer<TAttribute> attr)
       break;
     case FX_VECTOR:
       retval = (magic_pointer<TAttribColor>)new TAttribColor(rcp_static_cast<TAttribVector>(attr)->tValue);
-      break;      
+      break;
+    case FX_ARRAY:
+      retval = get_color(rcp_static_cast<TAttribute>(get_vector(attr)));
+      break;            
     case FX_COLOR:
       retval = rcp_static_cast<TAttribColor>(attr);
       break;      
@@ -256,6 +259,34 @@ magic_pointer<TAttribVector>  get_vector(magic_pointer<TAttribute> attr)
       break;
     case FX_VECTOR:
       retval = rcp_static_cast<TAttribVector>(attr);
+      break;
+    case FX_ARRAY:
+      {
+	vector<TScalar>& barf = rcp_static_cast<TAttribArray>(attr)->tValue;
+	// Demotion
+	if( barf.size() > 3)
+	{
+	  cout << "Warning: array was too large to fit in vector" << endl;
+	  TVector v(barf[0], barf[1], barf[2]);
+	  retval = (magic_pointer<TAttribVector>)new TAttribVector(v);
+	}
+	// Conversion
+	else if( barf.size() == 3)
+	{
+	  TVector v(barf[0], barf[1], barf[2]);
+	  retval = (magic_pointer<TAttribVector>)new TAttribVector(v);
+	}
+	// Promotion
+	else if( barf.size() == 1 )
+	{
+	  TVector v(barf[0]);
+	  retval = (magic_pointer<TAttribVector>)new TAttribVector(v);	
+	}
+	else
+	{
+	  cout << "Incorrect array size in conversion from FX_ARRAY to FX_VECTOR" << endl;
+	}
+      }
       break;      
     default:
       // Retval is NULL!!!
@@ -280,7 +311,35 @@ magic_pointer<TAttribVector2> get_vector2(magic_pointer<TAttribute> attr)
       break;
     case FX_VECTOR2:
       retval = rcp_static_cast<TAttribVector2>(attr);
-      break;      
+      break;
+    case FX_ARRAY:
+      {
+	vector<TScalar>& barf = rcp_static_cast<TAttribArray>(attr)->tValue;
+	// Demotion
+	if( barf.size() > 2)
+	{
+	  cout << "Warning: array was too large to fit in vector2" << endl;
+	  TVector2 v(barf[0], barf[1]);
+	  retval = (magic_pointer<TAttribVector2>)new TAttribVector2(v);
+	}
+	// Conversion
+	else if( barf.size() == 2)
+	{
+	  TVector2 v(barf[0], barf[1]);
+	  retval = (magic_pointer<TAttribVector2>)new TAttribVector2(v);
+	}
+	// Promotion
+	else if( barf.size() == 1 )
+	{
+	  TVector2 v(barf[0]);
+	  retval = (magic_pointer<TAttribVector2>)new TAttribVector2(v);
+	}
+	else
+	{
+	  cout << "Incorrect array size in conversion from FX_ARRAY to FX_VECTOR2" << endl;
+	}
+      }
+      break;
     default:
       // Retval is NULL!!!
       break;
@@ -357,6 +416,14 @@ magic_pointer<TAttribPattern> get_pattern(const magic_pointer<TAttribute> attr)
 	retval = (magic_pointer<TAttribPattern>)new TAttribPattern(c);
       }
       break;
+    case FX_ARRAY:
+      {
+	cout << "ick.....:" << attr->toString() << endl;
+	TColor c = rcp_static_cast<TAttribColor>(attr)->tValue;
+	cout << "attr: creating pattern from array (indirectly as vector)" << endl;
+	retval = (magic_pointer<TAttribPattern>)new TAttribPattern(get_vector(attr)->tValue);
+      }
+      break;      
     case FX_PATTERN:
       {
 	retval = rcp_static_cast<TAttribPattern>(attr);
@@ -616,12 +683,12 @@ magic_pointer<TAttribute> base_to_attr(const magic_pointer<TBaseClass> base)
     // bounding box?
     // atm object?
     // scene io?
-    cerr << "base_to_attr: Cannot determine classtype of " << base->className() << endl;
+    cout << "base_to_attr: Cannot determine classtype of " << base->className() << endl;
     return (user_arg_type)new TAttribute();
   }
   else
   {
-    cerr << "base_to_attr: given a null base" << endl;
+    cout << "base_to_attr: given a null base" << endl;
     return (user_arg_type)new TAttribute();
   }  
 }

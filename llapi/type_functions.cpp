@@ -293,7 +293,8 @@ bool types_match(const magic_pointer<TAttribute>& a1,
     case FX_COLOR:
       if( a2->eType == FX_REAL ||
 	  a2->eType == FX_VECTOR ||
-	  a2->eType == FX_COLOR )
+	  a2->eType == FX_COLOR ||
+          a2->eType == FX_ARRAY )
       {
 	return true;
       }
@@ -303,7 +304,8 @@ bool types_match(const magic_pointer<TAttribute>& a1,
       }
     case FX_VECTOR:
       if( a2->eType == FX_REAL ||
-	  a2->eType == FX_VECTOR )
+	  a2->eType == FX_VECTOR ||
+          a2->eType == FX_ARRAY )
       {
 	return true;
       }
@@ -313,7 +315,8 @@ bool types_match(const magic_pointer<TAttribute>& a1,
       }      
     case FX_VECTOR2:
       if( a2->eType == FX_REAL ||
-	  a2->eType == FX_VECTOR2 )
+	  a2->eType == FX_VECTOR2 ||
+          a2->eType == FX_ARRAY )
       {
 	return true;
       }
@@ -335,7 +338,8 @@ bool types_match(const magic_pointer<TAttribute>& a1,
       if( a2->eType == FX_REAL ||
 	  a2->eType == FX_VECTOR ||
 	  a2->eType == FX_COLOR ||
-	  a2->eType == FX_PATTERN )
+	  a2->eType == FX_PATTERN ||
+          a2->eType == FX_ARRAY )
       {
 	return true;
       }
