@@ -1,0 +1,32 @@
+print("An array of two items:");
+print(<1,2>);
+print("An array of five items:");
+print(<1,2,3,4,5>);
+
+define a <1,2,3>;
+define b <4,5,6>;
+
+print(a);
+print(b);
+
+print ("plus");
+print(a+b);
+print ("minus");
+print(a-b);
+print("unary minus");
+print(-b);
+print("unary minus");
+print(-a);
+
+print(2 * a);
+print(2 * b);
+
+print( a / 2 );
+print( b / 2 );
+
+//define c <1,2,3,4>;
+//print(a+c);
+
+//print( 2 / b );
+
+halt();
