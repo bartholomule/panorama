@@ -240,8 +240,13 @@ inline void TColor::clamp (void)
 {
 
   if ( fRed > 1 ) fRed = 1;
+  else if ( fRed < 0 ) fRed = 0;
+
   if ( fGreen > 1 ) fGreen = 1;
+  else if ( fGreen < 0 ) fGreen = 0;
+
   if ( fBlue > 1 ) fBlue = 1;
+  else if ( fBlue < 0 ) fBlue = 0;
 
 }  /* clamp() */
 
