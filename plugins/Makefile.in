@@ -6,6 +6,7 @@ DIRS = ./atm_object \
        ./image_io \
        ./light \
        ./material \
+       ./object \
        ./object_filter \
        ./renderer \
        ./scene_io
