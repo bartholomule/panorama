@@ -293,7 +293,7 @@ int main (int argc, char *argv[])
   {
     strftime (acTimeString, 30, "%b %d %H:%M:%S", localtime (&tBaseTime));
     
-    tLogFile.open (_tLogFileName.c_str(), ios::out | ios::bin | ios::app);
+    tLogFile.open (_tLogFileName.c_str(), ios::out | ios::binary | ios::app);
 
     tLogFile << acTimeString << " " << _tInputFileName << ", " << difftime (tPostProcessTime, tBaseTime) << " seconds" << endl;
 
