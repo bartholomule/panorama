@@ -53,6 +53,7 @@ class TImageManager
     static int _save (const string& rktNAME, const string& rktFORMAT, const TImage* pktIMAGE);
     static bool _knownFormat (const string& rktFORMAT);
     static void _addFormat (const string& rktFORMAT, TCreateFunction* pfCREATE);
+    static void _addFormat (const string& rktFORMAT, TCreateFunction* pfCREATE, const string& rktALIAS);
     static TImageIO* _getImageIO (const string& rktFORMAT);
     static void _initialize (void);
       

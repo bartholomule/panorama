@@ -75,11 +75,38 @@
     return new TYPE(); \
   }
 
+#define DEFINE_IMAGE_IO_PLUGIN_WITH_ALIAS(NAME, ALIAS, TYPE) \
+  extern "C" int _registerPlugin (DWord dwVERSION, TPluginData* ptDATA); \
+  \
+  static int _registerPlugin (DWord dwVERSION, TPluginData* ptDATA) \
+  { \
+    TImageManager::_addFormat (NAME, &TYPE::_create, ALIAS); \
+    return 0; \
+  } \
+  \
+  TBaseClass* TYPE::_create (const TBaseClass* pktPARENT) \
+  { \
+    if ( pktPARENT ) \
+    { \
+      return new TYPE (*((TYPE*) pktPARENT)); \
+    } \
+    return new TYPE(); \
+  }
+
 #else
 
 #define DEFINE_PLUGIN(NAME, CLASS, TYPE)
 #define DEFINE_SCENE_IO_PLUGIN(NAME, TYPE)
 #define DEFINE_IMAGE_IO_PLUGIN(NAME, TYPE) \
+  TBaseClass* TYPE::_create (const TBaseClass* pktPARENT) \
+  { \
+    if ( pktPARENT ) \
+    { \
+      return new TYPE (*((TYPE*) pktPARENT)); \
+    } \
+    return new TYPE(); \
+  }
+#define DEFINE_IMAGE_IO_PLUGIN_WITH_ALIAS(NAME, ALIAS, TYPE) \
   TBaseClass* TYPE::_create (const TBaseClass* pktPARENT) \
   { \
     if ( pktPARENT ) \

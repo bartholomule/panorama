@@ -99,6 +99,16 @@ void TImageManager::_addFormat (const string& rktFORMAT, TCreateFunction* pfCREA
 }  /* _addFormat() */
 
 
+void TImageManager::_addFormat (const string& rktFORMAT, TCreateFunction* pfCREATE, const string& rktALIAS)
+{
+
+  // [_TODO_] Check if this format is already registered.
+  _tImageFormatMap [rktFORMAT] = pfCREATE;
+  _tImageFormatMap [rktALIAS]  = pfCREATE;
+
+}  /* _addFormat() */
+
+
 TImageIO* TImageManager::_getImageIO (const string& rktFORMAT)
 {
 
@@ -120,8 +130,8 @@ void TImageManager::_initialize (void)
 {
 
 #if ( STATIC_LINK == 1 )
-  _addFormat ("tga", &TImageTga::_create);
-//  _addFormat ("jpeg", &TImageJpeg::_create);
+  _addFormat ("tga", TImageTga::_create);
+//  _addFormat ("jpeg", "jpg", &TImageJpeg::_create);
 //  _addFormat ("png", &TImagePng::_create);
 //  _addFormat ("gif", &TImageGif::_create);
 #endif
