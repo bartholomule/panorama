@@ -35,7 +35,7 @@ class TEntity : public TProcedural
 
     virtual void translate (const TVector& rktNEW_POS)
     {
-      tLocation = rktNEW_POS;
+      tLocation += rktNEW_POS;
       update();
     }
     virtual void rotate (const TVector& rktAXISPOINT1, const TVector& rktAXISPOINT2, TScalar tANGLE) {}
