@@ -9,8 +9,11 @@ tga_io.plg
 point_light.plg
 projector.plg
 warn_light.plg
+mat_brick.plg
 mat_checker.plg
+mat_crackle.plg
 mat_leopard.plg
+mat_marble.plg
 mat_noise.plg
 mat_worley.plg
 bezier.plg

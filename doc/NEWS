@@ -1,4 +1,10 @@
 
+ - Implemented truncated cone object.
+
+ - Fixed problem in Bezier patches (done by Matt Kimball).
+
+ - Added MaterialBrick, MaterialCrackle and MaterialMarble (done by Peter Barnett).
+
 >> Version 0.10.1 released.
 
  - Changed rotation angles from radians to degrees.
