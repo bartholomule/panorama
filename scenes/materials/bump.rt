@@ -19,7 +19,7 @@ define light l
 sphere
 {
   translate	<0, 0, 400>
-  radius	60
+  radius	70
 
   material : extends MPlastic
   {
@@ -34,7 +34,9 @@ sphere
         mirror    on
       }
 
-      bump        -4
+      bump        -6
+      grad_disp   <2, 2>
+      samples     <6, 6>
     }
   }
 }
