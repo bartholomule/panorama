@@ -1,9 +1,20 @@
 
+ - Added PNG plugin (done by Ken Geis). All demo scenes use this format for
+   output now.
+ 
+ - Added JPEG plugin (done by Jose Antonio Robles).
+
+ - Added Ezra Peisach's patch for operating system portability.
+ 
+ - Fixed minor compilation problem.
+
 >> Version 0.11 released
 
- - Added several experimental plugins (ABVH, HeightField, lwo, polyhedra, psl, zbuffer).
+ - Added several experimental plugins (ABVH, HeightField, lwo, polyhedra, psl,
+   zbuffer).
 
- - Several changes to the API, in order to implement the new procedural language.
+ - Several changes to the API, in order to implement the new procedural
+   language.
  
  - Several bug fixes.
 
