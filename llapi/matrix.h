@@ -384,11 +384,12 @@ inline TItem TBaseMatrix<TItem>::getElement (Byte bROW, Byte bCOL) const
   
 }  /* getElement() */
 
-    
+#include <cstdio>
+
 template <class TItem>
 void TBaseMatrix<TItem>::printDebug (void) const
 {
-
+  /*
   for (Byte I = 0; ( I < 4 ) ;I++)
   {
     for (Byte J = 0; ( J < 4 ) ;J++)
@@ -397,7 +398,18 @@ void TBaseMatrix<TItem>::printDebug (void) const
     }
     cerr << endl;
   }
-                
+  */
+  fprintf(stderr,"\n");    
+  for (Byte I = 0; ( I < 4 ) ;I++)
+  {
+    for (Byte J = 0; ( J < 4 ) ;J++)
+    {
+      fprintf(stderr,"%-10.03f ", (double)atElement[I][J]);
+    }
+    fprintf(stderr,"\n");
+  }
+  fprintf(stderr,"\n");  
+  fflush(stderr);
 }  /* printDebug() */
 
 
@@ -465,5 +477,98 @@ TBaseMatrix<TItem> operator + (const TBaseMatrix<TItem>& rktMAT1, const TBaseMat
   return tMatrix;
 
 }  /* operator + () */
+
+
+template <class TItem>
+TBaseMatrix<TItem> transpose  (const TBaseMatrix<TItem>& rktMAT)
+{
+  TBaseMatrix<TItem> tMatrix;
+
+  for(Byte row = 0; row < 4; ++row)
+  {
+    for(Byte column = 0; column < 4; ++column)
+    {
+      tMatrix.setElement (column, row, rktMAT.getElement (row, column));
+    }
+  }
+  return tMatrix;
+}
+
+/* Invert a matrix, if possible.  This is done with the Gauss-Jordan
+   Elimination Algorithm.  Currently, it is being done by simulating an
+   augmented matrix.
+   
+   The augmented matrix is initially set as the identity, and as operations are
+   performed to turn the given matrix into the identity, the same operations
+   are performed on the augmented portion (turning it into the inverse).
+*/
+template <class TItem>
+TBaseMatrix<TItem> invert (const TBaseMatrix<TItem>& rktMAT)
+{
+  int i, j, k;
+  TItem factor;
+  TBaseMatrix<TItem> a = rktMAT;
+  TBaseMatrix<TItem> b;
+  TItem temp_row[4];
+
+
+  // B is the identity, A will be turned into the identity and B the inverse.
+  b.setIdentity();
+  
+  for(i = 0; i < 4; ++i)
+  {
+    // Sort the rows, based on their diagonal elements
+    for(j = 0; j < 4; ++j)
+    {
+      if(fabs(a.getElement(i,i)) < fabs(a.getElement(j,i)))
+      {
+	for(k = 0; k < 4; ++k)
+	{
+	  temp_row[k] = a.getElement(k,i);
+	  a.setElement(k,i,a.getElement(k,j));
+	  a.setElement(k,j,temp_row[k]);
+	  temp_row[k] = b.getElement(k,i);
+	  b.setElement(k,i,b.getElement(k,j));
+	  b.setElement(k,j,temp_row[k]);	  
+	}
+      }
+    }
+    // If there's a zero on the diagonal, it can't be inverted...
+    assert(fabs(a.getElement(i,i)) > TItem(1e-9));
+
+      // Divide to make the element on the diag be 1
+    factor = a.getElement(i,i);
+    for(j = 3; j >= 0; --j)
+    {
+      a.setElement(j,i, a.getElement(j,i) / factor);
+      b.setElement(j,i, b.getElement(j,i) / factor);            
+    }
+
+    for(j = i + 1; j < 4; ++j)
+    {
+      // Turn element i,j into a 0, by subtracting it's value times a known row
+      // with a 1 (i) and replacing. 
+      factor = -a.getElement(i,j);
+      for(k = 0; k < 4; ++k)
+      {
+	a.setElement(k,j, a.getElement(k,j) + a.getElement(k,i) * factor);
+	b.setElement(k,j, b.getElement(k,j) + b.getElement(k,i) * factor);	
+      }
+    }
+  }
+  for(i = 3; i >= 1; --i)
+  {
+    for(j = i-1; j >= 0; --j)
+    {
+      factor = -a.getElement(i,j);
+      for(k = 0; k < 4; ++k)
+      {
+	a.setElement(k,j, a.getElement(k,j) + a.getElement(k,i) * factor);
+	b.setElement(k,j, b.getElement(k,j) + b.getElement(k,i) * factor);	
+      }
+    }
+  }
+  return b;  
+}
 
 #endif  /* _MATRIX__ */
