@@ -1,0 +1,4 @@
+* Finish working on the 'if' statements in the new rt language.  Currently,
+  they work for definitions only, and only if it is outside of any object
+  declarations or modifications.  When finished, I should be able to perform
+  recursion.
