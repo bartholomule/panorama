@@ -1,0 +1,29 @@
+
+BUILD_TOP = ../..
+
+include ${BUILD_TOP}/Makefile.vars
+include @srcdir@/${BUILD_TOP}/Makefile.rules
+
+INSTALL = @INSTALL@
+SRC_DIR = @srcdir@
+
+VPATH = ${SRC_DIR}
+
+EXE = gen-class
+OBJ = gen-class.o
+ALL_FILES = $(strip $(wildcard $(OBJ:%.o=%.cpp)))
+
+all:		${EXE}
+
+${EXE}:		${OBJ}
+		@echo Making program ${EXE}...
+		@${CXX} ${CXXFLAGS} ${OBJ}  -o $@
+
+clean:
+		@rm -f ${OBJ} ${EXE}
+		@rm -f $ *~ *.bak core
+
+distclean:      clean
+		@rm -f Makefile
+
+include ${BUILD_TOP}/Makefile.deps
