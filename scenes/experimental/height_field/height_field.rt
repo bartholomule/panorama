@@ -42,7 +42,8 @@ scene
   background	CSummerSky
   output
   {
-    name	"height_field.tga"
+    type        "png"
+    name	"height_field.png"
   }    
   renderer : class Raytracer {}
 }

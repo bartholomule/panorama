@@ -47,7 +47,8 @@ scene
   background	CBlack
   output
   {
-    name	"triangle.tga"
+    type        "png"
+    name	"triangle.png"
   }
   renderer : class ZBufferRenderer
   {

@@ -110,7 +110,8 @@ scene
   participating on
   output
   {
-    name	"atmosphere.tga"
+    type        "png"
+    name	"atmosphere.png"
   }
   renderer : class Raytracer {}
 }

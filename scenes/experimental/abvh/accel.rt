@@ -59,7 +59,8 @@ scene
   background	CSummerSky
   output
   {
-    name        "accel.tga"
+    type        "png"
+    name        "accel.png"
   }
   renderer : class Raytracer {}
 }

@@ -36,7 +36,8 @@ scene
   background	CSummerSky
   output
   {
-    name	"polyhedron.tga"
+    type        "png"
+    name	"polyhedron.png"
   }
   renderer : class Raytracer {}
 }

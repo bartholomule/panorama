@@ -147,7 +147,8 @@ scene
   background	CSummerSky
   output
   {
-    name	"wood.tga"
+    type        "png"
+    name	"wood.png"
   }
   renderer : class Raytracer 
   {

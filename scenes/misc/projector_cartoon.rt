@@ -111,7 +111,8 @@ scene
   background	CBlack
   output
   {
-    name        "projector_cartoon.tga"
+    type        "png"
+    name        "projector_cartoon.png"
   }
   renderer : class Raytracer {}
   filter : class IF_Cartoon

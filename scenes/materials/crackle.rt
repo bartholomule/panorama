@@ -111,7 +111,8 @@ scene
   background	CSummerSky
   output
   {
-    name	"crackle.tga"
+    type        "png"
+    name	"crackle.png"
   }
   renderer : class Raytracer {}
 }

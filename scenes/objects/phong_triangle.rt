@@ -50,7 +50,8 @@ scene
   background	CBlack
   output
   {
-    name	"phong_triangle.tga"
+    type        "png"
+    name	"phong_triangle.png"
   }
   renderer : class Raytracer {}
 }

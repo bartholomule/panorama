@@ -116,7 +116,8 @@ scene
   background    CBlack
   output
   {
-    name	"plastic_cornell_box.tga"
+    type        "png"
+    name	"plastic_cornell_box.png"
   }
   renderer : class Raytracer {}
 }

@@ -46,7 +46,8 @@ scene
   background	CSummerSky
   output
   {
-    name        "circle.tga"
+    type        "png"
+    name        "circle.png"
   }
   renderer : class Raytracer {}
 }

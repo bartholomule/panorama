@@ -156,7 +156,8 @@ scene
   background    CBlack
   output
   {
-    name        "cornell_box.tga"
+    type        "png"
+    name        "cornell_box.png"
   }
   renderer : class ZBufferRenderer
   {

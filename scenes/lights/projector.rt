@@ -111,7 +111,8 @@ scene
   background	CBlack
   output
   {
-    name	"projector.tga"
+    type        "png"
+    name	"projector.png"
   }
   renderer : class Raytracer {}
 }

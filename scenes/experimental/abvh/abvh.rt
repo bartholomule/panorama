@@ -140,7 +140,8 @@ scene
   background	CSummerSky
   output
   {
-    name        "abvh.tga"
+    type        "png"
+    name        "abvh.png"
   }
   renderer : class Raytracer {}
 }

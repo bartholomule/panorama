@@ -51,7 +51,8 @@ scene
   background    CBlack
   output
   {
-    name	"warn.tga"
+    type        "png"
+    name	"warn.png"
   }
   renderer : class Raytracer {}
 }

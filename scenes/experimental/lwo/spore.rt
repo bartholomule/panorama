@@ -38,7 +38,8 @@ scene
   background    CSummerSky
   output
   {
-    name        "spore.tga"
+    type        "png"
+    name        "spore.png"
   }
   renderer : class ZBufferRenderer
   {

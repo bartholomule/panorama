@@ -36,7 +36,8 @@ scene
   background    CSummerSky
   output
   {
-    name        "cassette.tga"
+    type        "png"
+    name        "cassette.png"
   }
   renderer : class ZBufferRenderer
   {

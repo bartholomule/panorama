@@ -65,7 +65,8 @@ scene
   background	CSummerSky
   output
   {
-    name	"cone.tga"
+    type        "png"
+    name	"cone.png"
   }
   renderer : class Raytracer {}
 }
