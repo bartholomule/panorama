@@ -27,7 +27,7 @@
 class TWorleyBasis
 {
 
-  protected:
+  public:
 
     struct TPointData
     {
@@ -36,6 +36,8 @@ class TWorleyBasis
       TVector   tVector;
     };
       
+  protected:
+
     Byte      bNearestPoints;
     TScalar   atProbabilities [8];
     TScalar   atData [FX_RANDOM_TABLE_SIZE];
