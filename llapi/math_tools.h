@@ -23,6 +23,10 @@
 #include <algorithm>
 #include "llapi/machine.h"
 
+#undef USE_RAND_FUNCTION
+
+static DWord   _dwRandomSeed;
+
 inline int sign (double dNUMBER)
 {
 
@@ -49,11 +53,37 @@ inline const TItem& max3 (const TItem& tITEM1, const TItem& tITEM2, const TItem&
 }  /* max3() */
 
 
+inline void SeedRandom (DWord dwSEED)
+{
+
+#ifdef USE_RAND_FUNCTION
+
+  srand (dwSEED);
+
+#else
+
+  _dwRandomSeed = dwSEED;
+
+#endif
+  
+}  /* SeedRandom() */
+
+
 inline float frand (void)
 {
 
+#ifdef USE_RAND_FUNCTION
+
   return (float (rand()) / RAND_MAX);
 
+#else
+
+  _dwRandomSeed = _dwRandomSeed * 17231723L + 2001L;
+  
+  return (float ((_dwRandomSeed >> 16) & 0x7fff) / float (0x7fff));
+
+#endif
+  
 }  /* frand() */
 
 
