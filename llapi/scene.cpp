@@ -1,5 +1,6 @@
 /*
 *  Copyright (C) 1998, 1999 Angel Jimenez Jimenez and Carlos Jimenez Moreno
+*  Copyright (C) 1999 Jon Frydensbjerg
 *
 *  This program is free software; you can redistribute it and/or modify
 *  it under the terms of the GNU General Public License as published by
@@ -16,6 +17,7 @@
 *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "hlapi/aggregate.h"
 #include "hlapi/image_manager.h"
 #include "llapi/object.h"
 #include "llapi/scene.h"
@@ -34,11 +36,23 @@ bool TScene::initialize (void)
 
   ptWorld->initialize();
 
+  if ( ((TAggregate*) ptWorld)->objectList()->empty() )
+  {
+    cout << "Warning: Scene has no objects" << endl;
+  }
+  
   ptWorld->setObjectCode (1);
   
-  for (vector<TLight*>::iterator tIter = tLightList.begin(); ( tIter != tLightList.end() ) ;tIter++)
+  if ( tLightList.empty() )
   {
-    (*tIter)->initialize();
+    cout << "Warning: Scene has no lights" << endl;
+  }
+  else
+  {
+    for (vector<TLight*>::iterator tIter = tLightList.begin(); ( tIter != tLightList.end() ) ;tIter++)
+    {
+      (*tIter)->initialize();
+    }
   }
   
   assert ( ptRenderer );
@@ -117,6 +131,8 @@ bool TScene::postprocess (void)
   {
     ptFilter = *tIter;
     assert ( ptFilter );
+    
+    ptFilter->setScene (this);
 
     ptFilter->filter (sBuffers);
   }
