@@ -1,0 +1,52 @@
+/*
+* lf test
+*/
+
+#include "materials.inc"
+
+define camera c
+{
+  translate	<0, 0, 450>
+  look_at	<0, 0, 0>
+}
+
+define light l
+{
+  translate	<-57, -40, 40>
+  color         CWhite
+  intensity     0.8
+}
+
+/*
+sphere
+{
+  translate     <0, 0, 0>
+  radius        50
+  material : extends MPlastic
+  {
+    color       CWhite
+  }
+}
+*/
+scene
+{
+  camera	c
+  light         l
+  width		1024
+  height	768
+  background    CBlack
+  output
+  {
+    type        "png"
+    name	"lf_test.png"
+  }
+  renderer : class Raytracer {}
+  filter : class IF_Lens_Flare {
+    lf_type     "normal"
+    intensity   1.0
+    lf_scale    1.0
+  }
+}
+
+
+
