@@ -1,0 +1,121 @@
+/*
+*  Anisotropic reflection test
+*/
+
+#include "materials.inc"
+
+define material MShinyPlastic
+{ 
+  bsdf : class BsdfSchlickDouble
+  {
+    reflection_color  { red 0.4 green 0.6 blue 0.5 }
+    roughness         0.20
+    isotropy          0.08
+
+    l2_reflection_color  { red 0.9 green 0.3 blue 0.2 }
+    l2_roughness         0.60
+    l2_isotropy          0.80
+  }
+  ambient	0.1
+  diffuse	0.4
+  specular	0.5
+}
+
+define camera c
+{
+  translate	<90, 350, 180>
+  look_at	<0, 100, 0>
+}
+
+define light l
+{
+  translate	<-24, 170, -50>
+  color		CWhite
+  intensity     0.6
+}
+
+define light l2
+{
+  translate	<430, 50, 230>
+  color		CWhite
+}
+
+plane
+{
+  translate	<0, 0, 0>
+  normal	<0, 1, 0>
+  material : extends MShinyPlastic
+  {
+    color	CBlue
+  }
+}
+
+cylinder
+{
+  scale         <50, 100, 50>
+  translate	<0, 0, 0>
+  material : extends MShinyPlastic
+  {
+    color	CWhite
+  }
+}
+
+sphere
+{
+  translate     <0, 120, -80>
+  radius        30
+  material : extends MShinyPlastic
+  {
+    color	CRed
+  }
+}
+
+sphere
+{
+  translate     <0, 120, 80>
+  radius        30
+  material : extends MShinyPlastic
+  {
+    color	CRed
+  }
+}
+
+sphere
+{
+  translate     <80, 120, 0>
+  radius        30
+  material : extends MShinyPlastic
+  {
+    color	CRed
+  }
+}
+
+sphere
+{
+  translate     <-80, 120, 0>
+  radius        30
+  material : extends MShinyPlastic
+  {
+    color	CRed
+  }
+}
+
+scene
+{
+  camera	c
+  light		l
+  light		l2
+  width		640
+  height	480
+  background	CSummerSky
+  output
+  {
+    type        "png"
+    name	"anisotropic.png"
+  }
+  renderer : class Raytracer
+  {
+//    sampling    "adaptive"
+  }
+}
+
