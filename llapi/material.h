@@ -50,6 +50,7 @@ class TMaterial : public TProcedural
     virtual TScalar transparency (const TSpanList& rktLIST) const;
     virtual TScalar transparency (TScalar tDIST) const;
     virtual TColor color (const TSurfaceData& rktDATA) const { return tColor; }
+    virtual TScalar opacity (const TSurfaceData& rktDATA) const { return tOpacity; }
     virtual TScalar ambientReflection (const TSurfaceData& rktDATA) const { return tAmbientReflection; }
     virtual TScalar diffuseReflection (const TSurfaceData& rktDATA) const { return tDiffuseReflection; }
     virtual TScalar specularReflection (const TSurfaceData& rktDATA) const { return tSpecularReflection; }
