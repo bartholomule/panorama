@@ -124,7 +124,7 @@ void TQuadric::getAttributeList (TAttributeList& rtLIST) const
 {
   TObject::getAttributeList (rtLIST);
 
-  rtLIST ["coefs"] = FX_REAL;  
+  rtLIST ["coefs"] = FX_ARRAY;  
 }
 
 TUserFunctionMap TQuadric::getUserFunctions()
@@ -349,6 +349,8 @@ void TQuadric::set_coefs(unsigned index, const TVector& values)
 
 void TQuadric::set_coefs(const std::vector<TScalar>& values)
 {
+  //  cout << "set_coefs was given " << values.size() << " coefficients, but wanted " << CQ_NUM_COEFS << endl;
+  
   for(unsigned i = 0; i < CQ_NUM_COEFS; ++i)
   {
     if( i < values.size() )
