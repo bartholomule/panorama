@@ -104,3 +104,14 @@ define material MWorley : class MaterialWorley
   diffuse	0.6
   specular	0.2
 }
+
+define material MLeopard : class MaterialLeopard
+{
+  bsdf : class BsdfPhong
+  {
+    exponent    50
+  }
+  ambient	0.2
+  diffuse	0.6
+  specular	0.2
+}
