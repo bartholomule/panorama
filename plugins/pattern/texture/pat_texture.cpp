@@ -28,7 +28,6 @@ DEFINE_PLUGIN ("PatternTexture", FX_PATTERN_CLASS, TPatternTexture);
 TPatternTexture::TPatternTexture (void) :
       TPattern(),
       tTiling (1, 1),
-      tScaling (1.0, 1.0, 1.0),
       gMirror (false),
       gTile (true),
       eMapping (FX_SPHERICAL)
@@ -227,31 +226,6 @@ void TPatternTexture::planarMap (const TVector& rktPOINT, TVector2& rtUVCOORD) c
 }  /* planarMap() */
 
 
-void TPatternTexture::recalculateMatrix (void)
-{
-
-  TMatrix   tTempMatrix;
-
-  tMatrix.setIdentity();
-  
-  tTempMatrix.setTranslation (tTranslation);
-  tMatrix = tTempMatrix * tMatrix;
-
-  tTempMatrix.setRotationX (tRotation.x());
-  tMatrix = tTempMatrix * tMatrix;
-  
-  tTempMatrix.setRotationY (tRotation.y());
-  tMatrix = tTempMatrix * tMatrix;
-  
-  tTempMatrix.setRotationZ (tRotation.z());
-  tMatrix = tTempMatrix * tMatrix;
-
-  tTempMatrix.setScaling (tScaling, TVector(0, 0, 0));
-  tMatrix = tTempMatrix * tMatrix;
-
-}  /* recalculateMatrix() */
-
-
 TColor TPatternTexture::pattern (const TSurfaceData& rktDATA) const
 {
 
@@ -264,7 +238,7 @@ TColor TPatternTexture::pattern (const TSurfaceData& rktDATA) const
     exit (1);
   }
 
-  tPoint = tMatrix * rktDATA.localPoint();
+  tPoint = rktDATA.localPoint();
 
   switch (eMapping) 
   {
@@ -359,45 +333,6 @@ int TPatternTexture::setAttribute (const string& rktNAME, NAttribute nVALUE, EAt
       return FX_ATTRIB_WRONG_TYPE;
     }
   }
-  else if ( rktNAME == "rotation" )
-  {
-    if ( eTYPE == FX_VECTOR )
-    {
-      tRotation = *((TVector*) nVALUE.pvValue);      
-
-      recalculateMatrix();
-    }
-    else
-    {
-      return FX_ATTRIB_WRONG_TYPE;
-    }
-  }
-  else if ( rktNAME == "scaling" )
-  {
-    if ( eTYPE == FX_VECTOR )
-    {
-      tScaling = *((TVector*) nVALUE.pvValue);
-
-      recalculateMatrix();
-    }
-    else
-    {
-      return FX_ATTRIB_WRONG_TYPE;
-    }
-  }
-  else if ( rktNAME == "translation" )
-  {
-    if ( eTYPE == FX_VECTOR )
-    {
-      tTranslation = *((TVector*) nVALUE.pvValue);
-
-      recalculateMatrix();
-    }
-    else
-    {
-      return FX_ATTRIB_WRONG_TYPE;
-    }
-  }
   else if ( rktNAME == "mirror" )
   {
     if ( eTYPE == FX_BOOL )
@@ -477,18 +412,6 @@ int TPatternTexture::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
   {
     rnVALUE.pvValue = &tOffset;
   }
-  else if ( rktNAME == "rotation" )
-  {
-    rnVALUE.pvValue = &tRotation;
-  }
-  else if ( rktNAME == "scaling" )
-  {
-    rnVALUE.pvValue = &tScaling;
-  }
-  else if ( rktNAME == "translation" )
-  {
-    rnVALUE.pvValue = &tTranslation;
-  }
   else if ( rktNAME == "mirror" )
   {
     rnVALUE.gValue = gMirror;
@@ -532,9 +455,6 @@ void TPatternTexture::getAttributeList (TAttributeList& rtLIST) const
   rtLIST ["texture"]     = FX_IMAGE;
   rtLIST ["tiling"]      = FX_VECTOR2;
   rtLIST ["offset"]      = FX_VECTOR2;
-  rtLIST ["rotation"]    = FX_VECTOR;
-  rtLIST ["scaling"]     = FX_VECTOR;
-  rtLIST ["translation"] = FX_VECTOR;
   rtLIST ["mirror"]      = FX_BOOL;
   rtLIST ["tile"]        = FX_BOOL;
   rtLIST ["mapping"]     = FX_STRING;

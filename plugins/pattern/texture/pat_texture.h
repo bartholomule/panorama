@@ -31,7 +31,7 @@ enum EMappings
   FX_CYLINDRICAL,
   FX_PLANAR
 
-};  /* enum ELFTypes */
+};  /* enum EMappings */
 
 class TPatternTexture : public TPattern
 {
@@ -42,14 +42,10 @@ class TPatternTexture : public TPattern
     TImage*     ptImage;
     TVector2    tTiling;
     TVector2    tOffset;
-    TVector     tRotation;
-    TVector     tScaling;
-    TVector     tTranslation;
     bool        gMirror;
     bool        gTile;
     EMappings   eMapping;
 
-    TMatrix    tMatrix;
     size_t     zTextureWidth, zTextureHeight;
  
     int correctTexel (int iVALUE, const size_t& rkzMAX) const;
@@ -60,8 +56,6 @@ class TPatternTexture : public TPattern
     void cylindricalMap (const TVector& rktPOINT, TVector2& rtUVCOORD) const;
     void planarMap (const TVector& rktPOINT, TVector2& rtUVCOORD) const;
     
-    void recalculateMatrix (void);
-
   public:
 
     static TBaseClass* _create (const TBaseClass* pktPARENT);
