@@ -21,6 +21,7 @@
 #include "hlapi/circle.h"
 #include "hlapi/class_manager.h"
 #include "hlapi/cone.h"
+#include "hlapi/csg.h"
 #include "hlapi/cylinder.h"
 #include "hlapi/image_manager.h"
 #include "hlapi/mesh_object.h"

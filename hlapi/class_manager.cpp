@@ -43,6 +43,7 @@ TBaseClass* TClassManager::_newObject (const string& rktCLASS, const TBaseClass*
   STATIC_CLASS (TBox, "Box");
   STATIC_CLASS (TCircle, "Circle");
   STATIC_CLASS (TCone, "Cone");
+  STATIC_CLASS (TCsg, "Csg");
   STATIC_CLASS (TCylinder, "Cylinder");
   STATIC_CLASS (TMaterial, "Material");
   STATIC_CLASS (TMeshObject, "Mesh");
