@@ -1,4 +1,6 @@
 
+ - Added new syntax for cylinder (given two points and radius).
+
  - Implemented CSG objects (union, intersection and difference).
 
  - Implemented vector as variables (like colors).
