@@ -1,0 +1,12 @@
+
+BUILD_TOP = ../..
+
+DIRS = brick \
+       bump \
+       crackle \
+       leopard \
+       marble \
+       noise \
+       worley
+
+include ${BUILD_TOP}/Makefile.targets
