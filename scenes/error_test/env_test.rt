@@ -1,8 +1,18 @@
 print("---------------------------------------------------------------------------");
 print(env("HOME") + " is your home directory.");
+
 print("---------------------------------------------------------------------------");
 
 print("The following should report an error:");
 print(env("poiuytrewq!@#$%^&*()_+"));
 print("---------------------------------------------------------------------------");
+
+print("The following should NOT report an error:");
+print(envnull("poiuytrewq!@#$%^&*()_+"));
+print("---------------------------------------------------------------------------");
+
+
+
+print("Output type could be: " + ifnull(envnull("OUTPUTTYPE"),"not defined"));
+
 halt();
