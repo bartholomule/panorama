@@ -1,7 +1,7 @@
 /*
 *  Shape Definitions -- To be used in the simplification of scene files
 *
-*  Copyright (C) 2001 Kevin Harris
+*  Copyright (C) 2001, 2002 Kevin Harris
 *
 *  This program is free software; you can redistribute it and/or modify
 *  it under the terms of the GNU General Public License as published by
@@ -21,8 +21,10 @@
 define aggregate class Aggregate { };
 define box       class Box       { };
 define circle    class Circle    { };
+define cone      class Cone      { };
 define cylinder  class Cylinder  { };
 define plane     class Plane     { };
+define rectangle class Rectangle { };
 define sphere    class Sphere    { };
 define triangle  class Triangle  { };
 define torus     class Torus     { };
