@@ -29,7 +29,7 @@
 //
 // Minimum distance between scalar values
 //
-#define FX_EPSILON (1e-6)
+#define FX_EPSILON (1e-5)
 
 //
 // Base type used in coordinates and limit values of this type
