@@ -122,7 +122,7 @@ bool TPinholeCamera::getPlaneProjection (const TVector& rktPOINT, TVector2& rtPR
   
   return true;
   
-}  /* getPlaneProjection */
+}  /* getPlaneProjection() */
 
 
 void TPinholeCamera::printDebug (void) const

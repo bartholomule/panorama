@@ -140,7 +140,7 @@ bool TParallelCamera::getPlaneProjection (const TVector& rktPOINT, TVector2& rtP
   
   return true;
   
-}  /* getPlaneProjection */
+}  /* getPlaneProjection() */
 
 
 void TParallelCamera::printDebug (void) const
