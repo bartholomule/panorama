@@ -1,5 +1,5 @@
 /*
-*  Copyright (C) 1999 Jon Frydensbjerg
+*  Copyright (C) 1999-2000 Jon Frydensbjerg
 *
 *  This program is free software; you can redistribute it and/or modify
 *  it under the terms of the GNU General Public License as published by
@@ -97,9 +97,9 @@ void TBsdfSchlickDouble::getAttributeList (TAttributeList& rtLIST) const
   TBsdf::getAttributeList (rtLIST);
   ptLayerOne->getAttributeList (rtLIST);
 
-  rtLIST ["l2_roughness"]        = FX_REAL;
-  rtLIST ["l2_reflection_color"] = FX_COLOR;
-  rtLIST ["l2_isotropy"]         = FX_REAL;
+  rtLIST ["l2_roughness"]        = FX_PATTERN;
+  rtLIST ["l2_reflection_color"] = FX_PATTERN;
+  rtLIST ["l2_isotropy"]         = FX_PATTERN;
 
 }  /* getAttributeList() */
 

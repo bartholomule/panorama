@@ -1,5 +1,5 @@
 /*
-*  Copyright (C) 1999 Jon Frydensbjerg
+*  Copyright (C) 1999-2000 Jon Frydensbjerg
 *
 *  This program is free software; you can redistribute it and/or modify
 *  it under the terms of the GNU General Public License as published by
@@ -23,13 +23,13 @@
 
 DEFINE_PLUGIN ("BsdfSchlick", FX_BSDF_CLASS, TBsdfSchlick);
 
-TBsdfSchlick::TBsdfSchlick (void) :
-  tRoughness (0.3f),
-  tIsotropy (1.0f),
-  tReflectance (TColor::_white())  
+
+TBsdfSchlick::TBsdfSchlick (void)
 {
 
-  setupBsdf();
+  ptRoughness   = new TPattern (0.3);
+  ptIsotropy    = new TPattern (1.0);
+  ptReflectance = new TPattern (TColor::_white()); 
 
 }  /* TBsdfSchlick() */
 
@@ -39,9 +39,17 @@ int TBsdfSchlick::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttri
 
   if ( rktNAME == "roughness" )
   {
-    if ( eTYPE == FX_REAL )
+    if ( eTYPE == FX_PATTERN )
     {
-      tRoughness = nVALUE.dValue;
+      ptRoughness = (TPattern*) nVALUE.pvValue;
+    }
+    else if ( eTYPE == FX_REAL )
+    {
+      ptRoughness = new TPattern (nVALUE.dValue);
+    }
+    else if ( eTYPE == FX_COLOR )
+    {
+      ptRoughness = new TPattern (*((TColor*) nVALUE.pvValue));
     }
     else
     {
@@ -50,9 +58,17 @@ int TBsdfSchlick::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttri
   }
   else if ( rktNAME == "reflection_color" )
   {
-    if ( eTYPE == FX_COLOR )
+    if ( eTYPE == FX_PATTERN )
     {
-      tReflectance = *((TColor *) nVALUE.pvValue);
+      ptReflectance = (TPattern*) nVALUE.pvValue;
+    }
+    else if ( eTYPE == FX_REAL )
+    {
+      ptReflectance = new TPattern (nVALUE.dValue);
+    }
+    else if ( eTYPE == FX_COLOR )
+    {
+      ptReflectance = new TPattern (*((TColor*) nVALUE.pvValue));
     }
     else
     {
@@ -61,9 +77,17 @@ int TBsdfSchlick::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttri
   }
   else if ( rktNAME == "isotropy" )
   {
-    if ( eTYPE == FX_REAL )
+    if ( eTYPE == FX_PATTERN )
     {
-      tIsotropy = nVALUE.dValue;
+      ptIsotropy = (TPattern*) nVALUE.pvValue;
+    }
+    else if ( eTYPE == FX_REAL )
+    {
+      ptIsotropy = new TPattern (nVALUE.dValue);
+    }
+    else if ( eTYPE == FX_COLOR )
+    {
+      ptIsotropy = new TPattern (*((TColor*) nVALUE.pvValue));
     }
     else
     {
@@ -87,15 +111,15 @@ int TBsdfSchlick::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 
   if ( rktNAME == "roughness" )
   {
-    rnVALUE.dValue = tRoughness;
+    rnVALUE.pvValue = ptRoughness;
   }
   else if ( rktNAME == "reflection_color" )
   {
-    rnVALUE.pvValue = &tReflectance;
+    rnVALUE.pvValue = ptReflectance;
   }
   else if ( rktNAME == "isotropy" )
   {
-    rnVALUE.dValue = tIsotropy;
+    rnVALUE.pvValue = ptIsotropy;
   }
   else
   {
@@ -112,9 +136,9 @@ void TBsdfSchlick::getAttributeList (TAttributeList& rtLIST) const
 
   TBsdf::getAttributeList (rtLIST);
 
-  rtLIST ["roughness"]        = FX_REAL;
-  rtLIST ["reflection_color"] = FX_COLOR;
-  rtLIST ["isotropy"]         = FX_REAL;
+  rtLIST ["roughness"]        = FX_PATTERN;
+  rtLIST ["reflection_color"] = FX_PATTERN;
+  rtLIST ["isotropy"]         = FX_PATTERN;
 
 }  /* getAttributeList() */
 

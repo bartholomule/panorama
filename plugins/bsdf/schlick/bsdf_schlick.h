@@ -1,5 +1,5 @@
 /*
-*  Copyright (C) 1999 Jon Frydensbjerg
+*  Copyright (C) 1999-2000 Jon Frydensbjerg
 *
 *  This program is free software; you can redistribute it and/or modify
 *  it under the terms of the GNU General Public License as published by
@@ -26,30 +26,39 @@
 #include "llapi/vector_tools.h"
 #include "hlapi/plugin_manager.h"
 
+class TBsdfSchlickDouble;
+
+
 class TBsdfSchlick : public TBsdf
 {
 
+  friend TBsdfSchlickDouble;
+
   protected:
 
-    TScalar   tRoughness;
-    TScalar   tIsotropy;
-    TColor    tReflectance;
+    TPattern*         ptRoughness;
+    TPattern*         ptIsotropy;
+    TPattern*         ptReflectance;
 
-    TScalar   A;
-    TScalar   B;
-    TScalar   tInvRoughness;
-    TScalar   tRoughnessInv;
-    TScalar   tIsotropy_2;
-    TScalar   tInvIsotropy_2;
-    TScalar   tRed,   tInvRed;
-    TScalar   tGreen, tInvGreen;
-    TScalar   tBlue,  tInvBlue;
+    mutable TScalar   tRoughness;
+    mutable TScalar   tIsotropy;
+    mutable TColor    tReflectance;
+
+    mutable TScalar   A;
+    mutable TScalar   B;
+    mutable TScalar   tInvRoughness;
+    mutable TScalar   tRoughnessInv;
+    mutable TScalar   tIsotropy_2;
+    mutable TScalar   tInvIsotropy_2;
+    mutable TScalar   tRed,   tInvRed;
+    mutable TScalar   tGreen, tInvGreen;
+    mutable TScalar   tBlue,  tInvBlue;
 
   protected:
 
     inline TScalar sqr (TScalar X) const { return (X * X); }
 
-    void setupBsdf (void);
+    void setupBsdf (void) const;
 
   public:
 
@@ -85,7 +94,7 @@ class TBsdfSchlick : public TBsdf
 };  /* class TBsdfSchlick */
 
 
-inline void TBsdfSchlick::setupBsdf (void)
+inline void TBsdfSchlick::setupBsdf (void) const
 {
 
   tRoughnessInv  =  tRoughness - 1.0;
@@ -187,6 +196,12 @@ inline TColor TBsdfSchlick::evaluateReflection (const TSurfaceData& rktDATA, con
   TScalar      tGeometrical;
   TScalar      tDirectional;
   TColor       tFresnelColor;
+
+  tRoughness   = ptRoughness->scalar (rktDATA);
+  tIsotropy    = ptIsotropy->scalar (rktDATA);
+  tReflectance = ptReflectance->color (rktDATA);
+  
+  setupBsdf();
 
   tHalfway.normalize();
 

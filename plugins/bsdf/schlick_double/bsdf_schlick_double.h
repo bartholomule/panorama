@@ -1,5 +1,5 @@
 /*
-*  Copyright (C) 1999 Jon Frydensbjerg
+*  Copyright (C) 1999-2000 Jon Frydensbjerg
 *
 *  This program is free software; you can redistribute it and/or modify
 *  it under the terms of the GNU General Public License as published by
@@ -75,6 +75,18 @@ inline TColor TBsdfSchlickDouble::evaluateReflection (const TSurfaceData& rktDAT
   TScalar      tDirectional, tL2_Directional;
   TColor       tFresnelColor, tL2_FresnelColor;
   TColor       tL1_Color, tL2_Color;
+
+  ptLayerOne->tRoughness   = ptLayerOne->ptRoughness->scalar (rktDATA);
+  ptLayerOne->tIsotropy    = ptLayerOne->ptIsotropy->scalar (rktDATA);
+  ptLayerOne->tReflectance = ptLayerOne->ptReflectance->color (rktDATA);
+  
+  ptLayerOne->setupBsdf();
+
+  ptLayerTwo->tRoughness   = ptLayerTwo->ptRoughness->scalar (rktDATA);
+  ptLayerTwo->tIsotropy    = ptLayerTwo->ptIsotropy->scalar (rktDATA);
+  ptLayerTwo->tReflectance = ptLayerTwo->ptReflectance->color (rktDATA);
+  
+  ptLayerTwo->setupBsdf();
 
   tHalfway.normalize();
 

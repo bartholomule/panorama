@@ -1,5 +1,5 @@
 /*
-*  Copyright (C) 1999 Jon Frydensbjerg
+*  Copyright (C) 1999-2000 Jon Frydensbjerg
 *
 *  This program is free software; you can redistribute it and/or modify
 *  it under the terms of the GNU General Public License as published by
@@ -30,20 +30,23 @@ class TBsdfCookTorrance : public TBsdf
 
   protected:
 
-    TScalar   tStandardDeviation;
-    TColor    tSpecularReflectionCoefficients;
+    TPattern*           ptStandardDeviation;
+    TPattern*           ptSpecularReflectionCoefficients;
 
-    TScalar   tStandardDeviationSqr;
-    TScalar   tNred;
-    TScalar   tNgreen;
-    TScalar   tNblue;
+    mutable TScalar     tStandardDeviationSqr;
+    mutable TScalar     tNred;
+    mutable TScalar     tNgreen;
+    mutable TScalar     tNblue;
 
   protected:
 
     inline TScalar sqr (TScalar X) const { return (X * X); }
     
-    void setStandardDeviation (TScalar tSTDDEV);
-    void setSpecularReflectionCoefficients (TColor tFRESNELZERO);
+    void setCurrentStandardDeviation (TScalar tSTDDEV) const;
+    void setCurrentSpecularReflectionCoefficients (TColor tFRESNELZERO) const;
+
+    void setStandardDeviation (TPattern* ptSTDDEV) { ptStandardDeviation = ptSTDDEV; }
+    void setSpecularReflectionCoefficients (TPattern* ptFRESNELZERO) { ptSpecularReflectionCoefficients = ptFRESNELZERO; }
 
     TScalar calculateFresnel (const TScalar& N, TScalar& rtCosVH) const;
 
@@ -71,19 +74,16 @@ class TBsdfCookTorrance : public TBsdf
 };  /* class TBsdfCookTorrance */
 
 
-inline void TBsdfCookTorrance::setStandardDeviation (TScalar tSTDDEV)
+inline void TBsdfCookTorrance::setCurrentStandardDeviation (TScalar tSTDDEV) const
 {
 
-  tStandardDeviation = tSTDDEV; 
   tStandardDeviationSqr = sqr (tSTDDEV); 
 
 }  /* setStandardDeviation() */
 
 
-inline void TBsdfCookTorrance::setSpecularReflectionCoefficients (TColor tREFLECTION)
+inline void TBsdfCookTorrance::setCurrentSpecularReflectionCoefficients (TColor tREFLECTION) const
 {
-
-  tSpecularReflectionCoefficients = tREFLECTION;
 
   tNred   = (1.0 + sqrt (tREFLECTION.red()))   / (1.0 - sqrt (tREFLECTION.red()));
   tNgreen = (1.0 + sqrt (tREFLECTION.green())) / (1.0 - sqrt (tREFLECTION.green()));
@@ -132,6 +132,9 @@ inline TColor TBsdfCookTorrance::evaluateReflection (const TSurfaceData& rktDATA
   TScalar      G, Gs, Gm, tGcommon;
   TScalar      Fr, Fg, Fb;
   TScalar      tGlare;
+  
+  setCurrentStandardDeviation (ptStandardDeviation->scalar (rktDATA));
+  setCurrentSpecularReflectionCoefficients (ptSpecularReflectionCoefficients->color (rktDATA));
 
   tHalfway.normalize();
 

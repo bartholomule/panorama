@@ -1,5 +1,5 @@
 /*
-*  Copyright (C) 1999 Jon Frydensbjerg
+*  Copyright (C) 1999-2000 Jon Frydensbjerg
 *
 *  This program is free software; you can redistribute it and/or modify
 *  it under the terms of the GNU General Public License as published by
@@ -23,11 +23,12 @@
 
 DEFINE_PLUGIN ("BsdfCookTorrance", FX_BSDF_CLASS, TBsdfCookTorrance);
 
-TBsdfCookTorrance::TBsdfCookTorrance (void) :
-  tStandardDeviation (1.0f)
+
+TBsdfCookTorrance::TBsdfCookTorrance (void)
 {
 
-  setSpecularReflectionCoefficients (TColor::_white());
+  setSpecularReflectionCoefficients (new TPattern (TColor::_white()));
+  setStandardDeviation (new TPattern (1.0));
 
 }  /* TBsdfCookTorrance() */
 
@@ -37,9 +38,17 @@ int TBsdfCookTorrance::setAttribute (const string& rktNAME, NAttribute nVALUE, E
 
   if ( rktNAME == "roughness" )
   {
-    if ( eTYPE == FX_REAL )
+    if ( eTYPE == FX_PATTERN )
     {
-      setStandardDeviation (nVALUE.dValue);
+      setStandardDeviation ((TPattern*) nVALUE.pvValue);
+    }
+    else if ( eTYPE == FX_REAL )
+    {
+      setStandardDeviation (new TPattern (nVALUE.dValue));
+    }
+    else if ( eTYPE == FX_COLOR )
+    {
+      setStandardDeviation (new TPattern (*((TColor*) nVALUE.pvValue)));
     }
     else
     {
@@ -48,9 +57,17 @@ int TBsdfCookTorrance::setAttribute (const string& rktNAME, NAttribute nVALUE, E
   }
   else if ( rktNAME == "reflection_color" )
   {
-    if ( eTYPE == FX_COLOR )
+    if ( eTYPE == FX_PATTERN )
     {
-      setSpecularReflectionCoefficients (*((TColor *) nVALUE.pvValue));
+      setSpecularReflectionCoefficients ((TPattern*) nVALUE.pvValue);
+    }
+    else if ( eTYPE == FX_REAL )
+    {
+      setSpecularReflectionCoefficients (new TPattern (nVALUE.dValue));
+    }
+    else if ( eTYPE == FX_COLOR )
+    {
+      setSpecularReflectionCoefficients (new TPattern (*((TColor*) nVALUE.pvValue)));
     }
     else
     {
@@ -72,11 +89,11 @@ int TBsdfCookTorrance::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 
   if ( rktNAME == "roughness" )
   {
-    rnVALUE.dValue = tStandardDeviation;
+    rnVALUE.pvValue = ptStandardDeviation;
   }
   else if ( rktNAME == "reflection_color" )
   {
-    rnVALUE.pvValue = &tSpecularReflectionCoefficients;
+    rnVALUE.pvValue = ptSpecularReflectionCoefficients;
   }
   else
   {
@@ -93,8 +110,8 @@ void TBsdfCookTorrance::getAttributeList (TAttributeList& rtLIST) const
 
   TBsdf::getAttributeList (rtLIST);
 
-  rtLIST ["reflection_color"] = FX_COLOR;
-  rtLIST ["roughness"]        = FX_REAL;
+  rtLIST ["reflection_color"] = FX_PATTERN;
+  rtLIST ["roughness"]        = FX_PATTERN;
 
 }  /* getAttributeList() */
 
