@@ -20,8 +20,6 @@
 #include "llapi/object.h"
 #include "llapi/scene.h"
 
-string   TScene::_tIncludePath  = "";
-
 TScene::TScene (void) :
   ptWorld (NULL),
   ptCamera (NULL),

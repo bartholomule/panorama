@@ -17,11 +17,14 @@
 */
 
 #include <iostream>
+#include "llapi/file.h"
 #include "hlapi/image_manager.h"
 #include "hlapi/plugin_manager.h"
 #include "plugins/image_io/tga/tga_io.h"
 #include "plugins/image_io/jpeg/jpeg_io.h"
 #include "plugins/image_io/png/png_io.h"
+
+extern multimap<string, string>   tConfigData;
 
 TImageManager     tImageManager;
 TImageFormatMap   TImageManager::_tImageFormatMap;
@@ -128,21 +131,32 @@ TImage* TImageManager::loadImage (const string& rktNAME, const string& rktFORMAT
 {
 
   string        tFileName;
-  TImage*       ptImage;
   TImageData*   ptImageData;
+  TImage*       ptImage = NULL;
 
   cout << "Loading image : " << rktNAME << endl;
 
-  if ( rktNAME[0] != '/' )
+  bool   gAbsolutePath = ( rktNAME[0] == '/' );
+
+  if ( gAbsolutePath )
   {
-    tFileName = tImagePath + rktNAME;
+    ptImage = TImageManager::_load (rktNAME, rktFORMAT);
   }
   else
   {
-    tFileName = rktNAME;
+    multimap<string, string>::const_iterator   iter;
+
+    iter = tConfigData.find ("TexturePath");
+    while ( ( iter != tConfigData.end() ) && ( (*iter).first == "TexturePath" ) )
+    {
+      if ( FileExists ((*iter).second + "/" + rktNAME) )
+      {
+        ptImage = TImageManager::_load ((*iter).second + "/" + rktNAME, rktFORMAT);
+        break;
+      }
+      iter++;
+    }
   }
-  
-  ptImage = TImageManager::_load (tFileName, rktFORMAT);
 
   if ( ptImage )
   {

@@ -65,8 +65,6 @@ class TGradient
 
   protected:
 
-    static string   _tGradientPath;
-    
     mutable list<TGradientSegment*> tSegmentList;
     string                          tName;
     string                          tFileName;
@@ -82,10 +80,7 @@ class TGradient
     
   public:
 
-    static void _initialize (const string& rktPATH)
-    {
-      _tGradientPath = rktPATH;
-    }
+    static void _initialize (void) {}
     
     TGradient();
     ~TGradient();

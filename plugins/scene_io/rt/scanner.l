@@ -28,6 +28,8 @@
 
 #undef yywrap
 
+extern multimap<string, string>   tConfigData;
+
 //
 //  Prototypes
 //
@@ -263,17 +265,36 @@ bool IncludeFile (void)
   {
     _atIncludeStack [_bIncludeLevel++] = _tIncludeFileData;
   }
+
   yyin = fopen (_tIncludeFileName.c_str(), "r");
+
   if ( !yyin )
   {
-    string   tString = TScene::_tIncludePath + _tIncludeFileName;
-    yyin    = fopen (tString.c_str(), "r");
-    if ( !yyin )
+    if ( _tIncludeFileName[0] != '/' )
     {
-      yyerror ("Include file could not be opened");
-      exit (1);
+      multimap<string, string>::const_iterator   iter;
+
+      iter = tConfigData.find ("IncludePath");
+      while ( ( iter != tConfigData.end() ) && ( (*iter).first == "IncludePath" ) )
+      {
+        string   tAux = (*iter).second + "/" + _tIncludeFileName;
+        
+        if ( FileExists (tAux) )
+        {
+          yyin = fopen (tAux.c_str(), "r");
+          break;
+        }
+        iter++;
+      }
     }
   }
+
+  if ( !yyin )
+  {
+    yyerror ("Include file could not be opened");
+    exit (1);
+  }
+
   TSceneRT::_tInputFileName = _tIncludeFileName;
   TSceneRT::_dwLineNumber   = 1L;
   yy_switch_to_buffer (yy_create_buffer (yyin, YY_BUF_SIZE));

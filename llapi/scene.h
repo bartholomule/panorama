@@ -68,8 +68,6 @@ class TScene : public TProcedural
 
   public:
 
-    static string   _tIncludePath;
-
     TScene (void);
 
     TColor backgroundColor (void) const { return tBackgroundColor; }

@@ -19,7 +19,10 @@
 #include <dlfcn.h>
 #include <fstream>
 #include <iostream>
+#include "llapi/file.h"
 #include "hlapi/plugin_manager.h"
+
+extern multimap<string, string>   tConfigData;
 
 TPluginManager   tPluginManager;
 
@@ -32,14 +35,34 @@ int TPluginManager::loadPlugin (const string& rktNAME)
 {
 
   int                  iError;
-  void*                pvHandle;
   const char*          pkcError;
   TRegisterFunction*   pfRegister;
   TPluginData*         ptPluginData;
-  string               tAux = tPluginPath + rktNAME;
+  void*                pvHandle      = NULL;
+  bool                 gAbsolutePath = ( rktNAME[0] == '/' );
 
-  pvHandle = dlopen (tAux.c_str(), RTLD_NOW | RTLD_GLOBAL);
+  if ( gAbsolutePath )
+  {
+    pvHandle = dlopen (rktNAME.c_str(), RTLD_NOW | RTLD_GLOBAL);
+  }
+  else
+  {
+    multimap<string, string>::const_iterator   iter;
 
+    iter = tConfigData.find ("PluginPath");
+    while ( ( iter != tConfigData.end() ) && ( (*iter).first == "PluginPath" ) )
+    {
+      string   tAux ((*iter).second + "/" + rktNAME);
+      
+      if ( FileExists (tAux) )
+      {
+        pvHandle = dlopen (tAux.c_str(), RTLD_NOW | RTLD_GLOBAL);
+        break;
+      }
+      iter++;
+    }
+  }
+  
   if ( !pvHandle )
   {
     cerr << "Cannot open plugin " << rktNAME << endl;
@@ -78,7 +101,7 @@ int TPluginManager::loadPlugin (const string& rktNAME)
 }  /* loadPlugin() */
 
 
-void TPluginManager::initialize (const string& rktCONFIG_FILE, const string& rktPATH, DWord dwVERSION)
+void TPluginManager::initialize (const string& rktCONFIG_FILE, DWord dwVERSION)
 {
 
 #if ( STATIC_LINK == 0 )
@@ -86,18 +109,25 @@ void TPluginManager::initialize (const string& rktCONFIG_FILE, const string& rkt
   ifstream   tFile;
   char       acPluginName [200];
 
-  tPluginPath = rktPATH;
-  dwVersion   = dwVERSION;
+  dwVersion = dwVERSION;
 
   tFile.open (rktCONFIG_FILE.c_str(), ios::in | ios::nocreate);
 
   while ( !tFile.eof() )
   {
     tFile.getline ((char*) acPluginName, 200);
-    if ( strlen (acPluginName) > 0 )
+
+    if ( strlen (acPluginName) == 0 )
     {
-      loadPlugin (acPluginName);
+      continue;
     }
+    
+    if ( acPluginName[0] == '#' )
+    {
+      continue;
+    }
+    
+    loadPlugin (acPluginName);
   }
   
 #endif

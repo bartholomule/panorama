@@ -116,7 +116,6 @@ class TPluginManager
 
   protected:
 
-    string           tPluginPath;
     DWord            dwVersion;
     TPluginDataMap   tPluginDataMap;
     TPluginList      tPluginList;
@@ -125,7 +124,7 @@ class TPluginManager
 
   public:
 
-    void initialize (const string& rktCONFIG_FILE, const string& rktPATH, DWord dwVERSION);
+    void initialize (const string& rktCONFIG_FILE, DWord dwVERSION);
 
     int registerPlugin (TPluginData* ptDATA);
 

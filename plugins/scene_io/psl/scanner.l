@@ -20,11 +20,14 @@
 
 #include <string>
 #include <iostream.h>
+#include "llapi/file.h"
 #include "parser_defs.h"
 #include "psl_io.h"
 #include "parser.h"
 
 #undef yywrap
+
+extern multimap<string, string>   tConfigData;
 
 //
 //  Prototypes
@@ -41,7 +44,7 @@ struct TIncludeFileData
 {
 
   string            tFileName;
-  DWord             _dwLineNumber;
+  DWord             dwLineNumber;
   DWord             dwFilePos;
   YY_BUFFER_STATE   yyBuffer;
 
@@ -149,7 +152,7 @@ false                   {
 	       		    _tIncludeFileData           = _atIncludeStack [_bIncludeLevel];
 			    TScenePsl::_tInputFileName = _tIncludeFileData.tFileName;
 //			    cout << "Returning to file : " << TScenePsl::_tInputFileName << endl;
-			    TScenePsl::_dwLineNumber = _tIncludeFileData._dwLineNumber;
+			    TScenePsl::_dwLineNumber = _tIncludeFileData.dwLineNumber;
 			    yy_switch_to_buffer (_tIncludeFileData.yyBuffer);
 			  }
 			}
@@ -246,7 +249,7 @@ bool IncludeFile (void)
 {
 
   _tIncludeFileData.tFileName    = TScenePsl::_tInputFileName;
-  _tIncludeFileData._dwLineNumber = TScenePsl::_dwLineNumber;
+  _tIncludeFileData.dwLineNumber = TScenePsl::_dwLineNumber;
   _tIncludeFileData.dwFilePos    = ftell (yyin);
   _tIncludeFileData.yyBuffer     = YY_CURRENT_BUFFER;
   if ( _bIncludeLevel == MAX_INCLUDE_DEPTH )
@@ -258,17 +261,36 @@ bool IncludeFile (void)
   {
     _atIncludeStack [_bIncludeLevel++] = _tIncludeFileData;
   }
+
   yyin = fopen (_tIncludeFileName.c_str(), "r");
+
   if ( !yyin )
   {
-    string   tString = TScene::_tIncludePath + _tIncludeFileName;
-    yyin    = fopen (tString.c_str(), "r");
-    if ( !yyin )
+    if ( _tIncludeFileName[0] != '/' )
     {
-      yyerror ("Include file could not be opened");
-      exit (1);
+      multimap<string, string>::const_iterator   iter;
+
+      iter = tConfigData.find ("IncludePath");
+      while ( ( iter != tConfigData.end() ) && ( (*iter).first == "IncludePath" ) )
+      {
+        string   tAux = (*iter).second + "/" + _tIncludeFileName;
+        
+        if ( FileExists (tAux) )
+        {
+          yyin = fopen (tAux.c_str(), "r");
+          break;
+        }
+        iter++;
+      }
     }
   }
+
+  if ( !yyin )
+  {
+    yyerror ("Include file could not be opened");
+    exit (1);
+  }
+
   TScenePsl::_tInputFileName = _tIncludeFileName;
   TScenePsl::_dwLineNumber   = 1L;
   yy_switch_to_buffer (yy_create_buffer (yyin, YY_BUF_SIZE));

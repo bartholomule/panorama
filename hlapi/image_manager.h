@@ -41,7 +41,6 @@ class TImageManager
 
   protected:
 
-    string          tImagePath;
     TImageDataMap   tImageDataMap;
 
     static TImageFormatMap   _tImageFormatMap;
@@ -59,10 +58,7 @@ class TImageManager
       
     ~TImageManager (void);
     
-    void initialize (const string& rktPATH)
-    {
-      tImagePath = rktPATH;
-    }
+    void initialize (void) {}
 
     TImage* newImage (const string& rktNAME, const string& rktFORMAT);
 

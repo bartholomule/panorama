@@ -16,9 +16,11 @@
 *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "gradient.h"
+#include <map>
+#include "llapi/file.h"
+#include "llapi/gradient.h"
 
-string TGradient::_tGradientPath;
+extern multimap<string, string>   tConfigData;
 
 TGradient::TGradient()
 {
@@ -40,10 +42,33 @@ bool TGradient::loadGradient (const string& rktNAME)
   TScalar                  tLeftR, tLeftG, tLeftB, tLeftA;
   TScalar                  tRightR, tRightG, tRightB, tRightA;
   struct TGradientSegment* ptSeg;
+  string                   tAux;
+  bool                     gAbsolutePath = ( rktNAME[0] == '/' );
+
+  if ( gAbsolutePath )
+  {
+    tFile.open (rktNAME.c_str(), ios::in);
+    tAux = rktNAME;
+  }
+  else
+  {
+    multimap<string, string>::const_iterator   iter;
+
+    iter = tConfigData.find ("GradientPath");
+    while ( ( iter != tConfigData.end() ) && ( (*iter).first == "GradientPath" ) )
+    {
+      string   tAux ((*iter).second + "/" + rktNAME);
+      
+      if ( FileExists (tAux) )
+      {
+        tFile.open (tAux.c_str(), ios::in);
+        break;
+      }
+      iter++;
+    }
+  }
   
-  tFile.open ((_tGradientPath + rktNAME).c_str(), ios::in);
-  
-  if ( rktNAME == tName )
+  if ( tAux == tName )
   {
     return true;
   }
