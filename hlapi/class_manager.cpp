@@ -74,6 +74,7 @@ TBaseClass* TClassManager::_newObject (const string& rktCLASS, const TBaseClass*
   STATIC_CLASS (TMaterialBrick, "MaterialBrick");
   STATIC_CLASS (TMaterialChecker, "MaterialChecker");
   STATIC_CLASS (TMaterialCrackle, "MaterialCrackle");
+  STATIC_CLASS (TMaterialCylGrad, "MaterialCylGrad");
   STATIC_CLASS (TMaterialLeopard, "MaterialLeopard");
   STATIC_CLASS (TMaterialMarble, "MaterialMarble");
   STATIC_CLASS (TMaterialNoise, "MaterialNoise");
