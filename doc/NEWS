@@ -1,4 +1,6 @@
 
+ - Implemented CSG objects (union, intersection and difference).
+
  - Implemented vector as variables (like colors).
 
  - Fixed object filters in aggregates.
