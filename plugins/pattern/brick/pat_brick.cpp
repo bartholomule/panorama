@@ -23,50 +23,6 @@
 
 DEFINE_PLUGIN ("PatternBrick", FX_PATTERN_CLASS, TPatternBrick);
 
-TScalar TPatternBrick::step (TScalar a, TScalar x) const
-{
-
-  return (TScalar) ( x >= a );
-
-}  /* step() */
-
-
-TScalar TPatternBrick::smoothstep (TScalar a, TScalar b, TScalar x) const
-{
-
-  if (x < a) 
-  {
-    return 0.0;
-  }
-  if (x >= b) 
-  {
-    return 1.0;
-  }
-
-  // Normalize x 
-  x = (x - a) / (b - a); 
-
-  return x * x * (3 - 2 * x);
-
-}  /* smoothstep() */
-
-
-TScalar TPatternBrick::smoothstepdiff (TScalar a, TScalar b, TScalar x) const
-{
-
-  if ( ( x < a ) || ( x >= b ) ) 
-  {
-    return 0.0;
-  }
-  
-  // Normalize x 
-  x = (x - a) / (b - a); 
-
-  return 4.0 * x * (1.0 - x);
-
-}  /* smoothstepdiff() */
-
-
 TScalar TPatternBrick::evaluate (const TVector& rktPOINT, TVector* ptGRADIENT) const
 {
 

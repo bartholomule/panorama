@@ -83,5 +83,50 @@ class TPatternBrick : public TPattern
 
 };  /* class TPatternBrick */
 
+
+inline TScalar TPatternBrick::step (TScalar a, TScalar x) const
+{
+
+  return (TScalar) ( x >= a );
+
+}  /* step() */
+
+
+inline TScalar TPatternBrick::smoothstep (TScalar a, TScalar b, TScalar x) const
+{
+
+  if (x < a) 
+  {
+    return 0.0;
+  }
+  if (x >= b) 
+  {
+    return 1.0;
+  }
+
+  // Normalize x 
+  x = (x - a) / (b - a); 
+
+  return x * x * (3 - 2 * x);
+
+}  /* smoothstep() */
+
+
+inline TScalar TPatternBrick::smoothstepdiff (TScalar a, TScalar b, TScalar x) const
+{
+
+  if ( ( x < a ) || ( x >= b ) ) 
+  {
+    return 0.0;
+  }
+  
+  // Normalize x 
+  x = (x - a) / (b - a); 
+
+  return 4.0 * x * (1.0 - x);
+
+}  /* smoothstepdiff() */
+
+
 #endif  /* _PATTERN_BRICK__ */
 
