@@ -20,6 +20,8 @@
 #ifndef _ROOT_SOLVER__
 #define _ROOT_SOLVER__
 
+#include <vector>
+
 // NOTE: (Kevin Harris 13Aug2000) -- For more solvers (entierly generic in
 // type although slower than the solvers provided for the low order solvers
 // here), see the file 'solvers.h'. 
@@ -37,9 +39,6 @@ int SafeSolveLinear  (double c[2], double s[1]);
 int SafeSolveQuadric (double c[3], double s[2]);
 int SafeSolveCubic   (double c[4], double s[3]);
 int SafeSolveQuartic (double c[5], double s[4]);
-			  
-
-#include <vector>
 
 // Solve a polynomial equation of any size.  Note that it is not guaranteed
 // (although this would be nice) to find *all* zeros of the polynomial. Under
