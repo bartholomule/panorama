@@ -36,6 +36,8 @@ class TObject : public TVolume
     TMaterial*                   ptMaterial;
     list<const TObjectFilter*>   tObjectFilterList;
     size_t                       zObjectCode;
+    TMatrix*                     ptMatrix;
+    TMatrix*                     ptInverseMatrix;
 
     struct
     {
@@ -47,7 +49,9 @@ class TObject : public TVolume
   public:
 
     TObject (void) :
-      ptMaterial (NULL) {}
+      ptMaterial (NULL),
+      ptMatrix (NULL),
+      ptInverseMatrix (NULL) {}
       
     virtual void initialize (void)
     {
@@ -85,6 +89,9 @@ class TObject : public TVolume
 
     virtual void setMaterial (TMaterial* ptMAT) { ptMaterial = ptMAT; }
     virtual void setObjectCode (size_t zCODE) { zObjectCode = zCODE; }
+
+    virtual TMatrix* transformMatrix (void) const { return ptMatrix; }
+    virtual TMatrix* inverseTransformMatrix (void) const { return ptInverseMatrix; }
 
     virtual void addFilter (const TObjectFilter* pktFILTER) { tObjectFilterList.push_back (pktFILTER); }
       

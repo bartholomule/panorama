@@ -26,9 +26,6 @@ class TTransformObject : public TObject
   
   protected:
 
-    TMatrix*   ptMatrix;
-    TMatrix*   ptInverseMatrix;
-    
     virtual TVector localNormal (const TVector& rktPOINT) const { return TVector (0, 0 ,0); }
     void createMatrices (void);
 
@@ -50,9 +47,6 @@ class TTransformObject : public TObject
     void rotate (const TVector& rktAXISPOINT1, const TVector& rktAXISPOINT2, TScalar tANGLE);
     void rotate (const TVector& rktANGLESXYZ);
     void scale (const TVector& rktSCALING_XYZ, const TVector& rktPOINT);
-
-    virtual TMatrix* transformMatrix (void) const { return ptMatrix; }
-    virtual TMatrix* inverseTransformMatrix (void) const { return ptInverseMatrix; }
 
     virtual TVector normal (const TSurfaceData& rktDATA) const;
     

@@ -117,19 +117,7 @@ class TSurfaceData
       return ( pktObject == pktOBJECT );
     }
 
-    TVector localPoint (void) const
-    {
-      /*
-      TMatrix*   ptMatrix = pktObject->inverseTransformMatrix();
-
-      if ( ptMatrix )
-      {
-      return (*ptMatrix * tPoint);
-      }
-      */
-  
-      return tPoint;
-    }
+    TVector localPoint (void) const;
     
     TVector normal(void) const;
     

@@ -51,6 +51,21 @@ bool TSurfaceData::setPoint (TScalar tDISTANCE, const TVector& rktNORMAL)
 }  /* setPoint() */
 
 
+TVector TSurfaceData::localPoint (void) const
+{
+  
+  TMatrix*   ptMatrix = pktObject->inverseTransformMatrix();
+
+  if ( ptMatrix )
+  {
+    return (*ptMatrix * tPoint);
+  }
+
+  return tPoint;
+  
+}  /* localPoint() */
+
+
 TVector TSurfaceData::normal(void) const
 {
 
