@@ -15,8 +15,8 @@ DOC_DIR      = ${TOPDIR}/doc/
 CONFIG_DIR   = ${TOPDIR}/etc/
 PLUGIN_DIR   = ${LIB_DIR}/plugins/
 TEXTURE_DIR  = ${LIB_DIR}/texture/
+GRADIENT_DIR = ${LIB_DIR}/gradients/
 SCENE_DIR    = ${TOPDIR}/scenes/
-GRADIENT_DIR = ${TOPDIR}/scenes/
 
 #
 # Don't change anything below this line.
@@ -37,8 +37,8 @@ DEFS    = @DEFS@ \
           -DDOC_DIR='"${DOC_DIR}"' \
           -DPLUGIN_DIR='"${PLUGIN_DIR}"' \
           -DTEXTURE_DIR='"${TEXTURE_DIR}"' \
-          -DSCENE_DIR='"${SCENE_DIR}"' \
           -DGRADIENT_DIR='"${GRADIENT_DIR}"' \
+          -DSCENE_DIR='"${SCENE_DIR}"' \
           -DSTATIC_LINK=@STATIC_LINK@
 
 CXX      = @CXX@
