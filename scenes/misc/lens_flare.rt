@@ -25,7 +25,7 @@ scene
   output
   {
     type        "png"
-    name	"lf_test.png"
+    name	"lens_flare.png"
   }
   renderer : class Raytracer {}
   filter : class IF_Lens_Flare {
