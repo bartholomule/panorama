@@ -7,8 +7,9 @@ INSTALL = @INSTALL@
 SRC_DIR = @srcdir@
 
 FILES = colors.inc \
-        materials.inc
-        
+        materials.inc \
+        cameras.inc
+
 all:
 
 install:

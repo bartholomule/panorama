@@ -1,0 +1,2 @@
+PLUGIN_NAME = thinlens
+OBJ         = thinlens.o

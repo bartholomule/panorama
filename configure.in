@@ -218,6 +218,7 @@ AC_OUTPUT(\
         plugins/camera/Makefile \
         plugins/camera/parallel/Makefile:Makefile.plugin.in \
         plugins/camera/pinhole/Makefile:Makefile.plugin.in \
+        plugins/camera/thinlens/Makefile:Makefile.plugin.in \
         plugins/image_filter/Makefile \
         plugins/image_filter/cartoon/Makefile:Makefile.plugin.in \
         plugins/image_filter/convert_to_grey/Makefile:Makefile.plugin.in \

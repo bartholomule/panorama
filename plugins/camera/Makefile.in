@@ -2,6 +2,7 @@
 BUILD_TOP = ../..
 
 DIRS = parallel \
-       pinhole
+       pinhole  \
+       thinlens
 
 include ${BUILD_TOP}/Makefile.targets

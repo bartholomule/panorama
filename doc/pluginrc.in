@@ -16,6 +16,7 @@ bsdf_ward.plg
 # Cameras
 parallel.plg
 pinhole.plg
+thinlens.plg
 
 # Image filters
 if_cartoon.plg
