@@ -105,7 +105,7 @@ bool TScene::recursiveLocateLights(magic_pointer<TObject> obj, TObjectVector& li
 {
   // FIXME!  This does not work correctly.  Pure lights (halo, etc), do not get
   // translated correctly (esp. when in an aggregate).
-  if( obj != NULL )
+  if( obj )
   {
     NAttribute trash;
     
