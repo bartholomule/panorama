@@ -392,6 +392,51 @@ if test $ac_cv_fileno_ok = no; then
   AC_DEFINE(BROKEN_FILENO_INCLUDE)
 fi
 
+dnl ---------------------------------------------------------------------------
+dnl This is the machine specific logic which can set some features depending
+dnl on the platform.
+dnl XXX Check we are really gcc
+
+dnl The following variables may be set
+dnl ARCH_MAKE_SHARED_OPTS flags tacked onto the end of building a shared
+dnl     library or plugin
+dnl
+dnl have_so_reg flags if so_locations is used by the machine.
+dnl
+dnl ARCH_PROG_SETLIBPATH flags to set the library path in executables
+dnl      convenient so one does not need to set LD_LIBRARY_PATH
+dnl ---------------------------------------------------------------------------
+case $host in
+
+alpha-dec-osf*)
+	echo "Adding shared library rules for DEC Alpha system"
+	ARCH_MAKE_SHARED_OPTS="-Wl,-expect_unresolved,\*"
+	ARCH_PROG_SETLIBPATH="-Wl,-rpath,\${LIB_DIR}"
+	have_so_reg=yes
+	;;
+mips-sgi-irix6*)
+	echo "Adding shared library rules for IRIX 6.* system"
+	#ARCH_MAKE_SHARED_OPTS="-Wl,-expect_unresolved,\*"
+	ARCH_MAKE_SHARED_OPTS=""
+	ARCH_PROG_SETLIBPATH="-Wl,-rpath,\${LIB_DIR}"
+	have_so_reg=yes
+	;;
+alpha*-unknown-linux-gnu)
+	ARCH_MAKE_SHARED_OPTS=""
+	ARCH_PROG_SETLIBPATH=""
+	have_so_reg=no
+        if test $target_cpu != "alpha"; then
+          target_cpu=${target_cpu##alpha}
+        fi
+        ;;
+*)
+	ARCH_MAKE_SHARED_OPTS=""
+	ARCH_PROG_SETLIBPATH=""
+	have_so_reg=no
+	;;
+esac
+
+
 AC_MSG_CHECKING(for a forced cpu type)
 AC_ARG_ENABLE(cpu, 
 [  --enable-cpu=CPUTYPE    Force the use of the given cpu type in compilation.]
@@ -627,41 +672,6 @@ fi
 AC_SUBST(ATTRIBUTES)
 AC_MSG_RESULT($ATTRIB_VAL)
 
-dnl ---------------------------------------------------------------------------
-dnl This is the machine specific logic which can set some features depending
-dnl on the platform.
-dnl XXX Check we are really gcc
-
-dnl The following variables may be set
-dnl ARCH_MAKE_SHARED_OPTS flags tacked onto the end of building a shared
-dnl     library or plugin
-dnl
-dnl have_so_reg flags if so_locations is used by the machine.
-dnl
-dnl ARCH_PROG_SETLIBPATH flags to set the library path in executables
-dnl      convenient so one does not need to set LD_LIBRARY_PATH
-dnl ---------------------------------------------------------------------------
-case $host in
-
-alpha-dec-osf*)
-	echo "Adding shared library rules for DEC Alpha system"
-	ARCH_MAKE_SHARED_OPTS="-Wl,-expect_unresolved,\*"
-	ARCH_PROG_SETLIBPATH="-Wl,-rpath,\${LIB_DIR}"
-	have_so_reg=yes
-	;;
-mips-sgi-irix6*)
-	echo "Adding shared library rules for IRIX 6.* system"
-	#ARCH_MAKE_SHARED_OPTS="-Wl,-expect_unresolved,\*"
-	ARCH_MAKE_SHARED_OPTS=""
-	ARCH_PROG_SETLIBPATH="-Wl,-rpath,\${LIB_DIR}"
-	have_so_reg=yes
-	;;
-*)
-	ARCH_MAKE_SHARED_OPTS=""
-	ARCH_PROG_SETLIBPATH=""
-	have_so_reg=no
-	;;
-esac
 
 if test $have_so_reg = "yes"; then
   ARCH_MAKE_SHARED_OPTS="$ARCH_MAKE_SHARED_OPTS -Wl,-update_registry,\${BUILD_TOP}/so_locations"
@@ -770,4 +780,5 @@ AC_OUTPUT(\
         scenes/objects/Makefile
 )
 
-AC_CONFIG_LINKS(Makefile.deps:Makefile.deps)
+dnl AC_CONFIG_LINKS(Makefile.deps:Makefile.deps)
+ln -s $ac_aux_dir/Makefile.deps . 2>/dev/null

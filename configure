@@ -4295,7 +4295,37 @@ EOF
 
 fi
 
-echo "$as_me:4298: checking for a forced cpu type" >&5
+case $host in
+
+alpha-dec-osf*)
+	echo "Adding shared library rules for DEC Alpha system"
+	ARCH_MAKE_SHARED_OPTS="-Wl,-expect_unresolved,\*"
+	ARCH_PROG_SETLIBPATH="-Wl,-rpath,\${LIB_DIR}"
+	have_so_reg=yes
+	;;
+mips-sgi-irix6*)
+	echo "Adding shared library rules for IRIX 6.* system"
+	#ARCH_MAKE_SHARED_OPTS="-Wl,-expect_unresolved,\*"
+	ARCH_MAKE_SHARED_OPTS=""
+	ARCH_PROG_SETLIBPATH="-Wl,-rpath,\${LIB_DIR}"
+	have_so_reg=yes
+	;;
+alpha*-unknown-linux-gnu)
+	ARCH_MAKE_SHARED_OPTS=""
+	ARCH_PROG_SETLIBPATH=""
+	have_so_reg=no
+        if test $target_cpu != "alpha"; then
+          target_cpu=${target_cpu##alpha}
+        fi
+        ;;
+*)
+	ARCH_MAKE_SHARED_OPTS=""
+	ARCH_PROG_SETLIBPATH=""
+	have_so_reg=no
+	;;
+esac
+
+echo "$as_me:4328: checking for a forced cpu type" >&5
 echo $ECHO_N "checking for a forced cpu type... $ECHO_C" >&6
 # Check whether --enable-cpu or --disable-cpu was given.
 if test "${enable_cpu+set}" = set; then
@@ -4320,17 +4350,17 @@ else
   CPU_OVERRIDE=1
 fi
 
-echo "$as_me:4323: result: $CPU_MESSAGE" >&5
+echo "$as_me:4353: result: $CPU_MESSAGE" >&5
 echo "${ECHO_T}$CPU_MESSAGE" >&6
 
 if test $CPU_OVERRIDE != 0
 then
-  echo "$as_me:4328: checking which compiler flag specifies CPU type" >&5
+  echo "$as_me:4358: checking which compiler flag specifies CPU type" >&5
 echo $ECHO_N "checking which compiler flag specifies CPU type... $ECHO_C" >&6
   OLD_CXXFLAGS=$CXXFLAGS
   CXXFLAGS="$OLD_CXXFLAGS -march=$CPU_TYPE"
   cat >conftest.$ac_ext <<_ACEOF
-#line 4333 "configure"
+#line 4363 "configure"
 #include "confdefs.h"
  int iii;
 int
@@ -4342,16 +4372,16 @@ main ()
 }
 _ACEOF
 rm -f conftest.$ac_objext conftest$ac_exeext
-if { (eval echo "$as_me:4345: \"$ac_link\"") >&5
+if { (eval echo "$as_me:4375: \"$ac_link\"") >&5
   (eval $ac_link) 2>&5
   ac_status=$?
-  echo "$as_me:4348: \$? = $ac_status" >&5
+  echo "$as_me:4378: \$? = $ac_status" >&5
   (exit $ac_status); } &&
          { ac_try='test -s conftest$ac_exeext'
-  { (eval echo "$as_me:4351: \"$ac_try\"") >&5
+  { (eval echo "$as_me:4381: \"$ac_try\"") >&5
   (eval $ac_try) 2>&5
   ac_status=$?
-  echo "$as_me:4354: \$? = $ac_status" >&5
+  echo "$as_me:4384: \$? = $ac_status" >&5
   (exit $ac_status); }; }; then
   CPU_SPECIFIC_SWITCH="-march"
 else
@@ -4363,7 +4393,7 @@ rm -f conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
   if test "no" = $CPU_SPECIFIC_SWITCH; then
     CXXFLAGS="$OLD_CXXFLAGS -mcpu=$CPU_TYPE"
     cat >conftest.$ac_ext <<_ACEOF
-#line 4366 "configure"
+#line 4396 "configure"
 #include "confdefs.h"
  int iii;
 int
@@ -4375,16 +4405,16 @@ main ()
 }
 _ACEOF
 rm -f conftest.$ac_objext conftest$ac_exeext
-if { (eval echo "$as_me:4378: \"$ac_link\"") >&5
+if { (eval echo "$as_me:4408: \"$ac_link\"") >&5
   (eval $ac_link) 2>&5
   ac_status=$?
-  echo "$as_me:4381: \$? = $ac_status" >&5
+  echo "$as_me:4411: \$? = $ac_status" >&5
   (exit $ac_status); } &&
          { ac_try='test -s conftest$ac_exeext'
-  { (eval echo "$as_me:4384: \"$ac_try\"") >&5
+  { (eval echo "$as_me:4414: \"$ac_try\"") >&5
   (eval $ac_try) 2>&5
   ac_status=$?
-  echo "$as_me:4387: \$? = $ac_status" >&5
+  echo "$as_me:4417: \$? = $ac_status" >&5
   (exit $ac_status); }; }; then
   CPU_SPECIFIC_SWITCH="-mcpu"
 else
@@ -4395,7 +4425,7 @@ fi
 rm -f conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
   fi
     if test "no" = $CPU_SPECIFIC_SWITCH; then
-    echo "$as_me:4398: result: NOT FOUND
+    echo "$as_me:4428: result: NOT FOUND
                    Your CPU type override ($CPU_TYPE) may be invalid
                    for your compiler (CHECK THIS FIRST), or I don't know how
                    to override it on your compiler (send a patch)... Ignoring
@@ -4407,7 +4437,7 @@ echo "${ECHO_T}NOT FOUND
                    forced CPU override. " >&6
     CPU_SPECIFIC_FLAG=""
   else
-    echo "$as_me:4410: result: $CPU_SPECIFIC_SWITCH" >&5
+    echo "$as_me:4440: result: $CPU_SPECIFIC_SWITCH" >&5
 echo "${ECHO_T}$CPU_SPECIFIC_SWITCH" >&6
     CPU_SPECIFIC_FLAG="$CPU_SPECIFIC_SWITCH=$CPU_TYPE"
   fi
@@ -4416,7 +4446,7 @@ else
   CPU_SPECIFIC_FLAG=""
 fi
 
-echo "$as_me:4419: checking whether to enable optimizations or not" >&5
+echo "$as_me:4449: checking whether to enable optimizations or not" >&5
 echo $ECHO_N "checking whether to enable optimizations or not... $ECHO_C" >&6
 # Check whether --enable-optimizations or --disable-optimizations was given.
 if test "${enable_optimizations+set}" = set; then
@@ -4463,10 +4493,10 @@ else
   OPTIMIZE_EXPENSIVE=0
 fi
 
-echo "$as_me:4466: result: $OPTIMIZATION_VAL" >&5
+echo "$as_me:4496: result: $OPTIMIZATION_VAL" >&5
 echo "${ECHO_T}$OPTIMIZATION_VAL" >&6
 
-echo "$as_me:4469: checking whether to enable exceptions or not" >&5
+echo "$as_me:4499: checking whether to enable exceptions or not" >&5
 echo $ECHO_N "checking whether to enable exceptions or not... $ECHO_C" >&6
 # Check whether --enable-exceptions or --disable-exceptions was given.
 if test "${enable_exceptions+set}" = set; then
@@ -4486,10 +4516,10 @@ else
   EXCEPTION_VAL="no"
 fi
 
-echo "$as_me:4489: result: $EXCEPTION_VAL" >&5
+echo "$as_me:4519: result: $EXCEPTION_VAL" >&5
 echo "${ECHO_T}$EXCEPTION_VAL" >&6
 
-echo "$as_me:4492: checking whether to enable rtti or not" >&5
+echo "$as_me:4522: checking whether to enable rtti or not" >&5
 echo $ECHO_N "checking whether to enable rtti or not... $ECHO_C" >&6
 # Check whether --enable-rtti or --disable-rtti was given.
 if test "${enable_rtti+set}" = set; then
@@ -4505,10 +4535,10 @@ else
   RTTI_VAL="no"
 fi
 
-echo "$as_me:4508: result: $RTTI_VAL" >&5
+echo "$as_me:4538: result: $RTTI_VAL" >&5
 echo "${ECHO_T}$RTTI_VAL" >&6
 
-echo "$as_me:4511: checking whether to link statically or not" >&5
+echo "$as_me:4541: checking whether to link statically or not" >&5
 echo $ECHO_N "checking whether to link statically or not... $ECHO_C" >&6
 # Check whether --enable-static-link or --disable-static-link was given.
 if test "${enable_static_link+set}" = set; then
@@ -4524,10 +4554,10 @@ else
   STATIC_LINK=0
 fi
 
-echo "$as_me:4527: result: $STATIC_VAL" >&5
+echo "$as_me:4557: result: $STATIC_VAL" >&5
 echo "${ECHO_T}$STATIC_VAL" >&6
 
-echo "$as_me:4530: checking whether to add profiling information or not" >&5
+echo "$as_me:4560: checking whether to add profiling information or not" >&5
 echo $ECHO_N "checking whether to add profiling information or not... $ECHO_C" >&6
 # Check whether --enable-profile or --disable-profile was given.
 if test "${enable_profile+set}" = set; then
@@ -4543,10 +4573,10 @@ else
   PROFILE=0
 fi
 
-echo "$as_me:4546: result: $PROFILE_VAL" >&5
+echo "$as_me:4576: result: $PROFILE_VAL" >&5
 echo "${ECHO_T}$PROFILE_VAL" >&6
 
-echo "$as_me:4549: checking whether to enable debug info or not" >&5
+echo "$as_me:4579: checking whether to enable debug info or not" >&5
 echo $ECHO_N "checking whether to enable debug info or not... $ECHO_C" >&6
 # Check whether --enable-debug or --disable-debug was given.
 if test "${enable_debug+set}" = set; then
@@ -4562,10 +4592,10 @@ else
   DEBUG_INFO=0
 fi
 
-echo "$as_me:4565: result: $DEBUG_VAL" >&5
+echo "$as_me:4595: result: $DEBUG_VAL" >&5
 echo "${ECHO_T}$DEBUG_VAL" >&6
 
-echo "$as_me:4568: checking whether to enable experimental code or not" >&5
+echo "$as_me:4598: checking whether to enable experimental code or not" >&5
 echo $ECHO_N "checking whether to enable experimental code or not... $ECHO_C" >&6
 # Check whether --enable-experimental or --disable-experimental was given.
 if test "${enable_experimental+set}" = set; then
@@ -4585,10 +4615,10 @@ else
   EXPERIMENTAL=0
 fi
 
-echo "$as_me:4588: result: $EXPER_VAL" >&5
+echo "$as_me:4618: result: $EXPER_VAL" >&5
 echo "${ECHO_T}$EXPER_VAL" >&6
 
-echo "$as_me:4591: checking whether to enable new attribute model or not" >&5
+echo "$as_me:4621: checking whether to enable new attribute model or not" >&5
 echo $ECHO_N "checking whether to enable new attribute model or not... $ECHO_C" >&6
 # Check whether --enable-new-attribs or --disable-new-attribs was given.
 if test "${enable_new_attribs+set}" = set; then
@@ -4608,30 +4638,8 @@ else
   ATTRIBUTES=0
 fi
 
-echo "$as_me:4611: result: $ATTRIB_VAL" >&5
+echo "$as_me:4641: result: $ATTRIB_VAL" >&5
 echo "${ECHO_T}$ATTRIB_VAL" >&6
-
-case $host in
-
-alpha-dec-osf*)
-	echo "Adding shared library rules for DEC Alpha system"
-	ARCH_MAKE_SHARED_OPTS="-Wl,-expect_unresolved,\*"
-	ARCH_PROG_SETLIBPATH="-Wl,-rpath,\${LIB_DIR}"
-	have_so_reg=yes
-	;;
-mips-sgi-irix6*)
-	echo "Adding shared library rules for IRIX 6.* system"
-	#ARCH_MAKE_SHARED_OPTS="-Wl,-expect_unresolved,\*"
-	ARCH_MAKE_SHARED_OPTS=""
-	ARCH_PROG_SETLIBPATH="-Wl,-rpath,\${LIB_DIR}"
-	have_so_reg=yes
-	;;
-*)
-	ARCH_MAKE_SHARED_OPTS=""
-	ARCH_PROG_SETLIBPATH=""
-	have_so_reg=no
-	;;
-esac
 
 if test $have_so_reg = "yes"; then
   ARCH_MAKE_SHARED_OPTS="$ARCH_MAKE_SHARED_OPTS -Wl,-update_registry,\${BUILD_TOP}/so_locations"
@@ -4747,7 +4755,7 @@ rm -f confdef2opt.sed
 : ${CONFIG_STATUS=./config.status}
 ac_clean_files_save=$ac_clean_files
 ac_clean_files="$ac_clean_files $CONFIG_STATUS"
-{ echo "$as_me:4750: creating $CONFIG_STATUS" >&5
+{ echo "$as_me:4758: creating $CONFIG_STATUS" >&5
 echo "$as_me: creating $CONFIG_STATUS" >&6;}
 cat >$CONFIG_STATUS <<_ACEOF
 #! $SHELL
@@ -4915,7 +4923,7 @@ cat >>$CONFIG_STATUS <<\EOF
     echo "$ac_cs_version"; exit 0 ;;
   --he | --h)
     # Conflict between --help and --header
-    { { echo "$as_me:4918: error: ambiguous option: $1
+    { { echo "$as_me:4926: error: ambiguous option: $1
 Try \`$0 --help' for more information." >&5
 echo "$as_me: error: ambiguous option: $1
 Try \`$0 --help' for more information." >&2;}
@@ -5033,12 +5041,12 @@ Try \`$0 --help' for more information." >&2;}
   'scenes/objects/Makefile' ) CONFIG_FILES="$CONFIG_FILES scenes/objects/Makefile" ;;
 
   # This is an error.
-  -*) { { echo "$as_me:5036: error: unrecognized option: $1
+  -*) { { echo "$as_me:5044: error: unrecognized option: $1
 Try \`$0 --help' for more information." >&5
 echo "$as_me: error: unrecognized option: $1
 Try \`$0 --help' for more information." >&2;}
    { (exit 1); exit 1; }; } ;;
-  *) { { echo "$as_me:5041: error: invalid argument: $1" >&5
+  *) { { echo "$as_me:5049: error: invalid argument: $1" >&5
 echo "$as_me: error: invalid argument: $1" >&2;}
    { (exit 1); exit 1; }; };;
   esac
@@ -5303,7 +5311,7 @@ done; }
   esac
 
   if test x"$ac_file" != x-; then
-    { echo "$as_me:5306: creating $ac_file" >&5
+    { echo "$as_me:5314: creating $ac_file" >&5
 echo "$as_me: creating $ac_file" >&6;}
     rm -f "$ac_file"
   fi
@@ -5321,7 +5329,7 @@ echo "$as_me: creating $ac_file" >&6;}
       -) echo $tmp/stdin ;;
       [\\/$]*)
          # Absolute (can't be DOS-style, as IFS=:)
-         test -f "$f" || { { echo "$as_me:5324: error: cannot find input file: $f" >&5
+         test -f "$f" || { { echo "$as_me:5332: error: cannot find input file: $f" >&5
 echo "$as_me: error: cannot find input file: $f" >&2;}
    { (exit 1); exit 1; }; }
          echo $f;;
@@ -5334,7 +5342,7 @@ echo "$as_me: error: cannot find input file: $f" >&2;}
            echo $srcdir/$f
          else
            # /dev/null tree
-           { { echo "$as_me:5337: error: cannot find input file: $f" >&5
+           { { echo "$as_me:5345: error: cannot find input file: $f" >&5
 echo "$as_me: error: cannot find input file: $f" >&2;}
    { (exit 1); exit 1; }; }
          fi;;
@@ -5389,4 +5397,4 @@ if test "$no_create" != yes; then
   $ac_cs_success || { (exit 1); exit 1; }
 fi
 
-ac_config_links="$ac_config_links Makefile.deps:Makefile.deps"
+ln -s $ac_aux_dir/Makefile.deps . 2>/dev/null
