@@ -1,0 +1,76 @@
+define f = Sphere
+{
+  location = [0,0,0];
+}
+
+global.scene.f.location *= 2;
+NAME.ATTRIB_NAME = value;
+NAME.attrib_name = name2.attrib_name;
+
+/*
+print name.attrib1.attrib2.parent;
+*/
+
+print env "hello";
+
+print "in";
+if(1 <= 2)
+{
+  print "Ok1";
+  if( 2 <= 3 )
+  {
+    print "Ok2";
+    if( 3 <= 4 )
+    {
+      print "Ok3";
+      if( 0 > 1 )
+      {
+	print "foobar0";
+      }
+      else
+      {
+	print "Ok4";
+      }
+      print "3";
+    }
+    else
+    {
+      print "foobar1";
+    }
+    print "2";    
+  }
+  else
+  {
+    print "foobar2";
+  }
+  print "1";  
+}
+else
+{
+  print "foobar3";
+  if( 1 <= 2 )
+  {
+    print "Something went foobar";
+  }
+  else
+  {
+    print "Something went foobar (and back)";
+  }
+}
+print "out";
+
+
+if ( !defined x )
+{
+  define x = 1;
+}
+
+if ( x < 10 )
+{
+  define x = x + 1;
+  include "test_file.newer";
+}
+
+print "barf=" + 2;
+
+print attribs global;

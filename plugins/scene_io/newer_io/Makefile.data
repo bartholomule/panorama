@@ -1,0 +1,14 @@
+PLUGIN_NAME = newer_io
+OBJ         = parser.o scanner.o dynamic_objects.o dynamic_tweaker.o symtab.o newer_io.o
+#BISONFLAGS  = --name-prefix=rt_
+#LEXFLAGS   += -Prt_
+CXXFLAGS += -frtti -DYYSTYPE='magic_pointer<Tdynamic_base>' -g -O2
+
+# NOTE: This next rule requires a bourne-compatible shell.
+%.cpp: %.y
+		@echo Generating parser...
+		BISON_SIMPLE=./bison.simple ${YACC} ${BISONFLAGS} -dvo $(basename $@).c $<
+		mv $(basename $@).c $@
+
+#newer: parser.o scanner.o dynamic_objects.o dynamic_tweaker.o symtab.o
+#	g++ -o $@ $^

@@ -1,0 +1,76 @@
+My basic idea for a new scene language would be to have as few
+keywords as possible.  The main goal would be to keep the parser
+REALLY simple.  
+It will be multi-scoped, and fairly easy to use.
+
+keywords:
+---------
+include  // include another file (takes a string).
+if
+else
+define   // definition of something
+defined  // returns if something is defined
+object   // use of an object (takes a name or definition)
+scene    // The variable that will allow manipulation of the scene
+warning  // print a warning of the given text (takes string)
+error    // print an error of the given text (takes string)
+param    // takes string, result is the direct insertion of the
+         // parameter of the given name
+env      // takes string, result is the direct insertion of the
+         // environment variable of the given name
+print    // print a string, or print the contents of an object
+type     // takes an object (or attrib from an object), returns a
+         // string representing the type it expects.
+attribs  // takes an object, returns a string listing all of the
+         // attribute names which can be accessed through it.
+this     // the current object (if any)
+parent   // the parent (containing) object (if any)
+global   // the global scope.
+debug    // instructs an object to display it's debug info
+operators:
+----------
++  -  *  /            // Math operators
++= -= *= /=
+.                     // access operator (similar to that of C++)
+&& || !               // Boolean/logical
+== != >= <= >  <  
+=                     // Assignment
+
+symbols:
+--------
+"
+,
+{ 
+}
+(
+)
+//                     // comment
+;                      // statement terminator.
+[
+]                      // Used to create vectors...
+
+types (not explictly declared):
+------
+vector [ X, Y, Z ]       // X = real, Y = real, Z = real
+color  (same as vector, aliased names to R,G,B)
+real
+object
+
+
+example:
+
+define NAME = TYPE
+{
+  ATTRIB_NAME = VALUE;
+}
+
+NAME.ATTRIB_NAME = VALUE;
+NAME.ATTRIB_NAME += VALUE;
+NAME.ATTRIB_NAME = NAME2.ATTRIB_NAME;
+
+define NAME3 = NAME.ATTRIB_NAME;
+
+
+print NAME.ATTRIB_NAME.parent
+
+print "Object NAME has fields " + attribs(NAME);

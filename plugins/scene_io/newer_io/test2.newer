@@ -1,0 +1,116 @@
+define x = 1;
+print x;
+define x = x * 2;
+print x;
+define x = x * 2;
+print x;
+define x = x * 2;
+print x;
+define x = x * 2;
+print x;
+
+if( x >= 8 )
+{
+  define x = x / 2;
+}
+print x;
+
+print "X is a " + (type x) + " with attribs " + (attribs x);
+print "Foobar!!!";
+
+define s = Sphere
+{
+}
+
+print "Hello 1";
+print type s;
+print "Hello 2";
+print attribs s; 
+print "Hello 3";
+
+object s
+{
+  location = [10,10,10];
+}
+print "Hello 4";
+
+define w = Raytracer
+{
+}
+
+print type w;
+print attribs w;
+
+print type w.aa_depth;
+
+print "Global!!!";
+print type global;
+print attribs global;
+
+print type global.w;
+print type global.w.aa_depth;
+print type w.ambient;
+
+/*
+print "Checking parent of non-global objects";
+print type global.w.parent;
+print attribs global.w.parent;
+print attribs global.w.ambient.parent.parent.parent.parent.parent;
+print attribs global.w.ambient.parent.parent.parent.parent.parent.parent;
+print "\nAnother method...";
+print "---------------------------------------------------------------------------";
+print type global.parent;
+print attribs global.parent;
+print "---------------------------------------------------------------------------";
+print type global.parent.parent;
+print attribs global.parent.parent;
+print "---------------------------------------------------------------------------";
+print type global.parent.parent.parent;
+print attribs global.parent.parent.parent;
+print "---------------------------------------------------------------------------";
+print type global.parent.parent.parent.parent;
+print attribs global.parent.parent.parent.parent;
+print "---------------------------------------------------------------------------";
+print type global.parent.parent.parent.parent.parent;
+print attribs global.parent.parent.parent.parent.parent;
+print "---------------------------------------------------------------------------";
+*/
+define b = 1;
+print "b=" + b;
+define a = Sphere
+{
+  print "this=" + (type this);
+  print attribs this;
+  global.b = b + 1;
+}
+print "b=" + b;
+print 1;
+print attribs global;
+print 2;
+print attribs global.a;
+print 3;
+print attribs global.a.parent.a;
+
+define f = Csg
+{
+  addobject = Sphere
+  {
+    print "this=" + (type this);
+  };;;;;;
+  print "this=" + (type this);
+}
+print type f;
+print attribs f;
+print attribs a;
+/*
+An example of a nasty bug...
+*/
+print attribs a.location.x;
+print type a.location.x;
+print a.location.x;
+/*
+All of the following cause problems...
+*/
+print a.radius;
+print a.location;
+print f.get_type;
