@@ -1,6 +1,0 @@
-
-BUILD_TOP = ../..
-
-DIRS = atm_const
-
-include ${BUILD_TOP}/Makefile.targets

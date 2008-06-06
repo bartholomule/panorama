@@ -1,8 +1,0 @@
-
-BUILD_TOP = ../..
-
-DIRS = point_light \
-       projector \
-       warn_light
-
-include ${BUILD_TOP}/Makefile.targets

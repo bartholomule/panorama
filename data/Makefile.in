@@ -1,8 +1,0 @@
-
-BUILD_TOP = ..
-
-DIRS = include \
-       texture \
-       gradient
-
-include ${BUILD_TOP}/Makefile.targets
