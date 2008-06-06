@@ -1,21 +1,25 @@
 dnl Process this file with autoconf to produce a configure script.
 
-AC_INIT(llapi/base_class.h)
+AC_PREREQ(2.57)
+AC_INIT(panorama, 0.19, bug-panorama@gnu.org)
+AM_INIT_AUTOMAKE([dist-bzip2 1.6.3])
+AM_CONFIG_HEADER(panorama_config.h)
+AC_CONFIG_SRCDIR(Makefile.am)
 
 AC_PREFIX_DEFAULT(/opt/panorama)
 
 dnl ---------------------------------------------------------------------------
 dnl Gets the host type
 dnl ---------------------------------------------------------------------------
-AC_CANONICAL_HOST
 AC_CANONICAL_TARGET
+AC_CANONICAL_HOST
 
 dnl ---------------------------------------------------------------------------
 dnl Checks for programs.
 dnl ---------------------------------------------------------------------------
 AC_PROG_CXX
 AC_LANG(C++)
-AC_PROG_LEX
+AM_PROG_LEX
 AC_PROG_YACC
 AC_PROG_MAKE_SET
 
@@ -51,7 +55,7 @@ AC_CACHE_CHECK([for working cbrt],
   ]
 )
 if test $ac_cv_cbrt_ok = yes; then
-  AC_DEFINE(MATH_USE_CBRT)
+  AC_DEFINE(MATH_USE_CBRT, 1, The <math.h> cbrt function is available)
 fi
 
 AC_CACHE_CHECK([for working hypot],
@@ -72,7 +76,7 @@ AC_CACHE_CHECK([for working hypot],
   ]
 )
 if test $ac_cv_hypot_ok = yes; then
-  AC_DEFINE(MATH_USE_HYPOT)
+  AC_DEFINE(MATH_USE_HYPOT, 1, The <math.h> hypot function is available)
 fi  
 
 AC_CACHE_CHECK([for working arc hyperbolic trig functions],
@@ -100,7 +104,7 @@ AC_CACHE_CHECK([for working arc hyperbolic trig functions],
   ac_cv_arc_hyperbolic_ok=no)
 ])
 if test $ac_cv_arc_hyperbolic_ok = yes; then
-  AC_DEFINE(MATH_USE_ARC_HYP_TRIG)
+  AC_DEFINE(MATH_USE_ARC_HYP_TRIG, 1, The <math.h> hyperbolic functions are available)
 fi
 
 AC_CACHE_CHECK([for working inf tests],
@@ -144,8 +148,8 @@ if test $ac_cv_inf_tests_ok = yes; then
     ac_cv_inf_tests_throw=no)
   ])
   if test $ac_cv_inf_tests_throw = yes; then
-    AC_DEFINE(MATH_USE_INF_TESTS)
-    AC_DEFINE(INF_TEST_REQUIERS_THROW)
+    AC_DEFINE(MATH_USE_INF_TESTS, 1, The <math.h> INF functions are available)
+    AC_DEFINE(INF_TEST_REQUIRES_THROW, 1, The <math.h> INF functions are nothrow))
   else
 
     AC_CACHE_CHECK([for addressable inf tests], ac_cv_inf_tests_addressable,
@@ -200,10 +204,10 @@ AC_CACHE_CHECK([for working member templates (C++)],
   ac_cv_member_templates_ok=no)
 ])
 if test $ac_cv_member_templates_ok = yes; then
-  AC_DEFINE(MEMBER_TEMPLATES_WORK)
+  AC_DEFINE(MEMBER_TEMPLATES_WORK, 1, Member templates work)
 fi
 
-AC_CACHE_CHECK([for working subtype ptr returns for virtual functions (C++)],
+AC_CACHE_CHECK([for working covariant return types (C++)],
   ac_cv_virtual_return_type_ok,
 [AC_TRY_COMPILE([
   class foo
@@ -235,7 +239,7 @@ AC_CACHE_CHECK([for working subtype ptr returns for virtual functions (C++)],
   ac_cv_virtual_return_type_ok=no)
 ])
 if test $ac_cv_virtual_return_type_ok = no; then
-  AC_DEFINE(BROKEN_RETURN_SUBTYPES_ON_VIRTUAL)
+  AC_DEFINE(BROKEN_RETURN_SUBTYPES_ON_VIRTUAL, 1, Covariant return types do not work)
 fi  
 
 dnl ---------------------------------------------------------------------------
@@ -250,7 +254,7 @@ dnl AC_CHECK_PROG(sigcxx_val,"sigc-config --cflags","yes","no")
 if [ `sigc-config --cflags >/dev/null 2>/dev/null` ]
 then
   echo "yes"
-  AC_DEFINE(USE_SIGCXX)
+  AC_DEFINE(USE_SIGCXX, 1, SigC++ should be used.)
   BARF1=`sigc-config --cflags`
   BARF2=`sigc-config --libs`
   extra_includes="$extra_includes $BARF1"
@@ -388,7 +392,7 @@ AC_CACHE_CHECK([for fileno being properly defined with C++],
 [AC_TRY_COMPILE([#include <stdio.h>
 ], [int s = fileno(STDOUT)], ac_cv_fileno_ok=yes, ac_cv_fileno_ok=no)])
 if test $ac_cv_fileno_ok = no; then
-  AC_DEFINE(BROKEN_FILENO_INCLUDE)
+  AC_DEFINE(BROKEN_FILENO_INCLUDE, 1, [<stdio.h> includes fileno()])
 fi
 
 dnl ---------------------------------------------------------------------------
@@ -564,7 +568,7 @@ AC_ARG_ENABLE(exceptions,
 EXCEPTION_VAL=$enableval, EXCEPTION_VAL="no")
 if test $EXCEPTION_VAL = "yes"; then
   EXCEPTIONS_ALLOWED=1
-  AC_DEFINE(USE_EXCEPTIONS,1)
+  AC_DEFINE(USE_EXCEPTIONS,1,[Exceptions are enabled])
 else
   EXCEPTIONS_ALLOWED=0
   EXCEPTION_VAL="no"
@@ -646,7 +650,7 @@ AC_ARG_ENABLE(experimental,
 EXPER_VAL=$enableval, EXPER_VAL="no")
 if test $EXPER_VAL = "yes"; then
   EXPERIMENTAL=1
-  AC_DEFINE(USE_EXPERIMENTAL)
+  AC_DEFINE(USE_EXPERIMENTAL, $EXPERIMENTAL, Experimental code should be included))
 else
   EXPER_VAL="no";
   EXPERIMENTAL=0
@@ -663,7 +667,7 @@ AC_ARG_ENABLE(new-attribs,
 ATTRIB_VAL=$enableval, ATTRIB_VAL="yes")
 if test $ATTRIB_VAL = "yes"; then
   ATTRIBUTES=1
-  AC_DEFINE(NEW_ATTRIBUTES)
+  AC_DEFINE(NEW_ATTRIBUTES, $ATTRIBUTES, Use the new attribute model (default))
 else
   ATTRIB_VAL="no";
   ATTRIBUTES=0
@@ -690,7 +694,7 @@ dnl AC_SUBST(INSTALL)
 dnl AC_SUBST(INSTALL_DATA)
 dnl AC_SUBST(INSTALL_PROGRAM)
 dnl ------
-  
+
 AC_OUTPUT(\
 	Makefile \
 	Makefile.vars \
@@ -795,3 +799,4 @@ AC_OUTPUT(\
 dnl AC_CONFIG_LINKS(Makefile.deps:Makefile.deps)
 ln -s $ac_aux_dir/Makefile.deps . 2>/dev/null
 ln -s $ac_aux_dir/install-sh . 2>/dev/null
+exit 0
