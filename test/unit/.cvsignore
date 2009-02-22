@@ -1,0 +1,10 @@
+.deps
+.libs
+*.lo
+Makefile
+Makefile.in
+*.la
+CloneableTestCases
+CopyCounterTestCases
+RasterTestCases
+StringDumpableTestCases

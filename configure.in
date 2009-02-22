@@ -1,17 +1,16 @@
 dnl Process this file with autoconf to produce a configure script.
 
+# FIXME! This email address will need to be sent back to a GNU list... I'd hope
+# it is one that isn't full of spam.
+AC_INIT(panorama, 0.19, panorama-devel@lists.sourceforge.net)
+AM_INIT_AUTOMAKE(panorama, 0.19)
+AM_CONFIG_HEADER(llapi/panorama_config.h)
 AC_PREREQ(2.57)
-AC_INIT(panorama, 0.19, bug-panorama@gnu.org)
-AM_INIT_AUTOMAKE([dist-bzip2 1.6.3])
-AM_CONFIG_HEADER(panorama_config.h)
-AC_CONFIG_SRCDIR(Makefile.am)
-
-AC_PREFIX_DEFAULT(/opt/panorama)
 
 dnl ---------------------------------------------------------------------------
 dnl Gets the host type
 dnl ---------------------------------------------------------------------------
-AC_CANONICAL_TARGET
+AM_MAINTAINER_MODE
 AC_CANONICAL_HOST
 
 dnl ---------------------------------------------------------------------------
@@ -22,6 +21,33 @@ AC_LANG(C++)
 AM_PROG_LEX
 AC_PROG_YACC
 AC_PROG_MAKE_SET
+AC_PROG_INSTALL
+AC_PROG_LIBTOOL
+
+AC_CONFIG_SUBDIRS([src/blocxx_export])
+CONFIGURE_ARGS=${ac_configure_args}
+AC_SUBST(CONFIGURE_ARGS)
+
+AC_MSG_NOTICE([Setting host specific flags...])
+if test -z "$target"; then
+	target="$host"
+fi
+case "$target" in
+	*-*-darwin*)
+		CXXCOMMONLINKFLAGS="-Wl,-search_paths_first"
+	;;
+esac
+
+dnl Figure out which compiler flags can be used
+PANORAMA_CHECK_COMPILER_FLAG(Wall,[CXXFLAGS="$CXXFLAGS -Wall"])
+PANORAMA_CHECK_COMPILER_FLAG(W,[CXXFLAGS="$CXXFLAGS -W"])
+PANORAMA_CHECK_COMPILER_FLAG(Woverloaded-virtual,[CXXFLAGS="$CXXFLAGS -Woverloaded-virtual"])
+PANORAMA_CHECK_COMPILER_FLAG(Wno-unused,[CXXFLAGS="$CXXFLAGS -Wno-unused"])
+PANORAMA_CHECK_COMPILER_FLAG(Wno-unused-label,[CXXFLAGS="$CXXFLAGS -Wno-unused-label"])
+PANORAMA_CHECK_COMPILER_FLAG(Wno-unused-parameter,[CXXFLAGS="$CXXFLAGS -Wno-unused-parameter"])
+PANORAMA_CHECK_COMPILER_FLAG(Wno-long-long,[CXXFLAGS="$CXXFLAGS -Wno-long-long"])
+PANORAMA_CHECK_COMPILER_FLAG(Wwrite-strings,[CXXFLAGS="$CXXFLAGS -Wwrite-strings"])
+PANORAMA_CHECK_COMPILER_FLAG(Wextra,[CXXFLAGS="$CXXFLAGS -Wextra"])
 
 dnl ---------------------------------------------------------------------------
 dnl Checks for dlopen function
@@ -45,17 +71,17 @@ AC_CACHE_CHECK([for working cbrt],
     ],
     [
       double (*cr)(double);
-  
+
       double d = 8;
       cr = &std::cbrt;
       double c = cr(d);
-    ], 
+    ],
     ac_cv_cbrt_ok=yes,
     ac_cv_cbrt_ok=no)
   ]
 )
 if test $ac_cv_cbrt_ok = yes; then
-  AC_DEFINE(MATH_USE_CBRT, 1, The <math.h> cbrt function is available)
+  AC_DEFINE(MATH_USE_CBRT, 1, [The math cbrt function is available])
 fi
 
 AC_CACHE_CHECK([for working hypot],
@@ -70,14 +96,14 @@ AC_CACHE_CHECK([for working hypot],
       double y = 2
       double (*h)(double,double) = &std::hypot;
       double z = h(x,y);
-    ], 
+    ],
     ac_cv_hypot_ok=yes,
     ac_cv_hypot_ok=no)
   ]
 )
 if test $ac_cv_hypot_ok = yes; then
-  AC_DEFINE(MATH_USE_HYPOT, 1, The <math.h> hypot function is available)
-fi  
+  AC_DEFINE(MATH_USE_HYPOT, 1, [The math hypot function is available])
+fi
 
 AC_CACHE_CHECK([for working arc hyperbolic trig functions],
   ac_cv_arc_hyperbolic_ok,
@@ -88,23 +114,23 @@ AC_CACHE_CHECK([for working arc hyperbolic trig functions],
   #undef atanh
   ],
   [
-    
+
     double (*f)(double);
 
     double d = 10;
 
     f = &std::asinh;
-    double d1 = f(d); 
+    double d1 = f(d);
     f = &std::acosh;
     double d2 = f(d);
     f = &std::atanh;
     double d3 = f(d); // NAN -- too large, but proves it exists
-  ], 
+  ],
   ac_cv_arc_hyperbolic_ok=yes,
   ac_cv_arc_hyperbolic_ok=no)
 ])
 if test $ac_cv_arc_hyperbolic_ok = yes; then
-  AC_DEFINE(MATH_USE_ARC_HYP_TRIG, 1, The <math.h> hyperbolic functions are available)
+  AC_DEFINE(MATH_USE_ARC_HYP_TRIG, 1, [Enable the use of hyperbolic trig functions])
 fi
 
 AC_CACHE_CHECK([for working inf tests],
@@ -117,7 +143,7 @@ AC_CACHE_CHECK([for working inf tests],
     int inf1 = isinf(x);
     int inf2 = isnan(x);
     int inf3 = finite(x);
-  ], 
+  ],
   ac_cv_inf_tests_ok=yes,
   ac_cv_inf_tests_ok=no)
 ])
@@ -143,13 +169,13 @@ if test $ac_cv_inf_tests_ok = yes; then
 
       fn3 = &isnan;
       int i3 = fn3(d);
-    ], 
+    ],
     ac_cv_inf_tests_throw=yes,
     ac_cv_inf_tests_throw=no)
   ])
   if test $ac_cv_inf_tests_throw = yes; then
-    AC_DEFINE(MATH_USE_INF_TESTS, 1, The <math.h> INF functions are available)
-    AC_DEFINE(INF_TEST_REQUIRES_THROW, 1, The <math.h> INF functions are nothrow))
+    AC_DEFINE(MATH_USE_INF_TESTS, [inf tests should be used])
+    AC_DEFINE(INF_TEST_REQUIRES_THROW, 1, [inf tests require a nothrow option])
   else
 
     AC_CACHE_CHECK([for addressable inf tests], ac_cv_inf_tests_addressable,
@@ -162,7 +188,7 @@ if test $ac_cv_inf_tests_ok = yes; then
       [
         int (*fn3)(double);
         double d = 100;
- 
+
         fn3 = &isinf;
         int i1 = fn3(d);
 
@@ -171,12 +197,12 @@ if test $ac_cv_inf_tests_ok = yes; then
 
         fn3 = &isnan;
         int i3 = fn3(d);
-      ], 
+      ],
       ac_cv_inf_tests_addressable=yes,
       ac_cv_inf_tests_addressable=no)
     ])
     if test $ac_cv_inf_tests_addressable = yes; then
-      AC_DEFINE(MATH_USE_INF_TESTS)
+      AC_DEFINE(MATH_USE_INF_TESTS, 1, [inf tests should be used])
     fi
   fi
 fi
@@ -188,7 +214,7 @@ AC_CACHE_CHECK([for working member templates (C++)],
   ac_cv_member_templates_ok,
 [AC_TRY_COMPILE([
   class foo
-  { 
+  {
   public:
     template <class T>
     bool callme(T t) { return true; }
@@ -199,12 +225,12 @@ AC_CACHE_CHECK([for working member templates (C++)],
     f.callme(int(1));
     f.callme(bool(true));
     f.callme(double(1.0));
-  ], 
+  ],
   ac_cv_member_templates_ok=yes,
   ac_cv_member_templates_ok=no)
 ])
 if test $ac_cv_member_templates_ok = yes; then
-  AC_DEFINE(MEMBER_TEMPLATES_WORK, 1, Member templates work)
+  AC_DEFINE(MEMBER_TEMPLATES_WORK, 1, [member templates work])
 fi
 
 AC_CACHE_CHECK([for working covariant return types (C++)],
@@ -239,76 +265,25 @@ AC_CACHE_CHECK([for working covariant return types (C++)],
   ac_cv_virtual_return_type_ok=no)
 ])
 if test $ac_cv_virtual_return_type_ok = no; then
-  AC_DEFINE(BROKEN_RETURN_SUBTYPES_ON_VIRTUAL, 1, Covariant return types do not work)
-fi  
+  AC_DEFINE(BROKEN_RETURN_SUBTYPES_ON_VIRTUAL, 1, [Covariant return types do not work])
+fi
 
 dnl ---------------------------------------------------------------------------
 dnl Check for special libraries
 dnl ---------------------------------------------------------------------------
 
 dnl ---------------
-dnl SigC++
-dnl ---------------
-echo -e "checking for SigC++... \c"
-dnl AC_CHECK_PROG(sigcxx_val,"sigc-config --cflags","yes","no")
-if [ `sigc-config --cflags >/dev/null 2>/dev/null` ]
-then
-  echo "yes"
-  AC_DEFINE(USE_SIGCXX, 1, SigC++ should be used.)
-  BARF1=`sigc-config --cflags`
-  BARF2=`sigc-config --libs`
-  extra_includes="$extra_includes $BARF1"
-  extra_libs="$extra_libs $BARF2"
-else
-  echo "no"
-  AC_DEFINE(USE_SIGCXX,0)
-fi
-AC_SUBST(extra_includes)
-AC_SUBST(extra_libs)
-
-dnl ---------------
-dnl GTK--
-dnl ---------------
-echo -e "checking for GTK--... \c"
-dnl AC_CHECK_PROG(gtkmm_val,"gtkmm-config --cflags","yes","no")
-if [ `gtkmm-config --cflags >/dev/null 2>/dev/null` ]
-then
-  GUI_PROGRAM="gui"
-  echo "yes"
-else
-  GUI_PROGRAM=""
-  echo "no"
-  AC_MSG_WARN(GTK-- not available so gui (panorama) not compiled)
-fi
-AC_SUBST(GUI_PROGRAM)
-
-dnl ---------------
 dnl freetype
 dnl ---------------
-text_val=no
-echo -e "checking for modern freetype... \c"
-if [ `freetype-config --cflags >/dev/null 2>/dev/null` ]
-then
-  TEXT_FILTER="text"
-  PLUGIN_TEXT="if_text.plg"
-  echo "yes"
-else
-  echo "no"
-
-  dnl This is the original test, which I am leaving in here for backwards 
-  dnl compatibility (if it still works).
-
-  AC_CHECK_HEADER(freetype/freetype.h, [AC_CHECK_LIB(ttf,main,text_val=yes)])
-  if test $text_val = "yes"
-  then
-    TEXT_FILTER="text"
-    PLUGIN_TEXT="if_text.plg"
-  else
-    TEXT_FILTER=""
-    PLUGIN_TEXT=""
-    AC_MSG_WARN(Freetype library not available so text filter not compiled)
-  fi
-fi
+dnl PKG_CHECK_MODULES(FREETYPE, freetype2,
+dnl [
+dnl 	TEXT_FILTER="text"
+dnl 	PLUGIN_TEXT="if_text.plg"
+dnl ],
+dnl [
+dnl 	TEXT_FILTER=""
+dnl 	PLUGIN_TEXT=""
+dnl ])
 AC_SUBST(TEXT_FILTER)
 AC_SUBST(PLUGIN_TEXT)
 
@@ -383,65 +358,9 @@ dnl ---------------------------------------------------------------------------
 AC_C_CONST
 AC_C_BIGENDIAN
 AC_TYPE_SIZE_T
-dnl 
-dnl Under Irix 6.5, g++ does not define fileno when stdio.h is included 
-dnl by a lex generated file.
-dnl
-AC_CACHE_CHECK([for fileno being properly defined with C++],
-  ac_cv_fileno_ok, 
-[AC_TRY_COMPILE([#include <stdio.h>
-], [int s = fileno(STDOUT)], ac_cv_fileno_ok=yes, ac_cv_fileno_ok=no)])
-if test $ac_cv_fileno_ok = no; then
-  AC_DEFINE(BROKEN_FILENO_INCLUDE, 1, [<stdio.h> includes fileno()])
-fi
-
-dnl ---------------------------------------------------------------------------
-dnl This is the machine specific logic which can set some features depending
-dnl on the platform.
-dnl XXX Check we are really gcc
-
-dnl The following variables may be set
-dnl ARCH_MAKE_SHARED_OPTS flags tacked onto the end of building a shared
-dnl     library or plugin
-dnl
-dnl have_so_reg flags if so_locations is used by the machine.
-dnl
-dnl ARCH_PROG_SETLIBPATH flags to set the library path in executables
-dnl      convenient so one does not need to set LD_LIBRARY_PATH
-dnl ---------------------------------------------------------------------------
-case $host in
-
-alpha-dec-osf*)
-	echo "Adding shared library rules for DEC Alpha system"
-	ARCH_MAKE_SHARED_OPTS="-Wl,-expect_unresolved,\*"
-	ARCH_PROG_SETLIBPATH="-Wl,-rpath,\${LIB_DIR}"
-	have_so_reg=yes
-	;;
-mips-sgi-irix6*)
-	echo "Adding shared library rules for IRIX 6.* system"
-	#ARCH_MAKE_SHARED_OPTS="-Wl,-expect_unresolved,\*"
-	ARCH_MAKE_SHARED_OPTS=""
-	ARCH_PROG_SETLIBPATH="-Wl,-rpath,\${LIB_DIR}"
-	have_so_reg=yes
-	;;
-alpha*-unknown-linux-gnu)
-	ARCH_MAKE_SHARED_OPTS=""
-	ARCH_PROG_SETLIBPATH=""
-	have_so_reg=no
-        if test $target_cpu != "alpha"; then
-          target_cpu=${target_cpu##alpha}
-        fi
-        ;;
-*)
-	ARCH_MAKE_SHARED_OPTS=""
-	ARCH_PROG_SETLIBPATH=""
-	have_so_reg=no
-	;;
-esac
-
 
 AC_MSG_CHECKING(for a forced cpu type)
-AC_ARG_ENABLE(cpu, 
+AC_ARG_ENABLE(cpu,
 [  --enable-cpu=CPUTYPE    Force the use of the given cpu type in compilation.]
 [                          This is for using a specific CPU within a family.  ]
 [                          --enable-cpu=pentium4  or  --enable-cpu=athlon-xp  ]
@@ -476,7 +395,7 @@ AC_SUBST(CPU_TYPE)
 AC_MSG_RESULT($CPU_MESSAGE)
 
 if test $CPU_OVERRIDE != 0
-then 
+then
   AC_MSG_CHECKING(which compiler flag specifies CPU type)
   OLD_CXXFLAGS=$CXXFLAGS
   CXXFLAGS="$OLD_CXXFLAGS -march=$CPU_TYPE"
@@ -511,19 +430,18 @@ AC_SUBST(CPU_SPECIFIC_FLAG)
 dnl ---------------------------------------------------------------------------
 dnl Checks for optimizations option.
 dnl ---------------------------------------------------------------------------
+OPTIMIZATION_LEVEL=0
 AC_MSG_CHECKING(whether to enable optimizations or not)
 AC_ARG_ENABLE(optimizations,
 [  --enable-optimizations  Enable optimizations (=level given)],
 OPTIMIZATION_VAL=$enableval, OPTIMIZATION_VAL="no")
 if test $OPTIMIZATION_VAL = "yes"; then
   OPTIMIZATIONS_ALLOWED=1
-  OPTIMIZATION_LEVEL=""
   OPTIMIZE_EXPENSIVE=0
   OPTIMIZATION_VAL="yes"
 elif test $OPTIMIZATION_VAL != "no"; then
   OPTIMIZATIONS_ALLOWED=0
   OPTIMIZE_EXPENSIVE=0
-  OPTIMIZATION_LEVEL=""
   dnl For some reason, this didn't work correctly with a simple case:
   dnl [0-9]) ...
 
@@ -532,11 +450,11 @@ elif test $OPTIMIZATION_VAL != "no"; then
     2) OPTIMIZATIONS_ALLOWED=1 ;;
     3) OPTIMIZATIONS_ALLOWED=1 ;;
     4) OPTIMIZATIONS_ALLOWED=1 ;;
-    5) OPTIMIZATIONS_ALLOWED=1 ;; 
-    6) OPTIMIZATIONS_ALLOWED=1 ;; 
-    7) OPTIMIZATIONS_ALLOWED=1 ;; 
-    8) OPTIMIZATIONS_ALLOWED=1 ;; 
-    9) OPTIMIZATIONS_ALLOWED=1 ;; 
+    5) OPTIMIZATIONS_ALLOWED=1 ;;
+    6) OPTIMIZATIONS_ALLOWED=1 ;;
+    7) OPTIMIZATIONS_ALLOWED=1 ;;
+    8) OPTIMIZATIONS_ALLOWED=1 ;;
+    9) OPTIMIZATIONS_ALLOWED=1 ;;
     0) OPTIMIZATIONS_ALLOWED=1 ;;
     *) OPTIMIZATION_VAL="NO -- unknown value \"$OPTIMIZATION_VAL\"" ;;
   esac
@@ -554,60 +472,12 @@ else
   OPTIMIZATION_VAL="no"
   OPTIMIZE_EXPENSIVE=0
 fi
+CFLAGS="$CFLAGS -O${OPTIMIZATION_LEVEL}"
+CXXFLAGS="$CXXFLAGS -O${OPTIMIZATION_LEVEL}"
 AC_SUBST(OPTIMIZATIONS_ALLOWED)
 AC_SUBST(OPTIMIZATION_LEVEL)
 AC_SUBST(OPTIMIZE_EXPENSIVE)
 AC_MSG_RESULT($OPTIMIZATION_VAL)
-
-dnl ---------------------------------------------------------------------------
-dnl Checks for exceptions option.
-dnl ---------------------------------------------------------------------------
-AC_MSG_CHECKING(whether to enable exceptions or not)
-AC_ARG_ENABLE(exceptions,
-[  --enable-exceptions     Enable exception handling],
-EXCEPTION_VAL=$enableval, EXCEPTION_VAL="no")
-if test $EXCEPTION_VAL = "yes"; then
-  EXCEPTIONS_ALLOWED=1
-  AC_DEFINE(USE_EXCEPTIONS,1,[Exceptions are enabled])
-else
-  EXCEPTIONS_ALLOWED=0
-  EXCEPTION_VAL="no"
-fi
-AC_SUBST(EXCEPTIONS_ALLOWED)
-AC_MSG_RESULT($EXCEPTION_VAL)
-
-dnl ---------------------------------------------------------------------------
-dnl Checks for rtti option.
-dnl ---------------------------------------------------------------------------
-AC_MSG_CHECKING(whether to enable rtti or not)
-AC_ARG_ENABLE(rtti,
-[  --enable-rtti           Enable runtime type identification],
-RTTI_VAL=$enableval, RTTI_VAL="no")
-if test $RTTI_VAL = "yes"; then
-  RTTI_ALLOWED=1
-else
-  RTTI_ALLOWED=0
-  RTTI_VAL="no"
-fi
-AC_SUBST(RTTI_ALLOWED)
-AC_MSG_RESULT($RTTI_VAL)
-
-
-dnl ---------------------------------------------------------------------------
-dnl Checks for static-link option.
-dnl ---------------------------------------------------------------------------
-AC_MSG_CHECKING(whether to link statically or not)
-AC_ARG_ENABLE(static-link,
-[  --enable-static-link    Link everything statically],
-STATIC_VAL=$enableval, STATIC_VAL="no")
-if test $STATIC_VAL = "yes"; then
-  STATIC_LINK=1
-else
-  STATIC_VAL="no";
-  STATIC_LINK=0
-fi
-AC_SUBST(STATIC_LINK)
-AC_MSG_RESULT($STATIC_VAL)
 
 dnl ---------------------------------------------------------------------------
 dnl Checks for profile option.
@@ -650,12 +520,13 @@ AC_ARG_ENABLE(experimental,
 EXPER_VAL=$enableval, EXPER_VAL="no")
 if test $EXPER_VAL = "yes"; then
   EXPERIMENTAL=1
-  AC_DEFINE(USE_EXPERIMENTAL, $EXPERIMENTAL, Experimental code should be included))
+  AC_DEFINE(USE_EXPERIMENTAL, 1, [Experimental features are enabled])
 else
   EXPER_VAL="no";
   EXPERIMENTAL=0
 fi
 AC_SUBST(EXPERIMENTAL)
+AM_CONDITIONAL(EXPERIMENTAL, test "x$EXPERIMENTAL" = "x1")
 AC_MSG_RESULT($EXPER_VAL)
 
 dnl ---------------------------------------------------------------------------
@@ -667,7 +538,7 @@ AC_ARG_ENABLE(new-attribs,
 ATTRIB_VAL=$enableval, ATTRIB_VAL="yes")
 if test $ATTRIB_VAL = "yes"; then
   ATTRIBUTES=1
-  AC_DEFINE(NEW_ATTRIBUTES, $ATTRIBUTES, Use the new attribute model (default))
+  AC_DEFINE(NEW_ATTRIBUTES, 1, [The new attribute model is enabled])
 else
   ATTRIB_VAL="no";
   ATTRIBUTES=0
@@ -675,128 +546,152 @@ fi
 AC_SUBST(ATTRIBUTES)
 AC_MSG_RESULT($ATTRIB_VAL)
 
-
-if test $have_so_reg = "yes"; then
-  ARCH_MAKE_SHARED_OPTS="$ARCH_MAKE_SHARED_OPTS -Wl,-update_registry,\${BUILD_TOP}/so_locations"
-fi
-
 AC_SUBST(ARCH_MAKE_SHARED_OPTS)
 AC_SUBST(ARCH_PROG_SETLIBPATH)
 
-dnl ------
-dnl The method autoconf uses to find a working install program is:
-AC_PROG_INSTALL
-dnl This is the method that I think should be used (for now).
-dnl INSTALL="$PWD/install-sh -c"
-dnl INSTALL_DATA="$INSTALL -m 644"
-dnl INSTALL_PROGRAM="$INSTALL -m 755"
-dnl AC_SUBST(INSTALL)
-dnl AC_SUBST(INSTALL_DATA)
-dnl AC_SUBST(INSTALL_PROGRAM)
-dnl ------
+CXXSHAREDLIBLINKFLAGS_START="${CXXCOMMONLINKFLAGS} ${CXXSHAREDLIBLINKFLAGS}"
+CXXBINLINKFLAGS_START="${CXXCOMMONLINKFLAGS} ${CXXBINLINKFLAGS}"
+CXXBUNDLELIBLINKFLAGS_START="${CXXCOMMONLINKFLAGS} ${CXXBUNDLELIBLINKFLAGS}"
+CBINLINKFLAGS_START="${CBINLINKFLAGS}"
+COMMON_LDFLAGS="${LDFLAGS}"
 
-AC_OUTPUT(\
-	Makefile \
-	Makefile.vars \
-	Makefile.targets \
-        data/Makefile \
-        data/gradient/Makefile \
-        data/include/Makefile \
-        data/texture/Makefile \
-        doc/Makefile \
-        doc/config \
-	doc/pluginrc \
-        doc/developers/Makefile \
-        doc/users/Makefile \
-        doc/api/Makefile \
-        doc/api/Doxyfile \
-        llapi/Makefile \
-        hlapi/Makefile \
-        plugins/Makefile \
-        plugins/atm_object/Makefile \
-        plugins/atm_object/atm_const/Makefile:Makefile.plugin.in \
-        plugins/bsdf/Makefile \
-        plugins/bsdf/cook_torrance/Makefile:Makefile.plugin.in \
-        plugins/bsdf/lambertian/Makefile:Makefile.plugin.in \
-        plugins/bsdf/phong/Makefile:Makefile.plugin.in \
-        plugins/bsdf/schlick/Makefile:Makefile.plugin.in \
-        plugins/bsdf/schlick_double/Makefile:Makefile.plugin.in \
-        plugins/bsdf/ward/Makefile:Makefile.plugin.in \
-        plugins/camera/Makefile \
-        plugins/camera/parallel/Makefile:Makefile.plugin.in \
-        plugins/camera/pinhole/Makefile:Makefile.plugin.in \
-        plugins/camera/thinlens/Makefile:Makefile.plugin.in \
-        plugins/image_filter/Makefile \
-        plugins/image_filter/cartoon/Makefile:Makefile.plugin.in \
-        plugins/image_filter/convert_to_grey/Makefile:Makefile.plugin.in \
-        plugins/image_filter/fog/Makefile:Makefile.plugin.in \
-        plugins/image_filter/lens_flare/Makefile:Makefile.plugin.in \
-        plugins/image_filter/text/Makefile:Makefile.plugin.in \
-        plugins/image_io/Makefile \
-        plugins/image_io/gif/Makefile:Makefile.plugin.in \
-        plugins/image_io/jpeg/Makefile:Makefile.plugin.in \
-        plugins/image_io/png/Makefile:Makefile.plugin.in \
-        plugins/image_io/tga/Makefile:Makefile.plugin.in \
-        plugins/image_io/tiff/Makefile:Makefile.plugin.in \
-        plugins/light/Makefile \
-        plugins/light/point_light/Makefile:Makefile.plugin.in \
-        plugins/light/projector/Makefile:Makefile.plugin.in \
-        plugins/light/warn_light/Makefile:Makefile.plugin.in \
-        plugins/pattern/Makefile \
-        plugins/pattern/amplifier/Makefile:Makefile.plugin.in \
-        plugins/pattern/brick/Makefile:Makefile.plugin.in \
-        plugins/pattern/checker/Makefile:Makefile.plugin.in \
-        plugins/pattern/composite/Makefile:Makefile.plugin.in \
-        plugins/pattern/crackle/Makefile:Makefile.plugin.in \
-        plugins/pattern/cylgrad/Makefile:Makefile.plugin.in \
-        plugins/pattern/leopard/Makefile:Makefile.plugin.in \
-        plugins/pattern/marble/Makefile:Makefile.plugin.in \
-        plugins/pattern/noise/Makefile:Makefile.plugin.in \
-        plugins/pattern/parquet/Makefile:Makefile.plugin.in \
-        plugins/pattern/texture/Makefile:Makefile.plugin.in \
-        plugins/pattern/wood/Makefile:Makefile.plugin.in \
-        plugins/pattern/worley/Makefile:Makefile.plugin.in \
-        plugins/perturbation/Makefile \
-        plugins/perturbation/brick/Makefile:Makefile.plugin.in \
-        plugins/perturbation/bump/Makefile:Makefile.plugin.in \
-        plugins/perturbation/crackle/Makefile:Makefile.plugin.in \
-        plugins/perturbation/leopard/Makefile:Makefile.plugin.in \
-        plugins/perturbation/marble/Makefile:Makefile.plugin.in \
-        plugins/perturbation/noise/Makefile:Makefile.plugin.in \
-        plugins/perturbation/wave/Makefile:Makefile.plugin.in \
-        plugins/perturbation/worley/Makefile:Makefile.plugin.in \
-        plugins/object/Makefile \
-        plugins/object/abvh/Makefile:Makefile.plugin.in \
-        plugins/object/aggregate_uniform_grid/Makefile:Makefile.plugin.in \
-        plugins/object/bezier/Makefile:Makefile.plugin.in \
-        plugins/object/subdiv/Makefile:Makefile.plugin.in \
-        plugins/object/height_field/Makefile:Makefile.plugin.in \
-        plugins/object/lwo/Makefile:Makefile.plugin.in \
-        plugins/object/polyhedron/Makefile:Makefile.plugin.in \
-        plugins/object_filter/Makefile \
-        plugins/object_filter/cartoon/Makefile:Makefile.plugin.in \
-        plugins/object_filter/convert_to_grey/Makefile:Makefile.plugin.in \
-        plugins/renderer/Makefile \
-        plugins/renderer/raytracer/Makefile:Makefile.plugin.in \
-        plugins/renderer/zbuffer/Makefile:Makefile.plugin.in \
-        plugins/scene_io/Makefile \
-        plugins/scene_io/rt/Makefile:Makefile.plugin.in \
-        plugins/scene_io/psl/Makefile:Makefile.plugin.in \
-        programs/Makefile \
-        programs/render/Makefile \
-        programs/utils/Makefile \
-        programs/rt_convert/Makefile \
-	programs/barf/Makefile \
-        programs/gui/Makefile \
-        scenes/Makefile \
-        scenes/atmospheric/Makefile \
-        scenes/lights/Makefile \
-        scenes/materials/Makefile \
-        scenes/misc/Makefile \
-        scenes/objects/Makefile
+AC_SUBST(CXXSHAREDLIBLINKFLAGS_START)
+AC_SUBST(CXXBUNDLELIBLINKFLAGS_START)
+AC_SUBST(CXXBINLINKFLAGS_START)
+AC_SUBST(CBINLINKFLAGS_START)
+AC_SUBST(COMMON_LDFLAGS)
+
+# This next line defines a chain of GNUmake options to take the target of a
+# rule.  What happens is that:
+# 1. The name of the library or executable has all extensions stripped (everything after a dot)
+# 2. _PROJECT_LIBS is appended
+# 3. Double underscores are converted to a single underscore
+# 4. The resulting variable is dereferenced to obtain the required libs (if any)
+#
+# Example: A library "libfoo.$(LIB_EXT)" on would have "libfoo_PROJECT_LIBS"
+#   inserted into the linker flags.
+# Example2: An executable "bar" would use "bar_PROJECT_LIBS"
+LINK_INSERT_FLAGS='$($(subst __,_,$(firstword $(subst ., ,$@))_PROJECT_LIBS))'
+LINK_APPEND_FLAGS='$($(subst __,_,$(firstword $(subst ., ,$@))_EXTERNAL_LIBS))'
+
+# These rules are only used by rules that are unaware of the above substitutions.
+CXXSHAREDLIBLINKFLAGS="${CXXSHAREDLIBLINKFLAGS_START} ${LINK_INSERT_FLAGS} ${COMMON_LDFLAGS} ${LINK_APPEND_FLAGS}"
+CXXBINLINKFLAGS="${CXXBINLINKFLAGS_START} ${LINK_INSERT_FLAGS} ${COMMON_LDFLAGS} ${LINK_APPEND_FLAGS}"
+CXXBUNDLELIBLINKFLAGS="${CXXBUNDLELIBLINKFLAGS_START} ${LINK_INSERT_FLAGS} ${COMMON_LDFLAGS} ${LINK_APPEND_FLAGS}"
+CBINLINKFLAGS="${CBINLINKFLAGS_START} ${LINK_INSERT_FLAGS} ${COMMON_LDFLAGS} ${LINK_APPEND_FLAGS}"
+
+AC_SUBST(CXXSHAREDLIBLINKFLAGS)
+AC_SUBST(CXXBUNDLELIBLINKFLAGS)
+AC_SUBST(CXXBINLINKFLAGS)
+AC_SUBST(CBINLINKFLAGS)
+
+AC_SUBST(CFLAGS)
+AC_SUBST(CXXFLAGS)
+
+AC_OUTPUT(
+	Makefile
+	Makefile.empty
+	Makefile.vars
+	Makefile.targets
+	src/Makefile
+	src/general/Makefile
+	src/common/Makefile
+	test/Makefile
+	test/test_framework/Makefile
+	test/unit/Makefile
+	data/Makefile
+	data/gradient/Makefile
+	data/include/Makefile
+	data/texture/Makefile
+	doc/Makefile
+	doc/config
+	doc/pluginrc
+	doc/developers/Makefile
+	doc/users/Makefile
+	doc/api/Makefile
+	doc/api/Doxyfile
+	llapi/Makefile
+	hlapi/Makefile
+	plugins/Makefile
+	plugins/atm_object/Makefile
+	plugins/atm_object/atm_const/Makefile:Makefile.plugin.in
+	plugins/bsdf/Makefile
+	plugins/bsdf/cook_torrance/Makefile:Makefile.plugin.in
+	plugins/bsdf/lambertian/Makefile:Makefile.plugin.in
+	plugins/bsdf/phong/Makefile:Makefile.plugin.in
+	plugins/bsdf/schlick/Makefile:Makefile.plugin.in
+	plugins/bsdf/schlick_double/Makefile:Makefile.plugin.in
+	plugins/bsdf/ward/Makefile:Makefile.plugin.in
+	plugins/camera/Makefile
+	plugins/camera/parallel/Makefile:Makefile.plugin.in
+	plugins/camera/pinhole/Makefile:Makefile.plugin.in
+	plugins/camera/thinlens/Makefile:Makefile.plugin.in
+	plugins/image_filter/Makefile
+	plugins/image_filter/cartoon/Makefile:Makefile.plugin.in
+	plugins/image_filter/convert_to_grey/Makefile:Makefile.plugin.in
+	plugins/image_filter/fog/Makefile:Makefile.plugin.in
+	plugins/image_filter/lens_flare/Makefile:Makefile.plugin.in
+	plugins/image_filter/text/Makefile:Makefile.plugin.in
+	plugins/image_io/Makefile
+	plugins/image_io/gif/Makefile:Makefile.plugin.in
+	plugins/image_io/jpeg/Makefile:Makefile.plugin.in
+	plugins/image_io/png/Makefile:Makefile.plugin.in
+	plugins/image_io/tga/Makefile:Makefile.plugin.in
+	plugins/image_io/tiff/Makefile:Makefile.plugin.in
+	plugins/light/Makefile
+	plugins/light/point_light/Makefile:Makefile.plugin.in
+	plugins/light/projector/Makefile:Makefile.plugin.in
+	plugins/light/warn_light/Makefile:Makefile.plugin.in
+	plugins/pattern/Makefile
+	plugins/pattern/amplifier/Makefile:Makefile.plugin.in
+	plugins/pattern/brick/Makefile:Makefile.plugin.in
+	plugins/pattern/checker/Makefile:Makefile.plugin.in
+	plugins/pattern/composite/Makefile:Makefile.plugin.in
+	plugins/pattern/crackle/Makefile:Makefile.plugin.in
+	plugins/pattern/cylgrad/Makefile:Makefile.plugin.in
+	plugins/pattern/leopard/Makefile:Makefile.plugin.in
+	plugins/pattern/marble/Makefile:Makefile.plugin.in
+	plugins/pattern/noise/Makefile:Makefile.plugin.in
+	plugins/pattern/parquet/Makefile:Makefile.plugin.in
+	plugins/pattern/texture/Makefile:Makefile.plugin.in
+	plugins/pattern/wood/Makefile:Makefile.plugin.in
+	plugins/pattern/worley/Makefile:Makefile.plugin.in
+	plugins/perturbation/Makefile
+	plugins/perturbation/brick/Makefile:Makefile.plugin.in
+	plugins/perturbation/bump/Makefile:Makefile.plugin.in
+	plugins/perturbation/crackle/Makefile:Makefile.plugin.in
+	plugins/perturbation/leopard/Makefile:Makefile.plugin.in
+	plugins/perturbation/marble/Makefile:Makefile.plugin.in
+	plugins/perturbation/noise/Makefile:Makefile.plugin.in
+	plugins/perturbation/wave/Makefile:Makefile.plugin.in
+	plugins/perturbation/worley/Makefile:Makefile.plugin.in
+	plugins/object/Makefile
+	plugins/object/abvh/Makefile:Makefile.plugin.in
+	plugins/object/aggregate_uniform_grid/Makefile:Makefile.plugin.in
+	plugins/object/bezier/Makefile:Makefile.plugin.in
+	plugins/object/subdiv/Makefile:Makefile.plugin.in
+	plugins/object/height_field/Makefile:Makefile.plugin.in
+	plugins/object/lwo/Makefile:Makefile.plugin.in
+	plugins/object/polyhedron/Makefile:Makefile.plugin.in
+	plugins/object_filter/Makefile
+	plugins/object_filter/cartoon/Makefile:Makefile.plugin.in
+	plugins/object_filter/convert_to_grey/Makefile:Makefile.plugin.in
+	plugins/renderer/Makefile
+	plugins/renderer/raytracer/Makefile:Makefile.plugin.in
+	plugins/renderer/zbuffer/Makefile:Makefile.plugin.in
+	plugins/scene_io/Makefile
+	plugins/scene_io/rt/Makefile
+	plugins/scene_io/psl/Makefile:Makefile.plugin.in
+	programs/Makefile
+	programs/render/Makefile
+	programs/utils/Makefile
+	programs/rt_convert/Makefile
+	programs/barf/Makefile
+	programs/gui/Makefile
+	scenes/Makefile
+	scenes/atmospheric/Makefile
+	scenes/lights/Makefile
+	scenes/materials/Makefile
+	scenes/misc/Makefile
+	scenes/objects/Makefile
 )
-
-dnl AC_CONFIG_LINKS(Makefile.deps:Makefile.deps)
-ln -s $ac_aux_dir/Makefile.deps . 2>/dev/null
-ln -s $ac_aux_dir/install-sh . 2>/dev/null
-exit 0

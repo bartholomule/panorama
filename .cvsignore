@@ -4,4 +4,10 @@ Makefile.vars
 config.cache
 config.log
 config.status
+config.sub config.guess configure
+aclocal.m4
+autom4te.cache
+config.h
+config.h.in
+stamp-h1
 *.d
