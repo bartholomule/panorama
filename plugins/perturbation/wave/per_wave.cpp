@@ -42,7 +42,7 @@ TVector TPerturbationWave::perturbNormal (const TSurfaceData& rktDATA) const
   TVector normal_pert(0,0,0);
   // Apply the contribution from all of the wave sources.
   
-  for(vector<TWaveSource>::const_iterator i = all_wave_sources.begin();
+  for(std::vector<TWaveSource>::const_iterator i = all_wave_sources.begin();
       i != all_wave_sources.end();
       ++i)
   {
@@ -56,12 +56,12 @@ TVector TPerturbationWave::perturbNormal (const TSurfaceData& rktDATA) const
 }  /* perturbNormal() */
 
 
-int TPerturbationWave::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
+int TPerturbationWave::setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
 #if defined(__FUNCTION__)
-  GOM.debug() << __FUNCTION__ << "(" << rktNAME << ") called." << endl;
+  GOM.debug() << __FUNCTION__ << "(" << rktNAME << ") called." << std::endl;
 #elif defined(__FUNCTION)
-  GOM.debug() << __FUNCTION << "(" << rktNAME << ") called." << endl;
+  GOM.debug() << __FUNCTION << "(" << rktNAME << ") called." << std::endl;
 #endif
 
   if ( rktNAME == "sources" )
@@ -181,13 +181,13 @@ int TPerturbationWave::setAttribute (const string& rktNAME, NAttribute nVALUE, E
 }  /* setAttribute() */
 
 
-int TPerturbationWave::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
+int TPerturbationWave::getAttribute (const std::string& rktNAME, NAttribute& rnVALUE)
 {
 #if defined(DEBUG)
 #if defined(__FUNCTION__)
-  GOM.debug() << __FUNCTION__ << "(" << rktNAME << ") called." << endl;
+  GOM.debug() << __FUNCTION__ << "(" << rktNAME << ") called." << std::endl;
 #elif defined(__FUNCTION)
-  GOM.debug() << __FUNCTION << "(" << rktNAME << ") called." << endl;
+  GOM.debug() << __FUNCTION << "(" << rktNAME << ") called." << std::endl;
 #endif
 #endif
 
@@ -247,9 +247,9 @@ int TPerturbationWave::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 void TPerturbationWave::getAttributeList (TAttributeList& rtLIST) const
 {
 #if defined(__FUNCTION__)
-  GOM.debug() << __FUNCTION__ << " called." << endl;
+  GOM.debug() << __FUNCTION__ << " called." << std::endl;
 #elif defined(__FUNCTION)
-  GOM.debug() << __FUNCTION << " called." << endl;
+  GOM.debug() << __FUNCTION << " called." << std::endl;
 #endif
   
   TPerturbation::getAttributeList (rtLIST);
@@ -297,9 +297,9 @@ bool TPerturbationWave::initialize(void)
 {
   bool val = true;
 #if defined(__FUNCTION__)
-  GOM.debug() << __FUNCTION__ << " called." << endl;  
+  GOM.debug() << __FUNCTION__ << " called." << std::endl;  
 #elif defined(__FUNCTION)
-  GOM.debug() << __FUNCTION << " called." << endl;  
+  GOM.debug() << __FUNCTION << " called." << std::endl;  
 #endif
 
   // Create a random group of wave sources...
@@ -326,7 +326,7 @@ bool TPerturbationWave::initialize(void)
     all_wave_sources.resize(0);
   }
   
-  for(vector<TWaveSource>::iterator i = all_wave_sources.begin();
+  for(std::vector<TWaveSource>::iterator i = all_wave_sources.begin();
       i != all_wave_sources.end();
       ++i)
   {

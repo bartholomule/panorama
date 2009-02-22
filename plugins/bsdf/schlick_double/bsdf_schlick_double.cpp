@@ -42,7 +42,7 @@ TBsdfSchlickDouble::~TBsdfSchlickDouble (void)
 }  /* ~TBsdfSchlickDouble() */
 
 
-int TBsdfSchlickDouble::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
+int TBsdfSchlickDouble::setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
 
   if ( rktNAME == "l2_roughness" )
@@ -67,7 +67,7 @@ int TBsdfSchlickDouble::setAttribute (const string& rktNAME, NAttribute nVALUE, 
 }  /* setAttribute() */
 
 
-int TBsdfSchlickDouble::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
+int TBsdfSchlickDouble::getAttribute (const std::string& rktNAME, NAttribute& rnVALUE)
 {
 
   if ( rktNAME == "l2_roughness" )

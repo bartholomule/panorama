@@ -20,7 +20,7 @@
 #include "llapi/camera.h"
 #include "llapi/attribute.h"
 
-int TCamera::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
+int TCamera::setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
 
   if ( rktNAME == "up" )
@@ -71,7 +71,7 @@ int TCamera::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType
 }  /* setAttribute() */
 
 
-int TCamera::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
+int TCamera::getAttribute (const std::string& rktNAME, NAttribute& rnVALUE)
 {
 
 #if !defined(NEW_ATTRIBUTES)  

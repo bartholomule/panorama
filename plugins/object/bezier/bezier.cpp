@@ -37,7 +37,7 @@ TBezierSurface::~TBezierSurface (void)
 
   delete ptCurrentSurface;
 
-  for (vector<TBezierSubsurface*>::iterator tIter = tSurfaceList.begin(); ( tIter != tSurfaceList.end() ) ;tIter++)
+  for (std::vector<TBezierSubsurface*>::iterator tIter = tSurfaceList.begin(); ( tIter != tSurfaceList.end() ) ;tIter++)
   {
     delete (*tIter);
   }
@@ -55,7 +55,7 @@ bool TBezierSurface::findAllIntersections (const TRay& rktRAY,
   
   tFactor = tTransformRay.applyTransform (ptInverseMatrix);
 
-  for (vector<TBezierSubsurface*>::const_iterator tIter = tSurfaceList.begin(); ( tIter != tSurfaceList.end() ) ;tIter++)
+  for (std::vector<TBezierSubsurface*>::const_iterator tIter = tSurfaceList.begin(); ( tIter != tSurfaceList.end() ) ;tIter++)
   {
     bool gFoundMoreIntersections = (*tIter)->findAllIntersections (tTransformRay, tFactor, rktRAY, rtLIST);
 
@@ -67,7 +67,7 @@ bool TBezierSurface::findAllIntersections (const TRay& rktRAY,
 }  /* findAllIntersections() */
 
 
-int TBezierSurface::setAttribute (const string& rktNAME, NAttribute nVALUE, 
+int TBezierSurface::setAttribute (const std::string& rktNAME, NAttribute nVALUE, 
 				  EAttribType eTYPE)
 {
 

@@ -35,7 +35,7 @@ struct TUGVoxel
 {		   
 
   TUGLatticeCoord         i, j, k;      // Cube key (lattice location of cube)
-  list<magic_pointer<const TObject> > tObjectList;
+  std::list<magic_pointer<const TObject> > tObjectList;
 
 };  /* struct TUGVoxel */
 
@@ -44,7 +44,7 @@ class TUniformGrid
 
   protected:
 
-    list<TUGVoxel>*   aptVoxelHashTable [ktHashSize];
+    std::list<TUGVoxel>*   aptVoxelHashTable [ktHashSize];
 
     TScalar   tVoxelSize;
     TScalar   tVoxelSize2;
@@ -110,7 +110,7 @@ class TUniformGrid
       // Hash table initialization
       for (size_t m = 0; ( m < ktHashSize ) ;m++)
       {
-        aptVoxelHashTable [m] = (list<TUGVoxel>*) NULL;
+        aptVoxelHashTable [m] = (std::list<TUGVoxel>*) NULL;
       }
     }
 
@@ -137,7 +137,7 @@ class TUniformGrid
       tVoxelSize2   = tVOXEL_SIZE * tVOXEL_SIZE;
       tInvVoxelSize = 1.0 / tVoxelSize;
     }
-    void calculateVoxelSize (const vector<magic_pointer<TObject> >& rktOBJECT_LIST);
+    void calculateVoxelSize (const std::vector<magic_pointer<TObject> >& rktOBJECT_LIST);
 
     void addObject (const magic_pointer<TObject> pktOBJECT);
 

@@ -16,15 +16,18 @@
 *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef _OBJECT_FILTER__
-#define _OBJECT_FILTER__
+#ifndef PANORAMA_OBJECT_FILTER_H_INCLUDED
+#define PANORAMA_OBJECT_FILTER_H_INCLUDED
 
 #include "llapi/warning_eliminator.h"
 #include "llapi/procedural.h"
 #include "llapi/surface_data.h"
 
-class TObjectFilter : public TProcedural
+namespace panorama
 {
+
+  class TObjectFilter : public TProcedural
+  {
 
   public:
 
@@ -32,7 +35,8 @@ class TObjectFilter : public TProcedural
 
     EClass classType (void) const { return FX_OBJECT_FILTER_CLASS; }
     virtual TObjectFilter* clone_new() const = 0;
-      
-};  /* class TObjectFilter */
 
-#endif  /* _OBJECT_FILTER__ */
+  };  /* class TObjectFilter */
+} // end namespace panorama
+
+#endif  /* PANORAMA_OBJECT_FILTER_H_INCLUDED */

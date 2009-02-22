@@ -38,7 +38,7 @@ TBsdfWard::TBsdfWard (void)
 }  /* TBsdfWard() */
 
 
-int TBsdfWard::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
+int TBsdfWard::setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
 
   if ( rktNAME == "roughness_x" )
@@ -132,7 +132,7 @@ int TBsdfWard::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribTy
 }  /* setAttribute() */
 
 
-int TBsdfWard::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
+int TBsdfWard::getAttribute (const std::string& rktNAME, NAttribute& rnVALUE)
 {
 
 #if !defined(NEW_ATTRIBUTES)  

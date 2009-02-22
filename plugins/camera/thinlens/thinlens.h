@@ -60,8 +60,8 @@ public:
   
   bool initialize (void);
   
-  int setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
-  int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
+  int setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
+  int getAttribute (const std::string& rktNAME, NAttribute& rnVALUE);
   void getAttributeList (TAttributeList& rtLIST) const;
   
   void getRay (TScalar X, TScalar Y, TRay& rtRAY) const;
@@ -96,11 +96,11 @@ public:
     setAngle(angle_in_degrees);
   }
   
-  string className (void) const { return "ThinlensCamera"; }
+  std::string className (void) const { return "ThinlensCamera"; }
 
   virtual TThinlensCamera* clone_new() const { return new TThinlensCamera(*this); }
   
-  void printDebug (const string& indent) const;
+  void printDebug (const std::string& indent) const;
   
 };  /* class TThinlensCamera */
 

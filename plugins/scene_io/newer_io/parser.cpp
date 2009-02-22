@@ -53,9 +53,9 @@
   basic types possible:
   boolean
   constant (real number)
-  vector ([ X, Y, Z])
-  string (text)
-  string (name) --> reference
+  std::vector ([ X, Y, Z])
+  std::string (text)
+  std::string (name) --> reference
   reference
 */
   //#define USE_STREAMS
@@ -79,9 +79,9 @@ extern int scanner_line_number;
 // Print debug info stating what needs to be modified. 
 #define FIXME(str) printf("parser(%d): FIXME!: %s\n",__LINE__,(str))
 
-// A vector, used as a stack to see if something should be evaluated. 
-static vector<bool> evaluate_scope_stack(1,true);
-// performs a simple calculation based on the above vector to determine if
+// A std::vector, used as a stack to see if something should be evaluated. 
+static std::vector<bool> evaluate_scope_stack(1,true);
+// performs a simple calculation based on the above std::vector to determine if
 // something should be evaluated at the current level in the nesting. 
 static bool evaluate (void);
  
@@ -874,27 +874,27 @@ case 7:
   {
     //    FIXME("I have no clue how to make the plugin work...");
     
-    string class_name = get_string(yyvsp[0]);
+    std::string class_name = get_string(yyvsp[0]);
     TProcedural* instance = (TProcedural*)TClassManager::_newObject(class_name.c_str(),NULL);
     //    printf("--- Newly allocated object is a %s\n",instance->className().c_str());
     if( instance == NULL )
     {
-      string   tMessage = string ("class ") +  class_name + " does not exist";
+      std::string   tMessage = std::string ("class ") +  class_name + " does not exist";
       yyerror (tMessage.c_str());
       exit (1);    
     }
     // create an instance of the object...
     current_object = new Tdynamic_object(instance, true);
 
-    //    cout << "--- current_object is:" << current_object << endl;
+    //    cout << "--- current_object is:" << current_object << std::endl;
     
     // The dynamic object cloned it... So the memory needs to be freed (not anymore).
     //    delete instance;
     
     put_top(get_string(yyvsp[-2]), current_object);
 
-    //    cout << "--- object in symtab is:" << locate_reference(get_string($2)) << endl;
-    //    cout << "--- object name is:" << get_string($2) << endl;
+    //    cout << "--- object in symtab is:" << locate_reference(get_string($2)) << std::endl;
+    //    cout << "--- object name is:" << get_string($2) << std::endl;
 
     //  FIXME("entering a new scope");
     scope_stack.push(new scope_type);
@@ -1109,7 +1109,7 @@ case 37:
 {
   if( yyvsp[0] != NULL )
   {
-    string base_string = yyvsp[0]->getDynamicType();
+    std::string base_string = yyvsp[0]->getDynamicType();
     yyval = new Tdynamic_string (base_string);
   }
   else
@@ -1121,7 +1121,7 @@ case 37:
 case 38:
 #line 403 "parser.y"
 {
-  string attr_str = "";
+  std::string attr_str = "";
   if( evaluate() )
   {
     //    FIXME("get an attribute list for something in a reference");
@@ -1312,7 +1312,7 @@ case 64:
     //    FIXME("change scope and create a reference because of a dot (.)");
     TAttributeList tlist ;
     yyvsp[-2]->getAttributeList (tlist);
-    string element_name = get_string(yyvsp[0]);
+    std::string element_name = get_string(yyvsp[0]);
     const Tdotted_list* parent_list = (const Tdotted_list*)yyvsp[-2].get_pointer();
 
     //    printf("base=%s list=",parent_list->get_base()->getDynamicType());
@@ -1331,10 +1331,10 @@ case 64:
 	  FIXME("faked parent attribute");
 	  /*
 	  // Since the item does not have an element named parent, fake one by
-	  // copying the entire list of strings except for the last.
+	  // copying the entire list of std::strings except for the last.
 	  magic_pointer<Tdotted_list> result_list = new Tdotted_list(parent_list->get_base());
 	  int i = 0;
-	  const vector<string>& str_list = parent_list->get_chain();
+	  const std::vector<std::string>& str_list = parent_list->get_chain();
 	  for(i = 0; i < int(parent_list->get_chain_length()) - 1; ++i)
 	  {
 	    printf("%s ",str_list[i].c_str());
@@ -1344,7 +1344,7 @@ case 64:
 	  printf("---faked parent\n");	  
 	  $$ = result_list->clone();
 	  */
-	  string error_msg = string("element has no attribute named ") + element_name;
+	  std::string error_msg = std::string("element has no attribute named ") + element_name;
 	  yyerror(error_msg.c_str());
 	  exit(1);	  
 	}
@@ -1353,7 +1353,7 @@ case 64:
       {
 	yyval = new Tdotted_list(*parent_list, element_name);
 	/*
-	const vector<string>& str_list = parent_list->get_chain();	  
+	const std::vector<std::string>& str_list = parent_list->get_chain();	  
 	for(unsigned i = 0; i < str_list.size(); ++i)
 	{
 	  printf("%s ",str_list[i].c_str());
@@ -1367,13 +1367,13 @@ case 64:
     {
       if( tlist.find(element_name) == tlist.end() )
       {
-	string error_msg = string("element has no attribute named ") + element_name;
+	string error_msg = std::string("element has no attribute named ") + element_name;
 	yyerror(error_msg.c_str());
 	exit(1);
       }
       yyval = new Tdotted_list(*parent_list, element_name);
       /*
-      const vector<string>& str_list = parent_list->get_chain();	  
+      const std::vector<std::string>& str_list = parent_list->get_chain();	  
       for(unsigned i = 0; i < str_list.size(); ++i)
       {
 	printf("%s ",str_list[i].c_str());

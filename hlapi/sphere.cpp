@@ -36,7 +36,7 @@ bool TSphere::initialize (void)
 }  /* initialize() */
 
 
-int TSphere::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
+int TSphere::setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
 
   if ( rktNAME == "radius" )
@@ -68,7 +68,7 @@ int TSphere::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType
 }  /* setAttribute() */
 
 
-int TSphere::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
+int TSphere::getAttribute (const std::string& rktNAME, NAttribute& rnVALUE)
 {
 
   if ( rktNAME == "radius" )
@@ -303,7 +303,7 @@ TVector TSphere::RandomPointOnSurface() const
   y /= length;
   z /= length;
 
-  // Now, we have a uniformly random unit vector in the sphere...
+  // Now, we have a uniformly random unit std::vector in the sphere...
   TVector vec(x,y,z);
   
   // A random point on the surface is just a matter of multiplying by the
@@ -311,11 +311,11 @@ TVector TSphere::RandomPointOnSurface() const
   return (vec * tRadius);
 }
 
-void TSphere::printDebug (const string& indent) const
+void TSphere::printDebug (const std::string& indent) const
 {
 
   TObject::printDebug(indent);
 
-  GOM.debug() << TDebug::Indent(indent) << "Radius : " << tRadius << endl;
+  GOM.debug() << TDebug::Indent(indent) << "Radius : " << tRadius << std::endl;
 
 }  /* printDebug() */

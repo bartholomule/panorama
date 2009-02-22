@@ -21,24 +21,38 @@
 
 #include "llapi/ray.h"
 
-class TObject;
-
-class TSurfaceData
+namespace panorama
 {
 
-  protected:
-    
-    const TObject*   pktObject;           // Object intersected
-    size_t           zObjectCode;         // Code of object intersected
-    TRay             tRay;                // Ray that intersected with object
-    TScalar          tDistance;           // Distance from ray location to intersection
-    TVector          tPoint;              // Point of intersection
-    void*            pvData;              // User assignable data
+  class TObject;
 
-    mutable TVector   tNormal;            // Perturbed Surface normal in that point
-    mutable TVector   tUnperturbedNormal; // Real normal in that point
-    mutable bool      gNormalAssigned;
-    mutable bool      gFlipNormal;        // Normal must be flipped (for CSG difference)
+  class TSurfaceData
+  {
+
+  protected:
+
+    // Object intersected
+    const TObject* pktObject;
+
+    // Code of object intersected
+    size_t zObjectCode;
+
+    // Ray that intersected with object
+    TRay tRay;
+
+    // Distance from ray location to intersection
+    TScalar tDistance;
+
+    // Point of intersection
+    TPoint tPoint;
+
+    // User assignable data
+    void* pvData;
+
+    mutable TVector tNormal;            // Perturbed Surface normal in that point
+    mutable TVector tUnperturbedNormal; // Real normal in that point
+    mutable bool gNormalAssigned;
+    mutable bool gFlipNormal;        // Normal must be flipped (for CSG difference)
 
   public:
 
@@ -97,7 +111,7 @@ class TSurfaceData
     {
       gNormalAssigned = false;
       tDistance       = tDISTANCE;
-  
+
       if ( pktObject )
       {
         tPoint = tRay.location() + (tRay.direction() * tDISTANCE);
@@ -107,12 +121,12 @@ class TSurfaceData
 
       return false;
     }
-    
+
     bool setPoint (TScalar tDISTANCE, const TVector& rktNORMAL);
 
-    void setPoint (const TVector& rktPOINT)
+    void setPoint (const TPoint& rktPOINT)
     {
-      tPoint          = rktPOINT;
+      tPoint = rktPOINT;
       gNormalAssigned = false;
     }
 
@@ -137,13 +151,13 @@ class TSurfaceData
         gFlipNormal = true;
       }
     }
-    
+
     TVector localPoint (void) const;
-    
+
     TVector normal (void) const;
     TVector unperturbedNormal (void) const;
-    
-    TVector point (void) const { return tPoint; }
+
+    TPoint point (void) const { return tPoint; }
     TScalar distance (void) const { return tDistance; }
     TRay ray (void) const { return tRay; }
     const TObject* object (void) const { return pktObject; }
@@ -151,8 +165,9 @@ class TSurfaceData
     void* data (void) const { return pvData; }
     bool normalAssigned (void) const { return gNormalAssigned; }
 
-    void printDebug (const string& indent) const;
-  
-};  /* struct TSurfaceData */
+    virtual std::string internalMembers(const Indentation& indent, StringDumpable::PrefixType prefix) const;
+    virtual std::string name() const;
+  };  /* struct TSurfaceData */
+} // end namespace panorama
 
 #endif  /* _SURFACE_DATA__ */

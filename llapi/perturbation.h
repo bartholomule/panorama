@@ -16,24 +16,25 @@
 *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef _PERTURBATION__
-#define _PERTURBATION__
+#ifndef PANORAMA_PERTURBATION_H_INCLUDED
+#define PANORAMA_PERTURBATION_H_INCLUDED
 
 #include "llapi/procedural.h"
-#include "llapi/surface_data.h" 
+#include "llapi/surface_data.h"
 
-class TPerturbation : public TProcedural
+namespace panorama
 {
- 
+  class TPerturbation : public TProcedural
+  {
+
   public:
 
     virtual TVector perturbNormal (const TSurfaceData& rktDATA) const { return rktDATA.unperturbedNormal(); }
 
     EClass classType (void) const { return FX_PERTURBATION_CLASS; }
-    string className (void) const { return "Perturbation"; }
-    virtual TPerturbation* clone_new() const { return new TPerturbation(*this); }
+    std::string name (void) const { return "Perturbation"; }
+  };  /* class TPerturbation */
+} // end namespace panorama
 
-};  /* class TPerturbation */
-
-#endif  /* _PERTURBATION__ */
+#endif  /* PANORAMA_PERTURBATION_H_INCLUDED */
 

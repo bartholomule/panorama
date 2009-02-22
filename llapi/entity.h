@@ -16,20 +16,21 @@
 *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef _ENTITY__
-#define _ENTITY__
+#ifndef ENTITY_H_INCLUDED
+#define ENTITY_H_INCLUDED
 
 #include "llapi/llapi_defs.h"
 #include "llapi/procedural.h"
 
-class TEntity : public TProcedural
+namespace panorama
 {
 
-
+  class TEntity : public TProcedural
+  {
   private:
     // This is private, because I (KH) want to phase it out.  location() should
-    // always be called to retrieve the location. 
-    TVector   tLocation;
+    // always be called to retrieve the location.
+    TVector tLocation;
 
   protected:
     virtual void update (void) {};
@@ -40,7 +41,7 @@ class TEntity : public TProcedural
 
     virtual void rotate (const TVector& rktAXISPOINT1, const TVector& rktAXISPOINT2, TScalar tANGLE);
     virtual void rotate (const TVector& rktANGLESXYZ);
-  
+
     virtual void rotate (const TQuaternion& rktQUAT);
 
     virtual TVector location (void) const { return tLocation; }
@@ -51,7 +52,8 @@ class TEntity : public TProcedural
     }
 
     virtual TUserFunctionMap getUserFunctions();
-  
-};  /* class TEntity */
 
-#endif  /* _ENTITY__ */
+  };  /* class TEntity */
+} // end namespace panorama
+
+#endif  /* ENTITY_H_INCLUDED */

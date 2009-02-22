@@ -36,8 +36,8 @@ class TCircle : public TPlane
       sCapabilities.gInfinite = false;
     }
       
-    int setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
-    int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
+    int setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
+    int getAttribute (const std::string& rktNAME, NAttribute& rnVALUE);
     void getAttributeList (TAttributeList& rtLIST) const;
     
     void setRadius (TScalar tRADIUS) { tRadius2 = tRADIUS * tRADIUS; }
@@ -51,7 +51,7 @@ class TCircle : public TPlane
 
     TVector RandomPointOnSurface() const;
   
-    string className (void) const { return "Circle"; }
+    std::string className (void) const { return "Circle"; }
 
 };  /* class TCircle */
 

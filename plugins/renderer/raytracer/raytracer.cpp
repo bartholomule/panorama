@@ -94,7 +94,7 @@ TColor TRaytracer::getRadiance (TSurfaceData& rtDATA, Word wDEPTH) const
     
     tRadiance = mediaRadiance (rtDATA, tRadiance);
 
-    for (list<magic_pointer<TObjectFilter> >::const_iterator tIter = rtDATA.object()->filterList().begin(); ( tIter != rtDATA.object()->filterList().end() ) ;tIter++)
+    for (std::list<magic_pointer<TObjectFilter> >::const_iterator tIter = rtDATA.object()->filterList().begin(); ( tIter != rtDATA.object()->filterList().end() ) ;tIter++)
     {
       tRadiance = (*tIter)->filterRadiance (rtDATA, tRadiance);
     }
@@ -612,7 +612,7 @@ void TRaytracer::sampleFalseColor (TScalar I, TScalar J, SBuffers& rsBUFFERS)
 }  /* sampleFalseColor() */
 
 
-int TRaytracer::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
+int TRaytracer::setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
 
   if ( rktNAME == "ambient" )
@@ -698,14 +698,14 @@ int TRaytracer::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribT
     {
       return FX_ATTRIB_WRONG_TYPE;
     }
-    string tName = (char*) nVALUE.pvValue;
+    std::string tName = (char*) nVALUE.pvValue;
 #else
     magic_pointer<TAttribString> str = get_string(nVALUE);
     if( !str )
     {
       return FX_ATTRIB_WRONG_TYPE;      
     }
-    string tName = str->tValue;
+    std::string tName = str->tValue;
 #endif   
     if ( tName == "single" )
     {
@@ -748,7 +748,7 @@ int TRaytracer::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribT
 }  /* setAttribute() */
 
 
-int TRaytracer::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
+int TRaytracer::getAttribute (const std::string& rktNAME, NAttribute& rnVALUE)
 {
 
 #if !defined(NEW_ATTRIBUTES)
@@ -787,8 +787,8 @@ int TRaytracer::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
   }
   else if ( rktNAME == "sampling" )
   {
-    static map<ESamplingMethod,string> sampling_strings;
-    static vector<string> sampling_choices;
+    static std::map<ESamplingMethod,std::string> sampling_strings;
+    static std::vector<std::string> sampling_choices;
 
     if( sampling_strings.empty() )
     {
@@ -892,7 +892,7 @@ TColor TRaytracer::mediaRadiance (const TSurfaceData& rktDATA, const TColor& rkt
   TColor   tRad = rktRAD;
   TSurfaceData tsd = rktDATA;
 
-  for (vector<magic_pointer<TLight> >::const_iterator tIter = ptScene->lightList().begin();
+  for (std::vector<magic_pointer<TLight> >::const_iterator tIter = ptScene->lightList().begin();
        ( tIter != ptScene->lightList().end() );
        tIter++)
   {
@@ -930,13 +930,13 @@ TColor TRaytracer::directLight (const TSurfaceData& rktDATA) const
   magic_pointer<TLight> ptLight;
   TColor    tTotalRadiance;
     
-  for (vector<magic_pointer<TLight> >::const_iterator tIter1 = ptScene->lightList().begin(); ( tIter1 != ptScene->lightList().end() ) ;tIter1++)
+  for (std::vector<magic_pointer<TLight> >::const_iterator tIter1 = ptScene->lightList().begin(); ( tIter1 != ptScene->lightList().end() ) ;tIter1++)
   {
     ptLight         = *tIter1;
     tTotalRadiance += directLight (rktDATA, ptLight);
   }
-  const vector<magic_pointer<TObject> >& alv = ptScene->areaLightList();
-  for (vector<magic_pointer<TObject> >::const_iterator tIter2 = alv.begin(); ( tIter2 != alv.end() ) ;tIter2++)
+  const std::vector<magic_pointer<TObject> >& alv = ptScene->areaLightList();
+  for (std::vector<magic_pointer<TObject> >::const_iterator tIter2 = alv.begin(); ( tIter2 != alv.end() ) ;tIter2++)
   {
     tTotalRadiance += directLight (rktDATA, *tIter2);
   }  
@@ -1106,14 +1106,14 @@ TColor TRaytracer::specularTransmittedLight (const TSurfaceData& rktDATA, Word w
 }  /* specularTransmittedLight() */
 
 
-void TRaytracer::printDebug (const string& indent) const
+void TRaytracer::printDebug (const std::string& indent) const
 {
 
-  GOM.debug() << indent << "[_Raytracer_]" << endl;
+  GOM.debug() << indent << "[_Raytracer_]" << std::endl;
 
-  string new_indent = TDebug::Indent(indent);
+  std::string new_indent = TDebug::Indent(indent);
 
-  GOM.debug() << new_indent << "Max. depth    : " << wMaxDepth << endl;
-  GOM.debug() << new_indent << "Ambient light : "; tAmbientLight.printDebug(new_indent); GOM.debug() << endl;
+  GOM.debug() << new_indent << "Max. depth    : " << wMaxDepth << std::endl;
+  GOM.debug() << new_indent << "Ambient light : "; tAmbientLight.printDebug(new_indent); GOM.debug() << std::endl;
   
 }  /* printDebug() */

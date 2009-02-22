@@ -39,7 +39,7 @@
     return ptChild; \
   }
 
-TBaseClass* TClassManager::_newObject (const string& rktCLASS, const TBaseClass* pktPARENT)
+TBaseClass* TClassManager::_newObject (const std::string& rktCLASS, const TBaseClass* pktPARENT)
 {
 
   TBaseClass*   ptChild;

@@ -26,7 +26,7 @@ void TPlane::update (void)
 {
 
 #if defined(DEBUG)
-  GOM.debug() << "TPlane::update() called!" << endl;
+  GOM.debug() << "TPlane::update() called!" << std::endl;
 #endif
   
   tNormal.normalize();
@@ -144,7 +144,7 @@ bool TPlane::findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) const
 }  /* findAllIntersections() */
 
 
-int TPlane::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
+int TPlane::setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
 
   if ( rktNAME == "normal" )
@@ -195,7 +195,7 @@ int TPlane::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType 
 }  /* setAttribute() */
 
 
-int TPlane::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
+int TPlane::getAttribute (const std::string& rktNAME, NAttribute& rnVALUE)
 {
 
 #if !defined(NEW_ATTRIBUTES)    
@@ -238,14 +238,14 @@ void TPlane::getAttributeList (TAttributeList& rtLIST) const
 }  /* getAttributeList() */
 
 
-void TPlane::printDebug (const string& indent) const
+void TPlane::printDebug (const std::string& indent) const
 {
 
   TObject::printDebug(indent);
 
-  string new_indent = TDebug::Indent(indent);
+  std::string new_indent = TDebug::Indent(indent);
 
-  GOM.debug() << new_indent << "Normal   : "; tNormal.printDebug(new_indent); GOM.debug() << endl;
-  GOM.debug() << new_indent << "OneSided : " << gOneSided << endl;
+  GOM.debug() << new_indent << "Normal   : "; tNormal.printDebug(new_indent); GOM.debug() << std::endl;
+  GOM.debug() << new_indent << "OneSided : " << gOneSided << std::endl;
 
 }  /* printDebug() */

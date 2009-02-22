@@ -38,11 +38,11 @@ class TIF_Fog : public TImageFilter
 
     void filter (SBuffers& rsBUFFERS);
 
-    int setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
-    int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
+    int setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
+    int getAttribute (const std::string& rktNAME, NAttribute& rnVALUE);
     void getAttributeList (TAttributeList& rtLIST) const;
 
-    string className (void) const { return "IF_Fog"; }
+    std::string className (void) const { return "IF_Fog"; }
 
     virtual TIF_Fog* clone_new() const { return new TIF_Fog(*this); }
 

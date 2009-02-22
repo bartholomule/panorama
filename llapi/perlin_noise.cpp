@@ -87,7 +87,7 @@ TPerlinNoise::TPerlinNoise (void)
   size_t   J;
   
   //
-  // Fill data array with pseudo-random numbers between 0 and 1 and normalized vectors.
+  // Fill data array with pseudo-random numbers between 0 and 1 and normalized std::vectors.
   //
   for (J = 0; ( J < FX_NOISE_SIZE ) ;J++)
   {

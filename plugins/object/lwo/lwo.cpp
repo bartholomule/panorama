@@ -28,14 +28,14 @@ DEFINE_PLUGIN ("ObjectLW", FX_OBJECT_CLASS, TLightWaveObject);
 int TLightWaveObject::parseObject (void)
 {
 
-  ifstream         sFile;
+  std::ifstream    sFile;
   size_t           zBytesLeft;
   size_t           zTagSize;
-  vector<string>   tSurfaceNameList;
+  std::vector<std::string>   tSurfaceNameList;
   char             acTag [5]   = "    ";
   bool             gPointsRead = false;
 
-  sFile.open (tFileName.c_str(), ios::in | ios::binary);
+  sFile.open (tFileName.c_str(), std::ios::in | std::ios::binary);
 
   if ( !sFile )
   {
@@ -45,7 +45,7 @@ int TLightWaveObject::parseObject (void)
   GetLWIdTag (sFile, acTag);
   if ( strcmp (acTag, "FORM") )
   {
-    GOM.error() << "File not in IFF format" << endl;
+    GOM.error() << "File not in IFF format" << std::endl;
 
     sFile.close();
 
@@ -57,7 +57,7 @@ int TLightWaveObject::parseObject (void)
   GetLWIdTag (sFile, acTag);
   if ( strcmp (acTag, "LWOB") )
   {
-    GOM.error() << "File is not a LightWave object" << endl;
+    GOM.error() << "File is not a LightWave object" << std::endl;
 
     sFile.close();
 
@@ -77,7 +77,7 @@ int TLightWaveObject::parseObject (void)
       ReadPNTSChunk (sFile, zTagSize, tVertexList);
       gPointsRead = true;
 
-      GOM.debug() << "Vertices : " << tVertexList.size() << endl;
+      GOM.debug() << "Vertices : " << tVertexList.size() << std::endl;
     }
     else if ( !strcmp (acTag, "SRFS") )
     {
@@ -85,20 +85,20 @@ int TLightWaveObject::parseObject (void)
 
       for (size_t J = 0; ( J < tSurfaceNameList.size() ) ;J++)
       {
-        GOM.debug() << "Surface (" << J << ") : " << tSurfaceNameList [J] << endl;
+        GOM.debug() << "Surface (" << J << ") : " << tSurfaceNameList [J] << std::endl;
       }
     }
     else if ( !strcmp (acTag, "POLS") )
     {
       ReadPOLSChunk (sFile, zTagSize, this);
 
-      GOM.debug() << "Faces : " << tFaceList.size() << endl;
+      GOM.debug() << "Faces : " << tFaceList.size() << std::endl;
     }
     else
     {
-      GOM.debug() << "Unknown tag : " << acTag << endl;
+      GOM.debug() << "Unknown tag : " << acTag << std::endl;
 
-      sFile.seekg (zTagSize, ios::cur);
+      sFile.seekg (zTagSize, std::ios::cur);
     }
 
     zBytesLeft -= (zTagSize + 8);
@@ -111,7 +111,7 @@ int TLightWaveObject::parseObject (void)
 }  /* parseObject() */
 
 
-int TLightWaveObject::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
+int TLightWaveObject::setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
 
   if ( rktNAME == "file" )
@@ -123,7 +123,7 @@ int TLightWaveObject::setAttribute (const string& rktNAME, NAttribute nVALUE, EA
 
       if ( parseObject() )
       {
-        TProcedural::_tUserErrorMessage = string ("could not open object file ") + tFileName;
+        TProcedural::_tUserErrorMessage = std::string ("could not open object file ") + tFileName;
         return FX_ATTRIB_USER_ERROR;
       }
     }
@@ -135,7 +135,7 @@ int TLightWaveObject::setAttribute (const string& rktNAME, NAttribute nVALUE, EA
 
       if ( parseObject() )
       {
-        TProcedural::_tUserErrorMessage = string ("could not open object file ") + tFileName;
+        TProcedural::_tUserErrorMessage = std::string ("could not open object file ") + tFileName;
         return FX_ATTRIB_USER_ERROR;
       }      
     }
@@ -155,7 +155,7 @@ int TLightWaveObject::setAttribute (const string& rktNAME, NAttribute nVALUE, EA
 }  /* setAttribute() */
 
 
-int TLightWaveObject::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
+int TLightWaveObject::getAttribute (const std::string& rktNAME, NAttribute& rnVALUE)
 {
 
   if ( rktNAME == "file" )

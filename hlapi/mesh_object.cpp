@@ -39,14 +39,14 @@ bool TMeshObject::findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) c
 }  /* findAllIntersections() */
 
 
-void TMeshObject::getMesh (list<TMesh*>& rtMESH_LIST) const
+void TMeshObject::getMesh (std::list<TMesh*>& rtMESH_LIST) const
 {
 
   TMesh::TVertex   tVertex;
   const TVector*   pktVertex;
   TMesh*           ptMesh = new TMesh();
 
-  for (vector<TVector>::const_iterator tIter = tVertexList.begin(); ( tIter != tVertexList.end() ) ;tIter++)
+  for (std::vector<TVector>::const_iterator tIter = tVertexList.begin(); ( tIter != tVertexList.end() ) ;tIter++)
   {
     pktVertex = &(*tIter);
 
@@ -55,7 +55,7 @@ void TMeshObject::getMesh (list<TMesh*>& rtMESH_LIST) const
     ptMesh->vertexList()->push_back (tVertex);
   }
   
-  for (vector<TMesh::TFace>::const_iterator tIter2 = tFaceList.begin(); ( tIter2 != tFaceList.end() ) ;tIter2++)
+  for (std::vector<TMesh::TFace>::const_iterator tIter2 = tFaceList.begin(); ( tIter2 != tFaceList.end() ) ;tIter2++)
   {
     ptMesh->faceList()->push_back (*tIter2);
   }
@@ -73,7 +73,7 @@ inline size_t TMeshObject::addVertex (const TVector& rktVERTEX)
   TVector*   ptVertex;
   size_t     zPos = 0;
       
-  for (vector<TVector>::iterator tIter = tVertexList.begin(); ( tIter != tVertexList.end() ) ;tIter++)
+  for (std::vector<TVector>::iterator tIter = tVertexList.begin(); ( tIter != tVertexList.end() ) ;tIter++)
   {
     ptVertex = &(*tIter);
     

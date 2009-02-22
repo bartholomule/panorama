@@ -138,14 +138,14 @@ struct TPluginData
   //
   // Data set by plugin
   //
-  string             tPluginName;
+  std::string        tPluginName;
   EClass             eClass;
   TCreateFunction*   pfCreateFunction;
 
 };  /* struct TPluginData */
 
-typedef map<string, TPluginData*, less<string> >   TPluginDataMap;
-typedef map<EClass, list<string>, less<EClass> >   TPluginList;
+typedef std::map<std::string, TPluginData*, std::less<std::string> >   TPluginDataMap;
+typedef std::map<EClass, std::list<std::string>, std::less<EClass> >   TPluginList;
 
 class TPluginManager
 {
@@ -156,17 +156,17 @@ class TPluginManager
     TPluginDataMap   tPluginDataMap;
     TPluginList      tPluginList;
 
-    int loadPlugin (const string& rktNAME);
+    int loadPlugin (const std::string& rktNAME);
 
   public:
 
-    bool initialize (const string& rktCONFIG_FILE, DWord dwVERSION);
+    bool initialize (const std::string& rktCONFIG_FILE, DWord dwVERSION);
 
     int registerPlugin (TPluginData* ptDATA);
 
     TPluginList* pluginList (void) { return &tPluginList; }
       
-    TBaseClass* newObject (const string& rktCLASS, const TBaseClass* pktPARENT = NULL);
+    TBaseClass* newObject (const std::string& rktCLASS, const TBaseClass* pktPARENT = NULL);
 
 };  /* class TPluginManager */
 

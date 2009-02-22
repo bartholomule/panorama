@@ -79,7 +79,7 @@ void TIF_Text::filter (SBuffers& rsBUFFERS)
   iError = FT_Init_FreeType (&tEngine);
   if ( iError )
   {
-    GOM.error() << "Could not create FreeType engine." << endl;
+    GOM.error() << "Could not create FreeType engine." << std::endl;
     return;
   }
   
@@ -90,12 +90,12 @@ void TIF_Text::filter (SBuffers& rsBUFFERS)
   }
   else
   {
-    multimap<string, string>::const_iterator   iter;
+    std::multimap<std::string, std::string>::const_iterator   iter;
 
     iter = tConfigData.find ("FontPath");
     while ( ( iter != tConfigData.end() ) && ( (*iter).first == "FontPath" ) )
     {
-      string   tAux ((*iter).second + "/" + tFontFile);
+      std::string   tAux ((*iter).second + "/" + tFontFile);
       
       if ( FileExists (tAux) )
       {
@@ -109,14 +109,14 @@ void TIF_Text::filter (SBuffers& rsBUFFERS)
 
   if ( iError )
   {
-    GOM.error() << "Could not open file '" << tFontFile << "'." << endl;
+    GOM.error() << "Could not open file '" << tFontFile << "'." << std::endl;
     return;
   }
 
   iError = FT_Set_Char_Size(tFace, wSize, wSize, 72, 72);
   if ( iError )
   {
-    GOM.error() << "Could not set the face size and resolution" << endl;
+    GOM.error() << "Could not set the face size and resolution" << std::endl;
     return;
     
   }
@@ -131,7 +131,7 @@ void TIF_Text::filter (SBuffers& rsBUFFERS)
     }
     else
     {
-      GOM.error() << "Could not get charmap." << endl;
+      GOM.error() << "Could not get charmap." << std::endl;
       return;
     }
   }
@@ -152,15 +152,15 @@ void TIF_Text::filter (SBuffers& rsBUFFERS)
     uIndex = FT_Get_Char_Index (tFace, tText[tI]);
     if ( ! uIndex )
     {
-      GOM.error() << "Could not find char index for '" << tText[tI] << "'." << endl;
+      GOM.error() << "Could not find char index for '" << tText[tI] << "'." << std::endl;
       continue;
     }
     
     iError = FT_Load_Glyph (tFace, uIndex, FT_LOAD_DEFAULT);
     if ( iError )
     {
-      GOM.error() << "Could not load glyph for '" << tText[tI] << "'." << endl;
-      GOM.error() << "Error code: " << iError << endl;
+      GOM.error() << "Could not load glyph for '" << tText[tI] << "'." << std::endl;
+      GOM.error() << "Error code: " << iError << std::endl;
       continue;
     }
 

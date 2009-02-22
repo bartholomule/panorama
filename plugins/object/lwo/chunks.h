@@ -28,10 +28,10 @@
 void GetLWIdTag (std::istream& rsSTREAM, char acTAG[4]);
 void GetLWColor (std::istream& rsSTREAM, TColor& rtCOLOR);
 void GetLWVector (std::istream& rsSTREAM, TVector& rtVECTOR);
-size_t GetLWString (std::istream& rsSTREAM, string& rtSTRING);
+size_t GetLWString (std::istream& rsSTREAM, std::string& rtSTRING);
 
-void ReadPNTSChunk (std::istream& rsSTREAM, size_t zSIZE, vector<TVector>& rtVERTEX_LIST);
-void ReadSRFSChunk (std::istream& rsSTREAM, size_t zSIZE, vector<string>& rtSURF_LIST);
+void ReadPNTSChunk (std::istream& rsSTREAM, size_t zSIZE, std::vector<TVector>& rtVERTEX_LIST);
+void ReadSRFSChunk (std::istream& rsSTREAM, size_t zSIZE, std::vector<std::string>& rtSURF_LIST);
 void ReadPOLSChunk (std::istream& rsSTREAM, size_t zSIZE, TMeshObject* ptMESH);
   
 #endif  /* _CHUNKS__ */

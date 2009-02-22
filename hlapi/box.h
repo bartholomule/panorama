@@ -75,13 +75,13 @@ class TBox : public TObject
     * Returns the object defined as a list of triangles.
     * @return rtMESH_LIST the list of triangles
     */
-    void getMesh (list<TMesh*>& rtMESH_LIST) const;
+    void getMesh (std::list<TMesh*>& rtMESH_LIST) const;
     
     /**
-    * Get the name of the object class as a string.
+    * Get the name of the object class as a std::string.
     * @return the name of the class
     */
-    string className (void) const { return "Box"; }
+    std::string className (void) const { return "Box"; }
 
     /**
     * Set the value of a named attribute of the object.
@@ -94,7 +94,7 @@ class TBox : public TObject
     * FX_ATTRIB_WRONG_VALUE, or
     * FX_ATTRIB_USER_ERROR if there is an error.
     */
-    int setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
+    int setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
 
     /**
     * Get the value of a named attribute of the object.
@@ -104,7 +104,7 @@ class TBox : public TObject
     * this will be a TVector.
     * @see getAttributeList()
     */
-    int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
+    int getAttribute (const std::string& rktNAME, NAttribute& rnVALUE);
 
     /**
     * Get a list of the object's attribute names and types.

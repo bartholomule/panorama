@@ -13,7 +13,7 @@ ostream& operator<<(ostream& o, const TAttribute& tab)
   return o;
 }
 
-multimap<string, string>   tConfigData;
+multimap<string, std::string>   tConfigData;
 
 class foo
 {
@@ -21,20 +21,20 @@ class foo
   int bar()
   {
     static int num_calls = 0;
-    cout << __PRETTY_FUNCTION__ << endl;
-    cout << "Num calls=" << num_calls << endl;
+    cout << __PRETTY_FUNCTION__ << std::endl;
+    cout << "Num calls=" << num_calls << std::endl;
     return ++num_calls;
   }
   double bar2()
   {
     static int num_calls = 0;
-    cout << __PRETTY_FUNCTION__ << endl;
-    cout << "Num calls=" << num_calls << endl;
+    cout << __PRETTY_FUNCTION__ << std::endl;
+    cout << "Num calls=" << num_calls << std::endl;
     return ++num_calls;
   }
   bool works(bool b = true)
   {
-    cout << "Works=" << b << endl;
+    cout << "Works=" << b << std::endl;
     return !!b;
   }
 
@@ -44,13 +44,13 @@ class foo
 	 << vec.x() << ","
 	 << vec.y() << ","
 	 << vec.z() << ">"
-	 << endl;
+	 << std::endl;
   }  
 
   int trash(int i)
   {
     static int ick = 0;
-    cout << __PRETTY_FUNCTION__ << endl;
+    cout << __PRETTY_FUNCTION__ << std::endl;
     ick += i;
 
     return ick;
@@ -75,7 +75,7 @@ class foo
 
 double barfola()
 {
-  cout << __PRETTY_FUNCTION__ << endl;
+  cout << __PRETTY_FUNCTION__ << std::endl;
   static double ick = 1;
   ick *= double(2.5);
   return ick / double(2.5);
@@ -83,10 +83,10 @@ double barfola()
 
 double barfola2(int i)
 {
-  cout << __PRETTY_FUNCTION__ << endl;
+  cout << __PRETTY_FUNCTION__ << std::endl;
   static double ick = 0;
   ick += i;
-  cout << "Ick is: " << ick << endl;
+  cout << "Ick is: " << ick << std::endl;
   return ick;
 }
 
@@ -106,8 +106,8 @@ void do_it()
       i != fns.end();
       ++i)
   {
-    cout << "Found function named " << i->first << endl;
-    cout << i->second->call(vec) << endl;
+    cout << "Found function named " << i->first << std::endl;
+    cout << i->second->call(vec) << std::endl;
   }
 }
 
@@ -117,7 +117,7 @@ int main (int argc, char *argv[])
   
   //  for(int i = 1; i <= 10; ++i)
   {
-    //    cout << "iteration " << i << endl;
+    //    cout << "iteration " << i << std::endl;
     do_it();
   }
   

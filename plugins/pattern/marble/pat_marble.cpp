@@ -25,7 +25,7 @@
 DEFINE_PLUGIN ("PatternMarble", FX_PATTERN_CLASS, TPatternMarble);
 
 
-int TPatternMarble::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
+int TPatternMarble::setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
 
   if ( rktNAME == "color" )
@@ -214,7 +214,7 @@ int TPatternMarble::setAttribute (const string& rktNAME, NAttribute nVALUE, EAtt
 }  /* setAttribute() */
 
 
-int TPatternMarble::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
+int TPatternMarble::getAttribute (const std::string& rktNAME, NAttribute& rnVALUE)
 {
 
 #if !defined(NEW_ATTRIBUTES)
@@ -228,7 +228,7 @@ int TPatternMarble::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
   }
   else if ( rktNAME == "zoom" )
   {
-    // [_ERROR_] It should return the inverse of this vector.
+    // [_ERROR_] It should return the inverse of this std::vector.
     rnVALUE.pvValue = &tZoom;
   }
   else if ( rktNAME == "offset" )

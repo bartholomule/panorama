@@ -39,7 +39,7 @@ class TOF_ConvertToGrey : public TObjectFilter
       return rktRAD.convertToGrey();
     }
 
-    string className (void) const { return "OF_ConvertToGrey"; }
+    std::string className (void) const { return "OF_ConvertToGrey"; }
 
     virtual TOF_ConvertToGrey* clone_new() const { return new TOF_ConvertToGrey(*this); }
   

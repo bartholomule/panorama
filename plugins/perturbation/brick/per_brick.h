@@ -47,13 +47,13 @@ class TPerturbationBrick : public TPerturbation
 
     TVector perturbNormal (const TSurfaceData& rktDATA) const;
     
-    int setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
-    int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
+    int setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
+    int getAttribute (const std::string& rktNAME, NAttribute& rnVALUE);
     void getAttributeList (TAttributeList& rtLIST) const;
 
     void setBrickPattern (PTBrickPat ptPATTERN) { ptBrickPattern = ptPATTERN; }
 
-    string className (void) const { return "PerturbationBrick"; }
+    std::string className (void) const { return "PerturbationBrick"; }
     TPerturbationBrick* clone_new() const { return new TPerturbationBrick(*this); }
 };  /* class TPerturbationBrick */
 
@@ -70,7 +70,7 @@ inline TVector TPerturbationBrick::perturbNormal (const TSurfaceData& rktDATA) c
 
     if ( !ptBrickPattern )
     {
-      GOM.error() << ("Error: brick_pattern must be set") << endl;
+      GOM.error() << ("Error: brick_pattern must be set") << std::endl;
       exit (1);
     }
 

@@ -54,11 +54,11 @@ class TImageTiff : public TImageIO
     int save (const TImage* pktIMAGE);
     TImage* load (void);
 
-    string className (void) const { return "ImageTiff"; }
+    std::string className (void) const { return "ImageTiff"; }
     
-    int setAttribute (const string& rktNAME, NAttribute nVALUE,
+    int setAttribute (const std::string& rktNAME, NAttribute nVALUE,
 		      EAttribType eTYPE);
-    int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
+    int getAttribute (const std::string& rktNAME, NAttribute& rnVALUE);
     void getAttributeList (TAttributeList& rtLIST) const;
 
     void setCompression (bool comp) { compression = comp; }

@@ -31,7 +31,7 @@ void scenePluginWindowCB ();
 void sceneMaterialWindowCB ();
 
 void sceneCancelCB (TSceneWindow* ptWND);
-void sceneCameraCB (TSceneWindow* ptWND, string plugin_name);
-void sceneLightCB  (TSceneWindow* ptWND, string plugin_name);
+void sceneCameraCB (TSceneWindow* ptWND, std::string plugin_name);
+void sceneLightCB  (TSceneWindow* ptWND, std::string plugin_name);
     
 #endif  /* _SCENE_CALLBACKS__ */

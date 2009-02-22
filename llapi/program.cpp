@@ -24,7 +24,7 @@
 #include <iostream>
 using std::cerr;
 
-int TProgram::addVariable (const string& rktNAME, TVarReference tREF)
+int TProgram::addVariable (const std::string& rktNAME, TVarReference tREF)
 {
 
   TVariableMap::iterator   tIter = tVarList.find (rktNAME);
@@ -41,7 +41,7 @@ int TProgram::addVariable (const string& rktNAME, TVarReference tREF)
 }  /* addVariable() */
 
 
-TEventCode* TProgram::getEventCode (const string& rktEVENT)
+TEventCode* TProgram::getEventCode (const std::string& rktEVENT)
 {
 
   TEventList::iterator   tIter = tEventList.find (rktEVENT);
@@ -56,20 +56,20 @@ TEventCode* TProgram::getEventCode (const string& rktEVENT)
 }  /* getEventCode() */
 
 
-void TProgram::printDebug (const string& indent) const
+void TProgram::printDebug (const std::string& indent) const
 {
 
-  GOM.debug() << indent << "[_Program_]" << endl;
+  GOM.debug() << indent << "[_Program_]" << std::endl;
 
-  string new_indent = TDebug::Indent(indent);
+  std::string new_indent = TDebug::Indent(indent);
   
-  GOM.debug() << new_indent << "Variables : " << endl;
+  GOM.debug() << new_indent << "Variables : " << std::endl;
 
   new_indent = TDebug::Indent(new_indent);
 
   for (TVariableMap::const_iterator iter = tVarList.begin(); ( iter != tVarList.end() ) ;iter++)
   {
-    GOM.debug() << new_indent << "Name : " << (*iter).first << ", type : " << (int) (*iter).second->tAttrib.eType << endl;
+    GOM.debug() << new_indent << "Name : " << (*iter).first << ", type : " << (int) (*iter).second->tAttrib.eType << std::endl;
   }
   
 }  /* printDebug() */

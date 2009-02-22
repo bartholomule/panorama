@@ -51,7 +51,7 @@ class TPolyhedron : public TObject
   protected:
 
     static bool               _gClassInitialized;
-    static list<TPlaneData>   _atPlaneDataList[5];
+    static std::list<TPlaneData>   _atPlaneDataList[5];
 
     EShape   eShape;
     
@@ -67,13 +67,13 @@ class TPolyhedron : public TObject
     
     bool initialize (void);
     
-    int setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
-    int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
+    int setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
+    int getAttribute (const std::string& rktNAME, NAttribute& rnVALUE);
     void getAttributeList (TAttributeList& rtLIST) const;
     
     bool findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) const;
 
-    string className (void) const { return "Polyhedron"; }
+    std::string className (void) const { return "Polyhedron"; }
 
 };  /* class TPolyhedron */
 

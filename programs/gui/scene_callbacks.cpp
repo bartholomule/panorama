@@ -16,7 +16,7 @@
 *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include <iostream.h>
+#include <iostream>
 #include "image_window.h"
 #include "scene_window.h"
 #include "plugin_window.h"
@@ -24,7 +24,7 @@
 #include "message_dialog.h"
 #include "render_dialog.h"
 #include "scene_callbacks.h"
-#include <gtk--/fileselection.h>
+#include <gtkmm/fileselection.h>
 
 void sceneQuitCB ()
 {
@@ -37,7 +37,7 @@ void sceneQuitCB ()
 void sceneMenuCB (const char* s)
 {
   
-  MessageDialog ("Scene window menu", string("This option is not implemented yet: " + string(s)).c_str());
+  MessageDialog ("Scene window menu", std::string("This option is not implemented yet: " + std::string(s)).c_str());
   
 }  /* sceneMenuCB() */
 
@@ -57,7 +57,7 @@ void sceneReplaceCB (TSceneWindow* ptWnd)
   {
     ptWnd->ptFileSelection = new Gtk::FileSelection ("Select scene file...");
 
-    ptWnd->ptFileSelection->get_ok_button()->clicked.connect(slot(ptWnd,&TSceneWindow::setSceneFile));      
+    ptWnd->ptFileSelection->get_ok_button()->clicked.connect(sigc::mem_fun(ptWnd,&TSceneWindow::setSceneFile));
 
     ptWnd->ptFileSelection->get_cancel_button()->clicked.connect(bind(slot(sceneCancelCB),ptWnd));    
     
@@ -132,12 +132,12 @@ void sceneCancelCB (TSceneWindow* ptWND)
 
 }  /* sceneCancelCB() */
 
-void sceneCameraCB (TSceneWindow* ptWND, string plugin_name)
+void sceneCameraCB (TSceneWindow* ptWND, std::string plugin_name)
 {
   sceneMenuCB(string("set camera :" + plugin_name).c_str());
 }
 
-void sceneLightCB (TSceneWindow* ptWND, string plugin_name)
+void sceneLightCB (TSceneWindow* ptWND, std::string plugin_name)
 {
   sceneMenuCB(string("add light :" + plugin_name).c_str());  
 }

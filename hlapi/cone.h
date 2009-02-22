@@ -143,7 +143,7 @@ class TCone : public TObject
     * FX_ATTRIB_WRONG_VALUE, or
     * FX_ATTRIB_USER_ERROR if there is an error.
     */
-    int setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
+    int setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
 
     /**
     * Get the value of a named attribute of the object.
@@ -152,7 +152,7 @@ class TCone : public TObject
     * @param rnVALUE The returned value.
     * @see getAttributeList()
     */
-    int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
+    int getAttribute (const std::string& rktNAME, NAttribute& rnVALUE);
 
     /**
     * Get a list of the object's attribute names and types.
@@ -161,10 +161,10 @@ class TCone : public TObject
     void getAttributeList (TAttributeList& rtLIST) const;
 
     /**
-    * Get the name of the object class as a string.
+    * Get the name of the object class as a std::string.
     * @return the name of the class
     */
-    string className (void) const { return "Cone"; }
+    std::string className (void) const { return "Cone"; }
 
 };  /* class TCone */
 

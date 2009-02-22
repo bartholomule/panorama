@@ -84,19 +84,19 @@ TVector TPhongTriangle::normal (const TSurfaceData& rktDATA) const
 }  /* normal() */
 
 
-void TPhongTriangle::printDebug (const string& indent) const
+void TPhongTriangle::printDebug (const std::string& indent) const
 {
 
-  GOM.debug() << indent << "[_PhongTriangle_]" << endl;
+  GOM.debug() << indent << "[_PhongTriangle_]" << std::endl;
 
-  string new_indent = TDebug::Indent(indent);
+  std::string new_indent = TDebug::Indent(indent);
   
-  GOM.debug() << new_indent << "Vertex 1 : "; atVertex[0].printDebug(new_indent); GOM.debug() << endl;
-  GOM.debug() << new_indent << "Vertex 2 : "; atVertex[1].printDebug(new_indent); GOM.debug() << endl;
-  GOM.debug() << new_indent << "Vertex 3 : "; atVertex[2].printDebug(new_indent); GOM.debug() << endl;
-  GOM.debug() << new_indent << "Normal 1 : "; atNormal[0].printDebug(new_indent); GOM.debug() << endl;
-  GOM.debug() << new_indent << "Normal 2 : "; atNormal[1].printDebug(new_indent); GOM.debug() << endl;
-  GOM.debug() << new_indent << "Normal 3 : "; atNormal[2].printDebug(new_indent); GOM.debug() << endl;
+  GOM.debug() << new_indent << "Vertex 1 : "; atVertex[0].printDebug(new_indent); GOM.debug() << std::endl;
+  GOM.debug() << new_indent << "Vertex 2 : "; atVertex[1].printDebug(new_indent); GOM.debug() << std::endl;
+  GOM.debug() << new_indent << "Vertex 3 : "; atVertex[2].printDebug(new_indent); GOM.debug() << std::endl;
+  GOM.debug() << new_indent << "Normal 1 : "; atNormal[0].printDebug(new_indent); GOM.debug() << std::endl;
+  GOM.debug() << new_indent << "Normal 2 : "; atNormal[1].printDebug(new_indent); GOM.debug() << std::endl;
+  GOM.debug() << new_indent << "Normal 3 : "; atNormal[2].printDebug(new_indent); GOM.debug() << std::endl;
 
 }  /* printDebug() */
 

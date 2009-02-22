@@ -71,7 +71,7 @@ TColor TPatternParquet::evaluate (const TVector& rktPOINT) const
 }  /* evaluate() */
 
 
-int TPatternParquet::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
+int TPatternParquet::setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
 
   if ( rktNAME == "color" )
@@ -142,7 +142,7 @@ int TPatternParquet::setAttribute (const string& rktNAME, NAttribute nVALUE, EAt
 }  /* setAttribute() */
 
 
-int TPatternParquet::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
+int TPatternParquet::getAttribute (const std::string& rktNAME, NAttribute& rnVALUE)
 {
 
 #if !defined(NEW_ATTRIBUTES)
@@ -156,7 +156,7 @@ int TPatternParquet::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
   }
   else if ( rktNAME == "zoom" )
   {
-    // [_ERROR_] It should return the inverse of this vector.
+    // [_ERROR_] It should return the inverse of this std::vector.
     rnVALUE.pvValue = &tZoom;
   }
 #else

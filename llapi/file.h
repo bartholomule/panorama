@@ -27,14 +27,14 @@
 #define FX_BIG_ENDIAN            (1)
 
 // Convert from the default naming convention (unix) to whatever naming convention is required.
-string FilenameConvert(const string& rktNAME);
+std::string FilenameConvert(const std::string& rktNAME);
 
-bool FileExists (const string& rktNAME);
-string FileExtension (const string& rktNAME);
+bool FileExists (const std::string& rktNAME);
+std::string FileExtension (const std::string& rktNAME);
 
-Word GetWord (istream& rsSTREAM, int iBIG_ENDIAN = FX_LITTLE_ENDIAN);
-DWord GetDWord (istream& rsSTREAM, int iBIG_ENDIAN = FX_LITTLE_ENDIAN);
-float GetFloat (istream& rsSTREAM, int iBIG_ENDIAN = FX_LITTLE_ENDIAN);
-string GetString (istream& rsSTREAM);
+Word GetWord (std::istream& rsSTREAM, int iBIG_ENDIAN = FX_LITTLE_ENDIAN);
+DWord GetDWord (std::istream& rsSTREAM, int iBIG_ENDIAN = FX_LITTLE_ENDIAN);
+float GetFloat (std::istream& rsSTREAM, int iBIG_ENDIAN = FX_LITTLE_ENDIAN);
+std::string GetString (std::istream& rsSTREAM);
 
 #endif  /* _FILE__ */

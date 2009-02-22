@@ -17,28 +17,31 @@
 *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef _IMAGE_FILTER__
-#define _IMAGE_FILTER__
+#ifndef PANORAMA_IMAGE_FILTER_H_INCLUDED
+#define PANORAMA_IMAGE_FILTER_H_INCLUDED
 
 #include "llapi/procedural.h"
 #include "llapi/llapi_defs.h"
 
-struct SBuffers;
-
-class TScene;
-
-typedef bool (TUserUpdateFunction) (double, void*);
-
-class TImageFilter : public TProcedural
+namespace panorama
 {
+
+  struct SBuffers;
+
+  class TScene;
+
+  typedef bool (TUserUpdateFunction) (double, void*);
+
+  class TImageFilter : public TProcedural
+  {
 
   protected:
 
-    Word      wNeededBuffers;
-    TScene*   ptScene;
+    Word wNeededBuffers;
+    TScene* ptScene;
     TUserUpdateFunction* pfUserUpdate;
-    void*            pvUserData;  
- 
+    void* pvUserData;
+
   public:
 
     TImageFilter (void) :
@@ -48,7 +51,7 @@ class TImageFilter : public TProcedural
       pvUserData(NULL)
     {
     }
-      
+
     virtual void filter (SBuffers& rsBUFFERS) = 0;
 
     Word neededBuffers (void) { return wNeededBuffers; }
@@ -57,7 +60,7 @@ class TImageFilter : public TProcedural
     {
       pfUserUpdate = pfUSER;
       pvUserData   = pvDATA;
-    }  
+    }
 
     void setScene (TScene* ptSCENE)
     {
@@ -67,10 +70,12 @@ class TImageFilter : public TProcedural
     EClass classType (void) const { return FX_IMAGE_FILTER_CLASS; }
 
     virtual TImageFilter* clone_new() const = 0;
-    
-};  /* class TImageFilter */
 
-#endif  /* _IMAGE_FILTER__ */
+  };  /* class TImageFilter */
+
+} // end namespace panorama
+
+#endif  /* PANORAMA_IMAGE_FILTER_H_INCLUDED */
 
 
 

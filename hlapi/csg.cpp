@@ -439,7 +439,7 @@ TCsg::~TCsg()
 } // ~TCsg()
 
 // Attribute management
-int TCsg::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
+int TCsg::setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
   if ( rktNAME == "type" )
   {
@@ -448,7 +448,7 @@ int TCsg::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eT
     {
       return FX_ATTRIB_WRONG_TYPE;      
     }
-    string tName = str->tValue;
+    std::string tName = str->tValue;
 
     if( tName == "union" )
     {
@@ -478,7 +478,7 @@ int TCsg::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eT
 } /* setAttribute() */
 
 
-int TCsg::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
+int TCsg::getAttribute (const std::string& rktNAME, NAttribute& rnVALUE)
 {
   if ( rktNAME == "type" )
   {
@@ -516,7 +516,7 @@ void TCsg::generate_strings()
   csg_type_choices.push_back (csg_type_strings[FX_CSG_INTERSECTION]);
   csg_type_choices.push_back (csg_type_strings[FX_CSG_DIFFERENCE]);        
 }
-void TCsg::printDebug (const string& indent) const
+void TCsg::printDebug (const std::string& indent) const
 {
   if( csg_type_strings.empty() )
   {
@@ -525,8 +525,8 @@ void TCsg::printDebug (const string& indent) const
   
   TAggregate::printDebug(indent);
   GOM.debug() << TDebug::Indent(indent)
-	      << "CSG Type : " << csg_type_strings[eOperation] << endl;
+	      << "CSG Type : " << csg_type_strings[eOperation] << std::endl;
 }
 
-map<ECsgOp,string> TCsg::csg_type_strings;
-vector<string> TCsg::csg_type_choices;  
+std::map<ECsgOp,std::string> TCsg::csg_type_strings;
+std::vector<std::string> TCsg::csg_type_choices;  

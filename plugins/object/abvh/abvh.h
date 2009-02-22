@@ -49,7 +49,7 @@ class TABVH : public TAggregate
     bool findFirstIntersection (const TRay& rktRAY, TSurfaceData& rtDATA) const;
     bool findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) const;
 
-    string className (void) const { return "ABVH"; }
+    std::string className (void) const { return "ABVH"; }
 
 };  /* class TABVH */
 
@@ -58,7 +58,7 @@ struct TABVH::TNode
 {
   
   magic_pointer<TVolume> ptVolume;
-  list<node_ptr >   tChildList;
+  std::list<node_ptr >   tChildList;
   float          fCost;
 
   TNode (magic_pointer<TVolume> ptVOL, float fCOST)

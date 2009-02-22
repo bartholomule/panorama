@@ -16,30 +16,32 @@
 *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef _LIGHT__
-#define _LIGHT__
+#ifndef PANORAMA_LIGHT_H_INCLUDED
+#define PANORAMA_LIGHT_H_INCLUDED
 
 #include "llapi/color.h"
 #include "llapi/object.h"
 
-struct TLightProperties
+namespace panorama
 {
+  struct TLightProperties
+  {
 
-  unsigned   gShadow : 1;
-  unsigned   gVolumetric : 1;
-  unsigned   gRaytraced : 1;
+    unsigned   gShadow : 1;
+    unsigned   gVolumetric : 1;
+    unsigned   gRaytraced : 1;
 
-};  /* struct TLightProperties */
+  };  /* struct TLightProperties */
 
 
-class TLight : public TObject
-{
+  class TLight : public TObject
+  {
 
   protected:
 
-    TColor             tColor;
-    TScalar            tIntensity;
-    TLightProperties   tProperties;
+    TColor tColor;
+    TScalar tIntensity;
+    TLightProperties tProperties;
 
     virtual bool visible (const TVector& rktPOINT) const
     {
@@ -57,15 +59,15 @@ class TLight : public TObject
       tProperties.gRaytraced  = true;
     }
 
-    int setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
-    int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
+    AttributeErrorCode setAttribute (const std::string& rktNAME, Attribute nVALUE);
+    AttributeErrorCode getAttribute (const std::string& rktNAME, Attribute& rnVALUE);
     void getAttributeList (TAttributeList& rtLIST) const;
-    
+
     void setColor (const TColor& rktCOLOR) { tColor = rktCOLOR; }
     void setIntensity (TScalar tINTENSITY) { tIntensity = tINTENSITY; }
 
     virtual bool initialize (void) { return TObject::initialize(); }
-  
+
     virtual TColor color (const TVector& rktPOINT) const
     {
       if ( !visible (rktPOINT) )
@@ -80,17 +82,19 @@ class TLight : public TObject
     {
       return TColor::_null();
     }
-    
+
     bool shadow (void) const { return tProperties.gShadow; }
     bool volumetric (void) const { return tProperties.gVolumetric; }
     bool raytraced (void) const { return tProperties.gRaytraced; }
 
     EClass classType (void) const { return FX_LIGHT_CLASS; }
-  
+
     virtual bool findAllIntersections(const class TRay &, class TSpanList &) const;
 
+    // FIXME!
     virtual TLight* clone_new() const = 0;//  { return new TLight(*this); }
 
-};  /* class TLight */
+  };  /* class TLight */
+} // end namespace panorama
 
-#endif  /* _LIGHT__ */
+#endif  /* PANORAMA_LIGHT_H_INCLUDED */

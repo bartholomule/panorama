@@ -87,7 +87,7 @@ bool TQuadric::initialize (void)
   return val && TObject::initialize();
 }
 
-int TQuadric::setAttribute (const string& rktNAME, NAttribute nVALUE,
+int TQuadric::setAttribute (const std::string& rktNAME, NAttribute nVALUE,
 			    EAttribType eTYPE)
 {
   if( rktNAME == "coefficients" || rktNAME == "coefs" )
@@ -106,7 +106,7 @@ int TQuadric::setAttribute (const string& rktNAME, NAttribute nVALUE,
   return FX_ATTRIB_OK;  
 }
 
-int TQuadric::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
+int TQuadric::getAttribute (const std::string& rktNAME, NAttribute& rnVALUE)
 {
   if( rktNAME == "coefficients" || rktNAME == "coefs" )
   {
@@ -193,16 +193,16 @@ bool TQuadric::findFirstIntersection (const TRay& rktRAY, TSurfaceData& rtDATA)
     
     if( rktRAY.range().inside(t1 * tFactor) )
     {
-      //      GOM.debug() << "origin " << o << " direction " << v << " factor " << tFactor <<" range " << rktRAY.range() << endl;
-      //      GOM.debug() << identifier() << ": t1=" << tFactor * t1 << endl;
+      //      GOM.debug() << "origin " << o << " direction " << v << " factor " << tFactor <<" range " << rktRAY.range() << std::endl;
+      //      GOM.debug() << identifier() << ": t1=" << tFactor * t1 << std::endl;
       rtDATA.setPoint (tFactor * t1);
       return true;
     }
     t2 = (-B + sqrtd) / (2 * A);
     if( rktRAY.range().inside(t2 * tFactor) )
     {
-      //      GOM.debug() << "origin " << o << " direction " << v << " factor " << tFactor << " range " << rktRAY.range() << endl;
-      //      GOM.debug() << identifier() << ": t2=" << tFactor * t2 << endl;    
+      //      GOM.debug() << "origin " << o << " direction " << v << " factor " << tFactor << " range " << rktRAY.range() << std::endl;
+      //      GOM.debug() << identifier() << ": t2=" << tFactor * t2 << std::endl;    
       rtDATA.setPoint (tFactor * t2);
       return true;    
     }
@@ -306,7 +306,7 @@ bool TQuadric::findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST)
   */
   return gIntersection;
 }
-void TQuadric::printDebug (const string& indent) const
+void TQuadric::printDebug (const std::string& indent) const
 {
   TObject::printDebug(indent);
   GOM.debug() << TDebug::Indent(indent)
@@ -321,7 +321,7 @@ void TQuadric::printDebug (const string& indent) const
 	      << QH << "Y + "
 	      << QI << "Z + "
 	      << QJ
-	      << endl;
+	      << std::endl;
 }
 
 TScalar TQuadric::operator[](size_t index) const
@@ -349,7 +349,7 @@ void TQuadric::set_coefs(unsigned index, const TVector& values)
 
 void TQuadric::set_coefs(const std::vector<TScalar>& values)
 {
-  //  GOM.debug() << "set_coefs was given " << values.size() << " coefficients, but wanted " << CQ_NUM_COEFS << endl;
+  //  GOM.debug() << "set_coefs was given " << values.size() << " coefficients, but wanted " << CQ_NUM_COEFS << std::endl;
   
   for(unsigned i = 0; i < CQ_NUM_COEFS; ++i)
   {
@@ -390,7 +390,7 @@ TVector TQuadric::localNormal (const TVector& rktPOINT) const
   if( norm < FX_EPSILON  )
   {
     // According to the comments in pov's quadrics.cpp, the normal is not
-    // defined at this point, so they arbitrarily chose this vector:
+    // defined at this point, so they arbitrarily chose this std::vector:
     retval = TVector(1,0,0);
   }
   else

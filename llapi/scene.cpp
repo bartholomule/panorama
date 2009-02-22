@@ -77,8 +77,8 @@ void TScene::addLight(magic_pointer<TLight> ptLIGHT)
   magic_pointer<TLight> instance = (magic_pointer<TLight>)(TLight*) TClassManager::_newObject (ptLIGHT->className(), ptLIGHT.get_pointer());
   if( ! instance )
   {
-    string err = "Cannot instantiate pure light " + ptLIGHT->className();
-    GOM.error() << err << endl;
+    std::string err = "Cannot instantiate pure light " + ptLIGHT->className();
+    GOM.error() << err << std::endl;
     exit(1);
   }
   // Now that we have an object, set it's matricies to those already
@@ -89,7 +89,7 @@ void TScene::addLight(magic_pointer<TLight> ptLIGHT)
   instance->setLocation(location);
 
   GOM.debug() << "Adding pure light \"" << instance->className()
-       << "\" at <" << location.x() << ", " << location.y() << ", " << location.z() << ">" << endl;
+       << "\" at <" << location.x() << ", " << location.y() << ", " << location.z() << ">" << std::endl;
   
   // The instance should be ok at this point... 
   tLightList.push_back(instance);
@@ -97,7 +97,7 @@ void TScene::addLight(magic_pointer<TLight> ptLIGHT)
 
 void TScene::addAreaLight(magic_pointer<TObject> ptALIGHT)
 {
-  GOM.debug() << "Adding area light with shape \"" << ptALIGHT->className() << "\"" << endl;	
+  GOM.debug() << "Adding area light with shape \"" << ptALIGHT->className() << "\"" << std::endl;	
   tAreaLightList.push_back(ptALIGHT);
 }
 
@@ -176,8 +176,8 @@ bool TScene::recursiveLocateLights(magic_pointer<TObject> obj, TObjectVector& li
 	}
 	else
 	{
-	  string err = "Cannot instantiate pure light " + obj->className();
-	  GOM.error() << err << endl;
+	  std::string err = "Cannot instantiate pure light " + obj->className();
+	  GOM.error() << err << std::endl;
 	  exit(1);	  
 	}
 	return true;
@@ -224,7 +224,7 @@ bool TScene::recursiveLocateLights(magic_pointer<TObject> obj, TObjectVector& li
 	{
 	  if(recursiveLocateLights ((*tol)[i], light_manip_list, addlights) )
 	  {
-	    GOM.error() << "FIXME: erase light from object list (for speed)" << endl;
+	    GOM.error() << "FIXME: erase light from object list (for speed)" << std::endl;
 	    // Note here... If the light is deleted, and it happens to be in an
 	    // aggregate which was duplicated some number of times, all of the
 	    // duplicate lights will be deleted.  A more intelligent check is
@@ -263,7 +263,7 @@ bool TScene::recursiveLocateLights(magic_pointer<TObject> obj, TObjectVector& li
 	mat = obj->material ();
 	if( !mat )
 	{
-	  GOM.error() << "Object \"" << obj->className() << "\" has no material, and 'defaultmaterial' is not set in the scene." << endl;
+	  GOM.error() << "Object \"" << obj->className() << "\" has no material, and 'defaultmaterial' is not set in the scene." << std::endl;
 	  exit(1);
 	}
       }
@@ -333,19 +333,19 @@ bool TScene::initialize (void)
   
   if ( tag->objectList()->empty() )
   {
-    GOM.error() << "Warning: Scene has no objects" << endl;
+    GOM.error() << "Warning: Scene has no objects" << std::endl;
   }
   
   ptWorld->setObjectCode (1);
   
   if ( (tLightList.empty()) && (tAreaLightList.empty()) )
   {
-    GOM.error() << "Warning: Scene has no lights" << endl;
+    GOM.error() << "Warning: Scene has no lights" << std::endl;
   }
   else
   {
     // Initialize the 'pure' lights
-    for (vector<magic_pointer<TLight> >::iterator tIter = tLightList.begin();
+    for (std::vector<magic_pointer<TLight> >::iterator tIter = tLightList.begin();
 	 ( tIter != tLightList.end() );
 	 tIter++)
     {
@@ -416,7 +416,7 @@ bool TScene::postprocess (void)
 
   magic_pointer<TImageFilter> ptFilter;
 
-  for (list<magic_pointer<TImageFilter> >::iterator tIter = tFilterList.begin(); ( tIter != tFilterList.end() ) ;tIter++)
+  for (std::list<magic_pointer<TImageFilter> >::iterator tIter = tFilterList.begin(); ( tIter != tFilterList.end() ) ;tIter++)
   {
     ptFilter = *tIter;
     assert ( ptFilter );
@@ -437,7 +437,7 @@ bool TScene::saveImage (void)
   
   if ( !sBuffers.ptImage )
   {
-    GOM.error() << "Nothing to save" << endl;
+    GOM.error() << "Nothing to save" << std::endl;
     return false;
   }
 
@@ -447,7 +447,7 @@ bool TScene::saveImage (void)
   }
   else
   {
-    GOM.error() << "Warning: ImageIO is NULL. No output will be done." << endl;
+    GOM.error() << "Warning: ImageIO is NULL. No output will be done." << std::endl;
     return false;
   }
 
@@ -465,9 +465,9 @@ void TScene::addImageFilter (magic_pointer<TImageFilter> ptFILTER)
 }  /* addImageFilter() */
 
 
-int TScene::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
+int TScene::setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
-  GOM.debug() << "TScene::setAttribute(" << rktNAME << ")" << endl;
+  GOM.debug() << "TScene::setAttribute(" << rktNAME << ")" << std::endl;
   
   if ( rktNAME == "background" )
   {
@@ -547,11 +547,11 @@ int TScene::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType 
       setWidth (nVALUE.iValue);
     }
 #else
-    GOM.debug() << "Getting int" << endl;
+    GOM.debug() << "Getting int" << std::endl;
     magic_pointer<TAttribInt> i = get_int(nVALUE);
     if( !!i )
     {
-      GOM.debug() << "Have int (" << i->tValue << ") calling setWidth" << endl;
+      GOM.debug() << "Have int (" << i->tValue << ") calling setWidth" << std::endl;
       setWidth (i->tValue);
     }
 #endif
@@ -605,7 +605,7 @@ int TScene::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType 
   else if (rktNAME == "defaultmaterial" )
   {
 #if !defined(NEW_ATTRIBUTES)
-    GOM.error() << "ERROR! Materials can only be passed with NEW attributes" << endl;
+    GOM.error() << "ERROR! Materials can only be passed with NEW attributes" << std::endl;
     return FX_ATTRIB_USER_ERROR;
     
 #else
@@ -625,7 +625,7 @@ int TScene::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType 
 
 }  /* setAttribute() */
 
-int TScene::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
+int TScene::getAttribute (const std::string& rktNAME, NAttribute& rnVALUE)
 {
 
 #if !defined(NEW_ATTRIBUTES)  
@@ -709,7 +709,7 @@ void TScene::getAttributeList (TAttributeList& rtLIST) const
 }  /* getAttributeList() */
 
 
-void TScene::setOutputFileName (const string& rktNAME)
+void TScene::setOutputFileName (const std::string& rktNAME)
 {
 
   NAttribute   nAttrib;
@@ -727,19 +727,20 @@ void TScene::setOutputFileName (const string& rktNAME)
 }  /* setOutputFileName() */
 
 
-void TScene::printDebug (const string& indent) const
+void TScene::printDebug (const std::string& indent) const
 {
 
-  GOM.debug() << indent << "[_Scene_]" << endl;
+  std::cout << "Printing debug on " << className() << std::endl;
+  GOM.debug() << indent << "[_Scene_]" << std::endl;
 
-  string new_indent = TDebug::Indent(indent);
+  std::string new_indent = TDebug::Indent(indent);
   
-  GOM.debug() << new_indent << "Height               : " << zHeight << endl;
-  GOM.debug() << new_indent << "Width                : " << zWidth << endl;
-  GOM.debug() << new_indent << "Last background color: "; ptBackgroundColor->lastColor().printDebug(new_indent); GOM.debug() << endl;
+  GOM.debug() << new_indent << "Height               : " << zHeight << std::endl;
+  GOM.debug() << new_indent << "Width                : " << zWidth << std::endl;
+  GOM.debug() << new_indent << "Last background color: "; ptBackgroundColor->lastColor().printDebug(new_indent); GOM.debug() << std::endl;
 
   ptWorld->printDebug(new_indent);
-  GOM.debug() << indent << "." << endl;
+  GOM.debug() << indent << "." << std::endl;
 
 }  /* printDebug() */
 

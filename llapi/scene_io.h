@@ -31,12 +31,12 @@ class TSceneIO : public TProcedural
 
     virtual bool initialize (void) { return TProcedural::initialize(); }
     
-    virtual int setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
-    virtual int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
+    virtual int setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
+    virtual int getAttribute (const std::string& rktNAME, NAttribute& rnVALUE);
     virtual void getAttributeList (TAttributeList& rtLIST) const;
 
-    virtual int save (const string& rktNAME, const TScene* pktSCENE) = 0;
-    virtual magic_pointer<TScene> load (const string& rktNAME) = 0;
+    virtual int save (const std::string& rktNAME, const TScene* pktSCENE) = 0;
+    virtual magic_pointer<TScene> load (const std::string& rktNAME) = 0;
     virtual TSceneIO* clone_new() const = 0;
 
     EClass classType (void) const { return FX_SCENE_IO_CLASS; }

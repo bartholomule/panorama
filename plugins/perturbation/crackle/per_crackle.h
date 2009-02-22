@@ -45,13 +45,13 @@ class TPerturbationCrackle : public TPerturbation
 
     TVector perturbNormal (const TSurfaceData& rktDATA) const;
 
-    int setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
-    int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
+    int setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
+    int getAttribute (const std::string& rktNAME, NAttribute& rnVALUE);
     void getAttributeList (TAttributeList& rtLIST) const;
 
     void setCracklePattern (magic_pointer<TPatternCrackle> ptPATTERN) { ptCracklePattern = ptPATTERN; }
 
-    string className (void) const { return "PerturbationCrackle"; }
+    std::string className (void) const { return "PerturbationCrackle"; }
     TPerturbationCrackle* clone_new() const { return new TPerturbationCrackle(*this); }
 };  /* class TPerturbationCrackle */
 
@@ -68,7 +68,7 @@ inline TVector TPerturbationCrackle::perturbNormal (const TSurfaceData& rktDATA)
 
     if ( !ptCracklePattern )
     {
-      GOM.error() << ("Error: crackle_pattern must be set") << endl;
+      GOM.error() << ("Error: crackle_pattern must be set") << std::endl;
       exit (1);
     }
 

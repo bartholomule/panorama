@@ -19,7 +19,9 @@
 *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include <gtk--/menu.h>
+#include <gtkmm/menu.h>
+#include <sigc++/bind.h>
+#include <sigc++/slot.h>
 #include "hlapi/plugin_manager.h"
 #include <string>
 
@@ -27,7 +29,7 @@
 template <class callback_data_type>
 Gtk::Menu* createPluginMenu (EClass tPLUGINCLASS,
 			     void (*callback_function)(callback_data_type data,
-						       string plugin_name),
+						       std::string plugin_name),
 			     callback_data_type data)
 {
   using namespace Gtk::Menu_Helpers;
@@ -35,7 +37,7 @@ Gtk::Menu* createPluginMenu (EClass tPLUGINCLASS,
   Gtk::Menu* filter_menu = new Gtk::Menu();
   menu_list = &filter_menu->items();
   
-  string                        tMenuOption;
+  std::string                        tMenuOption;
   const TPluginList*            ptPluginList;
   TPluginList::const_iterator   tIter;
 
@@ -48,7 +50,7 @@ Gtk::Menu* createPluginMenu (EClass tPLUGINCLASS,
     if ( !tIter->second.empty() )
     {
         
-      for (list<string>::const_iterator tIter2 = tIter->second.begin();
+      for (std::list<std::string>::const_iterator tIter2 = tIter->second.begin();
 	   tIter2 != tIter->second.end();
 	   ++tIter2)
       {
@@ -60,12 +62,12 @@ Gtk::Menu* createPluginMenu (EClass tPLUGINCLASS,
     }
     else
     {
-      GOM.out() << "Plugin list is empty" << endl;
+      GOM.out() << "Plugin list is empty" << std::endl;
     }
   }
   else
   {
-    GOM.out() << "No plugins of requested type found" << endl;
+    GOM.out() << "No plugins of requested type found" << std::endl;
   }
 
   return filter_menu;

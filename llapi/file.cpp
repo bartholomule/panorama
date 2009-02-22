@@ -18,16 +18,16 @@
 
 #include "llapi/file.h"
 
-string FilenameConvert(const string& rktNAME)
+std::string FilenameConvert(const std::string& rktNAME)
 {
 #if defined(_MSC_VER)
-  string converted_string = rktNAME;
+  std::string converted_string = rktNAME;
 
   for(int i = 0; i < converted_string.size(); ++i)
   {
     if(converted_string[i] == '/')
     {
-      static const string slash = "\\";
+      static const std::string slash = "\\";
       converted_string.erase(converted_string.begin() + i);
       converted_string.insert(converted_string.begin() + i, slash.begin(), slash.end());
       i += slash.size() - 1;;
@@ -40,10 +40,10 @@ string FilenameConvert(const string& rktNAME)
 #endif
 }
 
-bool FileExists (const string& rktNAME)
+bool FileExists (const std::string& rktNAME)
 {
 
-  ifstream   sFile (rktNAME.c_str());
+  std::ifstream   sFile (rktNAME.c_str());
 
   if ( !sFile )
   {
@@ -57,7 +57,7 @@ bool FileExists (const string& rktNAME)
 }  /* FileExists() */
 
 
-string FileExtension (const string& rktNAME)
+std::string FileExtension (const std::string& rktNAME)
 {
 
   char*   pcExtension;
@@ -77,7 +77,7 @@ string FileExtension (const string& rktNAME)
 }  /* FileExtension() */
 
 
-Word GetWord (istream& rsSTREAM, int iBIG_ENDIAN)
+Word GetWord (std::istream& rsSTREAM, int iBIG_ENDIAN)
 {
 
   if ( iBIG_ENDIAN != FX_BIG_ENDIAN_SYSTEM )
@@ -90,7 +90,7 @@ Word GetWord (istream& rsSTREAM, int iBIG_ENDIAN)
 }  /* GetWord() */
 
 
-DWord GetDWord (istream& rsSTREAM, int iBIG_ENDIAN)
+DWord GetDWord (std::istream& rsSTREAM, int iBIG_ENDIAN)
 {
 
   if ( iBIG_ENDIAN != FX_BIG_ENDIAN_SYSTEM )
@@ -103,10 +103,10 @@ DWord GetDWord (istream& rsSTREAM, int iBIG_ENDIAN)
 }  /* GetWord() */
 
 
-string GetString (istream& rsSTREAM)
+std::string GetString (std::istream& rsSTREAM)
 {
 
-  string   tString;
+  std::string   tString;
   char     cChar;
 
   while ( ( (cChar = rsSTREAM.get()) != 0 ) && !rsSTREAM.eof() )
@@ -119,7 +119,7 @@ string GetString (istream& rsSTREAM)
 }  /* GetString() */
 
 
-float GetFloat (istream& rsSTREAM, int iBIG_ENDIAN)
+float GetFloat (std::istream& rsSTREAM, int iBIG_ENDIAN)
 {
 
   //

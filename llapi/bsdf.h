@@ -16,17 +16,20 @@
 *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef _BSDF__
-#define _BSDF__
+#ifndef PANORAMA_BSDF_H_INCLUDED
+#define PANORAMA_BSDF_H_INCLUDED
 
 #include "llapi/procedural.h"
 #include "llapi/color.h"
 #include "llapi/llapi_defs.h"
+#include "llapi/string_dumpable.hpp"
 
-class TSurfaceData;
-
-class TBsdf : public TProcedural
+namespace panorama
 {
+  class TSurfaceData;
+
+  class TBsdf : public TProcedural
+  {
 
   public:
 
@@ -34,13 +37,21 @@ class TBsdf : public TProcedural
     virtual TColor evaluateTransmission (const TSurfaceData& rktDATA, const TVector& rktLIGHT, TColor tRAD) const;
 
     virtual void getRayDirection (const TSurfaceData& rktDATA, const TVector& rktREFLECTED, TVector& rtDIR) const = 0;
-      
-    virtual bool initialize (void) { return TProcedural::initialize(); }
-    
-    EClass classType (void) const { return FX_BSDF_CLASS; }
+
+    virtual EClass classType (void) const { return FX_BSDF_CLASS; }
 
     virtual TBsdf* clone_new() const = 0;
-  
-};  /* class TBsdf */
 
-#endif  /* _BSDF__ */
+    // FIXME! DELETEME!
+    /**
+     * These are from StringDumpable, but here (temporarily) to force
+     * subclasses to override them.
+     */
+    virtual std::string internalMembers(const Indentation& indent, PrefixType prefix) const = 0;
+    virtual std::string toString(const Indentation& indent, PrefixType prefix) const;
+    virtual std::string name() const = 0;
+
+  };  /* class TBsdf */
+} // end namespace panorama
+
+#endif  /* PANORAMA_BSDF_H_INCLUDED */

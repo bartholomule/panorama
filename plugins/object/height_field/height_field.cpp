@@ -44,8 +44,8 @@ bool THeightField::checkIntersection (int iCELLX, int iCELLZ, const TRay& rktRAY
   TScalar   Y2         = getHeight (iCELLX + 1, iCELLZ);
   TScalar   Y3         = getHeight (iCELLX,     iCELLZ + 1);
   TScalar   Y4         = getHeight (iCELLX + 1, iCELLZ + 1);
-  TScalar   tLocalMinY = min (min (Y1, Y2), min (Y3, Y4));
-  TScalar   tLocalMaxY = max (max (Y1, Y2), max (Y3, Y4));
+  TScalar   tLocalMinY = std::min (std::min (Y1, Y2), std::min (Y3, Y4));
+  TScalar   tLocalMaxY = std::max (std::max (Y1, Y2), std::max (Y3, Y4));
   TScalar   tPosX      = TScalar (iCELLX) - tHalfWidth;
   TScalar   tPosZ      = TScalar (iCELLZ) - tHalfHeight;
 
@@ -336,7 +336,7 @@ bool THeightField::initialize (void)
 }  /* initialize() */
 
 
-int THeightField::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
+int THeightField::setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
 
   if ( rktNAME == "image" )
@@ -349,7 +349,7 @@ int THeightField::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttri
       ptImage = tImageManager.newImage (pcName, FileExtension (pcName));
       if ( !ptImage )
       {
-        TProcedural::_tUserErrorMessage = string ("could not open texture file ") + (char*) nVALUE.pvValue;
+        TProcedural::_tUserErrorMessage = std::string ("could not open texture file ") + (char*) nVALUE.pvValue;
         return FX_ATTRIB_USER_ERROR;
       }
     }
@@ -376,7 +376,7 @@ int THeightField::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttri
       ptImage = (magic_pointer<TImage>)tImageManager.newImage (str->tValue, FileExtension (str->tValue));
       if( !ptImage )
       {
-        TProcedural::_tUserErrorMessage = string ("could not open texture file ") + str->tValue;
+        TProcedural::_tUserErrorMessage = std::string ("could not open texture file ") + str->tValue;
         return FX_ATTRIB_USER_ERROR;	
       }
     }
@@ -410,7 +410,7 @@ int THeightField::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttri
 }  /* setAttribute() */
 
 
-int THeightField::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
+int THeightField::getAttribute (const std::string& rktNAME, NAttribute& rnVALUE)
 {
 
   if ( rktNAME == "image" )

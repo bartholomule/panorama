@@ -43,13 +43,13 @@ class TPerturbationBump : public TPerturbation
 
     TVector perturbNormal (const TSurfaceData& rktDATA) const;
 
-    int setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
-    int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
+    int setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
+    int getAttribute (const std::string& rktNAME, NAttribute& rnVALUE);
     void getAttributeList (TAttributeList& rtLIST) const;
 
     void setPattern (magic_pointer<TPattern> ptPATTERN) { ptPattern = ptPATTERN; }
 
-    string className (void) const { return "PerturbationBump"; }
+    std::string className (void) const { return "PerturbationBump"; }
     TPerturbationBump* clone_new() const { return new TPerturbationBump(*this); }
 };  /* class TPerturbationBump */
 

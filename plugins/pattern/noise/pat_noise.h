@@ -66,8 +66,8 @@ class TPatternNoise : public TPattern
       }
     }
 
-    int setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
-    int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
+    int setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
+    int getAttribute (const std::string& rktNAME, NAttribute& rnVALUE);
     void getAttributeList (TAttributeList& rtLIST) const;
 
     void setColor (const TColor& rktCOLOR)
@@ -79,7 +79,7 @@ class TPatternNoise : public TPattern
       tBaseColor = rktCOLOR;
     }
 
-    string className (void) const { return "PatternNoise"; }
+    std::string className (void) const { return "PatternNoise"; }
     TPatternNoise* clone_new() const { return new TPatternNoise(*this); }
 
 };  /* class TPatternNoise */

@@ -386,7 +386,7 @@ bool TCone::findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) const
 }  /* findAllIntersections() */
 
 
-int TCone::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
+int TCone::setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
 
   if ( rktNAME == "max_circle_point" )
@@ -474,7 +474,7 @@ int TCone::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType e
     {
       tMinRadius = FX_EPSILON * 2;
       
-      GOM.error() << "[FIXME!] Hacking cone to prevent zero-radius." << endl;
+      GOM.error() << "[FIXME!] Hacking cone to prevent zero-radius." << std::endl;
     } // end [fixme]    
   }
   else
@@ -487,7 +487,7 @@ int TCone::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType e
 }  /* setAttribute() */
 
 
-int TCone::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
+int TCone::getAttribute (const std::string& rktNAME, NAttribute& rnVALUE)
 {
 
   if ( rktNAME == "max_circle_point" )

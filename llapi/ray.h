@@ -16,31 +16,35 @@
 *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef _RAY__
-#define _RAY__
+#ifndef PANORAMA_RAY_H_INCLUDED
+#define PANORAMA_RAY_H_INCLUDED
 
 #include "llapi/llapi_defs.h"
 #include "llapi/interval.h"
-#include "generic/magic_pointer.h"
+#include "llapi/string_dumpable.hpp"
+#include "generic/rc_pointer.hpp"
 
-class TRay
+namespace panorama
 {
+
+  class TRay : public virtual StringDumpable
+  {
 
   protected:
 
-    TVector   tLocation;
-    TVector   tDirection;
-    TScalar   tIor;
-  //    TScalar   tLimit;
+    TPoint tLocation;
+    TVector tDirection;
+    TScalar tIor;
+    //    TScalar   tLimit;
     TInterval tRange;
-    
+
   public:
- 
+
     TRay (void) :
       tIor (FX_MEDIUM_IOR),
       tRange (FX_EPSILON, SCALAR_MAX) {}
 
-    TRay (const TVector& rktLOC, const TVector& rktDIR) :
+    TRay (const TPoint& rktLOC, const TVector& rktDIR) :
       tLocation (rktLOC),
       tDirection (rktDIR),
       tIor (FX_MEDIUM_IOR),
@@ -61,17 +65,17 @@ class TRay
 
       return *this;
     }
-    
-    TVector location (void) const { return tLocation; }
+
+    TPoint location (void) const { return tLocation; }
     TVector direction (void) const { return tDirection; }
-    TVector destination (void) const { return (tLocation + tDirection); }
+    TPoint destination (void) const { return (tLocation + tDirection); }
     const TInterval& range (void) const { return tRange; }
-    TScalar maxLimit (void) const { return tRange.max(); }  
+    TScalar maxLimit (void) const { return tRange.max(); }
     TScalar ior (void) const { return tIor; }
 
-    void setLocation (const TVector& rktLOC) { tLocation = rktLOC; }
+    void setLocation (const TPoint& rktLOC) { tLocation = rktLOC; }
     void setDirection (const TVector& rktDIR) { tDirection = rktDIR; }
-    void setDestination (const TVector& rktDEST) { tDirection = (rktDEST - tLocation); }
+    void setDestination (const TPoint& rktDEST) { tDirection = (rktDEST - tLocation); }
     void setRange (TInterval tRANGE) { tRange = tRANGE; }
     void setRange (TScalar tMin, TScalar tMax) { tRange = TInterval(tMin, tMax); }
     // apply a factor (=multiply) the parts of the range by the factor.
@@ -79,42 +83,49 @@ class TRay
 
     void normalize (void)
     {
-      tDirection.normalize();
+      tDirection = unit(tDirection);
     }
-    
+
     void reflect (const TVector& rktNORMAL, const TVector& rktORIGINAL)
     {
       TVector  tOldDirection = tDirection;
 
-      tDirection -= rktNORMAL * (2.0 * dotProduct (rktNORMAL, tDirection));
+      tDirection -= rktNORMAL * (2.0 * dotprod (rktNORMAL, tDirection));
 
-      if ( dotProduct (rktORIGINAL, tDirection) <= 0.1 )
+      if ( dotprod (rktORIGINAL, tDirection) <= 0.1 )
       {
-	tDirection = tOldDirection - rktORIGINAL * (2.0 * dotProduct (tOldDirection, rktORIGINAL));
+        tDirection = tOldDirection - rktORIGINAL * (2.0 * dotprod (tOldDirection, rktORIGINAL));
       }
     }
-    
+
     bool refract (const TVector& rktNORMAL, TScalar tIOR, bool& gTIR);
 
     TScalar applyTransform (const TMatrix* pktMATRIX);
-    TScalar applyTransform (const magic_pointer<TMatrix>& pktMATRIX);
-    TScalar applyTransform (const TMatrix& rktMATRIX);  
+    TScalar applyTransform (const rc_pointer<TMatrix>& pktMATRIX);
+    TScalar applyTransform (const TMatrix& rktMATRIX);
 
-    void printDebug (const string& indent) const;
+    virtual std::string internalMembers(const Indentation& indent, PrefixType prefix) const;
+    virtual std::string name() const;
 
-};  /* class TRay */
+  };  /* class TRay */
 
 
-inline TRay operator - (const TRay& rktRAY)
-{
+  // FIXME!
+  // I don't understand what good this function does...
+  inline TRay operator - (const TRay& rktRAY)
+  {
 
-  TRay   tRay = rktRAY;
+    TRay   tRay = rktRAY;
 
-  tRay.setLocation (-rktRAY.location());
-  tRay.setDirection (-rktRAY.direction());
-  
-  return tRay;
+    TPoint origin = rktRAY.location();
 
-}  /* operator - () */
+    tRay.setLocation (TPoint(-origin.x(), -origin.y(), -origin.z()));
+    tRay.setDirection (-rktRAY.direction());
 
-#endif  /* _RAY__ */
+    return tRay;
+
+  }  /* operator - () */
+
+} // end namespace panorama
+
+#endif  /* PANORAMA_RAY_H_INCLUDED */

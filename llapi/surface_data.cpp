@@ -21,144 +21,161 @@
 #include "llapi/object.h"
 #include "llapi/material.h"
 
-void TSurfaceData::setup (const TObject* pktOBJ, const TRay& rktRAY)
+namespace panorama
 {
 
-  pktObject = pktOBJ;
-  tRay      = rktRAY;
-
-  zObjectCode = ( pktOBJ ) ? pktOBJ->objectCode() : 0;
-
-}  /* setup() */
-
-
-bool TSurfaceData::setPoint (TScalar tDISTANCE, const TVector& rktNORMAL)
-{
-
-  tDistance = tDISTANCE;
-  if ( pktObject )
+  void TSurfaceData::setup (const TObject* pktOBJ, const TRay& rktRAY)
   {
-    gNormalAssigned    = true;
-    tPoint             = tRay.location() + (tRay.direction() * tDISTANCE);
+
+    pktObject = pktOBJ;
+    tRay      = rktRAY;
+
+    zObjectCode = ( pktOBJ ) ? pktOBJ->objectCode() : 0;
+
+  }  /* setup() */
+
+
+  bool TSurfaceData::setPoint (TScalar tDISTANCE, const TVector& rktNORMAL)
+  {
+
+    tDistance = tDISTANCE;
+    if ( pktObject )
+    {
+      gNormalAssigned    = true;
+      tPoint             = tRay.location() + (tRay.direction() * tDISTANCE);
+      tUnperturbedNormal = rktNORMAL;
+      tNormal            = tUnperturbedNormal;
+      tNormal            = pktObject->material()->perturbNormal (*this);
+
+      return true;
+    }
+
+    return false;
+
+  }  /* setPoint() */
+
+
+  TVector TSurfaceData::localPoint (void) const
+  {
+
+    if ( pktObject )
+    {
+      magic_pointer<TMatrix> ptMatrix = pktObject->inverseTransformMatrix();
+
+      if ( ptMatrix )
+      {
+        return (*ptMatrix * tPoint);
+      }
+    }
+
+    return tPoint;
+
+  }  /* localPoint() */
+
+
+  TVector TSurfaceData::unperturbedNormal (void) const
+  {
+
+    return tUnperturbedNormal;
+
+  }  /* unperturbedNormal() */
+
+
+  void TSurfaceData::setUnperturbedNormal (const TVector& rktNORMAL)
+  {
+
     tUnperturbedNormal = rktNORMAL;
     tNormal            = tUnperturbedNormal;
-    tNormal            = pktObject->material()->perturbNormal (*this);
-    
-    return true;
-  }
 
-  return false;
-
-}  /* setPoint() */
-
-
-TVector TSurfaceData::localPoint (void) const
-{
-  
-  if ( pktObject )
-  {
-    magic_pointer<TMatrix> ptMatrix = pktObject->inverseTransformMatrix();
-
-    if ( ptMatrix )
-    {
-      return (*ptMatrix * tPoint);
-    }
-  }
-
-  return tPoint;
-
-}  /* localPoint() */
-
-
-TVector TSurfaceData::unperturbedNormal (void) const
-{
-
-  return tUnperturbedNormal;
-
-}  /* unperturbedNormal() */
-
-
-void TSurfaceData::setUnperturbedNormal (const TVector& rktNORMAL)
-{
-
-  tUnperturbedNormal = rktNORMAL;
-  tNormal            = tUnperturbedNormal;
-
-  gNormalAssigned = true;
-
-}  /* setUnperturbedNormal() */
-
-
-void TSurfaceData::setNormal (const TVector& rktNORMAL)
-{
-
-  tUnperturbedNormal = rktNORMAL;
-  tNormal            = tUnperturbedNormal;
-
-  if ( pktObject )
-  {
-    tNormal = pktObject->material()->perturbNormal (*this);
-  }
-
-  gNormalAssigned = true;
-
-}  /* setNormal() */
-
-
-TVector TSurfaceData::normal (void) const
-{
-
-  if ( !gNormalAssigned )
-  {
     gNormalAssigned = true;
-    if ( !pktObject )
+
+  }  /* setUnperturbedNormal() */
+
+
+  void TSurfaceData::setNormal (const TVector& rktNORMAL)
+  {
+
+    tUnperturbedNormal = rktNORMAL;
+    tNormal            = tUnperturbedNormal;
+
+    if ( pktObject )
     {
-      tNormal.set (0, 0, 0);
-      tUnperturbedNormal = tNormal;
+      tNormal = pktObject->material()->perturbNormal (*this);
+    }
+
+    gNormalAssigned = true;
+
+  }  /* setNormal() */
+
+
+  TVector TSurfaceData::normal (void) const
+  {
+
+    if ( !gNormalAssigned )
+    {
+      gNormalAssigned = true;
+      if ( !pktObject )
+      {
+        tNormal.set (0, 0, 0);
+        tUnperturbedNormal = tNormal;
+      }
+      else
+      {
+        tUnperturbedNormal = pktObject->normal (*this);
+
+        tNormal = tUnperturbedNormal;
+        tNormal = pktObject->material()->perturbNormal (*this);
+
+        if ( gFlipNormal )
+        {
+          tUnperturbedNormal = -tUnperturbedNormal;
+          tNormal            = -tNormal;
+          gFlipNormal = false;
+        }
+      }
+    }
+
+    return tNormal;
+
+  }  /* normal() */
+
+  std::string TSurfaceData::internalMembers(const Indentation& indent, PrefixType prefix ) const
+  {
+    std::string tag = indent.level();
+    if( prefix == E_PREFIX_CLASSNAME )
+    {
+      tag = indent.level() + TSurfaceData::name() + "::";
+    }
+
+    Indentation nextIndent = indent.nextLevel();
+
+    std::string retval;
+
+    retval += indent + "ray=" + tRay.toString(nextIndent, prefix) + "\n";
+    if( pktObject )
+    {
+      retval += indent + "object=" + pktObject->toString(nextIndent) + "\n";
+
+      retval += indent + "hit point=" + tPoint.toString(nextIndent, prefix) + "\n";
+      if( gNormalAssigned )
+      {
+        retval += indent + "normal=" + tNormal.toString(nextIndent, prefix) + "\n";
+        retval += indent + "normal (unperturbed)=" + tUnpertorbedNormal.toString(nextIndent, prefix) + "\n";
+      }
+      retval += indent + string_format("reflection=%1\n", zReflection);
+      retval += indent + string_format("transmission=%1\n", zTransmission);
+      retval += indent + "lightRadiance=" + tLightRadiance.toString(nextIndent, prefix);
     }
     else
     {
-      tUnperturbedNormal = pktObject->normal (*this);
-
-      tNormal = tUnperturbedNormal;
-      tNormal = pktObject->material()->perturbNormal (*this);
-
-      if ( gFlipNormal )
-      {
-        tUnperturbedNormal = -tUnperturbedNormal;
-        tNormal            = -tNormal;
-        gFlipNormal = false;
-      }
+      retval += indent + "object=NULL\n";
     }
+    return retval;
   }
 
-  return tNormal;
-
-}  /* normal() */
-
-
-void TSurfaceData::printDebug (const string& indent) const
-{
-
-  GOM.debug() << indent << "[_IntData_]" << endl;
-
-  string new_indent = TDebug::Indent(indent);
-  
-  if ( !pktObject )
+  std::string TSurfaceData::name() const
   {
-    GOM.debug() << new_indent << "NULL" << endl;
+    return "SurfaceData";
   }
-  else
-  {
-    GOM.debug() << new_indent << "tRay.location         : "; tRay.location().printDebug(new_indent); GOM.debug() << endl;
-    GOM.debug() << new_indent << "tRay.direction        : "; tRay.direction().printDebug(new_indent); GOM.debug() << endl;
-    GOM.debug() << new_indent << "Distance              : " << tDistance << endl;
-    GOM.debug() << new_indent << "Point                 : "; tPoint.printDebug(new_indent); GOM.debug() << endl;
-    if ( gNormalAssigned )
-    {
-      GOM.debug() << new_indent << "tUnperturbedNormal    : "; tUnperturbedNormal.printDebug(new_indent); GOM.debug() << endl;
-      GOM.debug() << new_indent << "tNormal               : "; tNormal.printDebug(new_indent); GOM.debug() << endl;
-    }
-  }
-  
-}  /* printDebug() */
+
+} // end namespace panorama

@@ -63,8 +63,8 @@ class TPatternMarble : public TPattern
       
     TColor pattern (const TSurfaceData& rktDATA) const;    
 
-    int setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
-    int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
+    int setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
+    int getAttribute (const std::string& rktNAME, NAttribute& rnVALUE);
     void getAttributeList (TAttributeList& rtLIST) const;
  
     void setColor (const TColor& rktCOLOR)
@@ -76,7 +76,7 @@ class TPatternMarble : public TPattern
       tBaseColor = rktCOLOR;
     }
 
-    string className (void) const { return "PatternMarble"; }
+    std::string className (void) const { return "PatternMarble"; }
     TPatternMarble* clone_new() const { return new TPatternMarble(*this); }
   
 };  /* class TPatternMarble */

@@ -22,12 +22,12 @@
 #include "llapi/scene.h"
 #include "object_properties_dialog.h"
 #include "message_dialog.h"
-#include <gtk--/box.h>
-#include <gtk--/menubar.h>
-#include <gtk--/preview.h>
-#include <gtk--/fileselection.h>
-#include <gtk--/progressbar.h>
-#include <gtk--/window.h>
+#include <gtkmm/box.h>
+#include <gtkmm/menubar.h>
+#include <gtkmm/drawingarea.h>
+#include <gtkmm/fileselection.h>
+#include <gtkmm/progressbar.h>
+#include <gtkmm/window.h>
 
 
 bool FinishedRenderLine (size_t zROW, void* pvDATA);
@@ -39,7 +39,7 @@ class TImageWindow;
 struct TImageFilterCallbackData
 {
 
-  string          tName;
+  std::string          tName;
   TImageWindow*   ptWindow;
   
 };  /* struct TImageFilterCallbackData */
@@ -52,7 +52,7 @@ protected:
 
   Gtk::VBox*          ptVBox;
   Gtk::MenuBar*       ptMenuBar;
-  Gtk::Preview*       ptPreview;
+  Gtk::DrawingArea*   ptPreview;
   SBuffers            sBuffers;
 
 public:
@@ -66,7 +66,7 @@ public:
   TImageWindow (TScene* ptSCENE);
   ~TImageWindow ();
 
-  void saveImage (const string& name = "");
+  void saveImage (const std::string& name = "");
     
   void drawRow (size_t zROW);
   void drawImage (void);

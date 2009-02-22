@@ -67,22 +67,22 @@
 
 #include <string>
 using std::string;
-//#define YYSTYPE string;
+//#define YYSTYPE std::string;
  
 #define YYDEBUG 1
 #define YYERROR_VERBOSE 
 
-static const string newline = "\n";
+static const std::string newline = "\n";
 
  unsigned line_number;
- string file_name;
+ std::string file_name;
  
- static string x;
- static string y;
- static string z;
- static string image_output_type;
+ static std::string x;
+ static std::string y;
+ static std::string z;
+ static std::string image_output_type;
 
- static string extract_class(const string& cls, const string& def);
+ static std::string extract_class(const std::string& cls, const std::string& def);
 
 #include "parser_defs.h"
 
@@ -969,22 +969,22 @@ yyreduce:
 case 1:
 #line 108 "parser.y"
 {
-  cout << "// This is a converted RT scene file.  Check for correctness." << endl;
-  cout << "#include \"shapes.inc\"" << endl;
-  cout << yyvsp[0] << endl;
+  cout << "// This is a converted RT scene file.  Check for correctness." << std::endl;
+  cout << "#include \"shapes.inc\"" << std::endl;
+  cout << yyvsp[0] << std::endl;
 ;
     break;}
 case 2:
 #line 116 "parser.y"
 {
   yyval = "";
-  cout << "parser:optional_comments (empty)" << endl;
+  cout << "parser:optional_comments (empty)" << std::endl;
 ;
     break;}
 case 3:
 #line 121 "parser.y"
 {
-  cout << "parser:optional_comments (verbatim)" << endl;
+  cout << "parser:optional_comments (verbatim)" << std::endl;
   yyval = yyvsp[0];
 ;
     break;}
@@ -1015,7 +1015,7 @@ case 7:
 case 8:
 #line 148 "parser.y"
 {
-  yyval = string("scene") + newline + yyvsp[0] + newline;
+  yyval = std::string("scene") + newline + yyvsp[0] + newline;
 ;
     break;}
 case 9:
@@ -1063,13 +1063,13 @@ case 15:
 case 16:
 #line 186 "parser.y"
 {
-  yyval = string("define ") + yyvsp[-4] + " " + extract_class(yyvsp[-3],yyvsp[-5]) + " { " + newline + yyvsp[-2] + newline + " };";  
+  yyval = std::string("define ") + yyvsp[-4] + " " + extract_class(yyvsp[-3],yyvsp[-5]) + " { " + newline + yyvsp[-2] + newline + " };";  
 ;
     break;}
 case 17:
 #line 193 "parser.y"
 {
-  yyval = string("define ") + yyvsp[-2] + " " + extract_class(yyvsp[-3],"/* unknown instance */") + " { " + newline + yyvsp[-1] + newline + " }";  
+  yyval = std::string("define ") + yyvsp[-2] + " " + extract_class(yyvsp[-3],"/* unknown instance */") + " { " + newline + yyvsp[-1] + newline + " }";  
 ;
     break;}
 case 18:
@@ -1123,25 +1123,25 @@ case 25:
 case 26:
 #line 236 "parser.y"
 {
-  yyval = string("(") + yyvsp[-1] + ")";
+  yyval = std::string("(") + yyvsp[-1] + ")";
 ;
     break;}
 case 27:
 #line 242 "parser.y"
 {
-  yyval = string("{ red ") + yyvsp[-5] + " green " + yyvsp[-3] + " blue " + yyvsp[-1] + " }";
+  yyval = std::string("{ red ") + yyvsp[-5] + " green " + yyvsp[-3] + " blue " + yyvsp[-1] + " }";
 ;
     break;}
 case 28:
 #line 249 "parser.y"
 {
-  yyval = string("< ") + yyvsp[-5] + ", " + yyvsp[-3] + ", " + yyvsp[-1] + " >";   
+  yyval = std::string("< ") + yyvsp[-5] + ", " + yyvsp[-3] + ", " + yyvsp[-1] + " >";   
 ;
     break;}
 case 29:
 #line 255 "parser.y"
 {
-  yyval = string("< ") + yyvsp[-3] + ", " + yyvsp[-1] + " >";   
+  yyval = std::string("< ") + yyvsp[-3] + ", " + yyvsp[-1] + " >";   
 ;
     break;}
 case 30:
@@ -1472,7 +1472,7 @@ case 85:
 case 86:
 #line 517 "parser.y"
 {
-  yyval = string("define ") + yyvsp[-4] + " " + extract_class(yyvsp[-3], "class Scene") + " { " + newline + yyvsp[-1] + newline + " };";
+  yyval = std::string("define ") + yyvsp[-4] + " " + extract_class(yyvsp[-3], "class Scene") + " { " + newline + yyvsp[-1] + newline + " };";
 ;
     break;}
 case 87:
@@ -1490,7 +1490,7 @@ case 88:
 case 89:
 #line 535 "parser.y"
 {
-  yyval = string("define ") + yyvsp[-4] + " " + extract_class(yyvsp[-3], "/* unknown class */") + " { " + newline + yyvsp[-1] + newline + " };";  
+  yyval = std::string("define ") + yyvsp[-4] + " " + extract_class(yyvsp[-3], "/* unknown class */") + " { " + newline + yyvsp[-1] + newline + " };";  
 ;
     break;}
 case 90:
@@ -1520,7 +1520,7 @@ case 93:
 case 94:
 #line 564 "parser.y"
 {
-  yyval = string("define ") + yyvsp[-4] + "{ " + yyvsp[-1] + " };";
+  yyval = std::string("define ") + yyvsp[-4] + "{ " + yyvsp[-1] + " };";
 ;
     break;}
 case 95:
@@ -1556,7 +1556,7 @@ case 99:
 case 100:
 #line 597 "parser.y"
 {
-  yyval = string("define ") + yyvsp[-4] + "{ " + yyvsp[-1] + " };";
+  yyval = std::string("define ") + yyvsp[-4] + "{ " + yyvsp[-1] + " };";
 ;
     break;}
 case 101:
@@ -2023,14 +2023,14 @@ yyerrhandle:
 void rt_conv_error (const char* pkcTEXT)
 {
 
-  cerr << endl << file_name << "(" << line_number << ") Error: " << pkcTEXT << endl;
+  cerr << std::endl << file_name << "(" << line_number << ") Error: " << pkcTEXT << std::endl;
 
 }  /* rt_conv_error() */
 
-void rt_conv_error (const string& rksTEXT)
+void rt_conv_error (const std::string& rksTEXT)
 {
 
-  cerr << endl << file_name << "(" << line_number << ") Error: " << rksTEXT << endl;
+  cerr << std::endl << file_name << "(" << line_number << ") Error: " << rksTEXT << std::endl;
 
 }  /* rt_conv_error() */
 
@@ -2047,7 +2047,7 @@ void RT_CONV_CloseParser (void)
 }  /* RT_CONV_CloseParser() */
 
 
-string extract_class(const string& cls, const string& def)
+string extract_class(const std::string& cls, const std::string& def)
 {
   if( cls.length() >= 1 )
   {

@@ -1,5 +1,5 @@
 /*
- * $Header: /home/kevin/work/migrate_me/cvs/panorama/panorama/panorama/llapi/Attic/outputmanager.cpp,v 1.1.2.1 2003/08/24 09:01:12 kpharris Exp $
+ * $Header: /home/kevin/work/migrate_me/cvs/panorama/panorama/panorama/llapi/Attic/outputmanager.cpp,v 1.1.2.2 2009/02/22 10:14:20 kpharris Exp $
  *
  * Part of GNU Panorama - A framework for 3D graphics production
  * Copyright (C) 2003 Kevin Harris
@@ -34,7 +34,7 @@ TOutputManager::TOutputManager():
   maxDebugLevel(0)
 {
   CreateStream("out", &std::cout, false, true);
-  CreateStream("debug", &std::cerr, false, true);
+  CreateStream("debug", &std::cout, false, true);
   CreateStream("error", &std::cerr, false, true);
   CreateStream("tom::junk", new std::ostream(new crap_streambuf), true, false);
 } // TOutputManager()

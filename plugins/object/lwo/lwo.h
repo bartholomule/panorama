@@ -27,7 +27,7 @@ class TLightWaveObject : public TMeshObject
 
   protected:
     
-    string   tFileName;
+    std::string   tFileName;
 
     int parseObject (void);
     
@@ -35,8 +35,8 @@ class TLightWaveObject : public TMeshObject
 
     static TBaseClass* _create (const TBaseClass* pktPARENT);
 
-    int setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
-    int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
+    int setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
+    int getAttribute (const std::string& rktNAME, NAttribute& rnVALUE);
     void getAttributeList (TAttributeList& rtLIST) const;
 
 };  /* class TLightWaveObject */

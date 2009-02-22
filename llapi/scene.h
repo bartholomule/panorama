@@ -32,112 +32,113 @@
 #include "llapi/pattern.h"
 #include "llapi/surface_data.h"
 #include "llapi/image_io.h"
-#include "generic/magic_pointer.h"
+#include "generic/rc_pointer.hpp"
 
-struct SBuffers
+namespace panorama
 {
 
-  TImage*     ptImage;
-  TZBuffer*   ptZBuffer;
-  TNBuffer*   ptNBuffer;
+  struct SBuffers
+  {
 
-  SBuffers (void) :
-    ptImage (NULL),
-    ptZBuffer (NULL),
-    ptNBuffer (NULL) {}
-  
-};  /* struct SBuffers */
+    TImage*     ptImage;
+    TZBuffer*   ptZBuffer;
+    TNBuffer*   ptNBuffer;
+
+    SBuffers (void) :
+      ptImage (NULL),
+      ptZBuffer (NULL),
+      ptNBuffer (NULL) {}
+
+  };  /* struct SBuffers */
 
 
-typedef vector<magic_pointer<TObject> > TObjectVector;
+  typedef std::vector<rc_pointer<TObject> > TObjectArray;
 
+  class TScene : public TProcedural
+  {
 
+  private:
 
-class TScene : public TProcedural
-{
+    rc_pointer<TObject> ptWorld;
+    rc_pointer<TCamera> ptCamera;
+    rc_pointer<TRenderer> ptRenderer;
+    rc_pointer<TMaterial> ptDefaultMaterial;
+    TAtmosphere tAtmosphere;
+    bool gParticipatingMedia;
+    Word wNeededBuffers;
+    size_t zWidth;
+    size_t zHeight;
+    SBuffers sBuffers;
+    rc_pointer<TPattern> ptBackgroundColor;
+    std::vector<rc_pointer<TLight> > tLightList;
+    TObjectArray tAreaLightList;
+    std::list<rc_pointer<TImageFilter> > tFilterList;
+    rc_pointer<TImageIO> ptImageIO;
+    TProgram tGlobalData;
 
-  protected:
+    bool recursiveLocateLights(rc_pointer<TObject> obj, TObjectArray& light_manip_list, bool addlights = true);
 
-    magic_pointer<TObject>   ptWorld;
-    magic_pointer<TCamera>   ptCamera;
-    magic_pointer<TRenderer> ptRenderer;
-    magic_pointer<TMaterial> ptDefaultMaterial;
-    TAtmosphere           tAtmosphere;
-    bool                  gParticipatingMedia;
-    Word                  wNeededBuffers;
-    size_t                zWidth;
-    size_t                zHeight;
-    SBuffers              sBuffers;
-    magic_pointer<TPattern> ptBackgroundColor;
-    vector<magic_pointer<TLight> >     tLightList;
-    vector<magic_pointer<TObject> >    tAreaLightList;    
-    list<magic_pointer<TImageFilter> > tFilterList;
-    magic_pointer<TImageIO>  ptImageIO;
-    TProgram              tGlobalData;
-
-    bool recursiveLocateLights(magic_pointer<TObject> obj, TObjectVector& light_manip_list, bool addlights = true);
-  
   public:
 
     TScene (void);
 
     TColor backgroundColor (const TSurfaceData& rktDATA) const { return ptBackgroundColor->color (rktDATA); }
-    magic_pointer<TCamera> camera (void) const { return ptCamera; }
-    magic_pointer<TObject> world (void) const { return ptWorld; }
-    vector<magic_pointer<TLight> >& lightList (void) { return tLightList; }
-    vector<magic_pointer<TObject> >& areaLightList (void) { return tAreaLightList; }  
+    rc_pointer<TCamera> camera (void) const { return ptCamera; }
+    rc_pointer<TObject> world (void) const { return ptWorld; }
+    std::vector<rc_pointer<TLight> >& lightList (void) { return tLightList; }
+    std::vector<rc_pointer<TObject> >& areaLightList (void) { return tAreaLightList; }
     SBuffers* buffers (void) { return &sBuffers; }
     Word neededBuffers (void) const { return wNeededBuffers; }
     bool participatingMedia (void) const { return gParticipatingMedia; }
-    magic_pointer<TRenderer> renderer (void) { return ptRenderer; }
+    rc_pointer<TRenderer> renderer (void) { return ptRenderer; }
     TAtmosphere* atmosphere (void) { return &tAtmosphere; }
-    magic_pointer<TImageIO> imageIO (void) { return ptImageIO; }
+    rc_pointer<TImageIO> imageIO (void) { return ptImageIO; }
     TProgram* globalData (void) { return &tGlobalData; }
 
-    int setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
-    int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
+    AttributeErrorCode setAttribute (const std::string& rktNAME, Attribute nVALUE);
+    AttributeErrorCode getAttribute (const std::string& rktNAME, Attribute& rnVALUE);
     void getAttributeList (TAttributeList& rtLIST) const;
 
-    void setBackgroundColor (magic_pointer<TPattern> ptPATTERN) { ptBackgroundColor = ptPATTERN; }
-    void setWorld (magic_pointer<TObject> ptWORLD) { ptWorld = ptWORLD; }
-    void setCamera (magic_pointer<TCamera> ptCAMERA) { ptCamera = ptCAMERA; }
-    void addObject(magic_pointer<TObject> ptOBJECT);
-    void addLight (magic_pointer<TLight> ptLIGHT);
-    void addAreaLight (magic_pointer<TObject> ptLIGHT);
-    void setRenderer (magic_pointer<TRenderer> ptRENDERER) { ptRenderer = ptRENDERER; }
-    void setImageOutput (magic_pointer<TImageIO> ptIMAGE_IO) { ptImageIO = ptIMAGE_IO; }
+    void setBackgroundColor (rc_pointer<TPattern> ptPATTERN) { ptBackgroundColor = ptPATTERN; }
+    void setWorld (rc_pointer<TObject> ptWORLD) { ptWorld = ptWORLD; }
+    void setCamera (rc_pointer<TCamera> ptCAMERA) { ptCamera = ptCAMERA; }
+    void addObject(rc_pointer<TObject> ptOBJECT);
+    void addLight (rc_pointer<TLight> ptLIGHT);
+    void addAreaLight (rc_pointer<TObject> ptLIGHT);
+    void setRenderer (rc_pointer<TRenderer> ptRENDERER) { ptRenderer = ptRENDERER; }
+    void setImageOutput (rc_pointer<TImageIO> ptIMAGE_IO) { ptImageIO = ptIMAGE_IO; }
     void setParticipatingMedia (bool gACTIVE) { gParticipatingMedia = gACTIVE; }
-    void addImageFilter (magic_pointer<TImageFilter> ptFILTER);
-    void setOutputFileName (const string& rktNAME);
+    void addImageFilter (rc_pointer<TImageFilter> ptFILTER);
+    void setOutputFileName (const std::string& rktNAME);
 
     void setWidth (size_t zWIDTH)
     {
       if( zWidth != zWIDTH )
       {
-	destroy_buffers();
+        destroy_buffers();
 
-	zWidth = zWIDTH;
+        zWidth = zWIDTH;
 
-	if( (zWidth > 0) && (zHeight > 0) )
-	{
-	  create_buffers();
-	}
+        if( (zWidth > 0) && (zHeight > 0) )
+        {
+          create_buffers();
+        }
       }
     }
-    
+
     void setHeight (size_t zHEIGHT)
     {
       if( zHeight != zHEIGHT )
       {
-	destroy_buffers();
+        destroy_buffers();
 
-	zHeight = zHEIGHT;
+        zHeight = zHEIGHT;
 
-	if( (zWidth > 0) && (zHeight > 0) )
-	{
-	  create_buffers();
-	}
-      }      
+        if( (zWidth > 0) && (zHeight > 0) )
+        {
+          create_buffers();
+        }
+      }
     }
 
     void addBuffer (Word wBUFFER)
@@ -153,13 +154,12 @@ class TScene : public TProcedural
     bool postprocess (void);
     bool saveImage (void);
 
-    void printDebug (const string& indent) const;
-
     EClass classType (void) const { return FX_SCENE_CLASS; }
-    string className (void) const { return "Scene"; }
-    virtual TUserFunctionMap getUserFunctions();  
-
-};  /* class TScene */
+    virtual std::string name (void) const { return "Scene"; }
+    virtual std::string internalMembers(const Indentation& indent, StringDumpable::PrefixType prefix) const;
+    virtual TUserFunctionMap getUserFunctions();
+  };  /* class TScene */
+} // end namespace panorama
 
 
 #endif  /* _RT_SCENE__ */

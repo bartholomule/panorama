@@ -40,7 +40,7 @@ class TPointLight : public TLight
       TScalar   tDist = Distance (rktPOINT, location());
       TScalar   f = tFalloff.z() + tDist * (tFalloff.y() + (tFalloff.x() * tDist));
 
-      return ( f != 0.0 ) ? min (TScalar (1) / f, TScalar (1)) : TScalar (1);
+      return ( f != 0.0 ) ? std::min (TScalar (1) / f, TScalar (1)) : TScalar (1);
      }
 
   public:
@@ -55,8 +55,8 @@ class TPointLight : public TLight
     
     bool initialize (void);
 
-    int setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
-    int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
+    int setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
+    int getAttribute (const std::string& rktNAME, NAttribute& rnVALUE);
     void getAttributeList (TAttributeList& rtLIST) const;
     
     void setFalloff (const TVector& rktFALLOFF)
@@ -88,9 +88,9 @@ class TPointLight : public TLight
 
     TColor scatteredLight (const TSurfaceData& rktDATA) const;
 
-    string className (void) const { return "PointLight"; }
+    std::string className (void) const { return "PointLight"; }
  
-    void printDebug (const string& indent) const;
+    void printDebug (const std::string& indent) const;
 
     virtual TPointLight* clone_new() const { return new TPointLight(*this); }
 

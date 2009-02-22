@@ -16,37 +16,40 @@
 *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef _IMAGE_IO__
-#define _IMAGE_IO__
+#ifndef PANORAMA_IMAGE_IO_H_INCLUDED
+#define PANORAMA_IMAGE_IO_H_INCLUDED
 
 #include <string>
 #include "llapi/image.h"
 #include "llapi/procedural.h"
 
-class TImageIO : public TProcedural
+namespace panorama
 {
+
+  class TImageIO : public TProcedural
+  {
 
   protected:
 
-    string   tFileName;
-    bool     bSilent;
-    
+    std::string tFileName;
+    bool bSilent;
+
   public:
 
     TImageIO(): bSilent(false) { }
-  
-    virtual bool initialize (void) { return TProcedural::initialize(); }
-    
-    int setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
-    int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
+
+    AttributeErrorCode setAttribute (const std::string& rktNAME, Attribute nVALUE);
+    AttributeErrorCode getAttribute (const std::string& rktNAME, Attribute& rnVALUE);
     void getAttributeList (TAttributeList& rtLIST) const;
 
     virtual int save (const TImage* pktIMAGE) = 0;
     virtual TImage* load (void) = 0;
     void setSilent(bool b = true) { bSilent = b; }
-  
-    EClass classType (void) const { return FX_IMAGE_IO_CLASS; }
-    
-};  /* class TImageIO */
 
-#endif  /* _IMAGE_IO__ */
+    EClass classType (void) const { return FX_IMAGE_IO_CLASS; }
+
+  };  /* class TImageIO */
+
+} // end namespace panorama
+
+#endif  /* PANORAMA_IMAGE_IO_H_INCLUDED */

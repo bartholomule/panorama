@@ -21,8 +21,8 @@
 
 #include <string>
 #include "llapi/scene.h"
-#include <gtk--/dialog.h>
-#include <gtk--/checkbutton.h>
+#include <gtkmm/dialog.h>
+#include <gtkmm/checkbutton.h>
 
 class TRenderDialog : public Gtk::Dialog
 {

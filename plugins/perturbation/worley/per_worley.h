@@ -43,13 +43,13 @@ class TPerturbationWorley : public TPerturbation
 
     TVector perturbNormal (const TSurfaceData& rktDATA) const;
       
-    int setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
-    int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
+    int setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
+    int getAttribute (const std::string& rktNAME, NAttribute& rnVALUE);
     void getAttributeList (TAttributeList& rtLIST) const;
 
     void setWorleyPattern (magic_pointer<TPatternWorley> ptPATTERN) { ptWorleyPattern = ptPATTERN; }
 
-    string className (void) const { return "PerturbationWorley"; }
+    std::string className (void) const { return "PerturbationWorley"; }
     TPerturbationWorley* clone_new() const { return new TPerturbationWorley(*this); }
 };  /* class TPerturbationWorley */
 
@@ -66,7 +66,7 @@ inline TVector TPerturbationWorley::perturbNormal (const TSurfaceData& rktDATA) 
   {
     if ( !ptWorleyPattern )
     {
-      GOM.error() << ("Error: worley_pattern must be set") << endl;
+      GOM.error() << ("Error: worley_pattern must be set") << std::endl;
       exit (1);
     }
 

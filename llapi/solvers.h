@@ -184,13 +184,13 @@ template <class base_type, class data_fn, class guess_fn>
 vector<base_type> simple_roots(base_type min, base_type max, data_fn dat,
 			       base_type value,
 			       guess_fn get_next_guess,
-             vector<base_type> guesses,
+             std::vector<base_type> guesses,
 			       base_type epsilon = base_type(double(1e-13)),			       
 			       int est_roots = 5,
 			       int max_iterations = 100,			       
 			       bool sort_roots = true)
 {
-  vector<base_type> found_roots;
+  std::vector<base_type> found_roots;
 
   base_type x;
   base_type next_x;
@@ -319,7 +319,7 @@ template <class base_type, class data_fn>
 vector<base_type> solve(base_type min, base_type max, data_fn dat,
 			base_type value,
 			int num_roots,			
-      const vector<base_type>& guesses,
+      const std::vector<base_type>& guesses,
 			base_type epsilon = base_type(double(1e-13)))  
 {
   return simple_roots<base_type,data_fn>(min, max, dat, value,
@@ -340,7 +340,7 @@ template <class base_type, class data_fn>
 vector<base_type> solve(base_type min, base_type max, data_fn dat, base_type value, int num_roots = 5, 
                         base_type epsilon = base_type(double(1e-13)))
 {
-  vector<base_type> guesses;
+  std::vector<base_type> guesses;
   return solve(min, max, dat, value, num_roots, guesses, epsilon);
 }
 
@@ -359,7 +359,7 @@ vector<base_type> solve(base_type min, base_type max, data_fn dat,
 		        guess_fn get_next_guess = &newton_next_guess<base_type, data_fn>,
 			base_type epsilon = base_type(double(1e-13)),
 			solve_fn method = &simple_roots<base_type, data_fn, guess_fn>,
-			const vector<base_type>& guesses = vector<base_type>())
+			const std::vector<base_type>& guesses = std::vector<base_type>())
 {
   return method(min, max, dat, value, get_next_guess, epsilon, guesses, num_roots);
 } /* solve() */
@@ -371,7 +371,7 @@ vector<base_type> solve(base_type min, base_type max, data_fn dat,
 // way to evaluate a polynomial (in terms of adds and multiplies). 
 //
 template <class base_type>
-base_type horner_polynomial_evaluate(base_type x, const vector<base_type>& hp)
+base_type horner_polynomial_evaluate(base_type x, const std::vector<base_type>& hp)
 {
   base_type retval = 0;
   int order = int(hp.size()) - 1;
@@ -402,10 +402,10 @@ base_type horner_polynomial_evaluate(base_type x, const vector<base_type>& hp)
 //
 template <class base_type>
 vector<base_type> horner_factor_out_zero(base_type zero,
-					 const vector<base_type>& hp,
+					 const std::vector<base_type>& hp,
 					 base_type& value)
 {
-  vector<base_type> r;
+  std::vector<base_type> r;
   int terms = int(hp.size());
   int new_terms = terms - 1;
   value = base_type(0);
@@ -433,7 +433,7 @@ vector<base_type> horner_factor_out_zero(base_type zero,
 // use in something like newton's method).
 //
 template <class base_type>
-base_type horner_deriv_evaluate(base_type x, const vector<base_type>& hp,
+base_type horner_deriv_evaluate(base_type x, const std::vector<base_type>& hp,
 				base_type& deriv_value)
 {
   // Zero out the initial values.
@@ -471,7 +471,7 @@ inline base_type tfabs(base_type b)
 // coefficients
 //
 template <class base_type>
-vector<base_type> remove_useless_poly_zeros(const vector<base_type>& hp,
+vector<base_type> remove_useless_poly_zeros(const std::vector<base_type>& hp,
 					    base_type epsilon = base_type(double(1e-13)))
 {
   int i = hp.size();
@@ -479,7 +479,7 @@ vector<base_type> remove_useless_poly_zeros(const vector<base_type>& hp,
   {
     --i;
   }
-  return vector<base_type>(hp.begin(), hp.begin() + i);
+  return std::vector<base_type>(hp.begin(), hp.begin() + i);
 } /* remove_useless_poly_zeros() */
 
 
@@ -489,7 +489,7 @@ vector<base_type> remove_useless_poly_zeros(const vector<base_type>& hp,
 // and complex zeros).
 //
 template <class base_type>
-base_type zero_disk_radius(const vector<base_type>& hp)
+base_type zero_disk_radius(const std::vector<base_type>& hp)
 {
   // The radius is given by:
   // rad = 1 + |An|^-1 * max |Ak|
@@ -528,13 +528,13 @@ base_type zero_disk_radius(const vector<base_type>& hp)
 // find the zeros. 
 //
 template <class base_type>
-vector<base_type> poly_solve(const vector<base_type>& hp,
+vector<base_type> poly_solve(const std::vector<base_type>& hp,
 			     int max_iterations=50,
 			     base_type epsilon = base_type(double(1e-13)),
 			     int tries_per_root = 5)
 {
-  vector<base_type> zero_vec;
-  vector<base_type> working_vec(remove_useless_poly_zeros(hp, epsilon));
+  std::vector<base_type> zero_vec;
+  std::vector<base_type> working_vec(remove_useless_poly_zeros(hp, epsilon));
   base_type disk_radius = zero_disk_radius(working_vec);
 
 #if       defined(USELESS_DEBUG)  

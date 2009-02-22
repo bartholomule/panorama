@@ -105,7 +105,7 @@ int TImageGif::save (const TImage* pktIMAGE) {
   {
     if( !bSilent )
     {
-      GOM.error() << "TImageGif::save : Error saving " << tFileName << endl;
+      GOM.error() << "TImageGif::save : Error saving " << tFileName << std::endl;
     }
     return -1;
   }
@@ -115,7 +115,7 @@ int TImageGif::save (const TImage* pktIMAGE) {
   { 
     if( !bSilent )
     {
-      GOM.error() << "TImageGif::save : Error saving " << tFileName << endl;
+      GOM.error() << "TImageGif::save : Error saving " << tFileName << std::endl;
     }
     return -1;
   }
@@ -125,7 +125,7 @@ int TImageGif::save (const TImage* pktIMAGE) {
   { 
     if( !bSilent )
     {
-      GOM.error() << "TImageGif::save : Error saving " << tFileName << endl;
+      GOM.error() << "TImageGif::save : Error saving " << tFileName << std::endl;
     }
     return -1;
   }
@@ -139,7 +139,7 @@ int TImageGif::save (const TImage* pktIMAGE) {
   free (ptBlue);
   free (ptOutputImage);
 
-  GOM.error() << "Warning: No image compression performed - LZW algorithm is patented by UniSys." << endl;
+  GOM.error() << "Warning: No image compression performed - LZW algorithm is patented by UniSys." << std::endl;
 
   return 0;
   
@@ -166,7 +166,7 @@ TImage* TImageGif::load (void)
   {
     if( !bSilent )
     {
-      GOM.error() << "TImageGif::load : Error loading " << tFileName << endl;
+      GOM.error() << "TImageGif::load : Error loading " << tFileName << std::endl;
     }
     return NULL;
   }
@@ -175,7 +175,7 @@ TImage* TImageGif::load (void)
   { 
     if( !bSilent )
     {
-      GOM.error() << "TImageGif::load : Error loading " << tFileName << endl;
+      GOM.error() << "TImageGif::load : Error loading " << tFileName << std::endl;
     }
     return NULL;
   }

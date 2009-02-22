@@ -18,13 +18,14 @@
 
 #include <cmath>
 #include <string.h>
+#include <ft2build.h>
 #include <freetype/freetype.h>
 #include "llapi/file.h"
 #include "llapi/scene.h"
 #include "if_text.h"
 #include "llapi/attribute.h"
 
-extern multimap<string, string>   tConfigData;
+extern std::multimap<std::string, std::string>   tConfigData;
 
 #if defined(FREETYPE_MAJOR) && (FREETYPE_MAJOR >= 2)
 #warning "Using Freetype 2"
@@ -49,7 +50,7 @@ TIF_Text::TIF_Text (void) :
 
 }  /* TIF_Text() */
 
-int TIF_Text::setAttribute (const string& rktNAME, NAttribute nVALUE,
+int TIF_Text::setAttribute (const std::string& rktNAME, NAttribute nVALUE,
                             EAttribType eTYPE)
 {
 
@@ -166,7 +167,7 @@ int TIF_Text::setAttribute (const string& rktNAME, NAttribute nVALUE,
 }  /* setAttribute() */
 
 
-int TIF_Text::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
+int TIF_Text::getAttribute (const std::string& rktNAME, NAttribute& rnVALUE)
 {
 
 #if !defined(NEW_ATTRIBUTES)

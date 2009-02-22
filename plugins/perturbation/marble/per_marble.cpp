@@ -25,7 +25,7 @@
 DEFINE_PLUGIN ("PerturbationMarble", FX_PERTURBATION_CLASS, TPerturbationMarble);
 
 
-int TPerturbationMarble::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
+int TPerturbationMarble::setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
 
   if ( rktNAME == "bump" )
@@ -85,7 +85,7 @@ int TPerturbationMarble::setAttribute (const string& rktNAME, NAttribute nVALUE,
 }  /* setAttribute() */
 
 
-int TPerturbationMarble::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
+int TPerturbationMarble::getAttribute (const std::string& rktNAME, NAttribute& rnVALUE)
 {
 
 #if !defined(NEW_ATTRIBUTES)

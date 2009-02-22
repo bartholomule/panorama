@@ -61,7 +61,7 @@ class TZBufferRenderer : public TRaytracer
                              TVertexData& rtVERTEX4) const;
     void sortVertices (TVertexData atVERTEX [3]) const;
     TColor getRadiance (TSurfaceData& rtDATA, Word wDEPTH) const;
-    void calculateIllumination (list<TMesh*>& rtMESH_LIST) const;
+    void calculateIllumination (std::list<TMesh*>& rtMESH_LIST) const;
     
   public:
 
@@ -77,8 +77,8 @@ class TZBufferRenderer : public TRaytracer
 
     void render (SBuffers& rsBUFFERS);
 
-    int setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
-    int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
+    int setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
+    int getAttribute (const std::string& rktNAME, NAttribute& rnVALUE);
     void getAttributeList (TAttributeList& rtLIST) const;
 
     TColor directLight (const TSurfaceData& rktDATA) const;
@@ -89,10 +89,10 @@ class TZBufferRenderer : public TRaytracer
 
     Word neededBuffers (void) const { return FX_ZBUFFER; }
     
-    string className (void) const { return "ZBufferRenderer"; }
+    std::string className (void) const { return "ZBufferRenderer"; }
     virtual TZBufferRenderer* clone_new() const { return new TZBufferRenderer(*this); }
   
-    void printDebug (const string& indent) const;
+    void printDebug (const std::string& indent) const;
     
 };  /* class TZBufferRenderer */
 

@@ -16,98 +16,84 @@
 *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef _PATTERN__
-#define _PATTERN__
+#ifndef PANORAMA_PATTERN_H_INCLUDED
+#define PANORAMA_PATTERN_H_INCLUDED
 
 #include "llapi/procedural.h"
 #include "llapi/surface_data.h"
 
-enum EWarps
+namespace panorama
 {
 
-  FX_NO_WARP = 0,
-  FX_SPHERICAL_WARP,
-  FX_CYLINDRICAL_WARP
-
-};  /* enum EWarps */
-
-class TPattern : public TProcedural
-{
-
-protected:
-
-  TVector          tRotation;
-  TVector          tScaling;
-  TVector          tTranslation;
-  TVector          tRSTScaling;
-  EWarps           eWarp;
-
-  mutable TColor   tColor;
-
-  TMatrix          tMatrix;
-  TMatrix          tInverseMatrix;
-  TMatrix          tMatrixRotation;
-
-  bool             gTransformIdentity;
-
-  void recalculateMatrix (void);
-
-  void sphericalWarp (TVector& rtPOINT) const;
-  void cylindricalWarp (TVector& rtPOINT) const;
-
-  void sphericalAntiWarp (TVector& rtPOINT) const;
-  void cylindricalAntiWarp (TVector& rtPOINT) const;
-
-public:
-
-  TPattern (void)
+  enum EWarps
   {
-    initialize();
-  }
-  TPattern (const TColor& rktCOLOR) :
-    tColor (rktCOLOR) 
+
+    FX_NO_WARP = 0,
+    FX_SPHERICAL_WARP,
+    FX_CYLINDRICAL_WARP
+
+  };  /* enum EWarps */
+
+  class TPattern : public TProcedural
   {
-    initialize();
-  }
-  TPattern (const TScalar& rktSCALAR) 
-  {
-    setScalar (rktSCALAR);
 
-    initialize();
-  }
+  protected:
 
-  virtual TScalar scalar (const TSurfaceData& rktDATA) const { return color (rktDATA).average(); }
-  virtual TColor  color  (const TSurfaceData& rktDATA) const;
+    TVector tRotation;
+    TVector tScaling;
+    TVector tTranslation;
+    TVector tRSTScaling;
+    EWarps eWarp;
 
-  virtual TColor pattern (const TSurfaceData& rktDATA) const { return tColor; }
+    mutable TColor tColor;
 
-  virtual TPattern* clone_new() const { return new TPattern(*this); }
+    TMatrix tMatrix;
+    TMatrix tMatrixRotation;
+
+    bool gTransformIdentity;
+
+    void recalculateMatrix (void);
+
+    void sphericalWarp (TPoint& rtPOINT) const;
+    void cylindricalWarp (TPoint& rtPOINT) const;
+
+    void sphericalAntiWarp (TPoint& rtPOINT) const;
+    void cylindricalAntiWarp (TPoint& rtPOINT) const;
+
+  public:
+
+    TPattern()
+    {
+    }
+
+    virtual ~TPattern();
+
+    TColor color(const TSurfaceData& rktDATA) const;
+
+    virtual TScalar scalar (const TSurfaceData& rktDATA) const;
+    virtual TColor pattern(const TSurfaceData& rktDATA) const = 0;
+
+    TPoint warp (const TPoint& rktPOINT) const;
+    TVector antiWarp (const TVector& rktPOINT) const;
+
+    EClass classType (void) const { return FX_PATTERN_CLASS; }
+
+    virtual TUserFunctionMap getUserFunctions();
+
+    AttributeErrorCode setAttribute (const std::string& rktNAME, Attribute nVALUE);
+    AttributeErrorCode getAttribute (const std::string& rktNAME, Attribute& rnVALUE);
+    void getAttributeList (TAttributeList& rtLIST) const;
 
 
-  void setColor (const TColor& rktCOLOR) { tColor = rktCOLOR; }
-  void setScalar (TScalar tSCALAR)
-  {
-    tColor.setRed (tSCALAR);
-    tColor.setGreen (tSCALAR);
-    tColor.setBlue (tSCALAR);
-  }
+    // FIXME! DELETEME!
+    /**
+     * These are from StringDumpable, but here (temporarily) to force
+     * subclasses to override them.
+     */
+    virtual std::string name (void) const { return "Pattern"; }
+    virtual std::string internalMembers(const Indentation& indent, PrefixType prefix) const = 0;
+    virtual TPattern* clone_new() const = 0;
+  };  /* class TPattern */
+} // end namespace panorama
 
-  TVector warp (const TVector& rktPOINT) const;
-  TVector antiWarp (const TVector& rktPOINT) const;
-    
-  TColor  lastColor  (void) const { return tColor; }
-  TScalar lastScalar (void) const { return tColor.average(); }
-
-  int setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
-  int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
-  void getAttributeList (TAttributeList& rtLIST) const;
-
-  EClass classType (void) const { return FX_PATTERN_CLASS; }
-  string className (void) const { return "Pattern"; }
-
-  virtual TUserFunctionMap getUserFunctions();
-  
-  virtual bool initialize (void);
-};  /* class TPattern */
-
-#endif  /* _PATTERN__ */
+#endif  /* PANORAMA_PATTERN_H_INCLUDED */

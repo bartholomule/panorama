@@ -1,0 +1,4 @@
+SUBDIRS =					\
+	parallel				\
+	pinhole					\
+	thinlens

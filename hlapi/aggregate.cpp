@@ -159,7 +159,7 @@ void TAggregate::addFilter (const magic_pointer<TObjectFilter> pktFILTER)
 
 
 // Attribute management
-int TAggregate::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
+int TAggregate::setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
   if ( rktNAME == "containsobjects" )
   {
@@ -172,7 +172,7 @@ int TAggregate::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribT
   return FX_ATTRIB_OK;
 } /* setAttribute() */
 
-int TAggregate::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
+int TAggregate::getAttribute (const std::string& rktNAME, NAttribute& rnVALUE)
 {
   if ( rktNAME == "containsobjects" )
   {
@@ -198,22 +198,22 @@ void TAggregate::getAttributeList (TAttributeList& rtLIST) const
   
 } /* getAttributeList() */
 
-void TAggregate::printDebug (const string& indent) const
+void TAggregate::printDebug (const std::string& indent) const
 {
 
-  GOM.debug() << indent << "[_" << className() << "_]" << endl;
+  GOM.debug() << indent << "[_" << className() << "_]" << std::endl;
 
-  string new_indent = TDebug::Indent(indent);
+  std::string new_indent = TDebug::Indent(indent);
   
   GOM.debug() << new_indent << "Bounding box = ";
   tBoundingBox.printDebug(new_indent);
-  GOM.debug() << endl;
+  GOM.debug() << std::endl;
   
   for (TObjectList::const_iterator tIter = tObjectList.begin(); ( tIter != tObjectList.end() ) ;tIter++)
   {
     (*tIter)->printDebug(new_indent);
   }
-  GOM.debug() << indent << "." << endl;
+  GOM.debug() << indent << "." << std::endl;
   
 }  /* printDebug() */
 

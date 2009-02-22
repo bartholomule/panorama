@@ -35,7 +35,7 @@ void TSubdivVert::addNormalFrom (TVector& rtSUM,
 }  /* addNormalFrom() */
 
 
-TSubdivVert::TSubdivVert (const string& rktNAME, const TVector& rktPOSITION)
+TSubdivVert::TSubdivVert (const std::string& rktNAME, const TVector& rktPOSITION)
 {
   gFoundNormal = false;
 

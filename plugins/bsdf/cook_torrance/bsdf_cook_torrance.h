@@ -66,11 +66,11 @@ class TBsdfCookTorrance : public TBsdf
       rtDIR = ( dotProduct (v, rktDATA.normal()) > 0 ) ? v : -v;
     }
 
-    int setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
-    int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
+    int setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
+    int getAttribute (const std::string& rktNAME, NAttribute& rnVALUE);
     void getAttributeList (TAttributeList& rtLIST) const;
 
-    string className (void) const { return "BsdfCookTorrance"; }
+    std::string className (void) const { return "BsdfCookTorrance"; }
     TBsdfCookTorrance* clone_new() const { return new TBsdfCookTorrance(*this); }
 
 };  /* class TBsdfCookTorrance */

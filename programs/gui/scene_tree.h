@@ -21,22 +21,22 @@
 
 #include "llapi/scene.h"
 #include <string>
-#include <gtk--/tree.h>
-#include <gtk--/button.h>
+#include <gtkmm/treeview.h>
+#include <gtkmm/button.h>
 
-class TSceneTree : public Gtk::Tree
+class TSceneTree : public Gtk::TreeView
 {
 
   protected:
 
     magic_pointer<TScene> ptScene;
 
-    bool recSetObjects (Gtk::Tree* ptTREE, magic_pointer<TObject> ptOBJ);
+    bool recSetObjects (Gtk::TreeView* ptTREE, magic_pointer<TObject> ptOBJ);
     
-    bool setCamera (Gtk::Tree* ptTREE);
-    bool setLights (Gtk::Tree* ptTREE);
-    bool setRenderer (Gtk::Tree* ptTREE);  
-    bool setObjects (Gtk::Tree* ptTREE);
+    bool setCamera (Gtk::TreeView* ptTREE);
+    bool setLights (Gtk::TreeView* ptTREE);
+    bool setRenderer (Gtk::TreeView* ptTREE);  
+    bool setObjects (Gtk::TreeView* ptTREE);
     
   public:
 

@@ -26,7 +26,7 @@ string    TScenePsl::_tInputFileName = "";
 DWord     TScenePsl::_dwLineNumber   = 1L;
 TScene*   TScenePsl::_ptParsedScene  = NULL;
 
-TScene* TScenePsl::_load (const string& rktNAME)
+TScene* TScenePsl::_load (const std::string& rktNAME)
 {
 
   int   iResult;
@@ -38,7 +38,7 @@ TScene* TScenePsl::_load (const string& rktNAME)
 
   if ( !psl_in )
   {
-    GOM.error() << "ERROR: Could not open scene file." << endl;
+    GOM.error() << "ERROR: Could not open scene file." << std::endl;
     return NULL;
   }
 
@@ -63,7 +63,7 @@ TScene* TScenePsl::_load (const string& rktNAME)
 }  /* _load() */
 
 
-int TScenePsl::_save (const string& rktNAME, const TScene* pktSCENE)
+int TScenePsl::_save (const std::string& rktNAME, const TScene* pktSCENE)
 {
 
   return 0;

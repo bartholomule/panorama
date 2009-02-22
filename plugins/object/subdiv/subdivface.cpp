@@ -135,7 +135,7 @@ bool TSubdivFace::_findTriangleIntersection (const TRay& rktRAY,
 
 bool TSubdivFace::determineFinality() const
 {
-  for (vector<TSubdivVert*>::const_iterator tIter = tVerts.begin(); ( tIter != tVerts.end() ) ;tIter++)
+  for (std::vector<TSubdivVert*>::const_iterator tIter = tVerts.begin(); ( tIter != tVerts.end() ) ;tIter++)
   {
     if ( (*tIter)->bRemainingDepth > 0 )
     {
@@ -158,7 +158,7 @@ bool TSubdivFace::findBoundingBoxFromChildren()
     return true;
   }
 
-  for (vector<TSubdivFace*>::const_iterator tIter = tFaces.begin(); ( tIter != tFaces.end() ) ;tIter++)
+  for (std::vector<TSubdivFace*>::const_iterator tIter = tFaces.begin(); ( tIter != tFaces.end() ) ;tIter++)
   {
     const TBoundingBox& rktBox = (*tIter)->tBoundingBox;
 
@@ -188,7 +188,7 @@ void TSubdivFace::findBoundingBoxFromPoints()
   TVector   tMin, tMax;
   bool      gFirst = true;
 
-  for (vector<TSubdivVert*>::const_iterator tVertIter = tVerts.begin(); ( tVertIter != tVerts.end() ) ;tVertIter++)
+  for (std::vector<TSubdivVert*>::const_iterator tVertIter = tVerts.begin(); ( tVertIter != tVerts.end() ) ;tVertIter++)
   {
     if ( gFinal )
     {
@@ -206,7 +206,7 @@ void TSubdivFace::findBoundingBoxFromPoints()
     {
       for (TSubdivVert::const_face_iterator tFaceIter = (*tVertIter)->beginFace(); ( tFaceIter != (*tVertIter)->endFace() ) ;tFaceIter++)
       {
-        for (vector<TSubdivVert*>::const_iterator tNeighborIter = (*tFaceIter)->tVerts.begin(); ( tNeighborIter != (*tFaceIter)->tVerts.end() ) ;tNeighborIter++)
+        for (std::vector<TSubdivVert*>::const_iterator tNeighborIter = (*tFaceIter)->tVerts.begin(); ( tNeighborIter != (*tFaceIter)->tVerts.end() ) ;tNeighborIter++)
         {
           const TVector& rkPos = (*tNeighborIter)->tPosition;
           if ( gFirst )
@@ -248,7 +248,7 @@ void TSubdivFace::generateFace (TSubdivVert* ptVERT)
   TSubdivEdge*          tEdgeBefore;
   TSubdivEdge*          tEdgeAfter;
   TSubdivFace*          tNewFace;
-  vector<TSubdivVert*>  tVertList;
+  std::vector<TSubdivVert*>  tVertList;
 
   if ( tGeneratedFaces.find (ptVERT) != tGeneratedFaces.end() )
   {
@@ -280,7 +280,7 @@ void TSubdivFace::generateFace (TSubdivVert* ptVERT)
 //
 void TSubdivFace::subdivide()
 {
-  for (vector<TSubdivVert*>::const_iterator tVertIter = tVerts.begin(); ( tVertIter != tVerts.end() ) ;tVertIter++)
+  for (std::vector<TSubdivVert*>::const_iterator tVertIter = tVerts.begin(); ( tVertIter != tVerts.end() ) ;tVertIter++)
   {
     for (TSubdivVert::const_face_iterator tFaceIter = (*tVertIter)->beginFace(); ( tFaceIter != (*tVertIter)->endFace() ) ;tFaceIter++)
     {
@@ -316,7 +316,7 @@ bool TSubdivFace::findLocalIntersections (const TSubdiv& rktSUBDIV,
                                           const TRay& rktRAY, 
                                           TSpanList& rtLIST) const
 {
-  vector<TSubdivVert*>::const_iterator   tIter;
+  std::vector<TSubdivVert*>::const_iterator   tIter;
   TSubdivVert*                           ptPivot;
   TSubdivVert*                           ptLast;
   TSubdivVert*                           ptCurrent;
@@ -376,7 +376,7 @@ bool TSubdivFace::findLocalIntersections (const TSubdiv& rktSUBDIV,
 }  /* findLocalIntersections() */
 
 
-TSubdivFace::TSubdivFace (const vector<TSubdivVert*>& rktVERTLIST)
+TSubdivFace::TSubdivFace (const std::vector<TSubdivVert*>& rktVERTLIST)
 {
   TSubdivVert *ptLast;
   TSubdivEdge *ptEdge;
@@ -390,7 +390,7 @@ TSubdivFace::TSubdivFace (const vector<TSubdivVert*>& rktVERTLIST)
   ptParent = NULL;
 
   ptLast = NULL;
-  for (vector<TSubdivVert*>::const_iterator tIter = tVerts.begin(); ( tIter != tVerts.end() ) ;tIter++)
+  for (std::vector<TSubdivVert*>::const_iterator tIter = tVerts.begin(); ( tIter != tVerts.end() ) ;tIter++)
   {
     (*tIter)->addFace(this);
     if ( ptLast != NULL )
@@ -444,7 +444,7 @@ bool TSubdivFace::findAllIntersections (const TSubdiv& rktSUBDIV,
 
   if ( gSubdivided )
   {
-    for (vector<TSubdivFace*>::const_iterator tIter = tFaces.begin(); ( tIter != tFaces.end() ) ;tIter++)
+    for (std::vector<TSubdivFace*>::const_iterator tIter = tFaces.begin(); ( tIter != tFaces.end() ) ;tIter++)
     {
       if ( (*tIter)->findAllIntersections (rktSUBDIV, rktORIGRAY, rktSCALE,
                                            rktRAY, rtLIST) )
@@ -472,7 +472,7 @@ TSubdivVert* TSubdivFace::findPoint()
  
   dwCount = 0;
   dwDepthSum = 0;
-  for (vector<TSubdivVert*>::const_iterator tIter = tVerts.begin(); ( tIter != tVerts.end() ) ;tIter++)
+  for (std::vector<TSubdivVert*>::const_iterator tIter = tVerts.begin(); ( tIter != tVerts.end() ) ;tIter++)
   {
     dwCount++;
     tTotal += (*tIter)->tPosition;
@@ -492,7 +492,7 @@ TSubdivVert* TSubdivFace::findPoint()
 TSubdivEdge* TSubdivFace::edgeBefore (TSubdivVert* ptVERT) const
 {
   TSubdivVert*                           ptLast;
-  vector<TSubdivVert*>::const_iterator   tIter;
+  std::vector<TSubdivVert*>::const_iterator   tIter;
 
   tIter = tVerts.begin();
   ptLast = *tIter;
@@ -523,7 +523,7 @@ TSubdivEdge* TSubdivFace::edgeBefore (TSubdivVert* ptVERT) const
 TSubdivEdge* TSubdivFace::edgeAfter (TSubdivVert* ptVERT) const
 {
   bool                                   gFound;
-  vector<TSubdivVert*>::const_iterator   tIter;
+  std::vector<TSubdivVert*>::const_iterator   tIter;
 
   gFound = false;
   tIter = tVerts.begin();

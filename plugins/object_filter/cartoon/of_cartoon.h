@@ -41,11 +41,11 @@ class TOF_Cartoon : public TObjectFilter
 
     TColor filterRadiance (TSurfaceData& rtDATA, const TColor& rktRAD) const;
 
-    int setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
-    int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
+    int setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
+    int getAttribute (const std::string& rktNAME, NAttribute& rnVALUE);
     void getAttributeList (TAttributeList& rtLIST) const;
 
-    string className (void) const { return "OF_Cartoon"; }
+    std::string className (void) const { return "OF_Cartoon"; }
 
     virtual TOF_Cartoon* clone_new() const { return new TOF_Cartoon(*this); }
   

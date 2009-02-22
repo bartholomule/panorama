@@ -83,7 +83,7 @@ void TIF_Fog::filter (SBuffers& rsBUFFERS)
 }  /* filter() */
 
 
-int TIF_Fog::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
+int TIF_Fog::setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
 
   if ( rktNAME == "color" )
@@ -134,7 +134,7 @@ int TIF_Fog::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType
 }  /* setAttribute() */
 
 
-int TIF_Fog::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
+int TIF_Fog::getAttribute (const std::string& rktNAME, NAttribute& rnVALUE)
 {
 
 #if !defined(NEW_ATTRIBUTES)  

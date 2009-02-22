@@ -16,36 +16,39 @@
 *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef _ATMOSPHERE__
-#define _ATMOSPHERE__
+#ifndef PANORAMA_ATMOSPHERE_H_INCLUDED
+#define PANORAMA_ATMOSPHERE_H_INCLUDED
 
 #include <vector>
 #include "llapi/bounding_box.h"
 #include "llapi/atmospheric_object.h"
-#include "generic/magic_pointer.h"
+#include "llapi/string_dumpable.hpp"
+#include "generic/rc_pointer.hpp"
 
-class TScene;
-
-class TAtmosphere
+namespace panorama
 {
+
+  class TScene;
+
+  class TAtmosphere
+  {
 
   protected:
 
     TScene*                       ptScene;
-    vector<magic_pointer<TAtmosphericObject> >   tAtmObjectList;
-    
+    std::vector<rc_pointer<TAtmosphericObject> >   tAtmObjectList;
+
   public:
 
     TColor filterRadiance (const TSurfaceData& rktDATA, const TColor& rktRAD) const;
-    TScalar transparency (const TVector& rktPOINT1, const TVector& rktPOINT2) const;
+    TScalar transparency (const TPoint& rktPOINT1, const TPoint& rktPOINT2) const;
 
-    void addObject (magic_pointer<TAtmosphericObject> ptATM_OBJ)
+    void addObject (rc_pointer<TAtmosphericObject> ptATM_OBJ)
     {
       tAtmObjectList.push_back (ptATM_OBJ);
     }
 
-    bool initialize (TScene* ptSCENE);
-    
-};  /* class TAtmosphere */
+  };  /* class TAtmosphere */
 
-#endif  /* _ATMOSPHERE__ */
+} // end namespace panorama
+#endif  /* PANORAMA_ATMOSPHERE_H_INCLUDED */

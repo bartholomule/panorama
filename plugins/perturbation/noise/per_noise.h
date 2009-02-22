@@ -46,13 +46,13 @@ class TPerturbationNoise : public TPerturbation
       
     TVector perturbNormal (const TSurfaceData& rktDATA) const;
 
-    int setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
-    int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
+    int setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
+    int getAttribute (const std::string& rktNAME, NAttribute& rnVALUE);
     void getAttributeList (TAttributeList& rtLIST) const;
 
     void setNoisePattern (magic_pointer<TPatternNoise> ptPATTERN) { ptNoisePattern = ptPATTERN; }
 
-    string className (void) const { return "PerturbationNoise"; }
+    std::string className (void) const { return "PerturbationNoise"; }
     TPerturbationNoise* clone_new() const { return new TPerturbationNoise(*this); }
 };  /* class TPerturbationNoise */
 
@@ -69,7 +69,7 @@ inline TVector TPerturbationNoise::perturbNormal (const TSurfaceData& rktDATA) c
 
     if ( !ptNoisePattern )
     {
-      GOM.error() << ("Error: noise_pattern must be set") << endl;
+      GOM.error() << ("Error: noise_pattern must be set") << std::endl;
       exit (1);
     }
 

@@ -28,6 +28,7 @@
 #endif
 
 #define YYSTYPE yy_data_type
+#define YYLEX_PARAM &yylval
 
 struct yy_data_type
 {
@@ -57,5 +58,6 @@ struct yy_data_type
 
 };
 
+typedef YYSTYPE yystype;
 
 #endif /* !defined(PARSED_TYPES_H) */

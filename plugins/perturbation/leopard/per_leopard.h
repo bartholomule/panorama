@@ -44,13 +44,13 @@ class TPerturbationLeopard : public TPerturbation
       
     TVector perturbNormal (const TSurfaceData& rktDATA) const;
 
-    int setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
-    int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
+    int setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
+    int getAttribute (const std::string& rktNAME, NAttribute& rnVALUE);
     void getAttributeList (TAttributeList& rtLIST) const;
 
     void setLeopardPattern (magic_pointer<TPatternLeopard> ptPATTERN) { ptLeopardPattern = ptPATTERN; }
 
-    string className (void) const { return "PerturbationLeopard"; }
+    std::string className (void) const { return "PerturbationLeopard"; }
     TPerturbationLeopard* clone_new() const { return new TPerturbationLeopard(*this); }
 };  /* class TPerturbationLeopard */
 
@@ -67,7 +67,7 @@ inline TVector TPerturbationLeopard::perturbNormal (const TSurfaceData& rktDATA)
 
     if ( !ptLeopardPattern )
     {
-      GOM.error() << ("Error: leopard_pattern must be set") << endl;
+      GOM.error() << ("Error: leopard_pattern must be set") << std::endl;
       exit (1);
     }
 

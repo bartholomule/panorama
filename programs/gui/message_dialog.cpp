@@ -21,7 +21,7 @@
 #include <gtk--/label.h>
 
 
-void MessageDialog (const string& rktTITLE, const string& rktTEXT)
+void MessageDialog (const std::string& rktTITLE, const std::string& rktTEXT)
 {
 
   Gtk::Dialog*   ptDialog;

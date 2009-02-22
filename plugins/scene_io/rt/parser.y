@@ -88,14 +88,6 @@
 #define YYDEBUG 0
 #define YYERROR_VERBOSE 1
 
-  
-// Fixes to allow bison v1.?? to work (the use of bison.simple has been lost).
-typedef YYSTYPE yystype;
-//typedef YYSTYPE yyltype;
-typedef char yysigned_char;
-extern int rt_lex(yystype *p);
-namespace yy { int yylex(yystype *p); }
-
 //---------------------------------------------------------------------------
 typedef TSceneRT::BASE_OBJECT_TYPE BASE_OBJECT_TYPE;
 typedef TSceneRT::attrib_type attrib_type;
@@ -109,22 +101,22 @@ typedef TSceneRT::attrib_type attrib_type;
 #define SCENE		(TSceneRT::_ptParsedScene)
 #define PARENT_OBJECT   (TSceneRT::_ptParent)
 #define WORLD           (TSceneRT::_ptWorld)
-extern void rt_error (const string& rksTEXT);
-extern void rt_warning (const string& rksTEXT);
+extern void rt_error (const std::string& rksTEXT);
+extern void rt_warning (const std::string& rksTEXT);
 //---------------------------------------------------------------------------
 
   
-BASE_OBJECT_TYPE NewObject (const string& rktCLASS, const BASE_OBJECT_TYPE& pktPARENT);
+BASE_OBJECT_TYPE NewObject (const std::string& rktCLASS, const BASE_OBJECT_TYPE& pktPARENT);
 
-void CreateObject (const string& rktCLASS, const string& rktDEF_CLASS);
+void CreateObject (const std::string& rktCLASS, const std::string& rktDEF_CLASS);
 
-magic_pointer<TAttribute> Instance(const string& s);
+magic_pointer<TAttribute> Instance(const std::string& s);
  
 void InitObjects (void);
 
-void report_reduction(const string& s);
+void report_reduction(const std::string& s);
 
-static void FIXME(const string& s) { GOM.error() << "FIXME: " << s << endl; }
+static void FIXME(const std::string& s) { GOM.error() << "FIXME: " << s << std::endl; }
 
 %}
 
@@ -225,7 +217,7 @@ statement               : definition
 				{
 				  if( !WORLD->containsObject( obj ) )
 				  {
-				    GOM.debug() << "Adding instance of " << obj->className() << " to world." << endl;
+				    GOM.debug() << "Adding instance of " << obj->className() << " to world." << std::endl;
 				    WORLD->add ( obj );
 				  }
 				}
@@ -326,29 +318,29 @@ simple_if_body          : definition
 definition		: T_DEFINE name expression ';'
                           {
 			    report_reduction("definition <-- DEFINE name expression ;");
-			    report_reduction(string("definition <-- DEFINE ") +
+			    report_reduction(std::string("definition <-- DEFINE ") +
 					     $2 + " " + $3->toString());
 
 			    if( rt_exec_ok() )
 			    {
 			      if( DATAMAP.find($2) != DATAMAP.end() )
 			      {
-				rt_warning(string($2) + " redefined here");
+				rt_warning(std::string($2) + " redefined here");
 				rt_warning("previously defined here: " + DATAMAP[$2].first);
 			      }
-			      GOM.debug() << "Defining \"" << string($2) << "\"" << endl;
+			      GOM.debug() << "Defining \"" << std::string($2) << "\"" << std::endl;
 			      
 			      char buffer[1024];
 			      sprintf(buffer,"%s line %d",
 				      TSceneRT::_tInputFileName.c_str(),
 				      int(TSceneRT::_dwLineNumber));
-			      DATAMAP[$2] = pair<string,attrib_type>(string(buffer),$3);
+			      DATAMAP[$2] = std::pair<std::string,attrib_type>(std::string(buffer),$3);
 			    } // exec ok.
 			  }
                           | T_REDEFINE name expression ';'
                           {
 			    report_reduction("definition <-- REDEFINE name expression ;");
-			    report_reduction(string("definition <-- DEFINE ") +
+			    report_reduction(std::string("definition <-- DEFINE ") +
 					     $2 + " " + $3->toString());
 
 			    if( rt_exec_ok() )
@@ -358,17 +350,17 @@ definition		: T_DEFINE name expression ';'
 			      /*
 			      if( DATAMAP.find($2) != DATAMAP.end() )
 			      {
-				rt_warning(string($2) + " redefined here");
+				rt_warning(std::string($2) + " redefined here");
 				rt_warning("previously defined here: " + DATAMAP[$2].first);
 			      }
 			      */
-			      GOM.debug() << "Defining \"" << string($2) << "\"" << endl;
+			      GOM.debug() << "Defining \"" << std::string($2) << "\"" << std::endl;
 			      
 			      char buffer[1024];
 			      sprintf(buffer,"%s line %d",
 				      TSceneRT::_tInputFileName.c_str(),
 				      int(TSceneRT::_dwLineNumber));
-			      DATAMAP[$2] = pair<string,attrib_type>(string(buffer),$3);
+			      DATAMAP[$2] = std::pair<std::string,attrib_type>(std::string(buffer),$3);
 			    } // exec ok.
 			  }
                         | T_DEFINE reserved_words name instance ';'
@@ -376,21 +368,21 @@ definition		: T_DEFINE name expression ';'
 			    report_reduction("definition <-- DEFINE reserved_words name instance");
 			    if( rt_exec_ok() )
 			    {
-			      cerr << "Warning: definition on line "
+			      std::cerr << "Warning: definition on line "
 				   << TSceneRT::_dwLineNumber
 				   << " should not have \"" << $2 << "\" anymore"
-				   << endl;
+				   << std::endl;
 			      
 			      if( DATAMAP.find($3) != DATAMAP.end() )
 			      {
-				rt_warning(string($3) + " redefined here");
+				rt_warning(std::string($3) + " redefined here");
 				rt_warning("previously defined here: " + DATAMAP[$3].first);
 			      }
 			      char buffer[1024];
 			      sprintf(buffer,"%s line %d",
 				      TSceneRT::_tInputFileName.c_str(),
 				      int(TSceneRT::_dwLineNumber));
-			      DATAMAP[$2] = pair<string,attrib_type>(string(buffer),$4);
+			      DATAMAP[$2] = std::pair<std::string,attrib_type>(std::string(buffer),$4);
 			    } // exec ok.
 			  }
 			;
@@ -398,20 +390,20 @@ definition		: T_DEFINE name expression ';'
 instance                : name
                           {
 			    report_reduction("instance <-- name");
-			    report_reduction(string("instance <-- ") + $1);			    
+			    report_reduction(std::string("instance <-- ") + $1);			    
 			    $$ = Instance($1);
                           }
                         | class
 			  {
-			    //			    GOM.debug() << "Creating object..." << endl;
+			    //			    GOM.debug() << "Creating object..." << std::endl;
 			    CreateObject($1,"");
                           }
                           param_block
                           {
 			    report_reduction("instance <--  class { params }");
-			    report_reduction(string("instance <-- ") + DATA->toString());
+			    report_reduction(std::string("instance <-- ") + DATA->toString());
 			    
-			    //			    GOM.debug() << "Type is " << DATA->AttributeName() << endl;
+			    //			    GOM.debug() << "Type is " << DATA->AttributeName() << std::endl;
 			    $$ = DATASTACK.POP();
 			  }
 ;
@@ -791,7 +783,7 @@ prec_2:
 			    else
 			    {
 			      magic_pointer<TAttribArray> tar = rcp_static_cast<TAttribArray>($2);
-			      vector<TScalar> barf(tar->tValue);
+			      std::vector<TScalar> barf(tar->tValue);
 			      
 			      for(unsigned i = 0; i < barf.size(); ++i)
 			      {
@@ -812,7 +804,7 @@ prec_1:
 			T_QUOTED_STRING
                         {
 			  report_reduction("prec_1 <-- quoted_string");
-			  report_reduction("prec_1 <-- \"" + string($1) + "\"");
+			  report_reduction("prec_1 <-- \"" + std::string($1) + "\"");
 			  
 			  $$ = (user_arg_type)new TAttribString($1);
 			}			  
@@ -891,7 +883,7 @@ prec_1:
 function_call           : potential_name '(' ')'
                         {
 			  report_reduction("function_call <-- potential_name ( )");
-			  report_reduction("(detail) function_call <-- " + string($1) +  "( )");
+			  report_reduction("(detail) function_call <-- " + std::string($1) +  "( )");
 			    
 			  if( rt_exec_ok() )
 			  {
@@ -907,11 +899,12 @@ function_call           : potential_name '(' ')'
 			    if( functions.find($1) != functions.end() )
 			    {
 			      user_arg_vector empty_args;
+
 			      $$ = functions[$1]->call(empty_args);
 			    }
 			    else
 			    {
-			      rt_error("function " + string($1) + " does not exist");
+			      rt_error("function " + std::string($1) + " does not exist");
 			      $$ = (user_arg_type)new TAttribute();
 			    }
 			  } // exec ok
@@ -923,7 +916,7 @@ function_call           : potential_name '(' ')'
                         | potential_name '(' expression ')'
                         {
 			  report_reduction("function_call <-- potential_name ( expression )");
-			  report_reduction("(detail) function_call <-- " + string($1) + "( " + $3->toString() + " )");
+			  report_reduction("(detail) function_call <-- " + std::string($1) + "( " + $3->toString() + " )");
 			  
 			  if( rt_exec_ok() )
 			  {			    
@@ -939,12 +932,14 @@ function_call           : potential_name '(' ')'
 			    {
 			      user_arg_vector args;
 			      args.push_back($3);
+
+			      			      
 			      $$ = functions[$1]->call(args);
 			      
 			    }
 			    else
 			    {
-			      rt_error("function " + string($1) + " does not exist");
+			      rt_error("function " + std::string($1) + " does not exist");
 			      $$ = (user_arg_type)new TAttribute();
 			    }			    
 			  } // exec ok.
@@ -956,7 +951,7 @@ function_call           : potential_name '(' ')'
                         | potential_name '(' expression ',' expression ')'
                         {
 			  report_reduction("function_call <-- potential_name ( expression , expression )");
-			  report_reduction("(detail) function_call <-- " + string($1) + "( " + $3->toString() + "," + $5->toString() + " )");
+			  report_reduction("(detail) function_call <-- " + std::string($1) + "( " + $3->toString() + "," + $5->toString() + " )");
 			    
 			  if( rt_exec_ok() )
 			  {
@@ -978,7 +973,7 @@ function_call           : potential_name '(' ')'
 			    }
 			    else
 			    {
-			      rt_error("function " + string($1) + " does not exist");
+			      rt_error("function " + std::string($1) + " does not exist");
 			      $$ = (user_arg_type)new TAttribute();
 			    }			    
 			  } // exec ok.
@@ -990,7 +985,7 @@ function_call           : potential_name '(' ')'
                         | potential_name '(' expression ',' expression ',' expression ')'
                         {
 			  report_reduction("function_call <-- potential_name ( expression , expression , expression )");
-			  report_reduction("(detail) function_call <-- " + string($1) + "( " + $3->toString() + "," + $5->toString() + "," + $7->toString() + " )");
+			  report_reduction("(detail) function_call <-- " + std::string($1) + "( " + $3->toString() + "," + $5->toString() + "," + $7->toString() + " )");
 			  
 			  if( rt_exec_ok() )
 			  {
@@ -1012,7 +1007,7 @@ function_call           : potential_name '(' ')'
 			    }
 			    else
 			    {
-			      rt_error("function " + string($1) + " does not exist");
+			      rt_error("function " + std::string($1) + " does not exist");
 			      $$ = (user_arg_type)new TAttribute();
 			    }			    
 			  } // exec ok.
@@ -1035,10 +1030,10 @@ color                   : '{' T_RED expression T_GREEN expression T_BLUE express
 			      double g = check_get_real($5);
 			      double b = check_get_real($7);
 			      
-			      GOM.debug() << "r=" << r << " g=" << g << " b=" << b << endl;
+			      GOM.debug() << "r=" << r << " g=" << g << " b=" << b << std::endl;
 			      TColor* c = new TColor(r,g,b);
 			      GOM.debug() << "Here's what was really created: ";
-			      c->printDebug(""); cerr << endl;
+			      c->printDebug(""); std::cerr << std::endl;
 			      
 			      $$ = magic_pointer<TColor>(c);
 			    }
@@ -1132,9 +1127,9 @@ class			: /* Nothing
 				exit (1);
 			      }
 			      
-			      // GOM.debug() << "the type of the parent is " << DATAMAP [$1].second->AttributeName() << endl;
+			      // GOM.debug() << "the type of the parent is " << DATAMAP [$1].second->AttributeName() << std::endl;
 			      PARENT_OBJECT = attr_to_base(DATAMAP [$1].second);
-			      // GOM.debug() << "the parent's classname is " << PARENT_OBJECT->className() << endl;
+			      // GOM.debug() << "the parent's classname is " << PARENT_OBJECT->className() << std::endl;
 			      $$ = PARENT_OBJECT->className();
 			    }
 			    else
@@ -1344,12 +1339,12 @@ scene_param		: T_LIGHT '=' instance
 			      {
 				GOM.error() << "Note for light instance on line "
 					    << TSceneRT::_dwLineNumber
-					    << endl;
-				GOM.error() << "  Usage of lights in the 'scene' section is no longer required" << endl;
+					    << std::endl;
+				GOM.error() << "  Usage of lights in the 'scene' section is no longer required" << std::endl;
 				GOM.error() << "  They may now be added to aggregates, csg, etc., or used "
-					    << endl
+					    << std::endl
 					    << "  external to the scene section (same syntax)." 
-					    << endl;
+					    << std::endl;
 				gave_warning = true;
 			      }
 			      
@@ -1383,14 +1378,14 @@ scene_param		: T_LIGHT '=' instance
 			    if( !!pscene )
 			    {
 			      //			    magic_pointer<TScene> scene = pscene->tValue;
-			      GOM.error() << "Warning: Ignoring locally defined scene" << endl;
+			      GOM.error() << "Warning: Ignoring locally defined scene" << std::endl;
 			      magic_pointer<TScene> scene = TSceneRT::_ptParsedScene;
 			      if( !!scene )
 			      {
 				magic_pointer<TAttribImageIO> io = get_imageio($3);
 				if( !!io )
 				{
-				  //				GOM.debug() << "Setting image IO to " << io->toString() << endl;
+				  //				GOM.debug() << "Setting image IO to " << io->toString() << std::endl;
 				  scene->setImageOutput (io->tValue);
 				}
 				else
@@ -1525,21 +1520,21 @@ reserved_words          : T_BLUE
 void rt_error (const char* pkcTEXT)
 {
 
-  GOM.error() << endl << TSceneRT::_tInputFileName << "(" << TSceneRT::_dwLineNumber << ") Error: " << pkcTEXT << endl;
+  GOM.out() << std::endl << TSceneRT::_tInputFileName << "(" << TSceneRT::_dwLineNumber << ") Error: " << pkcTEXT << std::endl;
 
 }  /* rt_error() */
 
-void rt_error (const string& rksTEXT)
+void rt_error (const std::string& rksTEXT)
 {
 
-  GOM.error() << endl << TSceneRT::_tInputFileName << "(" << TSceneRT::_dwLineNumber << ") Error: " << rksTEXT << endl;
+  GOM.out() << std::endl << TSceneRT::_tInputFileName << "(" << TSceneRT::_dwLineNumber << ") Error: " << rksTEXT << std::endl;
 
 }  /* rt_error() */
 
-void rt_warning (const string& rksTEXT)
+void rt_warning (const std::string& rksTEXT)
 {
 
-  GOM.error() << TSceneRT::_tInputFileName << "(" << TSceneRT::_dwLineNumber << ") Warning: " << rksTEXT << endl;
+  GOM.out() << TSceneRT::_tInputFileName << "(" << TSceneRT::_dwLineNumber << ") Warning: " << rksTEXT << std::endl;
 
 }  /* rt_error() */
 
@@ -1580,7 +1575,7 @@ void InitObjects (void)
 }  /* InitObjects() */
 
 
-magic_pointer<TBaseClass> NewObject (const string& rktCLASS,
+magic_pointer<TBaseClass> NewObject (const std::string& rktCLASS,
 				     const magic_pointer<TBaseClass>& pktParent)
 {
   TBaseClass* ptChild = TClassManager::_newObject (rktCLASS,
@@ -1588,7 +1583,7 @@ magic_pointer<TBaseClass> NewObject (const string& rktCLASS,
 
   if ( !ptChild )
   {
-    string   tMessage = string ("class ") + rktCLASS + " does not exist";
+    std::string   tMessage = std::string ("class ") + rktCLASS + " does not exist";
     rt_error (tMessage.c_str());
     exit (1);
   }
@@ -1597,9 +1592,9 @@ magic_pointer<TBaseClass> NewObject (const string& rktCLASS,
 
 }  /* NewObject() */
 
-void CreateObject (const string& rktCLASS, const string& rktDEF_CLASS)
+void CreateObject (const std::string& rktCLASS, const std::string& rktDEF_CLASS)
 {
-  //  GOM.debug() << "Attempting to create instance of " << rktCLASS << endl;
+  //  GOM.debug() << "Attempting to create instance of " << rktCLASS << std::endl;
   magic_pointer<TBaseClass> ptData;
   if ( rktCLASS == "" )
   {
@@ -1609,7 +1604,7 @@ void CreateObject (const string& rktCLASS, const string& rktDEF_CLASS)
   {
     ptData = NewObject (rktCLASS, PARENT_OBJECT);
   }
-  //  GOM.debug() << "Instance created... " << ptData->className() << endl;
+  //  GOM.debug() << "Instance created... " << ptData->className() << std::endl;
   
   DATASTACK.push (base_to_attr(ptData));
   PARENT_OBJECT = (magic_pointer<TBaseClass>)NULL;
@@ -1618,7 +1613,7 @@ void CreateObject (const string& rktCLASS, const string& rktDEF_CLASS)
 
 
 
-void report_reduction(const string& s)
+void report_reduction(const std::string& s)
 {
   if( reduction_reporting )
   {
@@ -1626,7 +1621,7 @@ void report_reduction(const string& s)
   }
 }
 
-magic_pointer<TAttribute> Instance(const string& s)
+magic_pointer<TAttribute> Instance(const std::string& s)
 {
   if( s == "" )
   {
@@ -1653,6 +1648,7 @@ magic_pointer<TAttribute> Instance(const string& s)
   }
 }
 
+/*
 namespace yy
 {
   void Parser::error_()
@@ -1669,5 +1665,6 @@ namespace yy
     return rt_lex(p);
   }
 }
+*/
 
 

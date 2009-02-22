@@ -25,8 +25,8 @@
 
 
 #if 0
-typedef TScene* (TSceneLoadFunction) (const string&);
-typedef int (TSceneSaveFunction) (const string&, const TScene*);
+typedef TScene* (TSceneLoadFunction) (const std::string&);
+typedef int (TSceneSaveFunction) (const std::string&, const TScene*);
 
 struct TSceneFormatData
 {
@@ -37,7 +37,7 @@ struct TSceneFormatData
 };  /* struct TSceneFormatData */
 #endif
 
-typedef map<string, TCreateFunction*, less<string> > TSceneFormatMap;
+typedef std::map<std::string, TCreateFunction*, std::less<std::string> > TSceneFormatMap;
 
 class TSceneManager
 {
@@ -48,10 +48,10 @@ class TSceneManager
 
   public:
 
-    static magic_pointer<TScene> _load (const string& rktNAME, const string& rktFORMAT);
-    static int _save (const string& rktNAME, const string& rktFORMAT, const TScene* pktSCENE);
-    static bool _knownFormat (const string& rktFORMAT);
-    static void _addFormat (const string& rktNAME, TCreateFunction* pfLOAD);
+    static magic_pointer<TScene> _load (const std::string& rktNAME, const std::string& rktFORMAT);
+    static int _save (const std::string& rktNAME, const std::string& rktFORMAT, const TScene* pktSCENE);
+    static bool _knownFormat (const std::string& rktFORMAT);
+    static void _addFormat (const std::string& rktNAME, TCreateFunction* pfLOAD);
     static void _initialize (void);
     
 };  /* class TSceneManager */

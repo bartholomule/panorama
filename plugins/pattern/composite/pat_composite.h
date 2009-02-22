@@ -49,7 +49,7 @@ class TPatternComposite : public TPattern
       
       if ( ( !ptPattern1 ) || ( !ptPattern2 ) )
       {
-        GOM.error() << "Error: both pattern1 and pattern2 must be set" << endl;
+        GOM.error() << "Error: both pattern1 and pattern2 must be set" << std::endl;
 	exit (1);
       }
       
@@ -59,8 +59,8 @@ class TPatternComposite : public TPattern
       return tColor;
     }
 
-    int setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
-    int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
+    int setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
+    int getAttribute (const std::string& rktNAME, NAttribute& rnVALUE);
     void getAttributeList (TAttributeList& rtLIST) const;
 
     void setPattern1 (pattern_pointer ptPATTERN)
@@ -72,7 +72,7 @@ class TPatternComposite : public TPattern
       ptPattern2 = ptPATTERN;
     }
 
-    string className (void) const { return "PatternComposite"; }
+    std::string className (void) const { return "PatternComposite"; }
 
     TPatternComposite* clone_new() const { return new TPatternComposite(*this); }
   

@@ -36,7 +36,7 @@ TBsdfPhong::TBsdfPhong (void)
 }  /* TBsdfPhong() */
 
 
-int TBsdfPhong::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
+int TBsdfPhong::setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
 
   if ( rktNAME == "exponent" )
@@ -103,7 +103,7 @@ int TBsdfPhong::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribT
 }  /* setAttribute() */
 
 
-int TBsdfPhong::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
+int TBsdfPhong::getAttribute (const std::string& rktNAME, NAttribute& rnVALUE)
 {
 #if !defined(NEW_ATTRIBUTES)
   if ( rktNAME == "exponent" )

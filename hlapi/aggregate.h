@@ -16,22 +16,24 @@
 *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef _AGGREGATE__
-#define _AGGREGATE__
+#ifndef PANORAMA_AGGREGATE_H_INCLUDED
+#define PANORAMA_AGGREGATE_H_INCLUDED
 
 #include <vector>
 #include "hlapi/class_manager.h"
 #include "llapi/object.h"
-#include "generic/magic_pointer.h"
+#include "generic/rc_pointer.hpp"
 
-typedef vector<magic_pointer<TObject> >   TObjectList;
-
-class TAggregate : public TObject
+namespace panorama
 {
+  typedef std::vector<rc_pointer<TObject> > TObjectList;
+
+  class TAggregate : public TObject
+  {
 
   protected:
 
-    TObjectList   tObjectList;
+    TObjectList tObjectList;
 
   public:
 
@@ -40,7 +42,7 @@ class TAggregate : public TObject
     {
       sCapabilities.gInfinite = false;
     }
-      
+
     TAggregate (const TAggregate& rktAGGREGATE) :
       TObject (rktAGGREGATE)
     {
@@ -67,41 +69,18 @@ class TAggregate : public TObject
     {
       for (TObjectList::const_iterator iter = rktLIST.begin(); ( iter != rktLIST.end() ); iter++)
       {
-        tObjectList.push_back (magic_pointer<TObject>((TObject*)(TClassManager::_newObject ((*iter)->className(), (TObject*) &*(*iter)))));
+        tObjectList.push_back(rc_pointer<Cloneable>((*iter)->clone_new()));
+        // FIXME! If the above works, delete this commented line.
+        //        tObjectList.push_back (rc_pointer<TObject>((TObject*)(TClassManager::_newObject ((*iter)->className(), (TObject*) &*(*iter)))));
       }
     }
-      
+
     virtual void eraseList (void)
     {
-      // I (KH) commented out this section on (30Aug2001), as I have changed
-      // the type to be a magic pointer... They will delete themselves when
-      // their destructors are called.
-      /*
-      for (TObjectList::iterator iter = tObjectList.begin(); ( iter != tObjectList.end() ); iter++)
-      {
-	//
-	// Free the object to prevent a memory leak.
-	// NOTE: I (KH) did NOT add a call to delete here, as I am not sure if
-	//       it is safe to call it on the objects or not (do plugin manage
-	//       returned objects have proper virtual destructors, and are they
-	//       allocated with new?).  If someone knows the proper
-	//       deallocation process, please fix this. (KH 16May2000)
-	//
-	// Angel has determined this to be safe (if people wrote their code
-	// correctly), so I am going to make the change and avoid a memory
-	// leak. (KH 04Aug2000)
-	//
-	delete *iter; 
-      }
-      */
-
-      //
-      // Remove existing objects from the list to prevent nasty side effects.
-      //
       tObjectList.erase (tObjectList.begin(), tObjectList.end());
     }
 
-    virtual void add (magic_pointer<TObject> ptOBJ)
+    virtual void add (rc_pointer<TObject> ptOBJ)
     {
       if ( ptOBJ->capabilities().gInfinite == true )
       {
@@ -110,9 +89,9 @@ class TAggregate : public TObject
       tObjectList.push_back (ptOBJ);
     }
 
-    void setMaterial (magic_pointer<TMaterial> ptMATERIAL);
+    void setMaterial (rc_pointer<TMaterial> ptMATERIAL);
     void setObjectCode (size_t zCODE);
-    void addFilter (const magic_pointer<TObjectFilter> pktFILTER);
+    void addFilter (const rc_pointer<TObjectFilter> pktFILTER);
 
     bool initialize (void);
     void finalize (void);
@@ -132,9 +111,9 @@ class TAggregate : public TObject
 
     bool containsObjects() const { return !tObjectList.empty(); }
 
-    bool containsObject (const magic_pointer<TObject> pktObject);
-  
-    void getMesh (list<TMesh*>& rtMESH_LIST) const
+    bool containsObject (const rc_pointer<TObject> pktObject);
+
+    void getMesh (std::list<TMesh*>& rtMESH_LIST) const
     {
       for (TObjectList::const_iterator tIter = tObjectList.begin(); ( tIter != tObjectList.end() ) ;tIter++)
       {
@@ -143,16 +122,16 @@ class TAggregate : public TObject
     }
 
     // Attribute management
-    virtual int setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
-    virtual int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
+    virtual AttributeErrorCode setAttribute (const std::string& rktNAME, Attribute nVALUE);
+    virtual AttributeErrorCode getAttribute (const std::string& rktNAME, Attribute& rnVALUE);
     virtual void getAttributeList (TAttributeList& rtLIST) const;
-  
-    void printDebug (const string& indent) const;
 
     EClass classType (void) const { return FX_AGGREGATE_CLASS; }
-    string className (void) const { return "Aggregate"; }
-    virtual TUserFunctionMap getUserFunctions();  
+    std::string name (void) const { return "Aggregate"; }
+    virtual std::string internalMembers(const Indentation& indent, StringDumpable::PrefixType prefix = StringDumpable::E_PREFIX_NONE ) const;
+    virtual TUserFunctionMap getUserFunctions();
 
-};  /* class TAggregate */
+  };  /* class TAggregate */
+}
 
-#endif  /* _AGGREGATE__ */
+#endif  /* PANORAMA_AGGREGATE_H_INCLUDED */

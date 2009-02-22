@@ -26,20 +26,23 @@
 #include "llapi/object_filter.h"
 #include "llapi/material.h"
 
-class TMaterial;
-
-
-
-class TObject : public TVolume
+namespace panorama
 {
 
-  protected:
-    typedef list<magic_pointer<TObjectFilter> > FilterListType;
+  class TMaterial;
 
-    TBoundingBox                 tBoundingBox;
-    magic_pointer<TMaterial>     ptMaterial;
+
+
+  class TObject : public TVolume
+  {
+
+  protected:
+    typedef std::list<rc_pointer<TObjectFilter> > FilterListType;
+
+    TBoundingBox tBoundingBox;
+    rc_pointer<TMaterial> ptMaterial;
     FilterListType tObjectFilterList;
-    size_t                       zObjectCode;
+    size_t zObjectCode;
 
     // To avoid all further confusion, these two matrices are going to have
     // their purpose defined here.  Any deviation should be corrected.
@@ -51,46 +54,42 @@ class TObject : public TVolume
     // It is preferable to use the series of SOURCE_TYPE_to_DEST functions
     // defined below, where source and dest can be 'world' or 'local', and type
     // can be 'point', 'vector', or 'normal'.
-    magic_pointer<TMatrix>                     ptMatrix;
-    magic_pointer<TMatrix>                     ptInverseMatrix;
+    rc_pointer<TMatrix> ptMatrix;
 
     struct TCapabilities
     {
-      
-      unsigned   gInfinite : 1;
-      
+
+      unsigned gInfinite : 1;
+
     } sCapabilities;
 
     void createMatrices (void);
 
-    virtual TVector localNormal (const TVector& rktPOINT) const { return TVector (0, 0 ,0); }
+    virtual TVector localNormal (const TPoint& rktPOINT) const { return TVector (0, 0 ,0); }
 
   public:
 
     TObject (void) :
       TVolume (),
       ptMaterial (NULL),
-      ptMatrix (NULL),
-      ptInverseMatrix (NULL)
+      ptMatrix ()
     {
       createMatrices();
     }
-      
+
     virtual ~TObject (void)
     {
-      ptMatrix = magic_pointer<TMatrix>(NULL);
-      ptInverseMatrix = magic_pointer<TMatrix>(NULL);
+      ptMatrix = rc_pointer<TMatrix>();
 
       tObjectFilterList.erase(tObjectFilterList.begin(),
-			      tObjectFilterList.end());
+        tObjectFilterList.end());
     }
-      
+
     TObject (const TObject& rktOBJ) : TVolume(rktOBJ)
     {
       createMatrices();
-      
+
       ptMatrix        = rktOBJ.ptMatrix;
-      ptInverseMatrix = rktOBJ.ptInverseMatrix;
 
       ptMaterial        = rktOBJ.ptMaterial;
       zObjectCode       = rktOBJ.zObjectCode;
@@ -102,20 +101,19 @@ class TObject : public TVolume
       if( &rktOBJ != this )
       {
         ptMatrix        = rktOBJ.ptMatrix;
-        ptInverseMatrix = rktOBJ.ptInverseMatrix;
-  
+
         ptMaterial        = rktOBJ.ptMaterial;
         zObjectCode       = rktOBJ.zObjectCode;
         tObjectFilterList = rktOBJ.tObjectFilterList;
-  
+
         tBoundingBox      = rktOBJ.tBoundingBox;
-  
+
         TVolume::operator= (rktOBJ);
       }
-      
+
       return *this;
     }
-      
+
     virtual bool initialize (void);
     virtual void finalize (void) {}
 
@@ -134,25 +132,25 @@ class TObject : public TVolume
     // * Points must be scaled, translated, and de-homogenized to fully work with
     //   a generic transform matrix.
     //   (12 muls, 12 adds, 3 divs)
-    TVector world_point_to_local(const TVector& point) const;
+    TPoint world_point_to_local(const TPoint& point) const;
     TVector world_vector_to_local(const TVector& vec) const;
     TVector world_normal_to_local(const TVector& norm) const;
-    TVector local_point_to_world(const TVector& point) const;
+    TPoint local_point_to_world(const TPoint& point) const;
     TVector local_vector_to_world(const TVector& vec) const;
     TVector local_normal_to_world(const TVector& norm) const;
 
-  
+
     virtual bool intersects (const TRay& rktRAY) const
     {
       TSurfaceData   tSurfaceData;
 
       return findFirstIntersection (rktRAY, tSurfaceData);
     }
-      
+
     virtual bool findFirstIntersection (const TRay& rktRAY, TSurfaceData& rtDATA) const
     {
-      TSpanList   tList;
-      bool        gIntersection = findAllIntersections (rktRAY, tList);
+      TSpanList tList;
+      bool gIntersection = findAllIntersections (rktRAY, tList);
 
       if ( gIntersection )
       {
@@ -161,7 +159,7 @@ class TObject : public TVolume
 
       return gIntersection;
     }
-      
+
     virtual bool findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) const = 0;
 
     void translate (const TVector& rktREL_POS);
@@ -170,47 +168,45 @@ class TObject : public TVolume
     void rotate (const TQuaternion& rktQUAT);
     void scale (const TVector& rktSCALING_XYZ, const TVector& rktPOINT);
     void scale (const TVector& rktSCALING_XYZ) { scale(rktSCALING_XYZ,
-						       TVector(0,0,0)); }
+        TVector(0,0,0)); }
     virtual TVector location (void) const;
     virtual void setLocation(const TVector& rktLOCATION);
 
     virtual TVector normal (const TSurfaceData& rktDATA) const;
 
     TBoundingBox boundingBox (void) const { return tBoundingBox; }
-    magic_pointer<TMaterial> material (void) const { return ptMaterial; }
+    rc_pointer<TMaterial> material (void) const { return ptMaterial; }
     size_t objectCode (void) const { return zObjectCode; }
     const FilterListType filterList (void) const { return tObjectFilterList; }
     const TCapabilities& capabilities (void) const { return sCapabilities; }
-    
-    virtual void setMaterial (magic_pointer<TMaterial> ptMAT) { ptMaterial = ptMAT; }
+
+    virtual void setMaterial (rc_pointer<TMaterial> ptMAT) { ptMaterial = ptMAT; }
     virtual void setObjectCode (size_t zCODE) { zObjectCode = zCODE; }
 
-    virtual magic_pointer<TMatrix> transformMatrix (void) const { return ptMatrix; }
-    virtual magic_pointer<TMatrix> inverseTransformMatrix (void) const { return ptInverseMatrix; }
+    virtual rc_pointer<TMatrix> transformMatrix (void) const { return ptMatrix; }
+    virtual rc_pointer<TMatrix> inverseTransformMatrix (void) const
+    {
+      if( !ptMatrix )
+      {
+        return rc_pointer<TMatrix>();
+      }
+
+      return rc_pointer<TMatrix>(new TMatrix(ptMatrix->inverse()));
+    }
 
     virtual void setTransformMatrix (const TMatrix& rktMATRIX)
     {
-      ptMatrix = magic_pointer<TMatrix>(new TMatrix(rktMATRIX));
-    }
-    
-    virtual void setInverseTransformMatrix (const TMatrix& rktMATRIX)
-    {
-      ptInverseMatrix = magic_pointer<TMatrix>(new TMatrix(rktMATRIX));
+      ptMatrix = rc_pointer<TMatrix>(new TMatrix(rktMATRIX));
     }
 
-    virtual void setTransformMatrix (const magic_pointer<TMatrix>& pktMATRIX)
+    virtual void setTransformMatrix (const rc_pointer<TMatrix>& pktMATRIX)
     {
       ptMatrix = pktMATRIX;
     }
-    
-    virtual void setInverseTransformMatrix (const magic_pointer<TMatrix>& pktMATRIX)
-    {
-      ptInverseMatrix = pktMATRIX;
-    }  
 
-    virtual void addFilter (const magic_pointer<TObjectFilter> pktFILTER) { tObjectFilterList.push_back (pktFILTER); }
-      
-    virtual void getMesh (list<TMesh*>& rtMESH_LIST) const {}
+    virtual void addFilter (const rc_pointer<TObjectFilter> pktFILTER) { tObjectFilterList.push_back (pktFILTER); }
+
+    virtual void getMesh (std::list<TMesh*>& rtMESH_LIST) const {}
 
     // Return a random point on the surface (preferred to be uniform).  This
     // point may not be required to actually be on the surface, but it is
@@ -219,37 +215,28 @@ class TObject : public TVolume
     // Note that this point is to be in local coordinates (based on whatever
     // center of the object is defined as normal).  Use of this point should be
     // applied to the transform matrix before being used for anything other
-    // than local operations.  
+    // than local operations.
     // This will be most commonly used for things such as area lights.
     virtual TVector RandomPointOnSurface() const { return TVector(0,0,0); }
-  
-    virtual void streamDebug (ostream& o, const string& indent) const;  
 
     EClass classType (void) const { return FX_OBJECT_CLASS; }
 
-
     // Attribute management
-    virtual int setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
-  
-    virtual int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
+    virtual AttributeErrorCode getAttribute (const std::string& rktNAME, Attribute& rnVALUE);
+    virtual AttributeErrorCode setAttribute (const std::string& rktNAME, Attribute value);
     virtual void getAttributeList (TAttributeList& rtLIST) const;
-  
     virtual TUserFunctionMap getUserFunctions();
-      
-};  /* class TObject */
 
-inline TVector TObject::normal (const TSurfaceData& rktDATA) const
-{
+  };  /* class TObject */
 
-  TVector   tPoint  = (*ptInverseMatrix) * rktDATA.point();
-  TVector   tNormal = localNormal (tPoint);
+  inline TVector TObject::normal (const TSurfaceData& rktDATA) const
+  {
 
-  tNormal.applyTransform (ptInverseMatrix);
-  tNormal.normalize();
+    TPoint tPoint = world_point_to_local(rktDATA.point());
+    return local_normal_to_world(localNormal(tPoint));
+  }  /* normal() */
 
-  return tNormal;
-
-}  /* normal() */
+} // end namespace panorama
 
 
 #endif  /* _OBJECT__ */

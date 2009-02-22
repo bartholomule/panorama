@@ -52,7 +52,7 @@ class TCylinder : public TObject
     
     bool findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) const;
 
-    int setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
+    int setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
 
     /**
     * Get the value of a named attribute of the object.
@@ -61,7 +61,7 @@ class TCylinder : public TObject
     * @param rnVALUE The returned value.
     * @see getAttributeList()
     */
-    int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
+    int getAttribute (const std::string& rktNAME, NAttribute& rnVALUE);
 
     /**
     * Get a list of the object's attribute names and types.
@@ -70,10 +70,10 @@ class TCylinder : public TObject
     void getAttributeList (TAttributeList& rtLIST) const;
 
     /**
-    * Get the name of the object class as a string.
+    * Get the name of the object class as a std::string.
     * @return the name of the class
     */
-    string className (void) const { return "Cylinder"; }
+    std::string className (void) const { return "Cylinder"; }
 
 };  /* class TCylinder */
 

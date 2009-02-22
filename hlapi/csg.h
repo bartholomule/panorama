@@ -34,8 +34,8 @@ class TCsg : public TAggregate
     void mergeIntersection (TSpanList& rtLIST1, const TSpanList& rktLIST2, const TVector& rktRAY_DIR) const;
     void mergeDifference (TSpanList& rtLIST1, const TSpanList& rktLIST2, const TVector& rktRAY_DIR) const;
 
-    static map<ECsgOp,string> csg_type_strings;
-    static vector<string> csg_type_choices;  
+    static std::map<ECsgOp,std::string> csg_type_strings;
+    static std::vector<std::string> csg_type_choices;  
     static void generate_strings();
   
   public:
@@ -50,15 +50,15 @@ class TCsg : public TAggregate
   
     bool initialize (void);
 
-    int setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
-    int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
+    int setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
+    int getAttribute (const std::string& rktNAME, NAttribute& rnVALUE);
     void getAttributeList (TAttributeList& rtLIST) const;  
 
     bool findFirstIntersection (const TRay& rktRAY, TSurfaceData& rtDATA) const;
     bool findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) const;
 
-    string className (void) const { return "Csg"; }
-    void printDebug (const string& indent) const;  
+    std::string className (void) const { return "Csg"; }
+    void printDebug (const std::string& indent) const;  
 
 };  /* class TCsg */
 

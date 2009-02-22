@@ -16,14 +16,16 @@
 *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef _VOLUME__
-#define _VOLUME__
+#ifndef PANORAMA_VOLUME_H_INCLUDED
+#define PANORAMA_VOLUME_H_INCLUDED
 
 #include "llapi/ray.h"
 #include "llapi/entity.h"
 
-class TVolume : public TEntity
+namespace panorama
 {
+  class TVolume : public TEntity
+  {
 
   public:
 
@@ -31,6 +33,8 @@ class TVolume : public TEntity
 
     virtual void scale (const TVector& rktSCALING_XYZ, const TVector& rktPOINT) {}
 
-};  /* class TVolume */
+  };  /* class TVolume */
 
-#endif  /* _VOLUME__ */
+} // end namespace panorama
+
+#endif  /* PANORAMA_VOLUME_H_INCLUDED */

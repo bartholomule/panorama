@@ -235,7 +235,7 @@ bool TCylinder::findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) con
 }  /* findAllIntersections() */
 
 
-int TCylinder::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
+int TCylinder::setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
   if ( rktNAME == "point1" )
   {
@@ -325,7 +325,7 @@ int TCylinder::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribTy
 }  /* setAttribute() */
 
 
-int TCylinder::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
+int TCylinder::getAttribute (const std::string& rktNAME, NAttribute& rnVALUE)
 {
 
 #if !defined(NEW_ATTRIBUTES)    

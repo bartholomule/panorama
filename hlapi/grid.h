@@ -72,14 +72,14 @@ public:
     bool findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) const;  
 
     /* Data members */
-    vector<base_ptr> objects_in_entry;
+    std::vector<base_ptr> objects_in_entry;
     magic_pointer<accel_grid> sub_grid;
   };
   
 public:
 
   // !
-  accel_grid(const vector<magic_pointer<base_object> >& objects);
+  accel_grid(const std::vector<magic_pointer<base_object> >& objects);
   // !  
   accel_grid(int x_divisions = 10,
 	     int y_divisions = 10,
@@ -123,15 +123,15 @@ public:
   virtual bool findFirstGridIntersection (const TRay& rktRAY, TSurfaceData& rtDATA) const;
   virtual bool findAllGridIntersections (const TRay& rktRAY, TSpanList& rtLIST) const;    
 
-  virtual string className (void) const { return "accel_grid"; }
+  virtual std::string className (void) const { return "accel_grid"; }
   
   bool findInfiniteObjectIntersection(const TRay& rktRAY, TSurfaceData& rtDATA) const;
   bool findAllInfiniteObjectIntersections(const TRay& rktRAY, TSpanList& rtLIST) const;  
 
     // Attribute management
-  virtual int setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
+  virtual int setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
   
-  virtual int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
+  virtual int getAttribute (const std::string& rktNAME, NAttribute& rnVALUE);
   virtual void getAttributeList (TAttributeList& rtLIST) const;  
   virtual TUserFunctionMap getUserFunctions();
   
@@ -149,9 +149,9 @@ private:
   int nx, ny, nz; // Number of subdivisions in x,y,z
   TVector min_coord;
   TVector max_coord;
-  vector<grid_entry> all_grid_entries;
-  vector<base_ptr> objects_in_grid;
-  vector<base_ptr> infinite_objects;
+  std::vector<grid_entry> all_grid_entries;
+  std::vector<base_ptr> objects_in_grid;
+  std::vector<base_ptr> infinite_objects;
   
 };
 

@@ -67,8 +67,8 @@ class TPatternBrick : public TPattern
       return lerp (tBaseColor, tColor, tValue);
     }
 
-    int setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
-    int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
+    int setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
+    int getAttribute (const std::string& rktNAME, NAttribute& rnVALUE);
     void getAttributeList (TAttributeList& rtLIST) const;
 
     void setColor (const TColor& rktCOLOR)
@@ -80,7 +80,7 @@ class TPatternBrick : public TPattern
       tBaseColor = rktCOLOR;
     }
 
-    string className (void) const { return "PatternBrick"; }
+    std::string className (void) const { return "PatternBrick"; }
   
     TPatternBrick* clone_new() const { return new TPatternBrick(*this); }    
 

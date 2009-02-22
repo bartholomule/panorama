@@ -72,11 +72,11 @@ class TPatternTexture : public TPattern
     
     TColor pattern (const TSurfaceData& rktDATA) const;
 
-    int setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
-    int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
+    int setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
+    int getAttribute (const std::string& rktNAME, NAttribute& rnVALUE);
     void getAttributeList (TAttributeList& rtLIST) const;
 
-    string className (void) const { return "PatternTexture"; }
+    std::string className (void) const { return "PatternTexture"; }
     TPatternTexture* clone_new() const { return new TPatternTexture(*this); }
 
 };  /* class TPatternTexture */

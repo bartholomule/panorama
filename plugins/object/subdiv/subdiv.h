@@ -34,11 +34,11 @@ class TSubdiv : public TObject
 
   protected:
 
-    map<string, TSubdivVert*>            tPoints;
-    vector<TSubdivFace*>                 tFaces;
+    std::map<std::string, TSubdivVert*>  tPoints;
+    std::vector<TSubdivFace*>            tFaces;
 
-    bool addVertex (const string& rktVALUE);
-    bool addFace (const string& rktVALUE);
+    bool addVertex (const std::string& rktVALUE);
+    bool addFace (const std::string& rktVALUE);
 
   public:
 
@@ -49,10 +49,10 @@ class TSubdiv : public TObject
 
     bool findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) const;
 
-    int setAttribute (const string& rktNAME, NAttribute nVALUE, 
+    int setAttribute (const std::string& rktNAME, NAttribute nVALUE, 
                       EAttribType eTYPE);
 
-    string className (void) const { return "SubdivisionSurface"; }
+    std::string className (void) const { return "SubdivisionSurface"; }
 
 };  /*  class TSubdiv  */
 

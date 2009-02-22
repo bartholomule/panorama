@@ -27,7 +27,7 @@
 DEFINE_PLUGIN ("PatternAmplifier", FX_PATTERN_CLASS, TPatternAmplifier);
 
 
-int TPatternAmplifier::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
+int TPatternAmplifier::setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
 
   if ( rktNAME == "source" )
@@ -97,7 +97,7 @@ int TPatternAmplifier::setAttribute (const string& rktNAME, NAttribute nVALUE, E
 }  /* setAttribute() */
 
 
-int TPatternAmplifier::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
+int TPatternAmplifier::getAttribute (const std::string& rktNAME, NAttribute& rnVALUE)
 {
 
 #if !defined(NEW_ATTRIBUTES)  

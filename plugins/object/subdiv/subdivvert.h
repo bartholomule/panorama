@@ -34,8 +34,8 @@ class TSubdivVert
     bool      gFoundNormal;
     TVector   tNormal;
 
-    vector<TSubdivFace*>   tFaces;
-    vector<TSubdivEdge*>   tEdges;
+    std::vector<TSubdivFace*>   tFaces;
+    std::vector<TSubdivEdge*>   tEdges;
     TSubdivVert*           ptNextVert;
 
     void addNormalFrom (TVector& rtSUM, 
@@ -43,14 +43,14 @@ class TSubdivVert
 
   public:
     
-    typedef vector<TSubdivFace*>::const_iterator   const_face_iterator;
-    typedef vector<TSubdivEdge*>::const_iterator   const_edge_iterator;
+    typedef std::vector<TSubdivFace*>::const_iterator   const_face_iterator;
+    typedef std::vector<TSubdivEdge*>::const_iterator   const_edge_iterator;
 
-    string    tName;
+    std::string    tName;
     TVector   tPosition;
     Byte      bRemainingDepth;
 
-    TSubdivVert (const string& rktNAME, const TVector& rktPOSITION);
+    TSubdivVert (const std::string& rktNAME, const TVector& rktPOSITION);
 
     void addFace (TSubdivFace* ptFACE);
 

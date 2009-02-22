@@ -25,6 +25,8 @@
 #define MAX_IDENTIFIER		31
 #define MAX_INCLUDE_DEPTH	128
 
+#include "parsed_types.h"
+
 //
 //  Extern variables
 //
@@ -39,13 +41,13 @@ extern bool    reduction_reporting;
 //  Prototypes
 //
 void rt_error (const char* pkcTEXT);
-void rt_error (const string& rksTEXT);
-void rt_warning (const string& pkcTEXT); 
+void rt_error (const std::string& rksTEXT);
+void rt_warning (const std::string& pkcTEXT); 
 int rt_parse (void);
-int rt_lex (void);
+int rt_lex (yystype* p);
 void RT_InitParser (void);
 void RT_CloseParser (void);
-void scanner_unput_string(const string& s);
+void scanner_unput_string(const std::string& s);
 
 void rt_enter_condition(bool condition);
 void rt_leave_condition();

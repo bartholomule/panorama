@@ -1,4 +1,8 @@
-*.plg
+.deps
+.libs
+*.lo*
 Makefile
-*.d
+scanner.cpp
+parser.cpp
 parser.output
+Makefile.in

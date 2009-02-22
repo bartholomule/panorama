@@ -49,8 +49,8 @@ class TPatternWorley : public TPattern
       
     TColor pattern (const TSurfaceData& rktDATA) const;
 
-    int setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
-    int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
+    int setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
+    int getAttribute (const std::string& rktNAME, NAttribute& rnVALUE);
     void getAttributeList (TAttributeList& rtLIST) const;
 
     void setColor (const TColor& rktCOLOR)
@@ -62,7 +62,7 @@ class TPatternWorley : public TPattern
       tBaseColor = rktCOLOR;
     }
 
-    string className (void) const { return "PatternWorley"; }
+    std::string className (void) const { return "PatternWorley"; }
     TPatternWorley* clone_new() const { return new TPatternWorley(*this); }
 
 };  /* class TPatternWorley */

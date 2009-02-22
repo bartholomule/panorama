@@ -50,7 +50,7 @@ TColor TPatternWood::evaluate (const TVector& rktPOINT) const
 }  /* evaluate() */
 
 
-int TPatternWood::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
+int TPatternWood::setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
 
   if ( rktNAME == "color" )
@@ -169,7 +169,7 @@ int TPatternWood::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttri
 }  /* setAttribute() */
 
 
-int TPatternWood::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
+int TPatternWood::getAttribute (const std::string& rktNAME, NAttribute& rnVALUE)
 {
 
 #if !defined(NEW_ATTRIBUTES)
@@ -191,7 +191,7 @@ int TPatternWood::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
   }
   else if ( rktNAME == "zoom" )
   {
-    // [_ERROR_] It should return the inverse of this vector.
+    // [_ERROR_] It should return the inverse of this std::vector.
     rnVALUE.pvValue = &tZoom;
   }
 #else

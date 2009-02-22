@@ -23,13 +23,13 @@
 #include "llapi/user_functions.h"
 #include "llapi/object_required.h"
 
-static map<EWarps,const char*> warp_strings;
+static std::map<EWarps,const char*> warp_strings;
 
 static void set_warp_strings (void)
 {
-  warp_strings[FX_NO_WARP] = "none";    
+  warp_strings[FX_NO_WARP] = "none";
   warp_strings[FX_SPHERICAL_WARP] = "spherical";
-  warp_strings[FX_CYLINDRICAL_WARP] = "cylindrical";  
+  warp_strings[FX_CYLINDRICAL_WARP] = "cylindrical";
 }
 
 bool TPattern::initialize (void)
@@ -61,7 +61,7 @@ void TPattern::recalculateMatrix (void)
   tMatrix.setIdentity();
   tInverseMatrix.setIdentity();
   tMatrixRotation.setIdentity();
-  
+
   // Translation
   tTempMatrix.setTranslation (tTranslation);
   tMatrix = tTempMatrix * tMatrix;
@@ -101,7 +101,7 @@ void TPattern::recalculateMatrix (void)
 
   if ( tVector == _ktTestVector )
   {
-    gTransformIdentity = true;   
+    gTransformIdentity = true;
   }
 
 }  /* recalculateMatrix() */
@@ -110,9 +110,9 @@ void TPattern::recalculateMatrix (void)
 void TPattern::sphericalWarp (TVector& rtPOINT) const
 {
 
-  TScalar  fx = rtPOINT.x();  
-  TScalar  fy = rtPOINT.y();  
-  TScalar  fz = rtPOINT.z();  
+  TScalar  fx = rtPOINT.x();
+  TScalar  fy = rtPOINT.y();
+  TScalar  fz = rtPOINT.z();
 
   TScalar  r    = rtPOINT.norm();
   TScalar  elev = atan2 (fy, sqrt (fx * fx + fz *fz)) / PI * 0.5;
@@ -126,9 +126,9 @@ void TPattern::sphericalWarp (TVector& rtPOINT) const
 void TPattern::sphericalAntiWarp (TVector& rtPOINT) const
 {
 
-  TScalar  r    = rtPOINT.x();  
-  TScalar  elev = rtPOINT.y() * PI * 2.0;  
-  TScalar  ang  = rtPOINT.z() * PI * 2.0;  
+  TScalar  r    = rtPOINT.x();
+  TScalar  elev = rtPOINT.y() * PI * 2.0;
+  TScalar  ang  = rtPOINT.z() * PI * 2.0;
 
   TScalar  x = r * cos (elev) * cos (ang);
   TScalar  y = r * sin (elev);
@@ -142,8 +142,8 @@ void TPattern::sphericalAntiWarp (TVector& rtPOINT) const
 void TPattern::cylindricalWarp (TVector& rtPOINT) const
 {
 
-  TScalar  fx   = rtPOINT.x();  
-  TScalar  fz   = rtPOINT.z();  
+  TScalar  fx   = rtPOINT.x();
+  TScalar  fz   = rtPOINT.z();
   TScalar  r    = sqrt (fx * fx + fz * fz);
   TScalar  ang  = atan2 (fz, fx) / PI * 0.5;
 
@@ -156,8 +156,8 @@ void TPattern::cylindricalWarp (TVector& rtPOINT) const
 void TPattern::cylindricalAntiWarp (TVector& rtPOINT) const
 {
 
-  TScalar  r    = rtPOINT.x();  
-  TScalar  ang  = rtPOINT.z() * PI * 2.0;  
+  TScalar  r    = rtPOINT.x();
+  TScalar  ang  = rtPOINT.z() * PI * 2.0;
 
   TScalar  x = r * cos (ang);
   TScalar  z = r * sin (ang);
@@ -175,19 +175,19 @@ TVector TPattern::warp (const TVector& rktPOINT) const
 
   if ( !gTransformIdentity )
   {
-    tNewPoint = tMatrix * tNewPoint;  
+    tNewPoint = tMatrix * tNewPoint;
   }
 
-  switch (eWarp) 
+  switch (eWarp)
   {
     case (FX_SPHERICAL_WARP) :
       sphericalWarp (tNewPoint);
-      break; 
+      break;
 
     case (FX_CYLINDRICAL_WARP) :
       cylindricalWarp (tNewPoint);
       break;
- 
+
     default:
       break;
   }
@@ -202,23 +202,23 @@ TVector TPattern::antiWarp (const TVector& rktPOINT) const
 
   TVector  tNewPoint = rktPOINT / tRSTScaling;
 
-  switch (eWarp) 
+  switch (eWarp)
   {
     case (FX_SPHERICAL_WARP) :
       sphericalAntiWarp (tNewPoint);
-      break; 
+      break;
 
     case (FX_CYLINDRICAL_WARP) :
       cylindricalAntiWarp (tNewPoint);
       break;
- 
+
     default:
       break;
   }
 
   if ( !gTransformIdentity )
   {
-    tNewPoint = tInverseMatrix * tNewPoint;  
+    tNewPoint = tInverseMatrix * tNewPoint;
   }
 
   return tNewPoint;
@@ -227,11 +227,11 @@ TVector TPattern::antiWarp (const TVector& rktPOINT) const
 
 
 TColor TPattern::color (const TSurfaceData& rktDATA) const
-{ 
+{
 
   TSurfaceData  tData   = rktDATA;
-  TVector       tPoint  = warp (rktDATA.localPoint());
-  TVector       tNormal;
+  TPoint tPoint = warp(rktDATA.localPoint());
+  TVector tNormal;
 
   if ( rktDATA.object() )
   {
@@ -240,8 +240,9 @@ TColor TPattern::color (const TSurfaceData& rktDATA) const
     if ( !gTransformIdentity )
     {
       tNormal.applyTransform (tMatrixRotation);
-    }   
+    }
 
+    // Convoluted junk?
     tPoint = *rktDATA.object()->transformMatrix() * tPoint;
 
     tData.setPoint  (tPoint);
@@ -263,28 +264,24 @@ TColor TPattern::color (const TSurfaceData& rktDATA) const
 
 }  /* color() */
 
+TScalar TPattern::scalar(const TSurfaceData& rktDATA) const
+{
+  return average(color(rktDATA));
+}
 
-int TPattern::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
+
+int TPattern::setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
 
   if ( rktNAME == "rotation" )
   {
-#if !defined(NEW_ATTRIBUTES)    
-    if ( eTYPE == FX_VECTOR )
-    {
-      tRotation = *((TVector*) nVALUE.pvValue);      
-
-      recalculateMatrix();
-    }
-#else
     magic_pointer<TAttribVector> vec = get_vector(nVALUE);
     if( !!vec )
     {
       tRotation = vec->tValue;
 
       recalculateMatrix();
-    }    
-#endif
+    }
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -292,14 +289,6 @@ int TPattern::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribTyp
   }
   else if ( rktNAME == "scaling" )
   {
-#if !defined(NEW_ATTRIBUTES)    
-    if ( eTYPE == FX_VECTOR )
-    {
-      tScaling = *((TVector*) nVALUE.pvValue);
-
-      recalculateMatrix();
-    }
-#else
     magic_pointer<TAttribVector> vec = get_vector(nVALUE);
     if( !!vec )
     {
@@ -307,7 +296,6 @@ int TPattern::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribTyp
 
       recalculateMatrix();
     }
-#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -315,22 +303,13 @@ int TPattern::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribTyp
   }
   else if ( rktNAME == "translation" )
   {
-#if !defined(NEW_ATTRIBUTES)    
-    if ( eTYPE == FX_VECTOR )
-    {
-      tTranslation = *((TVector*) nVALUE.pvValue);
-
-      recalculateMatrix();
-    }
-#else
     magic_pointer<TAttribVector> vec = get_vector(nVALUE);
     if( !!vec )
     {
       tTranslation = vec->tValue;
 
       recalculateMatrix();
-    }    
-#endif
+    }
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -340,16 +319,12 @@ int TPattern::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribTyp
   {
     if ( eTYPE == FX_STRING )
     {
-#if !defined(NEW_ATTRIBUTES)
-      string tWarp ((char *) nVALUE.pvValue);
-#else
       magic_pointer<TAttribString> str = get_string(nVALUE);
       if( !str )
       {
-	return FX_ATTRIB_WRONG_TYPE;
+        return FX_ATTRIB_WRONG_TYPE;
       }
-      string tWarp = str->tValue;
-#endif
+      std::string tWarp = str->tValue;
 
       if ( tWarp == "spherical" )
       {
@@ -366,7 +341,7 @@ int TPattern::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribTyp
       else
       {
         return FX_ATTRIB_WRONG_VALUE;
-      } 
+      }
     }
     else
     {
@@ -375,18 +350,11 @@ int TPattern::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribTyp
   }
   else if ( rktNAME == "rst_scaling" )
   {
-#if !defined(NEW_ATTRIBUTES)    
-    if ( eTYPE == FX_VECTOR )
-    {
-      tRSTScaling = *((TVector*) nVALUE.pvValue);
-    }
-#else
     magic_pointer<TAttribVector> vec = get_vector(nVALUE);
     if( !!vec )
     {
       tRSTScaling = vec->tValue;
     }
-#endif
     else
     {
       return FX_ATTRIB_WRONG_TYPE;
@@ -402,36 +370,13 @@ int TPattern::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribTyp
 }  /* setAttribute() */
 
 
-int TPattern::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
+int TPattern::getAttribute (const std::string& rktNAME, NAttribute& rnVALUE)
 {
   if( warp_strings.empty() )
   {
     set_warp_strings ();
   }
-  
-#if !defined(NEW_ATTRIBUTES)    
-  if ( rktNAME == "rotation" )
-  {
-    rnVALUE.pvValue = &tRotation;
-  }
-  else if ( rktNAME == "scaling" )
-  {
-    rnVALUE.pvValue = &tScaling;
-  }
-  else if ( rktNAME == "translation" )
-  {
-    rnVALUE.pvValue = &tTranslation;
-  }
-  else if ( rktNAME == "warp" )
-  {
-    const char* warp_name = warp_strings[eWarp];
-    rnVALUE.pvValue = (void *) warp_name;
-  }
-  else if ( rktNAME == "rst_scaling" )
-  {
-    rnVALUE.pvValue = &tRSTScaling;
-  }
-#else
+
   if ( rktNAME == "rotation" )
   {
     rnVALUE = (user_arg_type)new TAttribVector (tRotation);
@@ -447,7 +392,7 @@ int TPattern::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
   else if ( rktNAME == "warp" )
   {
     const char* warp_name = warp_strings[eWarp];
-    vector<string> choices;
+    std::vector<std::string> choices;
     choices.push_back (warp_strings[FX_NO_WARP]);
     choices.push_back (warp_strings[FX_SPHERICAL_WARP]);
     choices.push_back (warp_strings[FX_CYLINDRICAL_WARP]);
@@ -456,8 +401,7 @@ int TPattern::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
   else if ( rktNAME == "rst_scaling" )
   {
     rnVALUE = (user_arg_type)new TAttribVector (tRSTScaling);
-  }  
-#endif
+  }
   else
   {
     return TProcedural::getAttribute (rktNAME, rnVALUE);
@@ -476,11 +420,7 @@ void TPattern::getAttributeList (TAttributeList& rtLIST) const
   rtLIST ["rotation"]    = FX_VECTOR;
   rtLIST ["scaling"]     = FX_VECTOR;
   rtLIST ["translation"] = FX_VECTOR;
-#if !defined(NEW_ATTRIBUTES)
-  rtLIST ["warp"]        = FX_STRING;
-#else
-  rtLIST ["warp"]        = FX_STRING_LIST;  
-#endif
+  rtLIST ["warp"]        = FX_STRING_LIST;
   rtLIST ["rst_scaling"] = FX_VECTOR;
 
 }  /* getAttributeList() */
@@ -493,9 +433,6 @@ TUserFunctionMap TPattern::getUserFunctions()
   ufm["setScalar"] = create_user_function(this,&TPattern::setScalar);
   ufm["warp"]      = create_user_function(this,&TPattern::warp);
   ufm["unwarp"]    = create_user_function(this,&TPattern::antiWarp);
-  
+
   return ufm;
 }
-
-
-

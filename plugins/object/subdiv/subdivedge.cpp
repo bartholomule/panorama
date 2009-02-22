@@ -21,7 +21,7 @@
 #include "subdivedge.h"
 #include "subdivface.h"
 
-map<TSubdivEdge::TVertPair, TSubdivEdge*, TSubdivEdge::TVertPairCompare>   TSubdivEdge::_tEdgeMap;
+std::map<TSubdivEdge::TVertPair, TSubdivEdge*, TSubdivEdge::TVertPairCompare>   TSubdivEdge::_tEdgeMap;
 
 bool TSubdivEdge::TVertPairCompare::operator() (const TVertPair& rktFIRST, 
                                                 const TVertPair& rktSECOND) const

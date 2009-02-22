@@ -75,7 +75,7 @@ TScalar TPatternBrick::evaluate (const TVector& rktPOINT, TVector* ptGRADIENT) c
 }  /* evaluate() */
 
 
-int TPatternBrick::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
+int TPatternBrick::setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
 
   if ( rktNAME == "color" )
@@ -204,7 +204,7 @@ int TPatternBrick::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttr
 }  /* setAttribute() */
 
 
-int TPatternBrick::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
+int TPatternBrick::getAttribute (const std::string& rktNAME, NAttribute& rnVALUE)
 {
 
 #if !defined(NEW_ATTRIBUTES)

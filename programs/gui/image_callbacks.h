@@ -27,7 +27,7 @@ void imageMenuCB (const char* s);
 void imageCloseCB (TImageWindow* ptWnd);
 void imageSaveCB (TImageWindow* ptWnd);
 void imageSaveAsCB (TImageWindow* ptWnd);
-void imageFilterCB (TImageWindow* ptWND, string filter_name);
+void imageFilterCB (TImageWindow* ptWND, std::string filter_name);
 void imageCancelCB (TImageWindow* ptWND);
     
 #endif  /* _IMAGE_CALLBACKS__ */

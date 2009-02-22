@@ -31,7 +31,7 @@ TScene*   TSceneNEWER::_ptParsedScene  = NULL;
 
 extern int yyparse();
 
-TScene* TSceneNEWER::_load (const string& rktNAME)
+TScene* TSceneNEWER::_load (const std::string& rktNAME)
 {
 
   int   iResult;
@@ -43,7 +43,7 @@ TScene* TSceneNEWER::_load (const string& rktNAME)
 
   if ( !yyin )
   {
-    GOM.error() << "ERROR: Could not open scene file." << endl;
+    GOM.error() << "ERROR: Could not open scene file." << std::endl;
     return NULL;
   }
 
@@ -74,7 +74,7 @@ TScene* TSceneNEWER::_load (const string& rktNAME)
 }  /* _load() */
 
 
-int TSceneNEWER::_save (const string& rktNAME, const TScene* pktSCENE)
+int TSceneNEWER::_save (const std::string& rktNAME, const TScene* pktSCENE)
 {
 
   return 0;

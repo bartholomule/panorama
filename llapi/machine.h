@@ -19,8 +19,6 @@
 #ifndef _MACHINE__
 #define _MACHINE__
 
-using namespace std;
-
 #ifdef WORDS_BIGENDIAN
 #define FX_BIG_ENDIAN_SYSTEM               (1)
 #else
@@ -30,10 +28,6 @@ using namespace std;
 //
 // Some definitions
 //
-
-#ifndef PI
-#define PI          (3.14159265358979323846)
-#endif
 
 //
 // Useful types
@@ -48,33 +42,5 @@ typedef unsigned long int    DWord;
 // on some compilers (MSVC++ for example).
 //
 #include "llapi/warning_eliminator.h"
-
-
-
-#if defined(_MSC_VER)
-//
-// MSVC++ does not properly allow the min and max templated functions to work. As a 
-// workaround, use CPPMIN and CPPMAX instead (YUCK!).
-//
-#define CPPMIN _cpp_min
-#define CPPMAX _cpp_max
-
-#if !defined(min)
-#define min _cpp_min
-#endif
-
-#if !defined(max)
-#define max _cpp_max
-#endif
-
-#else /* not MSVC++ */
-
-//
-// Use the C++ standard names for min and max.
-//
-#define CPPMIN min
-#define CPPMAX max
-
-#endif
 
 #endif  /* _MACHINE__ */

@@ -44,6 +44,6 @@ int SafeSolveQuartic (double c[5], double s[4]);
 // (although this would be nice) to find *all* zeros of the polynomial. Under
 // many circumstances, this will find all of the zeros to the polynomial.  For
 // polynomials with order <= 4, it will call one of the above defined solvers.
-int SolveEquation (const vector<double>& coefs, vector<double>& solutions);
+int SolveEquation (const std::vector<double>& coefs, std::vector<double>& solutions);
 
 #endif  /* _RT_ROOT_SOLVER__ */

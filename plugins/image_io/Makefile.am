@@ -1,0 +1,6 @@
+SUBDIRS =  \
+	@GIF_FILTER@ \
+	@JPEG_FILTER@ \
+	@PNG_FILTER@ \
+	@TIFF_FILTER@ \
+	tga

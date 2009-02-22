@@ -42,8 +42,8 @@ class TPinholeCamera : public TCamera
 
     bool initialize (void);
     
-    int setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
-    int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
+    int setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
+    int getAttribute (const std::string& rktNAME, NAttribute& rnVALUE);
     void getAttributeList (TAttributeList& rtLIST) const;
 
     void setAngle (TScalar tANGLE)
@@ -69,10 +69,10 @@ class TPinholeCamera : public TCamera
       return -dotProduct (tDirection, rktPOINT);
     }
     
-    string className (void) const { return "PinholeCamera"; }
+    std::string className (void) const { return "PinholeCamera"; }
     virtual TPinholeCamera* clone_new() const { return new TPinholeCamera(*this); }
   
-    void printDebug (const string& indent) const;
+    void printDebug (const std::string& indent) const;
     
 };  /* class TPinholeCamera */
 

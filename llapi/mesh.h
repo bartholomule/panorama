@@ -23,10 +23,13 @@
 #include <vector>
 #include "llapi/llapi_defs.h"
 
-class TObject;
-
-class TMesh
+namespace panorama
 {
+
+  class TObject;
+
+  class TMesh : public StringDumpable
+  {
 
   public:
 
@@ -43,14 +46,14 @@ class TMesh
       TVector        tPoint;
       TVector        tNormal;
       TColor         tColor;
-      list<size_t>   tFaceList;
+      std::list<size_t>   tFaceList;
     };
 
   protected:
-    
-    vector<TVertex>   tVertexList;
-    vector<TFace>     tFaceList;
-    
+
+    std::vector<TVertex>   tVertexList;
+    std::vector<TFace>     tFaceList;
+
   public:
 
     TMesh (void) {}
@@ -60,21 +63,21 @@ class TMesh
       tVertexList = rktMESH.tVertexList;
       tFaceList   = rktMESH.tFaceList;
     }
-      
+
     size_t addVertex (const TVector& rktVERTEX, size_t zFACE);
     void addFace (const TVector& rktVERTEX1, const TVector& rktVERTEX2, const TVector& rktVERTEX3, const TObject* pktOBJ);
 
     TVertex& vertex (size_t zVERTEX) { return tVertexList [zVERTEX]; }
     TFace& face (size_t zFACE) { return tFaceList [zFACE]; }
-      
+
     const TVertex& vertex (size_t zVERTEX) const { return tVertexList [zVERTEX]; }
     const TFace& face (size_t zFACE) const { return tFaceList [zFACE]; }
-      
-    vector<TFace>* faceList (void) { return &tFaceList; }
-    vector<TVertex>* vertexList (void) { return &tVertexList; }
 
-    const vector<TFace>* faceList (void) const { return &tFaceList; }
-    const vector<TVertex>* vertexList (void) const { return &tVertexList; }
+    std::vector<TFace>* faceList (void) { return &tFaceList; }
+    std::vector<TVertex>* vertexList (void) { return &tVertexList; }
+
+    const std::vector<TFace>* faceList (void) const { return &tFaceList; }
+    const std::vector<TVertex>* vertexList (void) const { return &tVertexList; }
 
     void calculateVertexNormals (void);
 
@@ -86,6 +89,7 @@ class TMesh
 
     void updateFaces (void);
 
-};  /* class TMesh */
+  };  /* class TMesh */
+}
 
 #endif  /* _MESH__ */

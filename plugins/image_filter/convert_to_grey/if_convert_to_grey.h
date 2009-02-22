@@ -34,7 +34,7 @@ class TIF_ConvertToGrey : public TImageFilter
 
     void filter (SBuffers& rsBUFFERS);
 
-    string className (void) const { return "IF_ConvertToGrey"; }
+    std::string className (void) const { return "IF_ConvertToGrey"; }
 
     virtual TIF_ConvertToGrey* clone_new() const { return new TIF_ConvertToGrey(*this); }
 

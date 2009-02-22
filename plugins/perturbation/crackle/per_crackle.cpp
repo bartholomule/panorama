@@ -30,7 +30,7 @@
 DEFINE_PLUGIN ("PerturbationCrackle", FX_PERTURBATION_CLASS, TPerturbationCrackle);
 
 
-int TPerturbationCrackle::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
+int TPerturbationCrackle::setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
 
   if ( rktNAME == "bump" )
@@ -90,7 +90,7 @@ int TPerturbationCrackle::setAttribute (const string& rktNAME, NAttribute nVALUE
 }  /* setAttribute() */
 
 
-int TPerturbationCrackle::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
+int TPerturbationCrackle::getAttribute (const std::string& rktNAME, NAttribute& rnVALUE)
 {
 
 #if !defined(NEW_ATTRIBUTES)

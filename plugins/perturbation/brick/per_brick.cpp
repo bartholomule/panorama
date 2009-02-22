@@ -27,7 +27,7 @@
 DEFINE_PLUGIN ("PerturbationBrick", FX_PERTURBATION_CLASS, TPerturbationBrick);
 
 
-int TPerturbationBrick::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
+int TPerturbationBrick::setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
 
   if ( rktNAME == "bump" )
@@ -88,7 +88,7 @@ int TPerturbationBrick::setAttribute (const string& rktNAME, NAttribute nVALUE, 
 }  /* setAttribute() */
 
 
-int TPerturbationBrick::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
+int TPerturbationBrick::getAttribute (const std::string& rktNAME, NAttribute& rnVALUE)
 {
 
 #if !defined(NEW_ATTRIBUTES)

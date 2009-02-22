@@ -20,7 +20,7 @@
 #include "chunks.h"
 #include "llapi/file.h"
 
-void GetLWIdTag (istream& rsSTREAM, char acTAG[4])
+void GetLWIdTag (std::istream& rsSTREAM, char acTAG[4])
 {
 
   acTAG[0] = rsSTREAM.get();
@@ -31,7 +31,7 @@ void GetLWIdTag (istream& rsSTREAM, char acTAG[4])
 }  /* GetLWIdTag() */
 
 
-void GetLWColor (istream& rsSTREAM, TColor& rtCOLOR)
+void GetLWColor (std::istream& rsSTREAM, TColor& rtCOLOR)
 {
 
   rtCOLOR.setRed (rsSTREAM.get());
@@ -43,7 +43,7 @@ void GetLWColor (istream& rsSTREAM, TColor& rtCOLOR)
 }  /* GetLWColor() */
 
 
-void GetLWVector (istream& rsSTREAM, TVector& rtVECTOR)
+void GetLWVector (std::istream& rsSTREAM, TVector& rtVECTOR)
 {
 
   // Z coordinate is changed from a left-handed system to a right-handed system
@@ -55,7 +55,7 @@ void GetLWVector (istream& rsSTREAM, TVector& rtVECTOR)
 }  /* GetLWVector() */
 
 
-size_t GetLWString (istream& rsSTREAM, string& rtSTRING)
+size_t GetLWString (std::istream& rsSTREAM, std::string& rtSTRING)
 {
 
   char     cChar;
@@ -79,7 +79,7 @@ size_t GetLWString (istream& rsSTREAM, string& rtSTRING)
 }  /* GetLWString() */
 
 
-void ReadPNTSChunk (istream& rsSTREAM, size_t zSIZE, vector<TVector>& rtVERTEX_LIST)
+void ReadPNTSChunk (std::istream& rsSTREAM, size_t zSIZE, std::vector<TVector>& rtVERTEX_LIST)
 {
 
   TVector   tVertex;
@@ -96,10 +96,10 @@ void ReadPNTSChunk (istream& rsSTREAM, size_t zSIZE, vector<TVector>& rtVERTEX_L
 }  /* ReadPNTSChunk() */
 
 
-void ReadSRFSChunk (istream& rsSTREAM, size_t zSIZE, vector<string>& rtSURF_LIST)
+void ReadSRFSChunk (std::istream& rsSTREAM, size_t zSIZE, std::vector<std::string>& rtSURF_LIST)
 {
 
-  string   tName;
+  std::string   tName;
   
   while ( zSIZE && !rsSTREAM.eof() )
   {
@@ -113,14 +113,14 @@ void ReadSRFSChunk (istream& rsSTREAM, size_t zSIZE, vector<string>& rtSURF_LIST
 }  /* ReadSRFSChunk() */
 
 
-void ReadPOLSChunk (istream& rsSTREAM, size_t zSIZE, TMeshObject* ptMESH)
+void ReadPOLSChunk (std::istream& rsSTREAM, size_t zSIZE, TMeshObject* ptMESH)
 {
 
   TMesh::TFace     tFace;
   Word             wVertices;
   Word             wVertex;
   int              iSurface;
-  vector<size_t>   tVertexList;
+  std::vector<size_t>   tVertexList;
   size_t           zFaces = 0;
 
   while ( zSIZE && !rsSTREAM.eof() )
@@ -129,7 +129,7 @@ void ReadPOLSChunk (istream& rsSTREAM, size_t zSIZE, TMeshObject* ptMESH)
 
     if ( (zFaces % 1000) == 0 )
     {
-      GOM.debug() << "Faces : " << zFaces << endl;
+      GOM.debug() << "Faces : " << zFaces << std::endl;
     }
     
     wVertices = GetWord (rsSTREAM, FX_BIG_ENDIAN);
@@ -150,7 +150,7 @@ void ReadPOLSChunk (istream& rsSTREAM, size_t zSIZE, TMeshObject* ptMESH)
 
     if ( iSurface < 0 )
     {
-      GOM.debug() << "MODEL HAS DETAIL POLYGONS!!!!!!!!!!!" << endl;
+      GOM.debug() << "MODEL HAS DETAIL POLYGONS!!!!!!!!!!!" << std::endl;
     }
 
     if ( wVertices == 3 )
@@ -164,7 +164,7 @@ void ReadPOLSChunk (istream& rsSTREAM, size_t zSIZE, TMeshObject* ptMESH)
     }
     else
     {
-      GOM.debug() << "NON TRIANGLE VERTEX!!!, vertices = " << wVertices << endl;
+      GOM.debug() << "NON TRIANGLE VERTEX!!!, vertices = " << wVertices << std::endl;
     }
   }
 

@@ -1,283 +1,206 @@
 /*
-*  Copyright (C) 1999 Angel Jimenez Jimenez and Carlos Jimenez Moreno
-*
-*  This program is free software; you can redistribute it and/or modify
-*  it under the terms of the GNU General Public License as published by
-*  the Free Software Foundation; either version 2 of the License, or
-*  (at your option) any later version.
-*
-*  This program is distributed in the hope that it will be useful, but
-*  WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-*  General Public License for more details.
-*
-*  You should have received a copy of the GNU General Public License
-*  along with this program; if not, write to the Free Software
-*  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-*/
+ *  Copyright (C) 1999 Angel Jimenez Jimenez and Carlos Jimenez Moreno
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful, but
+ *  WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
 
-#ifndef _ATTRIBUTE__
-#define _ATTRIBUTE__
+#ifndef PANORAMA_ATTRIBUTE_H_INCLUDED
+#define PANORAMA_ATTRIBUTE_H_INCLUDED
 
 #include <string>
+#include <vector>
 #include "llapi/attribs.h"
 #include "llapi/llapi_defs.h"
+#include "llapi/color.h"
+#include "llapi/exception.hpp"
+#include "llapi/string_format.hpp"
 
-/* The base struct is now in attribs.h */
-
-struct TAttribInt : public TAttribute
+namespace panorama
 {
+  DECLARE_EXCEPTION(AttributeException);
+  DECLARE_EXCEPTION_BASE(AttributeConversionException, AttributeException);
 
-  int   tValue;
-
-  TAttribInt (void)  { eType = FX_INTEGER; }
-  TAttribInt (int i) { eType = FX_INTEGER; tValue = i; }  
-
-  virtual string AttributeName() const { return "integer"; }
-  TATTRIB_CLONE_NEW_DEF(TAttribInt);
-  
-  virtual string toString() const
+  /**
+   * A base class (struct) for attribute values.
+   */
+  class Attribute : public StringDumpable
   {
-    char buffer[100];
-    sprintf(buffer,"int(%d)",tValue);
-    return buffer;
-  }
-  
-};  /* struct TAttribInt */
+  public:
+    Attribute();
+    virtual ~Attribute();
 
-struct TAttribReal : public TAttribute
-{
+    virtual std::string name() const;
+    virtual std::string toString() const;
+    virtual std::string internalMembers(const Indentation& indent, PrefixType prefix) const;
 
-  TScalar   tValue;
-
-  TAttribReal (void) { eType = FX_REAL; }
-  TAttribReal (TScalar s) { eType = FX_REAL; tValue = s; }  
-
-  virtual string AttributeName() const { return "real"; }
-  TATTRIB_CLONE_NEW_DEF(TAttribReal);
-  
-  virtual string toString() const
-  {
-    char buffer[100];
-    sprintf(buffer,"real(%f)",float(tValue));
-    return buffer;
-  }  
-};  /* struct TAttribReal */
-
-
-struct TAttribBool : public TAttribute
-{
-
-  bool   tValue;
-  
-  TAttribBool (void)   { eType = FX_BOOL; }
-  TAttribBool (bool b) { eType = FX_BOOL; tValue = b; }
-  
-  virtual string AttributeName() const { return "bool"; }
-  TATTRIB_CLONE_NEW_DEF(TAttribBool);
-  
-  virtual string toString() const
-  {
-    return string("bool(") + (tValue?("true"):("false")) + ")";
-  }  
-  
-};  /* struct TAttribBool */
-
-
-struct TAttribString : public TAttribute
-{
-
-  string   tValue;
-  
-  TAttribString (void) { eType = FX_STRING; }
-  TAttribString (const string& s):tValue(s) { eType = FX_STRING; }  
-
-  virtual string AttributeName() const { return "string"; }
-  TATTRIB_CLONE_NEW_DEF(TAttribString);
-  
-  virtual string toString() const
-  {
-    return "string(" + tValue + ")";
-  }
-  
-};  /* struct TAttribString */
-
-
-#include <vector>
-using std::vector;
-
-struct TAttribStringList : public TAttribString
-{
-
-  vector<string> choices;
-  
-  TAttribStringList (void) { eType = FX_STRING_LIST; }
-  TAttribStringList (const vector<string>& sv,
-		     const string& s = "") :
-    TAttribString(s),
-    choices(sv)
-  {
-    eType = FX_STRING_LIST;
-    if( tValue.empty() && !choices.empty() )
+    enum AttributeType
     {
-	tValue = *choices.begin();
+      E_NONE,
+      E_ANY,
+      E_INTEGER,
+      E_REAL,
+      E_BOOL,
+      E_STRING,
+      E_COLOR,
+      E_VECTOR,
+      E_VECTOR2,
+      E_POINT,
+      E_POINT2,
+
+      // These next ones are for returning from something, to show a list of
+      // possible options.  The results are read-only!!!  When making a
+      // selection, send the value back as its normal type (without the _LIST).
+      // They will be returned as a pointer to a vector of the type (pvValue).
+      E_INTEGER_LIST, // vector<int>
+      E_REAL_LIST, // vector<TScalar>
+      E_BOOL_LIST, // vector<bool>
+      E_STRING_LIST, // vector<std::string>
+      E_COLOR_LIST, // vector<TColor>
+      E_VECTOR_LIST, // vector<TVector>
+      E_VECTOR2_LIST, // vector<TVector2>
+      E_POINT_LIST, // vector<TPoint>
+      E_POINT2_LIST, // vector<TPoint2>
+
+      E_IMAGE,
+      E_BSDF,
+      E_CAMERA,
+      E_LIGHT,
+      E_PATTERN,
+      E_PERTURBATION,
+      E_MATERIAL,
+      E_RENDERER,
+      E_OBJECT,
+      E_AGGREGATE,
+      E_OBJECT_FILTER,
+      E_IMAGE_FILTER,
+      E_SCENE,
+      E_IMAGE_IO,
+      E_ARRAY,
+      E_GENERIC_ARRAY
+    };
+
+    // Creates an empty shell of a type...
+    Attribute(AttributeType type);
+
+    AttributeType getType() const;
+
+    // Specialized constructors
+    Attribute(int value);
+    Attribute(TScalar value);
+    Attribute(const TVector& value);
+    Attribute(const TVector2& value);
+    Attribute(const TPoint& value);
+    Attribute(const TPoint2& value);
+    Attribute(const TColor& value);
+
+    template <class T>
+    T get() const
+    {
+      T value;
+      get(value);
+      return value;
     }
-  }  
 
-  virtual string AttributeName() const { return "stringlist"; }
-  TATTRIB_CLONE_NEW_DEF(TAttribStringList);
-  
-  virtual string toString() const
+    template <class T>
+    T convertTo() const;
+
+    void get(int&) const;
+    void get(TScalar&) const;
+    void get(TVector&) const;
+    void get(TVector2&) const;
+    void get(TPoint&) const;
+    void get(TPoint2&) const;
+    void get(TColor&) const;
+
+    // Accessors.  These will throw an AttributeException if the value is of an
+    // incorrect type.
+    int getInt() const { return get<int>(); }
+    TScalar getFloat() const { return get<TScalar>(); }
+    TVector getVector() const { return get<TVector>(); }
+    TVector2 getVector2() const { return get<TVector2>(); }
+    TPoint getPoint() const { return get<TPoint>(); }
+    TPoint2 getPoint2() const { return get<TPoint2>(); }
+    TColor getColor() const { return get<TColor>(); }
+
+    // Conversions.  These will throw an AttributeConversionException if the
+    // value is of an incorrect type.
+    int convertToInt() const;
+
+    // This is not for general use.
+    class AttributeImpl;
+  private:
+
+    template <typename T>
+    void assertSameType();
+
+    rc_pointer<AttributeImpl> m_impl;
+  };  /* struct Attribute */
+
+  typedef std::vector<Attribute> AttributeArray;
+
+  template <class T> struct AttributeValueType { };
+
+#define ATTRIB_VALUE_TYPE_DECL1(nativetype, typecode) \
+  template <> \
+  struct AttributeValueType<nativetype> \
+  { \
+    static const Attribute::AttributeType type = Attribute::typecode; \
+  };
+
+#define ATTRIB_VALUE_TYPE_DECL2(nativetype, typecode) \
+  template <> \
+  struct AttributeValueType<const nativetype&> \
+  { \
+    static const Attribute::AttributeType type = Attribute::typecode; \
+  };
+
+#define ATTRIB_VALUE_TYPE_DECL(nativetype, typecode) \
+  ATTRIB_VALUE_TYPE_DECL1(nativetype, typecode) \
+  ATTRIB_VALUE_TYPE_DECL2(nativetype, typecode)
+
+  ATTRIB_VALUE_TYPE_DECL1(void, E_NONE);
+  ATTRIB_VALUE_TYPE_DECL(Attribute, E_ANY);
+  ATTRIB_VALUE_TYPE_DECL(int, E_INTEGER);
+  ATTRIB_VALUE_TYPE_DECL(bool, E_BOOL);
+  ATTRIB_VALUE_TYPE_DECL(std::string, E_STRING);
+  ATTRIB_VALUE_TYPE_DECL(char*, E_STRING);
+  ATTRIB_VALUE_TYPE_DECL(TScalar, E_REAL);
+  ATTRIB_VALUE_TYPE_DECL(TColor, E_COLOR);
+  ATTRIB_VALUE_TYPE_DECL(TVector, E_VECTOR);
+  ATTRIB_VALUE_TYPE_DECL(TVector2, E_VECTOR2);
+  ATTRIB_VALUE_TYPE_DECL(TPoint, E_POINT);
+  ATTRIB_VALUE_TYPE_DECL(TPoint2, E_POINT2);
+  ATTRIB_VALUE_TYPE_DECL(std::vector<int>, E_INTEGER_LIST);
+  ATTRIB_VALUE_TYPE_DECL(std::vector<TScalar>, E_REAL_LIST);
+  ATTRIB_VALUE_TYPE_DECL(std::vector<bool>, E_BOOL_LIST);
+  ATTRIB_VALUE_TYPE_DECL(std::vector<std::string>, E_STRING_LIST);
+  ATTRIB_VALUE_TYPE_DECL(std::vector<TColor>, E_COLOR_LIST);
+  ATTRIB_VALUE_TYPE_DECL(std::vector<TVector>, E_VECTOR_LIST);
+  ATTRIB_VALUE_TYPE_DECL(std::vector<TVector2>, E_VECTOR2_LIST);
+  ATTRIB_VALUE_TYPE_DECL(std::vector<TPoint>, E_POINT_LIST);
+  ATTRIB_VALUE_TYPE_DECL(std::vector<TPoint2>, E_POINT2_LIST);
+
+
+  template <typename T>
+  void Attribute::assertSameType()
   {
-    string s = "stringlist(" + tValue + ":";
-
-    vector<string>::const_iterator i = choices.begin();
-
-    if( i != choices.end() )
+    if( getType() != AttributeValueType<T>::typecode )
     {
-      s += *i;
-
-      for(++i; i != choices.end(); ++i)
-      {
-	s += ", " + *i;
-      }
+      THROW(AttributeException, string_format("Types do not match: %1 and %2", getType(), AttributeValueType<T>::typecode).c_str());
     }
-    return s + ")";
   }
-  
-};  /* struct TAttribStringList */
+}
 
-
-struct TAttribColor : public TAttribute
-{
-
-  TColor   tValue;
-  
-  TAttribColor (void) { eType = FX_COLOR; }
-  TAttribColor (const TColor& c) : tValue(c)     { eType = FX_COLOR; }
-  TAttribColor (TScalar s)       : tValue(s,s,s) { eType = FX_COLOR; }    
-  TAttribColor (const TVector& v): tValue(v[0],v[1],v[2]) { eType = FX_COLOR; }
-  
-  virtual string AttributeName() const { return "color"; }
-  TATTRIB_CLONE_NEW_DEF(TAttribColor);
-  
-  virtual string toString() const
-  {
-    char buffer[1024];
-    sprintf( buffer, "color(%f,%f,%f)", tValue.red(), tValue.green(), tValue.blue() );
-    return string(buffer);
-  }
-  
-};  /* struct TAttribColor */
-
-
-struct TAttribVector : public TAttribute
-{
-
-  TVector   tValue;
-  
-  TAttribVector (void) { eType = FX_VECTOR; }
-  TAttribVector (const TVector& v) : tValue(v)     { eType = FX_VECTOR; }
-  TAttribVector (TScalar s )       : tValue(s,s,s) { eType = FX_VECTOR; }    
-  virtual string AttributeName() const { return "vector"; }
-  TATTRIB_CLONE_NEW_DEF(TAttribVector);
-  
-  virtual string toString() const
-  {
-    char buffer[1024];
-    sprintf( buffer, "vector(%f,%f,%f)", tValue.x(), tValue.y(), tValue.z() );
-    return string(buffer);
-  }
-  
-};  /* struct TAttribVector */
-
-
-struct TAttribVector2 : public TAttribute
-{
-
-  TVector2   tValue;
-  
-  TAttribVector2 (void)                           { eType = FX_VECTOR2; }
-  TAttribVector2 (const TVector2& v): tValue(v)   { eType = FX_VECTOR2; }
-  TAttribVector2 (TScalar s)        : tValue(s,s) { eType = FX_VECTOR2; }  
-  
-  virtual string AttributeName() const { return "vector2"; }
-  TATTRIB_CLONE_NEW_DEF(TAttribVector2);
-  
-  virtual string toString() const
-  {
-    char buffer[1024];
-    sprintf( buffer, "vector2(%f,%f)", tValue.x(), tValue.y() );
-    return string(buffer);    
-  }
-  
-};  /* struct TAttribVector2 */
-
-struct TAttribArray : public TAttribute
-{
-  std::vector<TScalar> tValue;
-
-  TAttribArray (void) { eType = FX_ARRAY; }
-  TAttribArray (TScalar s): tValue(1)
-  {
-    eType = FX_ARRAY;
-    tValue[0] = s;
-  }
-  TAttribArray (const TVector2& v): tValue(2)
-  {
-    eType = FX_ARRAY;
-    tValue[0] = v.x();
-    tValue[1] = v.y();
-  }
-  TAttribArray (const TVector& v): tValue(3)
-  {
-    eType = FX_ARRAY;
-    tValue[0] = v.x();
-    tValue[1] = v.y();
-    tValue[2] = v.z();    
-  }
-  
-  TAttribArray (const std::vector<TScalar>& va): tValue(va) { eType = FX_ARRAY; }
-  virtual string AttributeName() const { return "array"; }
-  TATTRIB_CLONE_NEW_DEF(TAttribArray);
-  
-  virtual string toString() const
-  {
-    string retval;
-    char buffer[1024];
-    retval = "[ ";
-
-    size_t i;
-    // all of the elements that need a trailing comma (if any)
-    for(i = 0; i < tValue.size() - 1; ++i)
-    {
-      sprintf(buffer, "%06.4f, ", tValue[i]);
-      retval += string(buffer);
-    }
-    // the remaining elements (if any)
-    if(i < tValue.size())
-    {
-      sprintf(buffer, "%06.4f", tValue[i]);      
-      retval += string(buffer);
-    }    
-    retval += " ]";
-    return retval;
-  }
-    
-};  /* struct TAttribArray */
-
-
-magic_pointer<TAttribInt>     get_int(const magic_pointer<TAttribute> attr);
-magic_pointer<TAttribReal>    get_real(const magic_pointer<TAttribute> attr);
-magic_pointer<TAttribBool>    get_bool(const magic_pointer<TAttribute> attr);
-magic_pointer<TAttribString>  get_string(const magic_pointer<TAttribute> attr);
-magic_pointer<TAttribStringList> get_stringlist(const magic_pointer<TAttribute> attr);
-magic_pointer<TAttribColor>   get_color(const magic_pointer<TAttribute> attr);
-magic_pointer<TAttribVector>  get_vector(const magic_pointer<TAttribute> attr);
-magic_pointer<TAttribVector2> get_vector2(const magic_pointer<TAttribute> attr);
-magic_pointer<TAttribArray> get_array(const magic_pointer<TAttribute> attr);
-
-magic_pointer<TAttribute> base_to_attr(const magic_pointer<TBaseClass> base);
-magic_pointer<TBaseClass> attr_to_base(const magic_pointer<TAttribute> attr);
-
-#endif  /* _ATTRIBUTE__ */
+#endif  /* PANORAMA_ATTRIBUTE_H_INCLUDED */

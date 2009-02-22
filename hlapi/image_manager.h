@@ -25,7 +25,7 @@
 #include "llapi/image_io.h"
 #include "hlapi/plugin_manager.h"
 
-typedef map<string, TCreateFunction*, less<string> > TImageFormatMap;
+typedef std::map<std::string, TCreateFunction*, std::less<std::string> > TImageFormatMap;
 
 struct TImageData
 {
@@ -35,7 +35,7 @@ struct TImageData
 
 };  /* struct TImageData */
 
-typedef map<string, TImageData*, less <string> > TImageDataMap;
+typedef std::map<std::string, TImageData*, std::less<std::string> > TImageDataMap;
 
 class TImageManager
 {
@@ -46,23 +46,23 @@ class TImageManager
 
     static TImageFormatMap   _tImageFormatMap;
 
-    TImage* loadImage (const string& rktNAME, const string& rktFORMAT);
+    TImage* loadImage (const std::string& rktNAME, const std::string& rktFORMAT);
 
   public:
 
-    static TImage* _load (const string& rktNAME, const string& rktFORMAT);
-    static int _save (const string& rktNAME, const string& rktFORMAT, const TImage* pktIMAGE);
-    static bool _knownFormat (const string& rktFORMAT);
-    static void _addFormat (const string& rktFORMAT, TCreateFunction* pfCREATE);
-    static void _addFormat (const string& rktFORMAT, TCreateFunction* pfCREATE, const string& rktALIAS);
-    static TImageIO* _getImageIO (const string& rktFORMAT);
+    static TImage* _load (const std::string& rktNAME, const std::string& rktFORMAT);
+    static int _save (const std::string& rktNAME, const std::string& rktFORMAT, const TImage* pktIMAGE);
+    static bool _knownFormat (const std::string& rktFORMAT);
+    static void _addFormat (const std::string& rktFORMAT, TCreateFunction* pfCREATE);
+    static void _addFormat (const std::string& rktFORMAT, TCreateFunction* pfCREATE, const std::string& rktALIAS);
+    static TImageIO* _getImageIO (const std::string& rktFORMAT);
     static void _initialize (void);
       
     ~TImageManager (void);
     
     bool initialize (void) { return true; }
 
-    TImage* newImage (const string& rktNAME, const string& rktFORMAT);
+    TImage* newImage (const std::string& rktNAME, const std::string& rktFORMAT);
 
 };  /* class TImageManager */
 

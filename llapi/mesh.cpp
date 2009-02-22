@@ -25,7 +25,7 @@ size_t TMesh::addVertex (const TVector& rktVERTEX, size_t zFACE)
   TVertex*   ptVertex;
   size_t     zPos = 0;
       
-  for (vector<TVertex>::iterator tIter = tVertexList.begin(); ( tIter != tVertexList.end() ) ;tIter++)
+  for (std::vector<TVertex>::iterator tIter = tVertexList.begin(); ( tIter != tVertexList.end() ) ;tIter++)
   {
     ptVertex = &(*tIter);
     
@@ -86,13 +86,13 @@ void TMesh::calculateVertexNormals (void)
 
   TVertex*   ptVertex;
   
-  for (vector<TVertex>::iterator tIter = tVertexList.begin(); ( tIter != tVertexList.end() ) ;tIter++)
+  for (std::vector<TVertex>::iterator tIter = tVertexList.begin(); ( tIter != tVertexList.end() ) ;tIter++)
   {
     ptVertex = &(*tIter);
 
     ptVertex->tNormal.set (0, 0, 0);
 
-    for (list<size_t>::iterator tIter2 = ptVertex->tFaceList.begin(); ( tIter2 != ptVertex->tFaceList.end() ) ;tIter2++)
+    for (std::list<size_t>::iterator tIter2 = ptVertex->tFaceList.begin(); ( tIter2 != ptVertex->tFaceList.end() ) ;tIter2++)
     {
       ptVertex->tNormal += tFaceList[*tIter2].tNormal;
     }
@@ -110,7 +110,7 @@ void TMesh::updateFaces (void)
   TVertex*   aptVertex [3];
   size_t     zFace = 0;
 
-  for (vector<TFace>::iterator tIter = tFaceList.begin(); ( tIter != tFaceList.end() ) ;tIter++)
+  for (std::vector<TFace>::iterator tIter = tFaceList.begin(); ( tIter != tFaceList.end() ) ;tIter++)
   {
     ptFace = &(*tIter);
 

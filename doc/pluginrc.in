@@ -3,75 +3,75 @@
 #
 
 # Atmospheric objects
-atm_const.plg
+atm_const.so
 
 # BSDF
-bsdf_cook_torrance.plg
-bsdf_lambertian.plg
-bsdf_phong.plg
-bsdf_schlick.plg
-bsdf_schlick_double.plg
-bsdf_ward.plg
+bsdf_cook_torrance.so
+bsdf_lambertian.so
+bsdf_phong.so
+bsdf_schlick.so
+bsdf_schlick_double.so
+bsdf_ward.so
 
 # Cameras
-parallel.plg
-pinhole.plg
-thinlens.plg
+parallel.so
+pinhole.so
+thinlens.so
 
 # Image filters
-if_cartoon.plg
-if_convert_to_grey.plg
-if_fog.plg
-if_lens_flare.plg
+if_cartoon.so
+if_convert_to_grey.so
+if_fog.so
+if_lens_flare.so
 @PLUGIN_TEXT@
 
 # Image input/output formats
-tga_io.plg
-tiff_io.plg
+tga_io.so
+tiff_io.so
 @PLUGIN_PNG@
 @PLUGIN_JPEG@
 @PLUGIN_GIF@
 
 # Lights
-point_light.plg
-projector.plg
-warn_light.plg
+point_light.so
+projector.so
+warn_light.so
 
 # Patterns
-pat_amplifier.plg
-pat_brick.plg
-pat_checker.plg
-pat_composite.plg
-pat_crackle.plg
-pat_cylgrad.plg
-pat_leopard.plg
-pat_marble.plg
-pat_noise.plg
-pat_parquet.plg
-pat_texture.plg
-pat_wood.plg
-pat_worley.plg
+pat_amplifier.so
+pat_brick.so
+pat_checker.so
+pat_composite.so
+pat_crackle.so
+pat_cylgrad.so
+pat_leopard.so
+pat_marble.so
+pat_noise.so
+pat_parquet.so
+pat_texture.so
+pat_wood.so
+pat_worley.so
 
 # Perturbations
-per_brick.plg
-per_bump.plg
-per_crackle.plg
-per_leopard.plg
-per_marble.plg
-per_noise.plg
-per_wave.plg
-per_worley.plg
+per_brick.so
+per_bump.so
+per_crackle.so
+per_leopard.so
+per_marble.so
+per_noise.so
+per_wave.so
+per_worley.so
 
 # Objects
-bezier.plg
-aggregate_uniform_grid.plg
+bezier.so
+aggregate_uniform_grid.so
 
 # Object filters
-of_cartoon.plg
-of_convert_to_grey.plg
+of_cartoon.so
+of_convert_to_grey.so
 
 # Renderers
-raytracer.plg
+raytracer.so
 
 # Scene input/output formats
-rt_io.plg
+rt_io.so

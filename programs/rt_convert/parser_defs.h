@@ -36,7 +36,7 @@ extern int     rt_conv_debug;
 //  Prototypes
 //
 void rt_conv_error (const char* pkcTEXT);
-void rt_conv_error (const string& rksTEXT);
+void rt_conv_error (const std::string& rksTEXT);
 int  rt_conv_parse (void);
 int  rt_conv_lex (void);
 void RT_CONV_InitParser (void);

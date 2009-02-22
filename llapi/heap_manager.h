@@ -16,53 +16,54 @@
 *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef _HEAP_MANAGER__
-#define _HEAP_MANAGER__
+#ifndef PANORAMA_HEAP_MANAGER_H_INCLUDED
+#define PANORAMA_HEAP_MANAGER_H_INCLUDED
 
 #include <list>
 
 #include "llapi/machine.h"
-// Instead of this next line:
-//#include "llapi/attribute.h"
-// Create a forward decl for the TAttribute class.
-// This helps to avoid circular inclusion problems.
-class TAttribute;
+#include "llapi/attribute.h"
+
+namespace panorama
+{
+// CHECKME! [KH-20080704] - What is this class for?
 
 #define FX_REFERENCE_MAX    65535   // Reference count is defined as Word
 
-struct TVariable
-{
-
-  TAttribute   tAttrib;
-  Word         tReferenceCount;
-
-  TVariable (const TAttribute& rktATTRIB)
+  struct TVariable
   {
-    tAttrib         = rktATTRIB;
-    tReferenceCount = 0;
-  }
 
-};  /* struct TVariable */
+    NAttribute tAttrib;
+    Word tReferenceCount;
 
-typedef std::list<TVariable>      TVariableList;
-typedef TVariableList::iterator   TVarReference;
+    TVariable (const TAttribute& rktATTRIB)
+    {
+      tAttrib = rktATTRIB;
+      tReferenceCount = 0;
+    }
 
-class THeapManager
-{
+  };  /* struct TVariable */
+
+  typedef std::list<TVariable>      TVariableList;
+  typedef TVariableList::iterator   TVarReference;
+
+  class THeapManager
+  {
 
   protected:
 
-    TVariableList   tHeap;
+    TVariableList tHeap;
 
   public:
 
     TVarReference addVariable (EAttribType eType);
-                               
-};  /* class THeapManager */
 
-extern THeapManager   tHeapManager;
+  };  /* class THeapManager */
 
+  extern THeapManager tHeapManager;
 
-#endif  /* _HEAP_MANAGER__ */
+} // end namespace panorama
+
+#endif  /* PANORAMA_HEAP_MANAGER_H_INCLUDED */
 
 

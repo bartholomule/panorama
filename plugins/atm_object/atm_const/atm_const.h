@@ -37,8 +37,8 @@ class TAtmConst : public TAtmosphericObject
 
     TAtmConst (void);
 
-    int setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
-    int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
+    int setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
+    int getAttribute (const std::string& rktNAME, NAttribute& rnVALUE);
     void getAttributeList (TAttributeList& rtLIST) const;
     
     TAtmSampleData sampleData (const TVector& rktPOINT) const
@@ -53,7 +53,7 @@ class TAtmConst : public TAtmosphericObject
 
     bool initialize (TScene* ptSCENE);
     
-    string className (void) const { return "AtmConst"; }
+    std::string className (void) const { return "AtmConst"; }
 
 };  /* class TAtmConst */
 

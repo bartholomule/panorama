@@ -27,29 +27,29 @@
 #include "hlapi/scene_manager.h"
 #include "llapi/file.h"
 
-multimap<string, string>   tConfigData;
+std::multimap<std::string, std::string>   tConfigData;
 
-static string   _tInputFileName;
-static string   _tInputFileFormat;
-static string   _tProgramName;
-static string   _tTopDir;
-static string   _tLogFileName;
-static string   _tLocalPath;
+static std::string   _tInputFileName;
+static std::string   _tInputFileFormat;
+static std::string   _tProgramName;
+static std::string   _tTopDir;
+static std::string   _tLogFileName;
+static std::string   _tLocalPath;
 static bool     _gKeepLog = false;
 
 void DisplayHelp (void)
 {
 
-  GOM.out() << "Usage: " << _tProgramName << " input_file" << endl;
+  GOM.out() << "Usage: " << _tProgramName << " input_file" << std::endl;
 
 }  /* DisplayHelp() */
 
 
-bool ProcessConfigFile (const string& rktCONFIG, multimap<string, string>& rtMAP)
+bool ProcessConfigFile (const std::string& rktCONFIG, std::multimap<std::string, std::string>& rtMAP)
 {
 
-  string     tOptionName, tOptionValue;
-  ifstream   tConfigFile;
+  std::string     tOptionName, tOptionValue;
+  std::ifstream   tConfigFile;
   char*      pcBuffer = new char[200];
 
   tConfigFile.open (rktCONFIG.c_str());
@@ -110,7 +110,7 @@ bool ProcessConfigFile (const string& rktCONFIG, multimap<string, string>& rtMAP
     if ( !gAppend )
     {
       // Removes every previous option with the same name
-      multimap<string, string>::iterator   iter;
+      std::multimap<std::string, std::string>::iterator   iter;
       
       while ( (iter = rtMAP.find (tOptionName)) != rtMAP.end() )
       {
@@ -124,7 +124,7 @@ bool ProcessConfigFile (const string& rktCONFIG, multimap<string, string>& rtMAP
     }
 
     // Inserts a new option entry in the map
-    rtMAP.insert (pair<const string, string> (tOptionName, tOptionValue));
+    rtMAP.insert (std::pair<const std::string, std::string> (tOptionName, tOptionValue));
   }
 
   tConfigFile.close();
@@ -148,8 +148,8 @@ void ProcessCommandLine (int argc, char* argv[])
     _tInputFileName   = argv [1];
     _tInputFileFormat = FileExtension (_tInputFileName);
 
-    GOM.out() << "File : " << _tInputFileName << endl;
-    GOM.out() << "Type : " << _tInputFileFormat << endl;
+    GOM.out() << "File : " << _tInputFileName << std::endl;
+    GOM.out() << "Type : " << _tInputFileFormat << std::endl;
   }
 
 }  /* ProcessCommandLine() */
@@ -173,7 +173,7 @@ void SetPaths (void)
 
   if ( (pcEnv = getenv ("HOME")) != NULL )
   {
-    _tLocalPath = FilenameConvert(string (pcEnv) + "/.panorama/");
+    _tLocalPath = FilenameConvert(std::string (pcEnv) + "/.panorama/");
     if ( !FileExists (_tLocalPath + "config") )
     {
       _tLocalPath = FilenameConvert(_tTopDir + "/etc/");
@@ -193,7 +193,7 @@ void SetPaths (void)
 bool FinishedLine (size_t zLINE, void* pvDATA)
 {
 
-  GOM.out() << "[" << zLINE << "]\r" << flush;
+  GOM.out() << "[" << zLINE << "]\r" << std::flush;
   
   return true;
 
@@ -203,7 +203,7 @@ bool FinishedLine (size_t zLINE, void* pvDATA)
 int main (int argc, char *argv[])
 {
 
-  ofstream   tLogFile;
+  std::ofstream   tLogFile;
   magic_pointer<TScene> ptScene;
   char       acTimeString [30];
   time_t     tBaseTime, tInitTime, tRenderTime, tPostProcessTime;
@@ -212,36 +212,38 @@ int main (int argc, char *argv[])
 
   ProcessCommandLine (argc, argv);
 
+  GOM.EnableStream("debug");
+  
   SetPaths();
 
   if ( !FileExists (_tLocalPath + "config") )
   {
-    GOM.error() << "WARNING: No configuration file." << endl;
+    GOM.error() << "WARNING: No configuration file." << std::endl;
   }
   else
   {
     if ( !ProcessConfigFile (_tLocalPath + "config", tConfigData) )
     {
-      GOM.error() << "ERROR: Couldn't read configuration file." << endl;
+      GOM.error() << "ERROR: Couldn't read configuration file." << std::endl;
       exit (1);
     }
   }
 
-//  for (multimap<string, string>::const_iterator iter = tConfigData.begin(); ( iter != tConfigData.end() ) ;iter++)
+//  for (multimap<string, std::string>::const_iterator iter = tConfigData.begin(); ( iter != tConfigData.end() ) ;iter++)
 //  {
-//    GOM.debug() << (*iter).first << " = " << (*iter).second << endl;
+//    GOM.debug() << (*iter).first << " = " << (*iter).second << std::endl;
 //  }
   
-  multimap<string, string>::const_iterator   iter = tConfigData.find ("PluginConfigFile");
-  string   tPluginConfigFile = ( iter != tConfigData.end() ) ? (*iter).second : _tLocalPath + "pluginrc";
+  std::multimap<std::string, std::string>::const_iterator   iter = tConfigData.find ("PluginConfigFile");
+  std::string   tPluginConfigFile = ( iter != tConfigData.end() ) ? (*iter).second : _tLocalPath + "pluginrc";
 
   if ( !FileExists (tPluginConfigFile) )
   {
-    GOM.error() << "ERROR: Plugin configuration file '" << tPluginConfigFile << "' does not exist." << endl;
+    GOM.error() << "ERROR: Plugin configuration file '" << tPluginConfigFile << "' does not exist." << std::endl;
     exit (1);
   }
 
-  GOM.out() << "Loading plugins..." << endl;
+  GOM.out() << "Loading plugins..." << std::endl;
   tPluginManager.initialize (tPluginConfigFile, 0);
 
   TGradient::_initialize();
@@ -251,66 +253,67 @@ int main (int argc, char *argv[])
 
   if ( !TSceneManager::_knownFormat (_tInputFileFormat) )
   {
-    GOM.error() << "ERROR: Scene format not supported" << endl;
+    GOM.error() << "ERROR: Scene format not supported" << std::endl;
     exit (1);
   }
   
-  GOM.out() << "Parsing...                                                                      " << endl;
+  GOM.out() << "Parsing...                                                                      " << std::endl;
   ptScene = TSceneManager::_load (_tInputFileName, _tInputFileFormat);
-  GOM.out() << "Scene loaded..." << endl;
+  GOM.out() << "Scene loaded..." << std::endl;
 
   if ( !ptScene )
   {
-    GOM.error() << "Error parsing input file" << endl;
+    GOM.error() << "Error parsing input file" << std::endl;
     exit (1);
   }
 
   //
   // Uncomment next line for debug information on the whole scene.
   //
+  GOM.out() << "Printing debug..." << std::endl;
   ptScene->printDebug("");
 
   tBaseTime = time (NULL);
 
-  GOM.out() << "Initializing..." << endl;
+  GOM.out() << "Initializing..." << std::endl;
   if(!ptScene->initialize())
   {
-    GOM.error() << "Initialization failed!" << endl;
+    GOM.error() << "Initialization failed!" << std::endl;
     exit (1);
   }
   ptScene->printDebug("#");  
   tInitTime = time (NULL);
 
-  GOM.out() << "Rendering..." << endl;
+  GOM.out() << "Rendering..." << std::endl;
   ptScene->render (&FinishedLine);
   tRenderTime = time (NULL);
   
-  GOM.out() << "Postprocessing..." << endl;
+  GOM.out() << "Postprocessing..." << std::endl;
   ptScene->postprocess();
   tPostProcessTime = time (NULL);
   
-  GOM.out() << "Saving..." << endl;
+  GOM.out() << "Saving..." << std::endl;
   if ( !ptScene->saveImage() )
   {
-    GOM.error() << "Could not save image file" << endl;
+    GOM.error() << "Could not save image file" << std::endl;
   }
   
   ptScene->finalize();
 
-  GOM.out() << endl;
-  GOM.out() << " Total ellapsed time : " << difftime (tPostProcessTime, tBaseTime) << " secs" << endl;
-  GOM.out() << " - Initialization . . . " << difftime (tInitTime, tBaseTime) << " secs" << endl;
-  GOM.out() << " - Render         . . . " << difftime (tRenderTime, tInitTime) << " secs" << endl;
-  GOM.out() << " - Postprocessing . . . " << difftime (tPostProcessTime, tRenderTime) << " secs" << endl;
+  GOM.out() << std::endl;
+  GOM.out() << " Total ellapsed time : " << difftime (tPostProcessTime, tBaseTime) << " secs" << std::endl;
+  GOM.out() << " - Initialization . . . " << difftime (tInitTime, tBaseTime) << " secs" << std::endl;
+  GOM.out() << " - Render         . . . " << difftime (tRenderTime, tInitTime) << " secs" << std::endl;
+  GOM.out() << " - Postprocessing . . . " << difftime (tPostProcessTime, tRenderTime) << " secs" << std::endl;
   GOM.out() << "";
 
   if ( _gKeepLog )
   {
     strftime (acTimeString, 30, "%b %d %H:%M:%S", localtime (&tBaseTime));
     
-    tLogFile.open (_tLogFileName.c_str(), ios::out | ios::binary | ios::app);
+    tLogFile.open (_tLogFileName.c_str(), std::ios::out | std::ios::binary | std::ios::app);
 
-    tLogFile << acTimeString << " " << _tInputFileName << ", " << difftime (tPostProcessTime, tBaseTime) << " seconds" << endl;
+    tLogFile << acTimeString << " " << _tInputFileName << ", " << difftime (tPostProcessTime, tBaseTime) << " seconds" << std::endl;
 
     tLogFile.close();
   }

@@ -49,10 +49,10 @@ class TRectangle : public TPlane
 
     virtual void setVertex (const TVector& rktVERTEX);
 
-    void getMesh (list<TMesh*>& rtMESH_LIST) const;
+    void getMesh (std::list<TMesh*>& rtMESH_LIST) const;
     
-    void printDebug (const string& indent) const;
-    string className (void) const { return "Rectangle"; }
+    void printDebug (const std::string& indent) const;
+    std::string className (void) const { return "Rectangle"; }
 
     virtual TUserFunctionMap getUserFunctions();  
 

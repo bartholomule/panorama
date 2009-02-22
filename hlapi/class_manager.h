@@ -16,19 +16,23 @@
 *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef _CLASS_MANAGER__
-#define _CLASS_MANAGER__
+#ifndef PANORAMA_CLASS_MANAGER_H_INCLUDED
+#define PANORAMA_CLASS_MANAGER_H_INCLUDED
 
 #include <string>
 #include "llapi/base_class.h"
 
-class TClassManager
+namespace panorama
 {
 
+  class TClassManager
+  {
+
   public:
-    
-    static TBaseClass* _newObject (const string& rktCLASS, const TBaseClass* pktPARENT);
 
-};  /* class TClassManager */
+    static TBaseClass* _newObject (const std::string& rktCLASS, const TBaseClass* pktPARENT);
 
-#endif  /* _CLASS_MANAGER__ */
+  };  /* class TClassManager */
+}
+
+#endif  /* PANORAMA_CLASS_MANAGER_H_INCLUDED */

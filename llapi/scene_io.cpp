@@ -19,12 +19,12 @@
 #include "llapi/scene_io.h"
 #include "llapi/attribute.h"
 
-int TSceneIO::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
+int TSceneIO::setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
   return TProcedural::setAttribute (rktNAME, nVALUE, eTYPE);
 }
 
-int TSceneIO::getAttribute (const string& rktNAME, NAttribute& nVALUE)
+int TSceneIO::getAttribute (const std::string& rktNAME, NAttribute& nVALUE)
 {
   return TProcedural::getAttribute (rktNAME, nVALUE);
 }

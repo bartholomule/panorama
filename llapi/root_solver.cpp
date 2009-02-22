@@ -26,7 +26,7 @@
 *  Aug 11, 2000    Addition of 'safe' solvers, which make sure they aren't
 *                  doing a divide by zero to make the high order term 1.
 *                  Addition of a generic SolveEquation function (using c++
-*                  vectors) for any order equations (not for anything above the
+*                  std::vectors) for any order equations (not for anything above the
 *                  already provided 4 for now. [Kevin Harris]
 *  Aug 13, 2000    Changed the SolveEquation function to now work with higher
 *                  order equations (using the generic solvers in
@@ -317,7 +317,7 @@ int SafeSolveQuartic (double c[5], double s[4])
 // (although this would be nice) to find *all* zeros of the polynomial.  For
 // polynomials with order <= 4, it will call one of the above defined solvers.
 // [KH 11Aug2000, 13Aug2000]
-int SolveEquation (const vector<double>& coefs, vector<double>& solutions)
+int SolveEquation (const std::vector<double>& coefs, std::vector<double>& solutions)
 {
   int order = coefs.size() - 1;
   while( order >= 1 )
@@ -331,7 +331,7 @@ int SolveEquation (const vector<double>& coefs, vector<double>& solutions)
     if( order > 4 )
     {
       // Call the generic poly_solve function (solvers.h) to get the roots.
-      solutions = poly_solve(vector<double>(coefs.begin(),
+      solutions = poly_solve(std::vector<double>(coefs.begin(),
 					    coefs.begin() +
 					    order + 1));
       break;

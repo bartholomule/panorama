@@ -66,7 +66,7 @@ void TFlare::initialize (void)
   iImWidth  = ptImage->width();
   iImHeight = ptImage->height();
 
-  fMaxWidth = max (iImWidth, iImHeight);
+  fMaxWidth = std::max (iImWidth, iImHeight);
 
   fFlWidth  = (2.0 * fSize) * fMaxWidth;
   fFlHeight = (2.0 * fSize) * fMaxWidth;
@@ -81,7 +81,7 @@ void TFlare::initialize (void)
 
   gFlareGenerated = false;
 
-  fDistToMid = min (fFlMidX, fFlMidY);
+  fDistToMid = std::min (fFlMidX, fFlMidY);
 
   fIncX = fFlWidth  / ((float) (iFlWidth));
   fIncY = fFlHeight / ((float) (iFlHeight));

@@ -35,12 +35,12 @@ class TSubdivEdge
       TSubdivVert*   ptSecond;
     };
 
-    struct TVertPairCompare : public binary_function<TVertPair, TVertPair, bool>
+    struct TVertPairCompare : public std::binary_function<TVertPair, TVertPair, bool>
     {
       bool operator() (const TVertPair& rktFIRST, const TVertPair& rktSECOND) const;
     };
 
-    static map<TVertPair, TSubdivEdge*, TVertPairCompare>   _tEdgeMap;
+    static std::map<TVertPair, TSubdivEdge*, TVertPairCompare>   _tEdgeMap;
 
     TSubdivEdge (TSubdivVert *ptFIRST, TSubdivVert *ptSECOND);
 

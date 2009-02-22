@@ -23,13 +23,13 @@
 
 DEFINE_SCENE_IO_PLUGIN ("rt", TSceneRT);
 
-string    TSceneRT::_tInputFileName = "";
+std::string TSceneRT::_tInputFileName = "";
 DWord     TSceneRT::_dwLineNumber   = 1L;
 magic_pointer<TScene> TSceneRT::_ptParsedScene = magic_pointer<TScene>(NULL);
 
-stack<TSceneRT::attrib_type> TSceneRT::_tDataStack;
+std::stack<TSceneRT::attrib_type> TSceneRT::_tDataStack;
 TUserFunctionMap TSceneRT::_global_functions;
-map<string, pair<string,TSceneRT::attrib_type> > TSceneRT::_tDataMap;
+std::map<std::string, std::pair<std::string,TSceneRT::attrib_type> > TSceneRT::_tDataMap;
 TSceneRT::BASE_OBJECT_TYPE   TSceneRT::_ptData;
 TSceneRT::BASE_OBJECT_TYPE   TSceneRT::_ptParent;
 magic_pointer<TAggregate>    TSceneRT::_ptWorld;
@@ -43,7 +43,7 @@ bool reduction_reporting;
 
 #include "parser.hpp"
 
-magic_pointer<TScene> TSceneRT::load (const string& rktNAME)
+magic_pointer<TScene> TSceneRT::load (const std::string& rktNAME)
 {
 
   int   iResult;
@@ -73,9 +73,7 @@ magic_pointer<TScene> TSceneRT::load (const string& rktNAME)
   
   RT_InitParser();
 
-  yy::Parser rt_parser(true);
-  
-  iResult = rt_parser.parse();//rt_parse();
+  iResult = rt_parse();
 
   RT_CloseParser();
 
@@ -94,7 +92,7 @@ magic_pointer<TScene> TSceneRT::load (const string& rktNAME)
 }  /* _load() */
 
 
-int TSceneRT::save (const string& rktNAME, const TScene* pktSCENE)
+int TSceneRT::save (const std::string& rktNAME, const TScene* pktSCENE)
 {
 
   return 0;

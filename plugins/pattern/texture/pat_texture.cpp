@@ -287,7 +287,7 @@ TColor TPatternTexture::pattern (const TSurfaceData& rktDATA) const
   
   if ( !ptImage )
   {
-    GOM.error() << "Error: texture must be set" << endl;
+    GOM.error() << "Error: texture must be set" << std::endl;
     exit (1);
   }
 
@@ -321,7 +321,7 @@ TColor TPatternTexture::pattern (const TSurfaceData& rktDATA) const
 }  /* pattern() */
 
 
-int TPatternTexture::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
+int TPatternTexture::setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
 
   if ( rktNAME == "color" )
@@ -363,7 +363,7 @@ int TPatternTexture::setAttribute (const string& rktNAME, NAttribute nVALUE, EAt
 
     if ( !ptImage )
     {
-      TProcedural::_tUserErrorMessage = string ("could not open texture file ") + (char*) nVALUE.pvValue;
+      TProcedural::_tUserErrorMessage = std::string ("could not open texture file ") + (char*) nVALUE.pvValue;
       return FX_ATTRIB_USER_ERROR;
     }    
 #else
@@ -478,14 +478,14 @@ int TPatternTexture::setAttribute (const string& rktNAME, NAttribute nVALUE, EAt
     {
       return FX_ATTRIB_WRONG_TYPE;
     }
-    string tMapping ((char *) nVALUE.pvValue);
+    std::string tMapping ((char *) nVALUE.pvValue);
 #else
     magic_pointer<TAttribString> str = get_string(nVALUE);
     if( !str )
     {
       return FX_ATTRIB_WRONG_TYPE;      
     }
-    string tMapping = str->tValue;
+    std::string tMapping = str->tValue;
 #endif
 
     if ( tMapping == "spherical" )
@@ -538,7 +538,7 @@ int TPatternTexture::setAttribute (const string& rktNAME, NAttribute nVALUE, EAt
 }  /* setAttribute() */
 
 
-int TPatternTexture::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
+int TPatternTexture::getAttribute (const std::string& rktNAME, NAttribute& rnVALUE)
 {
 
 #if !defined(NEW_ATTRIBUTES)  
@@ -617,8 +617,8 @@ int TPatternTexture::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
   }
   else if ( rktNAME == "mapping" )
   {
-    static map<EMappings,string> mapping_strings;
-    static vector<string> mapping_choices;
+    static std::map<EMappings,std::string> mapping_strings;
+    static std::vector<std::string> mapping_choices;
 
     if( mapping_strings.empty() )
     {

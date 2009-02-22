@@ -23,7 +23,7 @@
 
 DEFINE_PLUGIN ("PatternChecker", FX_PATTERN_CLASS, TPatternChecker);
 
-int TPatternChecker::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
+int TPatternChecker::setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
 
   if ( rktNAME == "color" )
@@ -112,7 +112,7 @@ int TPatternChecker::setAttribute (const string& rktNAME, NAttribute nVALUE, EAt
 }  /* setAttribute() */
 
 
-int TPatternChecker::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
+int TPatternChecker::getAttribute (const std::string& rktNAME, NAttribute& rnVALUE)
 {
 
 #if !defined(NEW_ATTRIBUTES)

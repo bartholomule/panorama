@@ -43,7 +43,7 @@ void TZBufferRenderer::finalize (void)
 }  /* finalize() */
 
 
-int TZBufferRenderer::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
+int TZBufferRenderer::setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
 
   if ( rktNAME == "backface" )
@@ -73,7 +73,7 @@ int TZBufferRenderer::setAttribute (const string& rktNAME, NAttribute nVALUE, EA
       return FX_ATTRIB_WRONG_TYPE;
     }
     
-    string   tName = (char*) nVALUE.pvValue;
+    std::string   tName = (char*) nVALUE.pvValue;
 #else
     magic_pointer<TAttribString> str = get_string(nVALUE);
     if( !str )
@@ -81,7 +81,7 @@ int TZBufferRenderer::setAttribute (const string& rktNAME, NAttribute nVALUE, EA
       return FX_ATTRIB_WRONG_VALUE;
     }
     
-    string tName = str->tValue;
+    std::string tName = str->tValue;
 #endif
     
     if ( tName == "constant" )
@@ -113,7 +113,7 @@ int TZBufferRenderer::setAttribute (const string& rktNAME, NAttribute nVALUE, EA
 }  /* setAttribute() */
 
 
-int TZBufferRenderer::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
+int TZBufferRenderer::getAttribute (const std::string& rktNAME, NAttribute& rnVALUE)
 {
 
 #if !defined(NEW_ATTRIBUTES)
@@ -128,8 +128,8 @@ int TZBufferRenderer::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
   }
   else if ( rktNAME == "shading" )
   {
-    static map<EShading,string> shading_strings;
-    static vector<string> shading_choices;
+    static std::map<EShading,std::string> shading_strings;
+    static std::vector<std::string> shading_choices;
 
     if( shading_strings.empty() )
     {
@@ -405,7 +405,7 @@ TColor TZBufferRenderer::getRadiance (TSurfaceData& rtDATA, Word wDEPTH) const
   
   tRadiance = ambientLight (rtDATA, wDEPTH) + directLight (rtDATA);
 
-  for (list<magic_pointer<TObjectFilter> >::const_iterator tIter = rtDATA.object()->filterList().begin(); ( tIter != rtDATA.object()->filterList().end() ) ;tIter++)
+  for (std::list<magic_pointer<TObjectFilter> >::const_iterator tIter = rtDATA.object()->filterList().begin(); ( tIter != rtDATA.object()->filterList().end() ) ;tIter++)
   {
     tRadiance = (*tIter)->filterRadiance (rtDATA, tRadiance);
   }
@@ -415,18 +415,18 @@ TColor TZBufferRenderer::getRadiance (TSurfaceData& rtDATA, Word wDEPTH) const
 }  /* getRadiance() */
 
 
-void TZBufferRenderer::calculateIllumination (list<TMesh*>& rtMESH_LIST) const
+void TZBufferRenderer::calculateIllumination (std::list<TMesh*>& rtMESH_LIST) const
 {
 
   TSurfaceData      tSurfaceData;
   TMesh*            ptMesh;
   TMesh::TVertex*   ptVertex;
 
-  for (list<TMesh*>::iterator tIterMesh = rtMESH_LIST.begin(); ( tIterMesh != rtMESH_LIST.end() ) ;tIterMesh++)
+  for (std::list<TMesh*>::iterator tIterMesh = rtMESH_LIST.begin(); ( tIterMesh != rtMESH_LIST.end() ) ;tIterMesh++)
   {
     ptMesh = (*tIterMesh);
 
-    for (vector<TMesh::TVertex>::iterator tIter = ptMesh->vertexList()->begin(); ( tIter != ptMesh->vertexList()->end() ) ;tIter++)
+    for (std::vector<TMesh::TVertex>::iterator tIter = ptMesh->vertexList()->begin(); ( tIter != ptMesh->vertexList()->end() ) ;tIter++)
     {
       ptVertex = &(*tIter);
 
@@ -445,7 +445,7 @@ void TZBufferRenderer::render (SBuffers& rsBUFFERS)
 {
 
   TMesh*           ptMesh;
-  list<TMesh*>     tMeshList;
+  std::list<TMesh*>     tMeshList;
   TMesh::TFace*    ptFace;
   TMesh::TVertex   atVertex [3];
   TVertexData      atVertexData [3];
@@ -454,10 +454,10 @@ void TZBufferRenderer::render (SBuffers& rsBUFFERS)
   
   ptScene->world()->getMesh (tMeshList);
 
-  GOM.debug() << "Meshes : " << tMeshList.size() << endl;
+  GOM.debug() << "Meshes : " << tMeshList.size() << std::endl;
 
   // For every mesh, set the normal of each vertex to the mean of adjacent triangle normals.
-  for (list<TMesh*>::iterator tIter = tMeshList.begin(); ( tIter != tMeshList.end() ) ;tIter++)
+  for (std::list<TMesh*>::iterator tIter = tMeshList.begin(); ( tIter != tMeshList.end() ) ;tIter++)
   {
     (*tIter)->calculateVertexNormals();
   }
@@ -473,7 +473,7 @@ void TZBufferRenderer::render (SBuffers& rsBUFFERS)
 
   // Calculate the number of faces in all of the meshes (for progress
   // indication).  
-  for (list<TMesh*>::iterator tIterMesh = tMeshList.begin(); ( tIterMesh != tMeshList.end() ) ;tIterMesh++)
+  for (std::list<TMesh*>::iterator tIterMesh = tMeshList.begin(); ( tIterMesh != tMeshList.end() ) ;tIterMesh++)
   {
     ptMesh = (*tIterMesh);
 
@@ -481,11 +481,11 @@ void TZBufferRenderer::render (SBuffers& rsBUFFERS)
   }
 
   // Draw all of the faces for all of the meshes.
-  for (list<TMesh*>::iterator tIterMesh = tMeshList.begin(); ( tIterMesh != tMeshList.end() ) ;tIterMesh++)
+  for (std::list<TMesh*>::iterator tIterMesh = tMeshList.begin(); ( tIterMesh != tMeshList.end() ) ;tIterMesh++)
   {
     ptMesh = (*tIterMesh);
 
-    for (vector<TMesh::TFace>::iterator tIter = ptMesh->faceList()->begin();
+    for (std::vector<TMesh::TFace>::iterator tIter = ptMesh->faceList()->begin();
 	 ( tIter != ptMesh->faceList()->end() )  && should_continue ;
 	 tIter++)
     {
@@ -566,7 +566,7 @@ void TZBufferRenderer::render (SBuffers& rsBUFFERS)
     pfUserFunction( rsBUFFERS.ptImage->height(), pvUserData );
   }
   
-  for (list<TMesh*>::iterator tIter2 = tMeshList.begin(); ( tIter2 != tMeshList.end() ) ;tIter2++)
+  for (std::list<TMesh*>::iterator tIter2 = tMeshList.begin(); ( tIter2 != tMeshList.end() ) ;tIter2++)
   {
     delete (*tIter2);
   }
@@ -585,13 +585,13 @@ TColor TZBufferRenderer::directLight (const TSurfaceData& rktDATA) const
   magic_pointer<TLight> ptLight;
   TColor        tTotalRadiance;
     
-  for (vector<magic_pointer<TLight> >::const_iterator tIter = ptScene->lightList().begin(); ( tIter != ptScene->lightList().end() ) ;tIter++)
+  for (std::vector<magic_pointer<TLight> >::const_iterator tIter = ptScene->lightList().begin(); ( tIter != ptScene->lightList().end() ) ;tIter++)
   {
     ptLight         = *tIter;
     tTotalRadiance += directLight (rktDATA, ptLight);
   }
 
-  for (vector<magic_pointer<TObject> >::const_iterator tIter = ptScene->areaLightList().begin(); ( tIter != ptScene->areaLightList().end() ) ;tIter++)
+  for (std::vector<magic_pointer<TObject> >::const_iterator tIter = ptScene->areaLightList().begin(); ( tIter != ptScene->areaLightList().end() ) ;tIter++)
   {
     magic_pointer<TObject> ptObject = *tIter;
     tTotalRadiance += directLight (rktDATA, ptObject);
@@ -668,12 +668,12 @@ TColor TZBufferRenderer::specularTransmittedLight (const TSurfaceData& rktDATA, 
 }  /* specularTransmittedLight() */
 
 
-void TZBufferRenderer::printDebug (const string& indent) const
+void TZBufferRenderer::printDebug (const std::string& indent) const
 {
 
-  GOM.debug() << indent << "[_ZBufferRenderer_]" << endl;
+  GOM.debug() << indent << "[_ZBufferRenderer_]" << std::endl;
 
-  string new_indent = TDebug::Indent(indent);
+  std::string new_indent = TDebug::Indent(indent);
   
   GOM.debug() << new_indent << "Ambient light : "; tAmbientLight.printDebug(new_indent);
 

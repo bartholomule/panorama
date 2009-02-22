@@ -28,7 +28,7 @@ HLAPI_LIB = ${BUILD_TOP}/hlapi/libhlapi.so
 STATIC_LLAPI_LIB = ${BUILD_TOP}/llapi/libllapi.a
 STATIC_HLAPI_LIB = ${BUILD_TOP}/hlapi/libhlapi.a
 
-INCLUDE = -I${BUILD_TOP} -I${SRC_DIR}/${BUILD_TOP} -I${SRC_DIR} @extra_includes@
+INCLUDE = -I$(top_srcdir) -I$(srcdir) @extra_includes@
 LDFLAGS += @extra_libs@
 DEFS    = @DEFS@ \
           -DTOPDIR='"${TOPDIR}"' \
@@ -56,7 +56,7 @@ ifeq (@OPTIMIZE_EXPENSIVE@,1)
 OPT += -fexpensive-optimizations
 endif
 else
-OPT = 
+OPT = -O0
 endif
 
 # Add in the target cpu type
@@ -90,6 +90,9 @@ RTTI = -DUSE_RTTI=1
 endif
 
 CXXFLAGS = ${OPT} ${DBG} ${STAT} ${PROF} -ansi ${EXCEPTION_FLAGS} ${RTTI} \
+	   -Wall ${DEFS} ${INCLUDE}
+
+CFLAGS = ${OPT} ${DBG} ${STAT} ${PROF} \
 	   -Wall -Wstrict-prototypes ${DEFS} ${INCLUDE}
 
 # The following one causes the gui to fail to build on my machine.  I don't know why.

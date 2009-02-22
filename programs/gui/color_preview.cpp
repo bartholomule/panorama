@@ -23,7 +23,7 @@ gint TColorPreview::buttonPressCB (GdkEventButton* ptEVENT)
 
   gdouble   adColor [3];
 
-  GOM.error() << "Color Preview::Button press callback!!!" << endl;
+  GOM.error() << "Color Preview::Button press callback!!!" << std::endl;
   
   if ( ( ptEVENT->type == GDK_2BUTTON_PRESS ) && ( ptEVENT->button == 1 ) )
   {
@@ -74,7 +74,7 @@ void TColorPreview::setColorCB (void)
   
   drawColorCB (NULL);
 
-  GOM.debug() << "Emitting color change..." << endl;
+  GOM.debug() << "Emitting color change..." << std::endl;
   color_changed();  
 }  /* setColorCB() */
 

@@ -22,7 +22,7 @@
 
 DEFINE_PLUGIN ("ParallelCamera", FX_CAMERA_CLASS, TParallelCamera);
 
-int TParallelCamera::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
+int TParallelCamera::setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
 
   if ( rktNAME == "width" )
@@ -73,7 +73,7 @@ int TParallelCamera::setAttribute (const string& rktNAME, NAttribute nVALUE, EAt
 }  /* setAttribute() */
 
 
-int TParallelCamera::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
+int TParallelCamera::getAttribute (const std::string& rktNAME, NAttribute& rnVALUE)
 {
 
 #if !defined(NEW_ATTRIBUTES)  
@@ -125,7 +125,7 @@ bool TParallelCamera::initialize (void)
 
   if ( fabs (dotProduct (tDirection, tUp)) == 1 )
   {
-    GOM.error() << "Error: Camera direction and up vectors cannot be parallel" << endl;
+    GOM.error() << "Error: Camera direction and up std::vectors cannot be parallel" << std::endl;
     val = false;
   }
   
@@ -175,16 +175,16 @@ bool TParallelCamera::getPlaneProjection (const TVector& rktPOINT, TVector2& rtP
 }  /* getPlaneProjection() */
 
 
-void TParallelCamera::printDebug (const string& indent) const
+void TParallelCamera::printDebug (const std::string& indent) const
 {
 
-  GOM.debug() << indent << "[_" << className() << "_]" << endl;
+  GOM.debug() << indent << "[_" << className() << "_]" << std::endl;
 
-  string new_indent = TDebug::Indent(indent);
+  std::string new_indent = TDebug::Indent(indent);
 
-  GOM.debug() << new_indent << "Width     : " << getWidth() << endl;
-  GOM.debug() << new_indent << "Height    : " << getHeight() << endl;
-  GOM.debug() << new_indent << "Up vector : "; tUp.printDebug(new_indent);
+  GOM.debug() << new_indent << "Width     : " << getWidth() << std::endl;
+  GOM.debug() << new_indent << "Height    : " << getHeight() << std::endl;
+  GOM.debug() << new_indent << "Up std::vector : "; tUp.printDebug(new_indent);
   GOM.debug() << new_indent << "Look at   : "; tLookAt.printDebug(new_indent);
 
 }  /* printDebug() */

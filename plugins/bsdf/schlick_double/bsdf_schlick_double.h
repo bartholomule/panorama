@@ -50,11 +50,11 @@ class TBsdfSchlickDouble : public TBsdf
       rtDIR = ( dotProduct (v, rktDATA.normal()) > 0 ) ? v : -v;
     }
 
-    int setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
-    int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
+    int setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
+    int getAttribute (const std::string& rktNAME, NAttribute& rnVALUE);
     void getAttributeList (TAttributeList& rtLIST) const;
 
-    string className (void) const { return "BsdfSchlickDouble"; }
+    std::string className (void) const { return "BsdfSchlickDouble"; }
 
   TBsdfSchlickDouble* clone_new() const { return new TBsdfSchlickDouble(*this); }
   

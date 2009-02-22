@@ -51,8 +51,8 @@ public:
 
   bool initialize(void);
 
-  int setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
-  int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
+  int setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
+  int getAttribute (const std::string& rktNAME, NAttribute& rnVALUE);
   void getAttributeList (TAttributeList& rtLIST) const;
 
   TUserFunctionMap getUserFunctions();
@@ -64,8 +64,8 @@ public:
   /* I do not know how to do this uniformly, or in any kind of fast manor. */
   //TVector RandomPointOnSurface() const;
 
-  void printDebug (const string& indent) const;
-  string className (void) const { return "Quadric"; }
+  void printDebug (const std::string& indent) const;
+  std::string className (void) const { return "Quadric"; }
 
   
   TScalar operator[](size_t index) const;
@@ -80,7 +80,7 @@ public:
   // Set all 10, even if the thing isn't the proper size.
   void set_coefs(const std::vector<TScalar>& values);
 
-  vector<TScalar> get_coefs() const { return coefs; }
+  std::vector<TScalar> get_coefs() const { return coefs; }
 
 protected:
   TVector localNormal (const TVector& rktPOINT) const;

@@ -84,7 +84,7 @@ bool TAggregateUniformGrid::initialize (void)
 }  /* initialize() */
 
 
-int TAggregateUniformGrid::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
+int TAggregateUniformGrid::setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
 
   if ( rktNAME == "voxel_size" )
@@ -138,14 +138,14 @@ bool TAggregateUniformGrid::findFirstIntersection (const TRay& rktRAY, TSurfaceD
 }  /* findFirstIntersection() */
 
 
-void TAggregateUniformGrid::printDebug (const string& indent) const
+void TAggregateUniformGrid::printDebug (const std::string& indent) const
 {
 
-  GOM.debug() << indent << "[_" << className() << "_]" << endl;
+  GOM.debug() << indent << "[_" << className() << "_]" << std::endl;
 
-  string new_indent = TDebug::Indent(indent);
+  std::string new_indent = TDebug::Indent(indent);
 
-  GOM.debug() << new_indent << "Bounding box = "; tBoundingBox.printDebug(new_indent); cerr << endl;
+  GOM.debug() << new_indent << "Bounding box = "; tBoundingBox.printDebug(new_indent); std::cerr << std::endl;
   
   for (TObjectList::const_iterator tIter = tObjectList.begin(); ( tIter != tObjectList.end() ) ;tIter++)
   {

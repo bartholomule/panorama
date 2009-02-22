@@ -32,24 +32,24 @@ public:
   
   static TBaseClass* _create (const TBaseClass* pktPARENT);
   
-  static string    _tInputFileName;
+  static std::string _tInputFileName;
   static DWord     _dwLineNumber;
   static magic_pointer<TScene> _ptParsedScene;
 
   typedef magic_pointer<TBaseClass> BASE_OBJECT_TYPE;
   typedef magic_pointer<TAttribute> attrib_type;
-  static stack<attrib_type> _tDataStack;
+  static std::stack<attrib_type> _tDataStack;
   static TUserFunctionMap _global_functions;
-  static map<string, pair<string,attrib_type> > _tDataMap;
+  static std::map<std::string, std::pair<std::string,attrib_type> > _tDataMap;
 
   static BASE_OBJECT_TYPE   _ptData;
   static BASE_OBJECT_TYPE   _ptParent;
   static magic_pointer<TAggregate> _ptWorld;
   static magic_pointer<TImageIO> _ptImageIO;  
   
-  virtual int save (const string& rktNAME, const TScene* pktSCENE);
-  virtual magic_pointer<TScene> load (const string& rktNAME);
-  virtual string className() const { return "scenert"; }
+  virtual int save (const std::string& rktNAME, const TScene* pktSCENE);
+  virtual magic_pointer<TScene> load (const std::string& rktNAME);
+  virtual std::string className() const { return "scenert"; }
   virtual TSceneRT* clone_new() const { return new TSceneRT(*this); }
   
 };  /* class TSceneRT */

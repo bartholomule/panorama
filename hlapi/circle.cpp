@@ -20,7 +20,7 @@
 #include "hlapi/circle.h"
 #include "llapi/attribute.h"
 
-int TCircle::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
+int TCircle::setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
 
   if ( rktNAME == "radius" )
@@ -52,7 +52,7 @@ int TCircle::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType
 }  /* setAttribute() */
 
 
-int TCircle::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
+int TCircle::getAttribute (const std::string& rktNAME, NAttribute& rnVALUE)
 {
 
   if ( rktNAME == "radius" )

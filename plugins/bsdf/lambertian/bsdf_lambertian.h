@@ -46,7 +46,7 @@ class TBsdfLambertian : public TBsdf
       rtDIR = ( dotProduct (v, rktDATA.normal()) > 0 ) ? v : -v;
     }
 
-    string className (void) const { return "BsdfLambertian"; }
+    std::string className (void) const { return "BsdfLambertian"; }
 
     TBsdfLambertian* clone_new() const { return new TBsdfLambertian(*this); }
 };  /* class TBsdfLambertian */

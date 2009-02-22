@@ -40,8 +40,8 @@ class TWarnLight : public TPointLight
     TWarnLight (void) :
       tExponent (1) {}
       
-    int setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
-    int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
+    int setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
+    int getAttribute (const std::string& rktNAME, NAttribute& rnVALUE);
     void getAttributeList (TAttributeList& rtLIST) const;
 
     void pointAt (const TVector& rktPOINT) { tLightPoint = rktPOINT; }
@@ -49,9 +49,9 @@ class TWarnLight : public TPointLight
 
     bool initialize (void);
     
-    string className (void) const { return "WarnLight"; }
+    std::string className (void) const { return "WarnLight"; }
 
-    void printDebug (const string& indent) const;
+    void printDebug (const std::string& indent) const;
 
     virtual TWarnLight* clone_new() const { return new TWarnLight(*this); }
   

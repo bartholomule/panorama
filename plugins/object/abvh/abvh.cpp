@@ -122,7 +122,7 @@ void TABVH::insertObject (magic_pointer<TObject> ptOBJ)
   fCost1 = 2 * tNewBBox.cost();
   fCost2 = (tNewBBox.cost() - tOldBBox.cost()) * ptTree->tChildList.size() + tNewBBox.cost();
 
-  fLocalBestCost   = min (fCost1, fCost2);
+  fLocalBestCost   = std::min (fCost1, fCost2);
   fInheritanceCost = (tNewBBox.cost() - tOldBBox.cost()) * ptTree->tChildList.size();
 
   ptNewTree = applyMethod3 (ptTree, ptOBJ, fInheritanceCost, fLocalBestCost);
@@ -216,7 +216,7 @@ bool TABVH::findFirstIntersection (const TRay& rktRAY, TSurfaceData& rtDATA) con
   }
   */
   
-  for (list<magic_pointer<TNode> >::const_iterator tIter = ptTree->tChildList.begin(); ( tIter != ptTree->tChildList.end() ) ;tIter++)
+  for (std::list<magic_pointer<TNode> >::const_iterator tIter = ptTree->tChildList.begin(); ( tIter != ptTree->tChildList.end() ) ;tIter++)
   {
     ptNode = *tIter;
 

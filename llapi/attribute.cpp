@@ -16,679 +16,218 @@
 *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "attribute.h"
-#include "extended_attribute.h"
-#include <cstdio>
-#include <cstdlib>
-#include <strings.h>
+#include "llapi/attribute.h"
+#include "llapi/string_format.hpp"
 
-magic_pointer<TAttribInt>     get_int(magic_pointer<TAttribute> attr)
+namespace panorama
 {
-  magic_pointer<TAttribInt> retval;
-  if( !!attr )
+
+  DEFINE_EXCEPTION(AttributeException);
+  DEFINE_EXCEPTION_BASE(AttributeConversionException, AttributeException);
+
+  class Attribute::AttributeImpl : public Cloneable
   {
-    switch(attr->eType)
+  public:
+
+    virtual std::string name() const = 0;
+    virtual std::string toString(const Indentation& indent, StringDumpable::PrefixType prefix) const = 0;
+    virtual Attribute::AttributeType getType() const = 0;
+    virtual Attribute::AttributeImpl* clone_new() const = 0;
+  };
+
+  struct TAttribInt : public Attribute::AttributeImpl
+  {
+    TAttribInt (int i): m_value(i) { }
+
+    Attribute::AttributeType getType() const { return Attribute::E_INTEGER; }
+    std::string name() const { return "integer"; }
+    TAttribInt* clone_new() const { return new TAttribInt(*this); }
+    std::string toString(const Indentation& indent, StringDumpable::PrefixType prefix) const { return string_format("integer(%1)", m_value); }
+
+    int m_value;
+  };  /* struct TAttribInt */
+
+
+  struct TAttribReal : public Attribute::AttributeImpl
+  {
+    TAttribReal (TScalar s): m_value(s) { }
+
+    Attribute::AttributeType getType() const { return Attribute::E_REAL; }
+    std::string name() const { return "real"; }
+    TAttribReal* clone_new() const { return new TAttribReal(*this); }
+    std::string toString(const Indentation& indent, StringDumpable::PrefixType prefix) const { return string_format("real(%1)", m_value); }
+
+    TScalar m_value;
+  };  /* struct TAttribReal */
+
+
+  struct TAttribBool : public Attribute::AttributeImpl
+  {
+    TAttribBool (bool b): m_value(b) { }
+
+    Attribute::AttributeType getType() const { return Attribute::E_BOOL; }
+    std::string name() const { return "bool"; }
+    TAttribBool* clone_new() const { return new TAttribBool(*this); }
+    std::string toString(const Indentation& indent, StringDumpable::PrefixType prefix) const { return string_format("bool(%1)", m_value); }
+
+    bool m_value;
+  };  /* struct TAttribBool */
+
+
+  struct TAttribString : public Attribute::AttributeImpl
+  {
+    TAttribString (const std::string& s): m_value(s) { }
+
+    Attribute::AttributeType getType() const { return Attribute::E_STRING; }
+    std::string name() const { return "string"; }
+    TAttribString* clone_new() const { return new TAttribString(*this); }
+    std::string toString(const Indentation& indent, StringDumpable::PrefixType prefix) const { return string_format("string(%1)", m_value); }
+
+    std::string m_value;
+  };  /* struct TAttribString */
+
+
+  struct TAttribStringList : public TAttribString
+  {
+    TAttribStringList (const std::vector<std::string>& s, const std::string& defaultValue = std::string())
+      : TAttribString(defaultValue)
+      , m_choices(s)
     {
-    case FX_INTEGER:
-      retval = rcp_static_cast<TAttribInt>(attr);
-      break;
-    case FX_REAL:
-      retval = (magic_pointer<TAttribInt>)new TAttribInt(int(rcp_static_cast<TAttribReal>(attr)->tValue));
-      break;
-    case FX_BOOL:
-      retval = (magic_pointer<TAttribInt>)new TAttribInt(int(rcp_static_cast<TAttribBool>(attr)->tValue));
-      break;
-    case FX_STRING:
-    case FX_STRING_LIST:
+      if( TAttribString::m_value.empty() && !m_choices.empty() )
       {
-	magic_pointer<TAttribString> tas = rcp_static_cast<TAttribString>(attr);
-	string s = tas->tValue;
-
-	const char* scp = s.c_str();
-	char* ptr;
-
-	long value = strtol(scp, &ptr, 10);
-
-	if( (ptr - scp) == int(s.length()) )
-	{
-	  retval = (magic_pointer<TAttribInt>)new TAttribInt(value);
-	}
+        TAttribString::m_value = *m_choices.begin();
       }
+    }
+
+    Attribute::AttributeType getType() const { return Attribute::E_STRING_LIST; }
+    std::string name() const { return "stringlist"; }
+    TAttribStringList* clone_new() const { return new TAttribStringList(*this); }
+    std::string toString(const Indentation& indent, StringDumpable::PrefixType prefix) const
+    {
+      Indentation next = indent.nextLevel();
+      return indent.initial() + TAttribStringList::name() + "\n" +
+        indent + "{\n" +
+        next + string_format("default=\"%1\"\n", TAttribString::m_value) +
+        next + "values=" + ::panorama::toString(m_choices, next.nextLevel(), prefix) + "\n" +
+        indent + "}\n";
+    }
+
+    std::vector<std::string> m_choices;
+  };  /* struct TAttribStringList */
+
+
+  struct TAttribColor : public Attribute::AttributeImpl
+  {
+    TAttribColor (const TColor& c): m_value(c) { }
+    TAttribColor (const TVector& v): m_value(v.x(), v.y(), v.z()) { }
+    TAttribColor (TScalar s): m_value(s, s, s) { }
+
+    Attribute::AttributeType getType() const { return Attribute::E_COLOR; }
+    std::string name() const { return "color"; }
+    TAttribColor* clone_new() const { return new TAttribColor(*this); }
+    std::string toString(const Indentation& indent, StringDumpable::PrefixType prefix) const { return m_value.toString(indent, prefix); }
+
+    TColor m_value;
+  };  /* struct TAttribColor */
+
+  struct TAttribVector : public Attribute::AttributeImpl
+  {
+    TAttribVector (const TVector& v): m_value(v) { }
+    TAttribVector (TScalar s): m_value(s, s, s) { }
+
+    Attribute::AttributeType getType() const { return Attribute::E_VECTOR; }
+    std::string name() const { return "vector"; }
+    TAttribVector* clone_new() const { return new TAttribVector(*this); }
+    std::string toString(const Indentation& indent, StringDumpable::PrefixType prefix) const { return m_value.toString(indent, prefix); }
+
+    TVector m_value;
+  };  /* struct TAttribVector */
+
+  struct TAttribVector2 : public Attribute::AttributeImpl
+  {
+    TAttribVector2 (const TVector2& v): m_value(v) { }
+    TAttribVector2 (TScalar s): m_value(s, s) { }
+
+    Attribute::AttributeType getType() const { return Attribute::E_VECTOR2; }
+    std::string name() const { return "vector2"; }
+    TAttribVector2* clone_new() const { return new TAttribVector2(*this); }
+    std::string toString(const Indentation& indent, StringDumpable::PrefixType prefix) const { return m_value.toString(indent, prefix); }
+
+    TVector2 m_value;
+  };  /* struct TAttribVector2 */
+
+  struct TAttribPoint : public Attribute::AttributeImpl
+  {
+    TAttribPoint (const TPoint& v): m_value(v) { }
+    TAttribPoint (TScalar s): m_value(s, s, s) { }
+
+    Attribute::AttributeType getType() const { return Attribute::E_POINT; }
+    std::string name() const { return "point"; }
+    TAttribPoint* clone_new() const { return new TAttribPoint(*this); }
+    std::string toString(const Indentation& indent, StringDumpable::PrefixType prefix) const { return m_value.toString(indent, prefix); }
+
+    TPoint m_value;
+  };  /* struct TAttribPoint */
+
+  struct TAttribPoint2 : public Attribute::AttributeImpl
+  {
+    TAttribPoint2 (TPoint2 v): m_value(v) { }
+    TAttribPoint2 (TScalar s): m_value(s, s) { }
+
+    Attribute::AttributeType getType() const { return Attribute::E_POINT2; }
+    std::string name() const { return "point2"; }
+    TAttribPoint2* clone_new() const { return new TAttribPoint2(*this); }
+    std::string toString(const Indentation& indent, StringDumpable::PrefixType prefix) const { return m_value.toString(indent, prefix); }
+
+    TPoint2 m_value;
+  };  /* struct TAttribPoint2 */
+
+  struct TAttribArray : public Attribute::AttributeImpl
+  {
+    TAttribArray (TVector v): m_value() { m_value.push_back(v.x()); m_value.push_back(v.y()); m_value.push_back(v.z()); }
+    TAttribArray (TVector2 v): m_value() { m_value.push_back(v.x()); m_value.push_back(v.y()); }
+    TAttribArray (TScalar s): m_value(1, s) { }
+    TAttribArray (const std::vector<TScalar>& v): m_value(v) { }
+
+    Attribute::AttributeType getType() const { return Attribute::E_ARRAY; }
+    std::string name() const { return "array"; }
+    TAttribArray* clone_new() const { return new TAttribArray(*this); }
+    std::string toString(const Indentation& indent, StringDumpable::PrefixType prefix) const { return ::panorama::toString(m_value, indent, prefix); }
+
+    std::vector<TScalar> m_value;
+  };  /* struct TAttribArray */
+
+
+  struct TAttribGenericArray : public Attribute::AttributeImpl
+  {
+    TAttribGenericArray (): m_value() { }
+    TAttribGenericArray (const std::vector<Attribute>& va): m_value(va) { }
+
+    Attribute::AttributeType getType() const { return Attribute::E_ARRAY; }
+    std::string name() const { return "GenericArray"; }
+    TAttribGenericArray* clone_new() const { return new TAttribGenericArray(*this); }
+    std::string toString(const Indentation& indent, StringDumpable::PrefixType prefix) const { return ::panorama::toString(m_value, indent, prefix); }
+
+    std::vector<Attribute> m_value;
+  };  /* struct TAttribGenericArray */
+
+  Attribute::Attribute(AttributeType type)
+  {
+    switch(type)
+    {
+    case E_INTEGER:
+      m_impl.set(new TAttribInt(0));
       break;
-    default:
-      // Retval is NULL!!!
+    case E_REAL:
+      m_impl.set(new TAttribReal(0));
       break;
+    case E_BOOL:
+      m_impl.set(new TAttribBool(false));
+      break;
+    case E_STRING:
+      m_impl.set(new TAttribString(""));
+      break;
+      // FIXME!
     }
   }
-  return retval;
-}
-
-magic_pointer<TAttribReal>    get_real(magic_pointer<TAttribute> attr)
-{
-  magic_pointer<TAttribReal> retval;
-  if( !!attr )
-  {
-    switch(attr->eType)
-    {
-    case FX_INTEGER:
-      retval = (magic_pointer<TAttribReal>)new TAttribReal(TScalar(rcp_static_cast<TAttribInt>(attr)->tValue));
-      break;
-    case FX_REAL:
-      retval = (magic_pointer<TAttribReal>)rcp_static_cast<TAttribReal>(attr);
-      break;
-    case FX_BOOL:
-      retval = (magic_pointer<TAttribReal>)new TAttribReal(TScalar(int(rcp_static_cast<TAttribBool>(attr)->tValue)));
-      break;
-    case FX_STRING:
-    case FX_STRING_LIST:
-      {
-	magic_pointer<TAttribString> tas = rcp_static_cast<TAttribString>(attr);
-	string s = tas->tValue;
-
-	const char* scp = s.c_str();
-	char* ptr;
-
-	TScalar value = strtod(scp, &ptr);
-
-	if( (ptr - scp) == int(s.length()) )
-	{
-	  retval = (magic_pointer<TAttribReal>)new TAttribReal(value);
-	}
-      }
-      break;
-    default:
-      // Retval is NULL!!!
-      break;
-    }
-  }
-  return retval;  
-}
-
-magic_pointer<TAttribBool>    get_bool(magic_pointer<TAttribute> attr)
-{
-  magic_pointer<TAttribBool> retval;
-  if( !!attr )
-  {
-    switch(attr->eType)
-    {
-    case FX_BOOL:
-      retval = rcp_static_cast<TAttribBool>(attr);
-      break;
-    case FX_INTEGER:
-      retval = (magic_pointer<TAttribBool>)new TAttribBool(!!(rcp_static_cast<TAttribInt>(attr)->tValue));
-      break;
-    case FX_STRING:
-    case FX_STRING_LIST:
-      {
-	magic_pointer<TAttribString> tas = rcp_static_cast<TAttribString>(attr);
-	const string& s = tas->tValue;
-	
-	const char* scp = s.c_str();
-	char* ptr;
-	
-	if(strcasecmp(scp, "true") == 0)
-	{
-	  retval = (magic_pointer<TAttribBool>)new TAttribBool(true);
-	}
-	else if(strcasecmp(scp, "false") == 0)
-	{
-	  retval = (magic_pointer<TAttribBool>)new TAttribBool(false);	  
-	}
-	else
-	{
-	  long value = strtol(scp, &ptr, 10);
-	  
-	  if( (ptr - scp) == int(s.length()) )
-	  {
-	    retval = (magic_pointer<TAttribBool>)new TAttribBool(!!value);
-	  }
-	}
-      }
-      break;
-    default:
-      // else retval is NULL!
-      break;
-    }
-  }
-  return retval;
-}
-  
-
-magic_pointer<TAttribString>  get_string(magic_pointer<TAttribute> attr)
-{
-  char junk_buffer[1024];
-  
-  magic_pointer<TAttribString> retval;
-  if( !!attr )
-  {
-    switch(attr->eType)
-    {
-      // These two are treated identically, as the stringlist is a subclass.
-    case FX_STRING:
-    case FX_STRING_LIST:      
-      retval = rcp_static_cast<TAttribString>(attr);
-      break;      
-    case FX_INTEGER:
-      sprintf(junk_buffer,"%d", rcp_static_cast<TAttribInt>(attr)->tValue);
-      retval = (magic_pointer<TAttribString>)new TAttribString(junk_buffer);
-      break;
-    case FX_REAL:
-      sprintf(junk_buffer,"%12.7f",rcp_static_cast<TAttribReal>(attr)->tValue);
-      retval = (magic_pointer<TAttribString>)new TAttribString(junk_buffer);      
-      break;
-    case FX_BOOL:
-      sprintf(junk_buffer,"%d", rcp_static_cast<TAttribInt>(attr)->tValue);
-      retval = (magic_pointer<TAttribString>)new TAttribString(junk_buffer);      
-      break;      
-    default:
-      // Retval is NULL!!!
-      break;
-    }
-  }
-  return retval;  
-}
-
-magic_pointer<TAttribStringList>
-get_stringlist(const magic_pointer<TAttribute> attr)
-{
-  magic_pointer<TAttribStringList> retval;
-  if( !!attr )
-  {
-    switch(attr->eType)
-    {
-    case FX_STRING:
-      {
-	string value = rcp_static_cast<TAttribString>(attr)->tValue;
-	vector<string> choices(1,value);
-	retval = (magic_pointer<TAttribStringList>)new TAttribStringList (choices);
-      }
-      break;
-    case FX_STRING_LIST:
-      retval = rcp_static_cast<TAttribStringList>(attr);
-      break;
-    default:
-      // retval == NULL
-      break;
-    }
-  }
-  return retval;
-}
-
-magic_pointer<TAttribColor>   get_color(magic_pointer<TAttribute> attr)
-{
-  magic_pointer<TAttribColor> retval;
-  if( !!attr )
-  {
-    switch(attr->eType)
-    {
-    case FX_INTEGER:
-      retval = (magic_pointer<TAttribColor>)new TAttribColor((TScalar)rcp_static_cast<TAttribInt>(attr)->tValue);
-      break;      
-    case FX_REAL:
-      retval = (magic_pointer<TAttribColor>)new TAttribColor(rcp_static_cast<TAttribReal>(attr)->tValue);
-      break;
-    case FX_VECTOR:
-      retval = (magic_pointer<TAttribColor>)new TAttribColor(rcp_static_cast<TAttribVector>(attr)->tValue);
-      break;
-    case FX_ARRAY:
-      retval = get_color(rcp_static_cast<TAttribute>(get_vector(attr)));
-      break;            
-    case FX_COLOR:
-      retval = rcp_static_cast<TAttribColor>(attr);
-      break;      
-    default:
-      // Retval is NULL!!!
-      break;
-    }
-  }
-  return retval;    
-}
-
-magic_pointer<TAttribVector>  get_vector(magic_pointer<TAttribute> attr)
-{
-  magic_pointer<TAttribVector> retval;
-  if( !!attr )
-  {
-    switch(attr->eType)
-    {
-    case FX_INTEGER:
-      retval = (magic_pointer<TAttribVector>)new TAttribVector((TScalar)rcp_static_cast<TAttribInt>(attr)->tValue);
-      break;      
-    case FX_REAL:
-      retval = (magic_pointer<TAttribVector>)new TAttribVector(rcp_static_cast<TAttribReal>(attr)->tValue);
-      break;
-    case FX_VECTOR:
-      retval = rcp_static_cast<TAttribVector>(attr);
-      break;
-    case FX_ARRAY:
-      {
-	vector<TScalar>& barf = rcp_static_cast<TAttribArray>(attr)->tValue;
-	// Demotion
-	if( barf.size() > 3)
-	{
-	  GOM.error() << "Warning: array was too large to fit in vector" << endl;
-	  TVector v(barf[0], barf[1], barf[2]);
-	  retval = (magic_pointer<TAttribVector>)new TAttribVector(v);
-	}
-	// Conversion
-	else if( barf.size() == 3)
-	{
-	  TVector v(barf[0], barf[1], barf[2]);
-	  retval = (magic_pointer<TAttribVector>)new TAttribVector(v);
-	}
-	// Promotion
-	else if( barf.size() == 1 )
-	{
-	  TVector v(barf[0]);
-	  retval = (magic_pointer<TAttribVector>)new TAttribVector(v);	
-	}
-	else
-	{
-	  GOM.error() << "Incorrect array size in conversion from FX_ARRAY to FX_VECTOR" << endl;
-	}
-      }
-      break;      
-    default:
-      // Retval is NULL!!!
-      break;
-    }
-  }
-  return retval;  
-}
-
-magic_pointer<TAttribVector2> get_vector2(magic_pointer<TAttribute> attr)
-{
-  magic_pointer<TAttribVector2> retval;
-  if( !!attr )
-  {
-    switch(attr->eType)
-    {
-    case FX_INTEGER:
-      retval = (magic_pointer<TAttribVector2>)new TAttribVector2((TScalar)rcp_static_cast<TAttribInt>(attr)->tValue);
-      break;      
-    case FX_REAL:
-      retval = (magic_pointer<TAttribVector2>)new TAttribVector2(rcp_static_cast<TAttribReal>(attr)->tValue);
-      break;
-    case FX_VECTOR2:
-      retval = rcp_static_cast<TAttribVector2>(attr);
-      break;
-    case FX_ARRAY:
-      {
-	vector<TScalar>& barf = rcp_static_cast<TAttribArray>(attr)->tValue;
-	// Demotion
-	if( barf.size() > 2)
-	{
-	  GOM.error() << "Warning: array was too large to fit in vector2" << endl;
-	  TVector2 v(barf[0], barf[1]);
-	  retval = (magic_pointer<TAttribVector2>)new TAttribVector2(v);
-	}
-	// Conversion
-	else if( barf.size() == 2)
-	{
-	  TVector2 v(barf[0], barf[1]);
-	  retval = (magic_pointer<TAttribVector2>)new TAttribVector2(v);
-	}
-	// Promotion
-	else if( barf.size() == 1 )
-	{
-	  TVector2 v(barf[0]);
-	  retval = (magic_pointer<TAttribVector2>)new TAttribVector2(v);
-	}
-	else
-	{
-	  GOM.error() << "Incorrect array size in conversion from FX_ARRAY to FX_VECTOR2" << endl;
-	}
-      }
-      break;
-    default:
-      // Retval is NULL!!!
-      break;
-    }
-  }
-  return retval;  
-}
-
-magic_pointer<TAttribArray> get_array(magic_pointer<TAttribute> attr)
-{
-  magic_pointer<TAttribArray> retval;
-  if( !!attr )
-  {
-    switch(attr->eType)
-    {
-    case FX_INTEGER:
-      retval = (magic_pointer<TAttribArray>)new TAttribArray((TScalar)rcp_static_cast<TAttribInt>(attr)->tValue);
-      break;      
-    case FX_REAL:
-      retval = (magic_pointer<TAttribArray>)new TAttribArray(rcp_static_cast<TAttribReal>(attr)->tValue);
-      break;
-    case FX_VECTOR2:
-      retval = (magic_pointer<TAttribArray>)new TAttribArray(rcp_static_cast<TAttribVector2>(attr)->tValue);
-      break;
-    case FX_VECTOR:
-      retval = (magic_pointer<TAttribArray>)new TAttribArray(rcp_static_cast<TAttribVector>(attr)->tValue);
-      break;      
-    case FX_ARRAY:
-      retval = rcp_static_cast<TAttribArray>(attr);
-      break;      
-    default:
-      // Retval is NULL!!!
-      break;
-    }
-  }
-  return retval;  
-}
-
-magic_pointer<TAttribPattern> get_pattern(const magic_pointer<TAttribute> attr)
-{
-  magic_pointer<TAttribPattern> retval;
-  if( !!attr )
-  {
-    switch(attr->eType)
-    {
-    case FX_INTEGER:
-      {
-	TScalar s = rcp_static_cast<TAttribInt>(attr)->tValue;
-	GOM.debug() << "attr: creating pattern from int " << s << endl;
-	retval = (magic_pointer<TAttribPattern>)new TAttribPattern(s);
-      }
-      break;      
-    case FX_REAL:
-      {
-	TScalar s = rcp_static_cast<TAttribReal>(attr)->tValue;
-	GOM.debug() << "attr: creating pattern from real " << s << endl;
-	retval = (magic_pointer<TAttribPattern>)new TAttribPattern(s);
-      }
-      break;
-    case FX_VECTOR:
-      {
-	TVector v = rcp_static_cast<TAttribVector>(attr)->tValue;
-	GOM.debug() << "attr: creating pattern from vector" << endl;
-	retval = (magic_pointer<TAttribPattern>)new TAttribPattern(v);
-      }
-      break;      
-    case FX_COLOR:
-      {
-	GOM.debug() << "ick.....:" << attr->toString() << endl;
-	TColor c = rcp_static_cast<TAttribColor>(attr)->tValue;
-	GOM.debug() << "attr: creating pattern from color"
-	     << " (" << c.red() << "," << c.green() << "," << c.blue() << ")"
-	     << endl;			    			    	
-	retval = (magic_pointer<TAttribPattern>)new TAttribPattern(c);
-      }
-      break;
-    case FX_ARRAY:
-      {
-	GOM.debug() << "ick.....:" << attr->toString() << endl;
-	TColor c = rcp_static_cast<TAttribColor>(attr)->tValue;
-	GOM.debug() << "attr: creating pattern from array (indirectly as vector)" << endl;
-	retval = (magic_pointer<TAttribPattern>)new TAttribPattern(get_vector(attr)->tValue);
-      }
-      break;      
-    case FX_PATTERN:
-      {
-	retval = rcp_static_cast<TAttribPattern>(attr);
-	GOM.debug() << "attr: creating pattern from pattern" << endl;
-      }
-      break;      
-    default:
-      // Retval is NULL!!!
-      break;
-    }
-  }
-  return retval;      
-}
-
-
-magic_pointer<TAttribBsdf> get_bsdf(const magic_pointer<TAttribute> attr)
-{
-  magic_pointer<TAttribBsdf> retval;
-  if( !!attr )
-  {
-    if( attr->eType == FX_BSDF )
-    {
-      retval = rcp_static_cast<TAttribBsdf>(attr);
-    }
-  }
-  return retval;
-}
-
-magic_pointer<TAttribPerturbation>
-get_perturbation(const magic_pointer<TAttribute> attr)
-{
-  magic_pointer<TAttribPerturbation> retval;
-  if( !!attr )
-  {
-    if( attr->eType == FX_PERTURBATION )
-    {
-      retval = rcp_static_cast<TAttribPerturbation>(attr);
-    }    
-  }
-  return retval;  
-}
-
-magic_pointer<TAttribImage>
-get_image(const magic_pointer<TAttribute> attr)
-{
-  magic_pointer<TAttribImage> retval;
-  if( !!attr )
-  {
-    if( attr->eType == FX_IMAGE )
-    {
-      retval = rcp_static_cast<TAttribImage>(attr);
-    }    
-  }
-  return retval;    
-}
-
-magic_pointer<TAttribRenderer>
-get_renderer(const magic_pointer<TAttribute> attr)
-{
-  magic_pointer<TAttribRenderer> retval;
-  if( !!attr )
-  {
-    if( attr->eType == FX_RENDERER )
-    {
-      retval = rcp_static_cast<TAttribRenderer>(attr);
-    }    
-  }
-  return retval;    
-}
-
-magic_pointer<TAttribCamera>
-get_camera(const magic_pointer<TAttribute> attr)
-{
-  magic_pointer<TAttribCamera> retval;
-  if( !!attr )
-  {
-    if( attr->eType == FX_CAMERA )
-    {
-      retval = rcp_static_cast<TAttribCamera>(attr);
-    }    
-  }
-  return retval;    
-}
-
-
-magic_pointer<TAttribObject>
-get_object(const magic_pointer<TAttribute> attr)
-{
-  magic_pointer<TAttribObject> retval;
-  if( !!attr )
-  {
-    if( attr->eType == FX_OBJECT )
-    {
-      retval = rcp_static_cast<TAttribObject>(attr);
-    }
-    else if( attr->eType == FX_AGGREGATE )
-    {
-      magic_pointer<TAttribAggregate> agg = rcp_static_cast<TAttribAggregate>(attr);
-      magic_pointer<TObject> obj = rcp_static_cast<TObject>(agg->tValue);
-      retval = (magic_pointer<TAttribObject>)new TAttribObject(obj);
-    }
-  }
-  return retval;    
-}
-
-magic_pointer<TAttribAggregate>
-get_aggregate(const magic_pointer<TAttribute> attr)
-{
-  magic_pointer<TAttribAggregate> retval;
-  if( !!attr )
-  {
-    if( attr->eType == FX_AGGREGATE )
-    {
-      retval = rcp_static_cast<TAttribAggregate>(attr);
-    }    
-  }
-  return retval;    
-}
-
-magic_pointer<TAttribScene>
-get_scene(const magic_pointer<TAttribute> attr)
-{
-  magic_pointer<TAttribScene> retval;
-  if( !!attr )
-  {
-    if( attr->eType == FX_SCENE )
-    {
-      retval = rcp_static_cast<TAttribScene>(attr);
-    }    
-  }
-  return retval;    
-}
-
-magic_pointer<TAttribMaterial>
-get_material(const magic_pointer<TAttribute> attr)
-{
-  magic_pointer<TAttribMaterial> retval;
-  if( !!attr )
-  {
-    if( attr->eType == FX_MATERIAL )
-    {
-      retval = rcp_static_cast<TAttribMaterial>(attr);
-    }    
-  }
-  return retval;    
-}
-
-magic_pointer<TAttribImageIO>
-get_imageio(const magic_pointer<TAttribute> attr)
-{
-  magic_pointer<TAttribImageIO> retval;
-  if( !!attr )
-  {
-    if( attr->eType == FX_IMAGE_IO )
-    {
-      retval = rcp_static_cast<TAttribImageIO>(attr);
-    }    
-  }
-  return retval;    
-}
-
-
-
-magic_pointer<TBaseClass> attr_to_base(const magic_pointer<TAttribute> attr)
-{
-  if( !!attr )
-  {
-    switch( attr->eType )
-    {
-    case FX_COLOR:
-      return (magic_pointer<TBaseClass>)new TColor(get_color(attr)->tValue);
-    case FX_VECTOR:
-      return (magic_pointer<TBaseClass>)new TVector(get_vector(attr)->tValue);
-    case FX_MATERIAL:
-      return rcp_static_cast<TBaseClass>(get_material(attr)->tValue);
-    case FX_PATTERN:
-      return rcp_static_cast<TBaseClass>(get_pattern(attr)->tValue);
-    case FX_PERTURBATION:
-      return rcp_static_cast<TBaseClass>(get_perturbation(attr)->tValue);      
-    case FX_OBJECT:
-      return rcp_static_cast<TBaseClass>(get_object(attr)->tValue);
-    case FX_AGGREGATE:
-      return rcp_static_cast<TBaseClass>(get_aggregate(attr)->tValue);      
-    case FX_RENDERER:
-      return rcp_static_cast<TBaseClass>(get_renderer(attr)->tValue);
-    case FX_SCENE:
-      return rcp_static_cast<TBaseClass>(get_scene(attr)->tValue);
-    case FX_BSDF:
-      return rcp_static_cast<TBaseClass>(get_bsdf(attr)->tValue);
-    case FX_CAMERA:
-      return rcp_static_cast<TBaseClass>(get_camera(attr)->tValue);
-    case FX_IMAGE_IO:
-      return rcp_static_cast<TBaseClass>(get_imageio(attr)->tValue);
-
-    // image filter?
-    // object filter?
-    // bounding box?
-    // atm object?
-    // scene io?      
-    default:
-      break;
-    }
-  }
-  return magic_pointer<TBaseClass>();
-}
-
-magic_pointer<TAttribute> base_to_attr(const magic_pointer<TBaseClass> base)
-{
-  if( !!base )
-  {
-    switch( base->classType() )
-    {
-    case FX_COLOR_CLASS:
-      return (user_arg_type)new TAttribColor(*rcp_static_cast<TColor>(base));
-      break;
-    case FX_VECTOR_CLASS:
-      return (user_arg_type)new TAttribVector(*rcp_static_cast<TVector>(base));
-      break;
-    case FX_PATTERN_CLASS:
-      return (user_arg_type)new TAttribPattern(rcp_static_cast<TPattern>(base));
-      break;
-    case FX_PERTURBATION_CLASS:
-      return (user_arg_type)new TAttribPerturbation(rcp_static_cast<TPerturbation>(base));
-      break;
-    case FX_MATERIAL_CLASS:
-      return (user_arg_type)new TAttribMaterial(rcp_static_cast<TMaterial>(base));
-      break;
-    case FX_LIGHT_CLASS:
-      return (user_arg_type)new TAttribObject(rcp_static_cast<TObject>(base));
-      break;
-    case FX_CAMERA_CLASS:
-      return (user_arg_type)new TAttribCamera(rcp_static_cast<TCamera>(base));
-      break;
-    case FX_OBJECT_CLASS:
-      return (user_arg_type)new TAttribObject(rcp_static_cast<TObject>(base));
-      break;
-    case FX_AGGREGATE_CLASS:
-      return (user_arg_type)new TAttribAggregate(rcp_static_cast<TAggregate>(base));
-      break;      
-    case FX_RENDERER_CLASS:
-      return (user_arg_type)new TAttribRenderer(rcp_static_cast<TRenderer>(base));
-      break;
-    case FX_SCENE_CLASS:
-      return (user_arg_type)new TAttribScene(rcp_static_cast<TScene>(base));
-      break;
-    case FX_BSDF_CLASS:
-      return (user_arg_type)new TAttribBsdf(rcp_static_cast<TBsdf>(base));
-      break;
-    case FX_IMAGE_IO_CLASS:
-      return (user_arg_type)new TAttribImageIO(rcp_static_cast<TImageIO>(base));
-      break;
-    default:
-      break;
-    }
-    // image filter?
-    // object filter?
-    // bounding box?
-    // atm object?
-    // scene io?
-    GOM.error() << "base_to_attr: Cannot determine classtype of " << base->className() << endl;
-    return (user_arg_type)new TAttribute();
-  }
-  else
-  {
-    GOM.error() << "base_to_attr: given a null base" << endl;
-    return (user_arg_type)new TAttribute();
-  }  
-}
+} // end namespace panorama

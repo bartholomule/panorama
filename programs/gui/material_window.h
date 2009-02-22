@@ -21,9 +21,9 @@
 
 #include "llapi/scene.h"
 #include "material_graph.h"
-#include <gtk--/preview.h>
-#include <gtk--/notebook.h>
-#include <gtk--/window.h>
+#include <gtkmm/notebook.h>
+#include <gtkmm/drawingarea.h>
+#include <gtkmm/window.h>
 
 
 #define FX_PREVIEW_WIDTH    120
@@ -37,8 +37,8 @@ class TMaterialWindow : public Gtk::Window
     TMaterial*        ptMaterial;
     TScene*           ptScene;
     TMaterialGraph*   ptGraph;
-    Gtk::Preview*      ptPreview;
-    Gtk::Notebook*     ptNotebook;
+    Gtk::DrawingArea* ptPreview;
+    Gtk::Notebook*    ptNotebook;
 
     void setupScene (void);
 

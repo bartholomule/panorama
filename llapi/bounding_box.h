@@ -16,16 +16,19 @@
 *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef _BOUNDING_BOX__
-#define _BOUNDING_BOX__
+#ifndef PANORAMA_BOUNDING_BOX_H_INCLUDED
+#define PANORAMA_BOUNDING_BOX_H_INCLUDED
 
 #include <vector>
 #include "llapi/volume.h"
 
-class TObject;
-
-class TBoundingBox : public TVolume
+namespace panorama
 {
+
+  class TObject;
+
+  class TBoundingBox : public TVolume
+  {
 
   protected:
 
@@ -49,7 +52,7 @@ class TBoundingBox : public TVolume
       TVolume(rktBBOX),
       tPoint1 (rktBBOX.tPoint1),
       tPoint2 (rktBBOX.tPoint2) {}
-      
+
     TBoundingBox& operator = (const TBoundingBox& rktBBOX)
     {
       if( &rktBBOX != this )
@@ -59,7 +62,7 @@ class TBoundingBox : public TVolume
 
         TVolume::operator= (rktBBOX);
       }
-      
+
       return *this;
     }
 
@@ -73,9 +76,9 @@ class TBoundingBox : public TVolume
     {
       set (rktNEW_POS, rktNEW_POS + (tPoint2 - tPoint1));
     }
-    
+
     void applyTransform (const TMatrix& rktMATRIX);
-    
+
     bool intersects (const TRay& rktRAY) const;
 
     TInterval limits (Byte bAXIS) const
@@ -91,31 +94,33 @@ class TBoundingBox : public TVolume
       }
       return zlimits();
     }
-    
+
     TInterval xlimits (void) const { return TInterval (tPoint1.x(), tPoint2.x()); }
     TInterval ylimits (void) const { return TInterval (tPoint1.y(), tPoint2.y()); }
     TInterval zlimits (void) const { return TInterval (tPoint1.z(), tPoint2.z()); }
 
     TInterval clipRay (const TRay& rktRAY) const;
-    
+
     TScalar cost (void) const;
 
     const TVector& corner1() const { return tPoint1; }
     const TVector& corner2() const { return tPoint2; }
     TVector& corner1() { return tPoint1; }
-    TVector& corner2() { return tPoint2; }    
-    
-    void printDebug (const string& indent) const;
-    
-    EClass classType (void) const { return FX_BOUNDING_BOX_CLASS; }
-    string className (void) const { return "BoundingBox"; }
+    TVector& corner2() { return tPoint2; }
 
-};  /* class TBoundingBox */
+    virtual EClass classType (void) const { return FX_BOUNDING_BOX_CLASS; }
+    virtual TBoundingBox* clone_new() const { return new TBoundingBox(*this); }
+    virtual std::string name (void) const { return "BoundingBox"; }
+    virtual std::string internalMembers(const Indentation& indent, PrefixType prefix) const;
+
+  };  /* class TBoundingBox */
 
 
-bool Disjoint (const TBoundingBox& rktBBOX1, const TBoundingBox& rktBBOX2);
-TBoundingBox Merge (const vector<magic_pointer<TObject> >& rktLIST);
-TBoundingBox Union (const TBoundingBox& rktBBOX1, const TBoundingBox& rktBBOX2);
-TBoundingBox Intersection (const TBoundingBox& rktBBOX1, const TBoundingBox& rktBBOX2);
+  bool Disjoint (const TBoundingBox& rktBBOX1, const TBoundingBox& rktBBOX2);
+  TBoundingBox Merge (const std::vector<rc_pointer<TObject> >& rktLIST);
+  TBoundingBox Union (const TBoundingBox& rktBBOX1, const TBoundingBox& rktBBOX2);
+  TBoundingBox Intersection (const TBoundingBox& rktBBOX1, const TBoundingBox& rktBBOX2);
 
-#endif  /* _BOUNDING_BOX__ */
+} // end namespace panorama
+
+#endif  /* PANORAMA_BOUNDING_BOX_H_INCLUDED */

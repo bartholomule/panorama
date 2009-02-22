@@ -19,9 +19,9 @@
 #ifndef _OBJECT_PROPERTIES_DIALOG__
 #define _OBJECT_PROPERTIES_DIALOG__
 
-#include <gtk--/button.h>
-#include <gtk--/widget.h>
-#include <gtk--/dialog.h>
+#include <gtkmm/button.h>
+#include <gtkmm/widget.h>
+#include <gtkmm/dialog.h>
 #include "llapi/procedural.h"
 
 class TObjectPropertiesDialog : public Gtk::Dialog
@@ -32,7 +32,7 @@ class TObjectPropertiesDialog : public Gtk::Dialog
     TProcedural*   ptObject;
     TProcedural*   ptObjectCopy; // A copy of the object, only in attributes.
 
-    Gtk::Widget* createValueWidget (const string& name, EAttribType eTYPE,
+    Gtk::Widget* createValueWidget (const std::string& name, EAttribType eTYPE,
 				    NAttribute nVALUE);
       
     Gtk::Widget* createInfoWidget (void);
@@ -50,7 +50,7 @@ class TObjectPropertiesDialog : public Gtk::Dialog
 
     void accept_changes();
 
-    vector<string> modified_attributes;
+    std::vector<std::string> modified_attributes;
   
 };  /* class TObjectPropertiesDialog */
 

@@ -16,63 +16,38 @@
 *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef _RENDERER__
-#define _RENDERER__
+#ifndef PANORAMA_RENDERER_H_INCLUDED
+#define PANORAMA_RENDERER_H_INCLUDED
 
 #include "llapi/frame.h"
 #include "llapi/surface_data.h"
 #include "llapi/light.h"
 #include "llapi/procedural.h"
 
-typedef bool (TUserFunction) (size_t, void*);
-typedef void (TUserDoneFunction) (void*);
-
-struct SBuffers;
-class TScene;
-
-class TRenderer : public TProcedural
+namespace panorama
 {
 
-  protected:
+  typedef bool (TUserFunction) (size_t, void*);
+  typedef void (TUserDoneFunction) (void*);
 
-    TUserFunction*     pfUserFunction;
-    TUserDoneFunction* pfUserDoneFunction;  
-    void*              pvUserData;
-    
+  struct SBuffers;
+  class TScene;
+
+  class TRenderer : public TProcedural
+  {
   public:
 
     TRenderer ():
-      TProcedural(),
-      pfUserFunction(NULL),
-      pfUserDoneFunction(NULL),
-      pvUserData(NULL)
+      TProcedural()
     {
     }
-  
-    virtual bool initialize (TScene& rtSCENE)
-    {
-      return TProcedural::initialize();
-    }
-  
-    virtual void finalize (void) {}
-    virtual void render (SBuffers& rsBUFFERS) = 0;
 
-    void setUserFunction (TUserFunction* pfUSER, void* pvDATA)
-    {
-      pfUserFunction = pfUSER;
-      pvUserData     = pvDATA;
-    }
-    void setUserFunction (TUserFunction* pfUSER, TUserDoneFunction* pfDONE, void* pvDATA)
-    {
-      pfUserFunction = pfUSER;
-      pfUserDoneFunction = pfDONE;
-      pvUserData     = pvDATA;
-    }  
+    virtual void render (SBuffers& rsBUFFERS) = 0;
 
     virtual TColor mediaRadiance (const TSurfaceData& rktDATA, const TColor& rktRAD) const = 0;
     virtual TColor directLight (const TSurfaceData& rktDATA) const = 0;
-    virtual TColor directLight (const TSurfaceData& rktDATA, const magic_pointer<TLight> pktLIGHT) const = 0;
-    virtual TColor directLight (const TSurfaceData& rktDATA, const magic_pointer<TObject> pktALIGHT) const = 0;  
+    virtual TColor directLight (const TSurfaceData& rktDATA, const rc_pointer<TLight> pktLIGHT) const = 0;
+    virtual TColor directLight (const TSurfaceData& rktDATA, const rc_pointer<TObject> pktALIGHT) const = 0;
 
     virtual TColor ambientLight (const TSurfaceData& rktDATA, Word wDEPTH) const = 0;
     virtual TColor specularReflectedLight (const TSurfaceData& rktDATA, Word wDEPTH, size_t* pzOBJ_CODE) const = 0;
@@ -81,8 +56,7 @@ class TRenderer : public TProcedural
     virtual Word neededBuffers (void) const { return 0; }
 
     EClass classType (void) const { return FX_RENDERER_CLASS; }
-    virtual TRenderer* clone_new() const = 0;
-  
-};  /* class TRenderer */
+  };  /* class TRenderer */
+} // end namespace panorama
 
-#endif  /* _RENDERER__ */
+#endif  /* PANORAMA_RENDERER_H_INCLUDED */

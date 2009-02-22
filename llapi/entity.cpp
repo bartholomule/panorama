@@ -17,35 +17,35 @@
 */
 #include "llapi/entity.h"
 
-
-void TEntity::translate (const TVector& rktNEW_POS)
+namespace panorama
 {
-  //  GOM.debug() << className() << "::" << __FUNCTION__ << " - as TEntity" << endl;
-  tLocation += rktNEW_POS;
-  update();
-}
 
-void TEntity::rotate (const TVector& rktAXISPOINT1, const TVector& rktAXISPOINT2, TScalar tANGLE)
-{
-  //  GOM.debug() << className() << "::" << __FUNCTION__ << " - as TEntity (empty)" << endl;
-}
+  void TEntity::translate (const TVector& rktNEW_POS)
+  {
+    tLocation += rktNEW_POS;
+    update();
+  }
 
-void TEntity::rotate (const TVector& rktANGLESXYZ)
-{
-  //  GOM.debug() << className() << "::" << __FUNCTION__ << " - as TEntity (empty)" << endl;
-}
+  void TEntity::rotate (const TVector& rktAXISPOINT1, const TVector& rktAXISPOINT2, TScalar tANGLE)
+  {
+  }
 
-void TEntity::rotate (const TQuaternion& rktQUAT)
-{
-  //  GOM.debug() << className() << "::" << __FUNCTION__ << " - as TEntity (empty)" << endl;
-}
+  void TEntity::rotate (const TVector& rktANGLESXYZ)
+  {
+  }
 
-TUserFunctionMap TEntity::getUserFunctions()
-{
-  TUserFunctionMap ufm = TProcedural::getUserFunctions();
-  
-  ufm["translate"]   = create_user_function(this,&TEntity::translate);
-  ufm["setLocation"] = create_user_function(this,&TEntity::setLocation);
-  ufm["location"]    = create_user_function(this,&TEntity::location);
-  return ufm;
+  void TEntity::rotate (const TQuaternion& rktQUAT)
+  {
+  }
+
+  TUserFunctionMap TEntity::getUserFunctions()
+  {
+    TUserFunctionMap ufm = TProcedural::getUserFunctions();
+
+    ufm["translate"]   = create_user_function(this,&TEntity::translate);
+    ufm["setLocation"] = create_user_function(this,&TEntity::setLocation);
+    ufm["location"]    = create_user_function(this,&TEntity::location);
+    return ufm;
+  }
+
 }

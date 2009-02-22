@@ -28,8 +28,8 @@ class TMeshObject : public TObject
 
   protected:
 
-    vector<TVector>        tVertexList;
-    vector<TMesh::TFace>   tFaceList;
+    std::vector<TVector>        tVertexList;
+    std::vector<TMesh::TFace>   tFaceList;
     
   public:
 
@@ -45,8 +45,8 @@ class TMeshObject : public TObject
     void addTriangle (const TTriangle* pktTRIANGLE);
     void addTriangle (const TVector& rktVERTEX1, const TVector& rktVERTEX2, const TVector& rktVERTEX3);
 
-    vector<TVector>& vertexList (void) { return tVertexList; }
-    vector<TMesh::TFace>& faceList (void) { return tFaceList; }
+    std::vector<TVector>& vertexList (void) { return tVertexList; }
+    std::vector<TMesh::TFace>& faceList (void) { return tFaceList; }
     
     void clear (void)
     {
@@ -56,9 +56,9 @@ class TMeshObject : public TObject
 
     size_t addVertex (const TVector& rktVERTEX);
     
-    void getMesh (list<TMesh*>& rtMESH_LIST) const;
+    void getMesh (std::list<TMesh*>& rtMESH_LIST) const;
     
-    string className (void) const { return "Mesh"; }
+    std::string className (void) const { return "Mesh"; }
     
 };  /* class TMeshObject */
 

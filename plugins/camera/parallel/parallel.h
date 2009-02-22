@@ -42,8 +42,8 @@ class TParallelCamera : public TCamera
 
     bool initialize (void);
     
-    int setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
-    int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
+    int setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
+    int getAttribute (const std::string& rktNAME, NAttribute& rnVALUE);
     void getAttributeList (TAttributeList& rtLIST) const;
 
     void setWidth (TScalar tWIDTH)
@@ -79,10 +79,10 @@ class TParallelCamera : public TCamera
       return -dotProduct (tDirection, rktPOINT);
     }
     
-    string className (void) const { return "ParallelCamera"; }
+    std::string className (void) const { return "ParallelCamera"; }
     virtual TParallelCamera* clone_new() const { return new TParallelCamera(*this); }
   
-    void printDebug (const string& indent) const;
+    void printDebug (const std::string& indent) const;
     
 };  /* class TParallelCamera */
 

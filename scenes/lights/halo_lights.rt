@@ -157,8 +157,8 @@ class Scene
     color = < rand() * .3, rand() * .3, rand() * .3 >;
     halo = rand() * 5;
   };
-  width		= 200;
-  height	= 200;
+  width		= 400;
+  height	= 400;
   background    = CBlack;
   output = class png
   {

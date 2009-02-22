@@ -17,14 +17,18 @@
 */
 
 #include <iostream>
+#include <vector>
 #include "llapi/bounding_box.h"
 #include "llapi/object.h"
 
-void TBoundingBox::applyTransform (const TMatrix& rktMATRIX)
+namespace panorama
 {
 
-  TScalar   tMinX, tMaxX, tMinY, tMaxY, tMinZ, tMaxZ;
-  TVector   atVertex [8] = { tPoint1,
+  void TBoundingBox::applyTransform (const TMatrix& rktMATRIX)
+  {
+
+    TScalar tMinX, tMaxX, tMinY, tMaxY, tMinZ, tMaxZ;
+    TVector atVertex [8] = { tPoint1,
                              tPoint2,
                              TVector (tPoint2.x(), tPoint1.y(), tPoint1.z()),
                              TVector (tPoint2.x(), tPoint1.y(), tPoint2.z()),
@@ -32,279 +36,283 @@ void TBoundingBox::applyTransform (const TMatrix& rktMATRIX)
                              TVector (tPoint1.x(), tPoint2.y(), tPoint2.z()),
                              TVector (tPoint1.x(), tPoint2.y(), tPoint1.z()),
                              TVector (tPoint2.x(), tPoint2.y(), tPoint1.z())
-                           };
+    };
 
-  //
-  // Apply the transformation matrix to the points and calculate the min and max of
-  // X's, Y's and Z's
-  //
-  atVertex[0] = rktMATRIX * atVertex[0];
-
-  tMinX = atVertex[0].x();
-  tMaxX = atVertex[0].x();
-  tMinY = atVertex[0].y();
-  tMaxY = atVertex[0].y();
-  tMinZ = atVertex[0].z();
-  tMaxZ = atVertex[0].z();
-
-  for (size_t I = 1; ( I < 8 ) ;I++)
-  {
-    atVertex[I] = rktMATRIX * atVertex[I];
-    
-    tMinX = min (atVertex[I].x(), tMinX);
-    tMaxX = max (atVertex[I].x(), tMaxX);
-    tMinY = min (atVertex[I].y(), tMinY);
-    tMaxY = max (atVertex[I].y(), tMaxY);
-    tMinZ = min (atVertex[I].z(), tMinZ);
-    tMaxZ = max (atVertex[I].z(), tMaxZ);
-  }
-
-  set (TVector (tMinX, tMinY, tMinZ), TVector (tMaxX, tMaxY, tMaxZ));
-
-}  /* applyTransform() */
-
-
-bool TBoundingBox::intersects (const TRay& rktRAY) const
-{
-
-  TInterval   tIntX, tIntY, tIntZ;
-
-  if ( fabs (rktRAY.direction().x()) < FX_EPSILON )
-  {
     //
-    // Ray is parallel to X axis
+    // Apply the transformation matrix to the points and calculate the min and max of
+    // X's, Y's and Z's
     //
-    if ( !TInterval (tPoint1.x(), tPoint2.x()).inside (rktRAY.location().x()) )
+    atVertex[0] = rktMATRIX * atVertex[0];
+
+    tMinX = atVertex[0].x();
+    tMaxX = atVertex[0].x();
+    tMinY = atVertex[0].y();
+    tMaxY = atVertex[0].y();
+    tMinZ = atVertex[0].z();
+    tMaxZ = atVertex[0].z();
+
+    for (size_t I = 1; ( I < 8 ) ;I++)
     {
-      return false;
+      atVertex[I] = rktMATRIX * atVertex[I];
+
+      tMinX = std::min (atVertex[I].x(), tMinX);
+      tMaxX = std::max (atVertex[I].x(), tMaxX);
+      tMinY = std::min (atVertex[I].y(), tMinY);
+      tMaxY = std::max (atVertex[I].y(), tMaxY);
+      tMinZ = std::min (atVertex[I].z(), tMinZ);
+      tMaxZ = std::max (atVertex[I].z(), tMaxZ);
     }
-    tIntX = TInterval (0, SCALAR_MAX);
-  }
-  else
+
+    set (TVector (tMinX, tMinY, tMinZ), TVector (tMaxX, tMaxY, tMaxZ));
+
+  }  /* applyTransform() */
+
+
+  bool TBoundingBox::intersects (const TRay& rktRAY) const
   {
-    tIntX = TInterval ((tPoint1.x() - rktRAY.location().x()) / rktRAY.direction().x(),
-                       (tPoint2.x() - rktRAY.location().x()) / rktRAY.direction().x());
-    //    if ( ( tIntX < TScalar (0) ) || ( tIntX > rktRAY.limit() ) )
-    if( Disjoint(rktRAY.range(), tIntX) )
+
+    TInterval   tIntX, tIntY, tIntZ;
+
+    if ( fabs (rktRAY.direction().x()) < FX_EPSILON )
     {
-      return false;
+      //
+      // Ray is parallel to X axis
+      //
+      if ( !TInterval (tPoint1.x(), tPoint2.x()).inside (rktRAY.location().x()) )
+      {
+        return false;
+      }
+      tIntX = TInterval (0, SCALAR_MAX);
     }
-  }
-
-  if ( fabs (rktRAY.direction().y()) < FX_EPSILON )
-  {
-    //
-    // Ray is parallel to Y axis
-    //
-    if ( !TInterval (tPoint1.y(), tPoint2.y()).inside (rktRAY.location().y()) )
+    else
     {
-      return false;
+      tIntX = TInterval ((tPoint1.x() - rktRAY.location().x()) / rktRAY.direction().x(),
+        (tPoint2.x() - rktRAY.location().x()) / rktRAY.direction().x());
+      //    if ( ( tIntX < TScalar (0) ) || ( tIntX > rktRAY.limit() ) )
+      if( Disjoint(rktRAY.range(), tIntX) )
+      {
+        return false;
+      }
     }
-    tIntY = TInterval (0, SCALAR_MAX);
-  }
-  else
-  {
-    tIntY = TInterval ((tPoint1.y() - rktRAY.location().y()) / rktRAY.direction().y(),
-                       (tPoint2.y() - rktRAY.location().y()) / rktRAY.direction().y());
-    //    if ( ( tIntY < TScalar (0) ) || ( tIntY > rktRAY.limit() ) )
-    if( Disjoint(rktRAY.range(), tIntY) )
+
+    if ( fabs (rktRAY.direction().y()) < FX_EPSILON )
     {
-      return false;
+      //
+      // Ray is parallel to Y axis
+      //
+      if ( !TInterval (tPoint1.y(), tPoint2.y()).inside (rktRAY.location().y()) )
+      {
+        return false;
+      }
+      tIntY = TInterval (0, SCALAR_MAX);
     }
-    if ( Disjoint (tIntX, tIntY) )
+    else
     {
-      return false;
+      tIntY = TInterval ((tPoint1.y() - rktRAY.location().y()) / rktRAY.direction().y(),
+        (tPoint2.y() - rktRAY.location().y()) / rktRAY.direction().y());
+      //    if ( ( tIntY < TScalar (0) ) || ( tIntY > rktRAY.limit() ) )
+      if( Disjoint(rktRAY.range(), tIntY) )
+      {
+        return false;
+      }
+      if ( Disjoint (tIntX, tIntY) )
+      {
+        return false;
+      }
     }
-  }
 
-  if ( fabs (rktRAY.direction().z()) < FX_EPSILON )
-  {
-    //
-    // Ray is parallel to Z axis
-    //
-    if ( !TInterval (tPoint1.z(), tPoint2.z()).inside (rktRAY.location().z()) )
+    if ( fabs (rktRAY.direction().z()) < FX_EPSILON )
     {
-      return false;
+      //
+      // Ray is parallel to Z axis
+      //
+      if ( !TInterval (tPoint1.z(), tPoint2.z()).inside (rktRAY.location().z()) )
+      {
+        return false;
+      }
+      tIntZ = TInterval (0, SCALAR_MAX);
     }
-    tIntZ = TInterval (0, SCALAR_MAX);
-  }
-  else
-  {
-    tIntZ = TInterval ((tPoint1.z() - rktRAY.location().z()) / rktRAY.direction().z(), 
-                       (tPoint2.z() - rktRAY.location().z()) / rktRAY.direction().z());
-    //    if ( ( tIntZ < TScalar (0) ) || ( tIntZ > rktRAY.limit() ) )
-    if( Disjoint(rktRAY.range(), tIntZ) )
+    else
     {
-      return false;
+      tIntZ = TInterval ((tPoint1.z() - rktRAY.location().z()) / rktRAY.direction().z(),
+        (tPoint2.z() - rktRAY.location().z()) / rktRAY.direction().z());
+      //    if ( ( tIntZ < TScalar (0) ) || ( tIntZ > rktRAY.limit() ) )
+      if( Disjoint(rktRAY.range(), tIntZ) )
+      {
+        return false;
+      }
+      if ( Disjoint (tIntX, tIntZ) || Disjoint (tIntY, tIntZ) )
+      {
+        return false;
+      }
     }
-    if ( Disjoint (tIntX, tIntZ) || Disjoint (tIntY, tIntZ) )
-    {
-      return false;
-    }
-  }
 
-  return true;
-
-}  /* intersects() */
-
-
-TInterval TBoundingBox::clipRay (const TRay& rktRAY) const
-{
-
-  TInterval   tInt;
-  TInterval   tIntX, tIntY, tIntZ;
-
-  tInt = xlimits();
-  if ( fabs (rktRAY.direction().x()) <= FX_EPSILON )
-  {
-    if ( !tInt.inside (rktRAY.location().x()) )
-    {
-      return TInterval();
-    }
-    //    tIntX.set (0, rktRAY.limit());
-    tIntX = rktRAY.range();
-  }
-  else
-  {
-    tIntX.set ((tInt.min() - rktRAY.location().x()) / rktRAY.direction().x(),
-               (tInt.max() - rktRAY.location().x()) / rktRAY.direction().x());
-  }
-
-  tInt = ylimits();
-  if ( fabs (rktRAY.direction().y()) <= FX_EPSILON )
-  {
-    if ( !tInt.inside (rktRAY.location().y()) )
-    {
-      return TInterval();
-    }
-    //    tIntY.set (0, rktRAY.limit());
-    tIntY = rktRAY.range();
-  }
-  else
-  {
-    tIntY.set ((tInt.min() - rktRAY.location().y()) / rktRAY.direction().y(),
-               (tInt.max() - rktRAY.location().y()) / rktRAY.direction().y());
-  }
-    
-  tInt = zlimits();
-  if ( fabs (rktRAY.direction().z()) <= FX_EPSILON )
-  {
-    if ( !tInt.inside (rktRAY.location().z()) )
-    {
-      return TInterval();
-    }
-    //    tIntZ.set (0, rktRAY.limit());
-    tIntZ = rktRAY.range();
-  }
-  else
-  {
-    tIntZ.set ((tInt.min() - rktRAY.location().z()) / rktRAY.direction().z(),
-               (tInt.max() - rktRAY.location().z()) / rktRAY.direction().z());
-  }
-
-  //  tInt.set (0, rktRAY.limit());
-  tInt = rktRAY.range();
-  tInt = Intersection (tInt, tIntX);
-  tInt = Intersection (tInt, tIntY);
-  tInt = Intersection (tInt, tIntZ);
-
-  return tInt;
-  
-}  /* clipRay() */
-
-
-TScalar TBoundingBox::cost (void) const
-{
-
-  TScalar   tSizeX = TInterval (tPoint1.x(), tPoint2.x()).size();
-  TScalar   tSizeY = TInterval (tPoint1.y(), tPoint2.y()).size();
-  TScalar   tSizeZ = TInterval (tPoint1.z(), tPoint2.z()).size();
-  
-  return (tSizeX * (tSizeY + tSizeZ) + tSizeY * tSizeZ);
-
-}  /* cost() */
-
-
-void TBoundingBox::printDebug (const string& indent) const
-{
-
-  GOM.debug() << indent
-       << "[_TBoundingBox_] <"
-       << tPoint1.x() << ", "
-       << tPoint1.y() << ", "
-       << tPoint1.z() << "> <"
-       << tPoint2.x() << ", "
-       << tPoint2.y() << ", "
-       << tPoint2.z() << ">" << endl;
-
-}  /* printDebug() */
-
-
-TBoundingBox Merge (const vector<magic_pointer<TObject> >& rktLIST)
-{
-
-  TInterval   tIntX, tIntY, tIntZ;
-
-  if ( !rktLIST.empty() )
-  {
-    for (vector<magic_pointer<TObject> >::const_iterator tIter = rktLIST.begin();
-	 ( tIter != rktLIST.end() );
-	 tIter++)
-    {
-      const TBoundingBox&   rktBBox = (*tIter)->boundingBox();
-      
-      tIntX  = Union (tIntX, rktBBox.xlimits());
-      tIntY  = Union (tIntY, rktBBox.ylimits());
-      tIntZ  = Union (tIntZ, rktBBox.zlimits());
-    }
-  }
-
-  return TBoundingBox (TVector (tIntX.min(), tIntY.min(), tIntZ.min()),
-                       TVector (tIntX.max(), tIntY.max(), tIntZ.max()));
-
-}  /* Merge() */
-
-
-bool Disjoint (const TBoundingBox& rktBBOX1, const TBoundingBox& rktBBOX2)
-{
-
-  if ( Disjoint (rktBBOX1.xlimits(), rktBBOX2.xlimits()) )
-  {
     return true;
-  }
-  if ( Disjoint (rktBBOX1.ylimits(), rktBBOX2.ylimits()) )
+
+  }  /* intersects() */
+
+
+  TInterval TBoundingBox::clipRay (const TRay& rktRAY) const
   {
-    return true;
-  }
-  if ( Disjoint (rktBBOX1.zlimits(), rktBBOX2.zlimits()) )
+
+    TInterval   tInt;
+    TInterval   tIntX, tIntY, tIntZ;
+
+    tInt = xlimits();
+    if ( fabs (rktRAY.direction().x()) <= FX_EPSILON )
+    {
+      if ( !tInt.inside (rktRAY.location().x()) )
+      {
+        return TInterval();
+      }
+      //    tIntX.set (0, rktRAY.limit());
+      tIntX = rktRAY.range();
+    }
+    else
+    {
+      tIntX.set ((tInt.min() - rktRAY.location().x()) / rktRAY.direction().x(),
+        (tInt.max() - rktRAY.location().x()) / rktRAY.direction().x());
+    }
+
+    tInt = ylimits();
+    if ( fabs (rktRAY.direction().y()) <= FX_EPSILON )
+    {
+      if ( !tInt.inside (rktRAY.location().y()) )
+      {
+        return TInterval();
+      }
+      //    tIntY.set (0, rktRAY.limit());
+      tIntY = rktRAY.range();
+    }
+    else
+    {
+      tIntY.set ((tInt.min() - rktRAY.location().y()) / rktRAY.direction().y(),
+        (tInt.max() - rktRAY.location().y()) / rktRAY.direction().y());
+    }
+
+    tInt = zlimits();
+    if ( fabs (rktRAY.direction().z()) <= FX_EPSILON )
+    {
+      if ( !tInt.inside (rktRAY.location().z()) )
+      {
+        return TInterval();
+      }
+      //    tIntZ.set (0, rktRAY.limit());
+      tIntZ = rktRAY.range();
+    }
+    else
+    {
+      tIntZ.set ((tInt.min() - rktRAY.location().z()) / rktRAY.direction().z(),
+        (tInt.max() - rktRAY.location().z()) / rktRAY.direction().z());
+    }
+
+    //  tInt.set (0, rktRAY.limit());
+    tInt = rktRAY.range();
+    tInt = Intersection (tInt, tIntX);
+    tInt = Intersection (tInt, tIntY);
+    tInt = Intersection (tInt, tIntZ);
+
+    return tInt;
+
+  }  /* clipRay() */
+
+
+  TScalar TBoundingBox::cost (void) const
   {
-    return true;
+
+    TScalar   tSizeX = TInterval (tPoint1.x(), tPoint2.x()).size();
+    TScalar   tSizeY = TInterval (tPoint1.y(), tPoint2.y()).size();
+    TScalar   tSizeZ = TInterval (tPoint1.z(), tPoint2.z()).size();
+
+    return (tSizeX * (tSizeY + tSizeZ) + tSizeY * tSizeZ);
+
+  }  /* cost() */
+
+
+  std::string TBoundingBox::internalMembers(const Indentation& indent, PrefixType prefix) const
+  {
+    std::string tag;
+    if( prefix == E_PREFIX_CLASSNAME )
+    {
+      tag = TBoundingBox::name() + "::";
+    }
+
+    Indentation nextIndent = indent.nextLevel();
+
+    return string_format("%1point1=%3\n%2point2=%4\n",
+      indent.initial() + tag,
+      indent + tag,
+      tPoint1.toString(nextIndent, prefix),
+      tPoint2.toString(nextIndent, prefix));
   }
 
-  return false;
+  TBoundingBox Merge (const std::vector<magic_pointer<TObject> >& rktLIST)
+  {
 
-}  /* Disjoint() */
+    TInterval   tIntX, tIntY, tIntZ;
+
+    if ( !rktLIST.empty() )
+    {
+      for (std::vector<magic_pointer<TObject> >::const_iterator tIter = rktLIST.begin();
+           ( tIter != rktLIST.end() );
+           tIter++)
+      {
+        const TBoundingBox&   rktBBox = (*tIter)->boundingBox();
+
+        tIntX  = Union (tIntX, rktBBox.xlimits());
+        tIntY  = Union (tIntY, rktBBox.ylimits());
+        tIntZ  = Union (tIntZ, rktBBox.zlimits());
+      }
+    }
+
+    return TBoundingBox (TVector (tIntX.min(), tIntY.min(), tIntZ.min()),
+      TVector (tIntX.max(), tIntY.max(), tIntZ.max()));
+
+  }  /* Merge() */
 
 
-TBoundingBox Union (const TBoundingBox& rktBBOX1, const TBoundingBox& rktBBOX2)
-{
+  bool Disjoint (const TBoundingBox& rktBBOX1, const TBoundingBox& rktBBOX2)
+  {
 
-  TInterval   tIntX = Union (rktBBOX1.xlimits(), rktBBOX2.xlimits());
-  TInterval   tIntY = Union (rktBBOX1.ylimits(), rktBBOX2.ylimits());
-  TInterval   tIntZ = Union (rktBBOX1.zlimits(), rktBBOX2.zlimits());
+    if ( Disjoint (rktBBOX1.xlimits(), rktBBOX2.xlimits()) )
+    {
+      return true;
+    }
+    if ( Disjoint (rktBBOX1.ylimits(), rktBBOX2.ylimits()) )
+    {
+      return true;
+    }
+    if ( Disjoint (rktBBOX1.zlimits(), rktBBOX2.zlimits()) )
+    {
+      return true;
+    }
 
-  return TBoundingBox (tIntX, tIntY, tIntZ);
-  
-}  /* Union() */
+    return false;
+
+  }  /* Disjoint() */
 
 
-TBoundingBox Intersection (const TBoundingBox& rktBBOX1, const TBoundingBox& rktBBOX2)
-{
+  TBoundingBox Union (const TBoundingBox& rktBBOX1, const TBoundingBox& rktBBOX2)
+  {
 
-  TInterval   tIntX = Intersection (rktBBOX1.xlimits(), rktBBOX2.xlimits());
-  TInterval   tIntY = Intersection (rktBBOX1.ylimits(), rktBBOX2.ylimits());
-  TInterval   tIntZ = Intersection (rktBBOX1.zlimits(), rktBBOX2.zlimits());
+    TInterval   tIntX = Union (rktBBOX1.xlimits(), rktBBOX2.xlimits());
+    TInterval   tIntY = Union (rktBBOX1.ylimits(), rktBBOX2.ylimits());
+    TInterval   tIntZ = Union (rktBBOX1.zlimits(), rktBBOX2.zlimits());
 
-  return TBoundingBox (tIntX, tIntY, tIntZ);
-  
-}  /* Intersection() */
+    return TBoundingBox (tIntX, tIntY, tIntZ);
+
+  }  /* Union() */
+
+
+  TBoundingBox Intersection (const TBoundingBox& rktBBOX1, const TBoundingBox& rktBBOX2)
+  {
+
+    TInterval   tIntX = Intersection (rktBBOX1.xlimits(), rktBBOX2.xlimits());
+    TInterval   tIntY = Intersection (rktBBOX1.ylimits(), rktBBOX2.ylimits());
+    TInterval   tIntZ = Intersection (rktBBOX1.zlimits(), rktBBOX2.zlimits());
+
+    return TBoundingBox (tIntX, tIntY, tIntZ);
+
+  }  /* Intersection() */
+
+} // end namespace panorama

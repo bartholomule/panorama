@@ -146,7 +146,7 @@ void TIF_Cartoon::filter (SBuffers& rsBUFFERS)
 }  /* filter() */
 
 
-int TIF_Cartoon::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
+int TIF_Cartoon::setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
 
   if ( rktNAME == "outline" )
@@ -235,7 +235,7 @@ int TIF_Cartoon::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttrib
 }  /* setAttribute() */
 
 
-int TIF_Cartoon::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
+int TIF_Cartoon::getAttribute (const std::string& rktNAME, NAttribute& rnVALUE)
 {
 
 #if !defined(NEW_ATTRIBUTES)  

@@ -20,124 +20,94 @@
 #include "llapi/procedural.h"
 #include "llapi/object_required.h"
 
-string   TProcedural::_tUserErrorMessage = "";
-
-void TProcedural::sendEvent (const string& rktEVENT)
+namespace panorama
 {
+  DEFINE_EXCEPTION(AttributeException);
+  DEFINE_EXCEPTION_BASE(IncorrectTypeException, AttributeException);
+  DEFINE_EXCEPTION_BASE(InvalidNameException, AttributeException);
 
-  GOM.debug() << "Object <" << className() << "> send event <" << rktEVENT << ">" << endl;
-
-}  /* sendEvent() */
-
-
-void TProcedural::sendEvent (const string& rktEVENT, NAttribute nAttrib)
-{
-
-  GOM.debug() << "Object <" << className() << "> send event <" << rktEVENT << "> with argument" << endl;
-
-}  /* sendEvent() */
-
-
-#if defined(NEW_ATTRIBUES)
-int TProcedural::setAttribute (const string& rktNAME, NAttribute nVALUE)
-{
-  if( !!nVALUE )
+  int TProcedural::setAttribute (const std::string& rktNAME, NAttribute nVALUE)
   {
-    return setAttribute (rktNAME, nVALUE, nVALUE->eType);
-  }
-  
-  TProcedural::_tUserErrorMessage = "cannot extract type from NULL attribute";
-  return FX_ATTRIB_USER_ERROR;
-}
-
-int TProcedural::setAttribute (const string& rktNAME,
-			       const list<NAttribute>& rktLIST)
-{
-  if( !rktLIST.empty() )
-  {
-    for(list<NAttribute>::const_iterator it = rktLIST.begin();
-	it != rktLIST.end();
-	++it)
+    if( !nVALUE )
     {
-      setAttribute(rktNAME, *it);
+      THROW(IncorrectTypeException, "Cannot extract type from NULL attribute");
+    }
+
+    if( rktNAME == "identifier" )
+    {
+      if( !getString(nVALUE, tIdentifier) )
+      {
+        return FX_ATTRIB_OK;
+      }
+    }
+    else
+    {
+      THROW(InvalidNameException, string_format("Attribute name is invalid: %1", rktNAME).c_str());
     }
   }
-  TProcedural::_tUserErrorMessage = "cannot set values from empty list";
-  return FX_ATTRIB_USER_ERROR;
-}
-#endif
 
-int TProcedural::setAttribute (const string& rktNAME,
-			       const list<NAttribute>& rktLIST,
-			       EAttribType eTYPE)
-{
-  if( !rktLIST.empty() )
+  int TProcedural::setAttribute (const std::string& rktNAME,
+    const std::list<NAttribute>& rktLIST)
   {
-    for(list<NAttribute>::const_iterator it = rktLIST.begin();
-	it != rktLIST.end();
-	++it)
+    if( !rktLIST.empty() )
     {
-      setAttribute(rktNAME, *it, eTYPE);
+      for(std::list<NAttribute>::const_iterator it = rktLIST.begin();
+          it != rktLIST.end();
+          ++it)
+      {
+        setAttribute(rktNAME, *it);
+      }
     }
+    TProcedural::_tUserErrorMessage = "cannot set values from empty list";
+    return FX_ATTRIB_USER_ERROR;
   }
-  TProcedural::_tUserErrorMessage = "cannot set values from empty list";
-  return FX_ATTRIB_USER_ERROR;  
-}
 
-int TProcedural::setAttribute (const string& rktNAME, NAttribute nVALUE,
-			       EAttribType eTYPE)
-{
-  if(rktNAME == "name")
+  int TProcedural::setAttribute (const std::string& rktNAME,
+    const std::list<NAttribute>& rktLIST,
+    EAttribType eTYPE)
   {
-#if !defined(NEW_ATTRIBUTES)    
-    if(eTYPE == FX_STRING)
+    if( !rktLIST.empty() )
     {
-      setIdentifier((char*)nVALUE.pvValue);
+      for(std::list<NAttribute>::const_iterator it = rktLIST.begin();
+          it != rktLIST.end();
+          ++it)
+      {
+        setAttribute(rktNAME, *it, eTYPE);
+      }
+    }
+    TProcedural::_tUserErrorMessage = "cannot set values from empty list";
+    return FX_ATTRIB_USER_ERROR;
+  }
+
+  int TProcedural::getAttribute (const std::string& rktNAME, NAttribute& rnVALUE)
+  {
+    if(rktNAME == "name")
+    {
+      rnVALUE = user_arg_type(new TAttribString (tIdentifier));
       return FX_ATTRIB_OK;
     }
-#else
-    magic_pointer<TAttribString> str = get_string(nVALUE);
-    if( !!str )
-    {
-      setIdentifier (str->tValue);
-      return FX_ATTRIB_OK;
-    }
-#endif
-    return FX_ATTRIB_WRONG_TYPE;
-  }  
-  return FX_ATTRIB_WRONG_PARAM;
-}
-
-int TProcedural::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
-{
-  if(rktNAME == "name")
-  {
-#if !defined(NEW_ATTRIBUTES)    
-    rnVALUE.pvValue = (void*)tIdentifier.c_str();
-#else
-    rnVALUE = (user_arg_type)new TAttribString (tIdentifier);
-#endif
-    return FX_ATTRIB_OK;
+    return FX_ATTRIB_WRONG_PARAM;
   }
-  return FX_ATTRIB_WRONG_PARAM;
-}
 
-void TProcedural::getAttributeList (TAttributeList& rtLIST) const
-{
-  rtLIST ["name"] = FX_STRING;
-}
+  void TProcedural::getAttributeList (TAttributeList& rtLIST) const
+  {
+    rtLIST ["name"] = FX_STRING;
+  }
 
 
-TUserFunctionMap TProcedural::getUserFunctions()
-{
-  TUserFunctionMap tufm;
+  TUserFunctionMap TProcedural::getUserFunctions()
+  {
+    TUserFunctionMap tufm;
 
-  tufm["setName"]=create_user_function(this,&TProcedural::setIdentifier);
-  // This is safe to do, because the base class will call the virtual function...
-  void (TBaseClass::*fn)(void) const = &TBaseClass::printDebug;
-  tufm["printDebug"]           = create_user_function((TBaseClass*)this,fn);
-  
-  
-  return tufm;
-}
+    tufm["setName"] = create_user_function(this, &TProcedural::setIdentifier);
+    // This is safe to do, because the base class will call the virtual
+    // function...
+    std::string (TBaseClass::*fn)(void) const = &TBaseClass::printDebug;
+    tufm["printDebug"] = create_user_function((TBaseClass*)this,fn);
+
+
+    return tufm;
+  }
+
+} // end namespace panorama
 

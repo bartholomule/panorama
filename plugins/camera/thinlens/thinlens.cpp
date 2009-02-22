@@ -37,7 +37,7 @@ if( !var )                     \
 }
 #endif
 
-int TThinlensCamera::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
+int TThinlensCamera::setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
 
 #if defined(NEW_ATTRIBUTES)  
@@ -113,7 +113,7 @@ int TThinlensCamera::setAttribute (const string& rktNAME, NAttribute nVALUE, EAt
 }  /* setAttribute() */
 
 
-int TThinlensCamera::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
+int TThinlensCamera::getAttribute (const std::string& rktNAME, NAttribute& rnVALUE)
 {
 
 #if !defined(NEW_ATTRIBUTES)
@@ -194,26 +194,26 @@ bool TThinlensCamera::initialize (void)
   possible, but it is fairly simple.
   ---------------------------------------------------------------------------
   The plan for how to generate rays to simulate a thin-lens system:
-  1. Find the ray as with the pinhole camera (unit vector), call this b.
-  2. Generate a vector of the correct length by scaling b by d/(a dot b), where
-     a is the unit vector look_at.
-  3. Find the point in space where the vector would hit at that distance (the
-     point of focus) by adding the scaled vector to the eye location.
+  1. Find the ray as with the pinhole camera (unit std::vector), call this b.
+  2. Generate a std::vector of the correct length by scaling b by d/(a dot b), where
+     a is the unit std::vector look_at.
+  3. Find the point in space where the std::vector would hit at that distance (the
+     point of focus) by adding the scaled std::vector to the eye location.
   4. generate the random point on the disc in 3space (using the
      disc_ray_source).
-  5. generate the ray using the random point as the origin, and the unit vector
+  5. generate the ray using the random point as the origin, and the unit std::vector
      in the direction to the focal point calculated in #3.
      
 ---------------------------------------------------------------------------
   For future reference, it may be helpful to know where the scalar in step 2
   above came from.
-  What I wanted to do was make the projection of the vector b onto the look_at
-  vector be of length d.
+  What I wanted to do was make the projection of the std::vector b onto the look_at
+  std::vector be of length d.
   I figured projection (length) to be:
   (a dot b) == mag(a)*mag(b)*cos(theta)
   projection of b on a = (a dot b)/mag(a) == mag(b)*cos(theta)
   Since I want to figure out what cos(theta) is, I need both a and b to be unit
-  vectors, I can then just use (a_unit dot b_unit) as the cos(theta) term.
+  std::vectors, I can then just use (a_unit dot b_unit) as the cos(theta) term.
 
   d = mag(b)*cos(theta) == mag(b)*(a_unit dot b_unit)
 
@@ -221,7 +221,7 @@ bool TThinlensCamera::initialize (void)
 
   mag(b) = d/cos(theta) = d/(a_unit dot b_unit)
 
-  thus, the resulting vector is b_unit*d/(a_unit dot b_unit)
+  thus, the resulting std::vector is b_unit*d/(a_unit dot b_unit)
 ---------------------------------------------------------------------------
   If I didn't do this scaling, It would end up with a half-sphere of radius d
   in focus, and not the desired focal plane.
@@ -262,18 +262,18 @@ void TThinlensCamera::getRay (TScalar X, TScalar Y, TRay& rtRAY) const
   rtRAY.normalize();
 }
 
-void TThinlensCamera::printDebug (const string& indent) const
+void TThinlensCamera::printDebug (const std::string& indent) const
 {
 
-  GOM.debug() << indent << "[_" << className() << "_]" << endl;
+  GOM.debug() << indent << "[_" << className() << "_]" << std::endl;
 
-  string new_indent = TDebug::Indent(indent);
+  std::string new_indent = TDebug::Indent(indent);
 
   TPinholeCamera::printDebug(new_indent);
-  GOM.debug() << new_indent << "Aperture     : " << getAperture() << endl;
-  GOM.debug() << new_indent << "Focal Dist   : " << getFocalDistance() << endl;
-  GOM.debug() << new_indent << "Focal Length : " << getFocalLength() << endl;
-  GOM.debug() << new_indent << "Film Width   : " << getFilmWidth() << endl;
-  GOM.debug() << new_indent << "Film Height  : " << getFilmHeight() << endl;
+  GOM.debug() << new_indent << "Aperture     : " << getAperture() << std::endl;
+  GOM.debug() << new_indent << "Focal Dist   : " << getFocalDistance() << std::endl;
+  GOM.debug() << new_indent << "Focal Length : " << getFocalLength() << std::endl;
+  GOM.debug() << new_indent << "Film Width   : " << getFilmWidth() << std::endl;
+  GOM.debug() << new_indent << "Film Height  : " << getFilmHeight() << std::endl;
   
 }  /* printDebug() */

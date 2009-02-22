@@ -25,7 +25,7 @@
 DEFINE_PLUGIN ("PatternWorley", FX_PATTERN_CLASS, TPatternWorley);
 
 
-int TPatternWorley::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
+int TPatternWorley::setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
 
   if ( rktNAME == "color" )
@@ -97,7 +97,7 @@ int TPatternWorley::setAttribute (const string& rktNAME, NAttribute nVALUE, EAtt
 }  /* setAttribute() */
 
 
-int TPatternWorley::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
+int TPatternWorley::getAttribute (const std::string& rktNAME, NAttribute& rnVALUE)
 {
 
 #if !defined(NEW_ATTRIBUTES)

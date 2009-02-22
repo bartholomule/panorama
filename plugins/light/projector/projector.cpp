@@ -32,7 +32,7 @@ TProjector::TProjector (void) :
   ptImage (NULL) {}
 
 
-int TProjector::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
+int TProjector::setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
 
   if ( rktNAME == "point_at" )
@@ -102,7 +102,7 @@ int TProjector::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribT
       ptImage = tImageManager.newImage (pcName, FileExtension (pcName));
       if ( !ptImage )
       {
-        TProcedural::_tUserErrorMessage = string ("could not open texture file ") + (char*) nVALUE.pvValue;
+        TProcedural::_tUserErrorMessage = std::string ("could not open texture file ") + (char*) nVALUE.pvValue;
         return FX_ATTRIB_USER_ERROR;
       }
     }
@@ -125,7 +125,7 @@ int TProjector::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribT
     magic_pointer<TAttribString> str = get_string(nVALUE);
     if( !!str )
     {
-      string pcName = str->tValue;
+      std::string pcName = str->tValue;
       ptImage = (magic_pointer<TImage>)tImageManager.newImage (pcName, FileExtension (pcName));
       if ( !ptImage )
       {
@@ -165,7 +165,7 @@ int TProjector::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribT
 
 
 
-int TProjector::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
+int TProjector::getAttribute (const std::string& rktNAME, NAttribute& rnVALUE)
 {
 
 #if !defined(NEW_ATTRIBUTES)
@@ -289,16 +289,16 @@ TColor TProjector::color (const TVector& rktPOS) const
 }  /* color() */
 
 
-void TProjector::printDebug (const string& indent) const
+void TProjector::printDebug (const std::string& indent) const
 {
 
   TPointLight::printDebug(indent);
 
-  string new_indent = TDebug::Indent(indent);
+  std::string new_indent = TDebug::Indent(indent);
 
-  GOM.debug() << new_indent << "Angle     : " << tAngle << endl;
-  GOM.debug() << new_indent << "Up vector : "; tUp.printDebug(new_indent);
+  GOM.debug() << new_indent << "Angle     : " << tAngle << std::endl;
+  GOM.debug() << new_indent << "Up std::vector : "; tUp.printDebug(new_indent);
   GOM.debug() << new_indent << "Point at  : "; tPointAt.printDebug(new_indent);
-  GOM.debug() << indent << "." << endl;
+  GOM.debug() << indent << "." << std::endl;
 
 }  /* printDebug() */

@@ -25,8 +25,8 @@
 #include <cstring>
 #include <string>
 
-// Traits for use in a case independent string...  When using in place of a
-// normal C++ string, you may need to convert it to a c_string first (some
+// Traits for use in a case independent std::string...  When using in place of a
+// normal C++ std::string, you may need to convert it to a c_string first (some
 // things work automatically, some do not).  It was mostly taken from the char
 // traits of GCC-2.95.something, and modified to work the way I needed.
 struct unicase_string_char_traits {

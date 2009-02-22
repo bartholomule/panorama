@@ -87,7 +87,7 @@ TColor TPatternCylGrad::evaluate (const TVector& rktPOINT) const
 }
 
 
-int TPatternCylGrad::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
+int TPatternCylGrad::setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
 
   if ( rktNAME == "color" )
@@ -185,7 +185,7 @@ int TPatternCylGrad::setAttribute (const string& rktNAME, NAttribute nVALUE, EAt
 }  /* setAttribute() */
 
 
-int TPatternCylGrad::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
+int TPatternCylGrad::getAttribute (const std::string& rktNAME, NAttribute& rnVALUE)
 {
 
 #if !defined(NEW_ATTRIBUTES)

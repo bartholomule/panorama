@@ -27,7 +27,7 @@
 #include "parsed_types.h"
 #include "parser.hpp"
 
-#define YY_DECL int yylex(yystype *p)
+#define YY_DECL int yylex(yystype* p)
 
 #undef yywrap
 
@@ -180,7 +180,7 @@ false			{
 
 {identifier}		{
                           p->sIdent.assign(yytext, yyleng);
-			  GOM.debug(3) << "scanner returning: \"" << p->sIdent << "\"" << endl;
+                          GOM.debug(3) << "scanner returning: \"" << p->sIdent << "\"" << std::endl;
 			  return T_IDENTIFIER;
 			}
 
@@ -202,12 +202,12 @@ false			{
 
 {quoted_string}		{
                           p->sIdent.assign(yytext+1, yyleng-2);
-			  GOM.debug(3) << "scanner returning: \"" << p->sIdent << "\"" << endl;
+			  GOM.debug(3) << "scanner returning: \"" << p->sIdent << "\"" << std::endl;
 			  return T_QUOTED_STRING;
 			}
 
 .			{
-                          GOM.debug(3) << "scanner returning: '" << yytext[0] << "'" << endl;
+                          GOM.debug(3) << "scanner returning: '" << yytext[0] << "'" << std::endl;
 			  return yytext[0];
                         }
 
@@ -222,7 +222,7 @@ false			{
 			    yy_delete_buffer (YY_CURRENT_BUFFER);
 			    _tIncludeFileData         = _atIncludeStack [_bIncludeLevel];
 			    TSceneRT::_tInputFileName = _tIncludeFileData.tFileName;
-			    GOM.debug(3) << "Returning to file : " << TSceneRT::_tInputFileName << endl;
+			    GOM.debug(3) << "Returning to file : " << TSceneRT::_tInputFileName << std::endl;
 			    TSceneRT::_dwLineNumber = _tIncludeFileData.dwLineNumber;
 			    yy_switch_to_buffer (_tIncludeFileData.yyBuffer);
 			  }
@@ -333,7 +333,7 @@ bool IncludeFile (void)
   }
 
   string name = FilenameConvert(_tIncludeFileName);
-  GOM.debug(3) << "Attempting to open \"" + name + "\" for include" << endl;
+  GOM.debug(3) << "Attempting to open \"" + name + "\" for include" << std::endl;
 
   yyin = fopen (name.c_str(), "r");
 
@@ -372,7 +372,7 @@ bool IncludeFile (void)
   TSceneRT::_dwLineNumber   = 1L;
   yy_switch_to_buffer (yy_create_buffer (yyin, YY_BUF_SIZE));
 
-  GOM.debug(3) << "Including file : " << TSceneRT::_tInputFileName << endl;
+  GOM.debug(3) << "Including file : " << TSceneRT::_tInputFileName << std::endl;
 
   return true;
 
@@ -391,10 +391,10 @@ void scanner_unput_string(const string& s)
   {
     unput(new_text[i]);
   }
-  GOM.debug(3) << "Scanner: Just unput: \"" << new_text << "\"" << endl;
+  GOM.debug(3) << "Scanner: Just unput: \"" << new_text << "\"" << std::endl;
 
   YY_FLUSH_BUFFER;
   
   string trash_text = string(yytext,yyleng);
-  GOM.debug(3) << "  new yytext=\"" << trash_text << "\"" << endl;
+  GOM.debug(3) << "  new yytext=\"" << trash_text << "\"" << std::endl;
 }

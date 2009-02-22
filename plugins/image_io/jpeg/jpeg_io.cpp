@@ -144,7 +144,7 @@ int TImageJpeg::save (const TImage* pktIMAGE)
 
     if( !bSilent )
     {
-      GOM.error() << "TImageJpeg::save : error saving file " << tFileName << endl;
+      GOM.error() << "TImageJpeg::save : error saving file " << tFileName << std::endl;
     }
     return -1;
   }  
@@ -250,7 +250,7 @@ TImage* TImageJpeg::load (void)
 
     if( !bSilent )
     {
-      GOM.error() << "TImageJpeg::load : " << tFileName << " is not a jpeg file." << endl;
+      GOM.error() << "TImageJpeg::load : " << tFileName << " is not a jpeg file." << std::endl;
     }
     
     return NULL;
@@ -306,7 +306,7 @@ TImage* TImageJpeg::load (void)
 }  /* load() */
 
 
-int TImageJpeg::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
+int TImageJpeg::setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
 
   if ( rktNAME == "quality" )
@@ -357,7 +357,7 @@ int TImageJpeg::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribT
 }  /* setAttribute() */
 
 
-int TImageJpeg::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
+int TImageJpeg::getAttribute (const std::string& rktNAME, NAttribute& rnVALUE)
 {
 
 #if !defined(NEW_ATTRIBUTES)

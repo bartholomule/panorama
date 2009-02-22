@@ -39,7 +39,7 @@ bool TSceneTree::setCamera (Gtk::Tree* ptTREE)
   {
     ptSubtree = new Gtk::Tree;
 
-    string entry_name;
+    std::string entry_name;
     if(!ptCamera->identifier().empty())
     {
       entry_name = ptCamera->identifier() + " [" + ptCamera->className() + ']';
@@ -75,17 +75,17 @@ bool TSceneTree::setLights (Gtk::Tree* ptTREE)
   Gtk::TreeItem*      ptItem;
   Gtk::Tree*          ptSubtree;
   TLight*            ptLight;
-  vector<TLight*>&   tLightList = ptScene->lightList();
+  std::vector<TLight*>&   tLightList = ptScene->lightList();
 
   if ( !tLightList.empty() )
   {
     ptSubtree = new Gtk::Tree;
 
-    for (vector<TLight*>::const_iterator tIter = tLightList.begin(); ( tIter != tLightList.end() ) ;tIter++)
+    for (std::vector<TLight*>::const_iterator tIter = tLightList.begin(); ( tIter != tLightList.end() ) ;tIter++)
     {
       ptLight = *tIter;
 
-      string entry_name = ptLight->className();
+      std::string entry_name = ptLight->className();
       if(!ptLight->identifier().empty())
       {
 	entry_name = ptLight->identifier() + " [" + entry_name + ']';
@@ -123,7 +123,7 @@ bool TSceneTree::setRenderer (Gtk::Tree* ptTREE)
   {
     ptSubtree = new Gtk::Tree;
     
-    string entry_name = renderer->className();
+    std::string entry_name = renderer->className();
     if(!renderer->identifier().empty())
     {
       entry_name = renderer->identifier() + " [" + entry_name + ']';
@@ -167,7 +167,7 @@ bool TSceneTree::recSetObjects (Gtk::Tree* ptTREE, magic_pointer<TObject> ptOBJ)
       gSubtree |= recSetObjects (ptSubtree, *tIter);
     }
 
-    string entry_name = ptOBJ->className();
+    std::string entry_name = ptOBJ->className();
     if(!ptOBJ->identifier().empty())
     {
       entry_name = ptOBJ->identifier() + " [" + entry_name + ']';
@@ -192,7 +192,7 @@ bool TSceneTree::recSetObjects (Gtk::Tree* ptTREE, magic_pointer<TObject> ptOBJ)
   }
   else
   {
-    string entry_name = ptOBJ->className();
+    std::string entry_name = ptOBJ->className();
     if(!ptOBJ->identifier().empty())
     {
       entry_name = ptOBJ->identifier() + " [" + entry_name + ']';

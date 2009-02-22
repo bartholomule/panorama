@@ -22,7 +22,7 @@
 #include "llapi/attribute.h"
 
 bool               TPolyhedron::_gClassInitialized = false;
-list<TPlaneData>   TPolyhedron::_atPlaneDataList[5];
+std::list<TPlaneData>   TPolyhedron::_atPlaneDataList[5];
 
 DEFINE_PLUGIN ("Polyhedron", FX_OBJECT_CLASS, TPolyhedron);
 
@@ -54,7 +54,7 @@ bool TPolyhedron::initialize (void)
 }  /* initialize() */
 
 
-int TPolyhedron::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
+int TPolyhedron::setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
 
   if ( rktNAME == "shape" )
@@ -75,7 +75,7 @@ int TPolyhedron::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttrib
     // A better method, allowing user selection without magic numbers
     else if( !!str )
     {
-      string shape = str->tValue;
+      std::string shape = str->tValue;
 
       if ( shape == "tetrahedron" )
       {
@@ -118,7 +118,7 @@ int TPolyhedron::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttrib
 }  /* setAttribute() */
 
 
-int TPolyhedron::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
+int TPolyhedron::getAttribute (const std::string& rktNAME, NAttribute& rnVALUE)
 {
 
 #if !defined(NEW_ATTRIBUTES)
@@ -129,8 +129,8 @@ int TPolyhedron::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 #else
   if ( rktNAME == "shape" )
   {
-    static map<EShape,string> shape_strings;
-    static vector<string> shape_choices;
+    static std::map<EShape,std::string> shape_strings;
+    static std::vector<std::string> shape_choices;
 
     if( shape_strings.empty() )
     {
@@ -203,9 +203,9 @@ bool TPolyhedron::findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) c
 
   tSurfaceData.setup (this, rktRAY);
 
-//  GOM.debug() << "poly : " << endl;
+//  GOM.debug() << "poly : " << std::endl;
 
-  for (list<TPlaneData>::const_iterator tIter = _atPlaneDataList[eShape].begin(); ( tIter != _atPlaneDataList[eShape].end() ) ;tIter++)
+  for (std::list<TPlaneData>::const_iterator tIter = _atPlaneDataList[eShape].begin(); ( tIter != _atPlaneDataList[eShape].end() ) ;tIter++)
   {
     pktPlaneData = &(*tIter);
 
@@ -244,7 +244,7 @@ bool TPolyhedron::findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) c
           tNormalNear = pktPlaneData->tNormal;
         }
       }
-//      GOM.debug() << endl;
+//      GOM.debug() << std::endl;
       if ( tNear >= tFar )
       {
         return false;
@@ -252,8 +252,8 @@ bool TPolyhedron::findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) c
     }
   }
 
-//  GOM.debug() << "near : " << tNear << endl;
-//  GOM.debug() << "far  : " << tFar << endl;
+//  GOM.debug() << "near : " << tNear << std::endl;
+//  GOM.debug() << "far  : " << tFar << std::endl;
 
   if( tRayIT.range().inside(tNear) )
   {
@@ -307,9 +307,9 @@ bool TPolyhedron::findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) c
 
   tSurfaceData.setup (this, rktRAY);
 
-//  GOM.debug() << "poly : " << endl;
+//  GOM.debug() << "poly : " << std::endl;
 
-  for (list<TPlaneData>::const_iterator tIter = atPlaneDataList[eShape].begin(); ( tIter != atPlaneDataList[eShape].end() ) ;tIter++)
+  for (std::list<TPlaneData>::const_iterator tIter = atPlaneDataList[eShape].begin(); ( tIter != atPlaneDataList[eShape].end() ) ;tIter++)
   {
     pktPlaneData = &(*tIter);
 
@@ -344,8 +344,8 @@ bool TPolyhedron::findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) c
     }
   }
 
-//  GOM.debug() << "min : " << tInt.min() << endl;
-//  GOM.debug() << "max : " << tInt.max() << endl;
+//  GOM.debug() << "min : " << tInt.min() << std::endl;
+//  GOM.debug() << "max : " << tInt.max() << std::endl;
 
   if ( ( tInt.min() > FX_EPSILON ) && ( tInt.min() < tRayIT.limit() ) )
   {

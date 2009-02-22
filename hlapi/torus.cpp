@@ -55,7 +55,7 @@ bool TTorus::initialize (void)
 }  /* initialize() */
 
 
-int TTorus::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
+int TTorus::setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
 
   if ( rktNAME == "radius_a" )
@@ -108,7 +108,7 @@ int TTorus::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType 
 }  /* setAttribute() */
 
 
-int TTorus::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
+int TTorus::getAttribute (const std::string& rktNAME, NAttribute& rnVALUE)
 {
 
 #if !defined(NEW_ATTRIBUTES)  

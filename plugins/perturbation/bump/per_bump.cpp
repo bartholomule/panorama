@@ -65,7 +65,7 @@ TVector TPerturbationBump::perturbNormal (const TSurfaceData& rktDATA) const
 
     if ( !ptPattern )
     {
-      GOM.error() << ("Error: pattern must be set") << endl;
+      GOM.error() << ("Error: pattern must be set") << std::endl;
       exit (1);
     }
 
@@ -165,7 +165,7 @@ TVector TPerturbationBump::perturbNormal (const TSurfaceData& rktDATA) const
 }  /* perturbNormal() */
 
 
-int TPerturbationBump::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
+int TPerturbationBump::setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
 
   if ( rktNAME == "source" )
@@ -254,7 +254,7 @@ int TPerturbationBump::setAttribute (const string& rktNAME, NAttribute nVALUE, E
 }  /* setAttribute() */
 
 
-int TPerturbationBump::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
+int TPerturbationBump::getAttribute (const std::string& rktNAME, NAttribute& rnVALUE)
 {
 
 #if !defined(NEW_ATTRIBUTES)

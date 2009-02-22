@@ -26,12 +26,12 @@ bool TTriangle::initialize (void)
 {
   bool val = true;
 
-  TVector   tMin (min (atVertex[0].x(), min (atVertex[1].x(), atVertex[2].x())),
-                  min (atVertex[0].y(), min (atVertex[1].y(), atVertex[2].y())),
-                  min (atVertex[0].z(), min (atVertex[1].z(), atVertex[2].z())));
-  TVector   tMax (max (atVertex[0].x(), max (atVertex[1].x(), atVertex[2].x())),
-                  max (atVertex[0].y(), max (atVertex[1].y(), atVertex[2].y())),
-                  max (atVertex[0].z(), max (atVertex[1].z(), atVertex[2].z())));
+  TVector   tMin (std::min (atVertex[0].x(), std::min (atVertex[1].x(), atVertex[2].x())),
+                  std::min (atVertex[0].y(), std::min (atVertex[1].y(), atVertex[2].y())),
+                  std::min (atVertex[0].z(), std::min (atVertex[1].z(), atVertex[2].z())));
+  TVector   tMax (std::max (atVertex[0].x(), std::max (atVertex[1].x(), atVertex[2].x())),
+                  std::max (atVertex[0].y(), std::max (atVertex[1].y(), atVertex[2].y())),
+                  std::max (atVertex[0].z(), std::max (atVertex[1].z(), atVertex[2].z())));
 
   tBoundingBox.set (tMin, tMax);
 
@@ -54,7 +54,7 @@ void TTriangle::update (void)
   bDom      = Dominant (tNormal);
 
   //
-  // Convert vertices to 2D vectors.
+  // Convert vertices to 2D std::vectors.
   //
   atCoord[0] = Convert3DTo2D (atVertex[0], bDom);
   atCoord[1] = Convert3DTo2D (atVertex[1], bDom);
@@ -87,7 +87,7 @@ bool TTriangle::inside (const TVector& rktPOINT) const
   TVector2   tInt;
 
   //
-  // Convert point to a 2D vector.
+  // Convert point to a 2D std::vector.
   //
   tInt = Convert3DTo2D (rktPOINT, bDom);
 
@@ -115,7 +115,8 @@ void TTriangle::setVertex (const TVector& rktVERTEX)
 {
   if ( bVertex <= 2 )
   {
-    atVertex [bVertex++] = rktVERTEX;
+    atVertex [bVertex] = rktVERTEX;
+	 ++bVertex;
     if ( bVertex == 3 )
     {
       update();
@@ -123,12 +124,12 @@ void TTriangle::setVertex (const TVector& rktVERTEX)
   }
   else
   {
-    GOM.error() << "setVertex: Too many vertices (need exactly 3)" << endl;
+    GOM.error() << "setVertex: Too many vertices (need exactly 3)" << std::endl;
   }
 }  /* setVertex() */
 
 
-void TTriangle::getMesh (list<TMesh*>& rtMESH_LIST) const
+void TTriangle::getMesh (std::list<TMesh*>& rtMESH_LIST) const
 {
 
   TMesh*   ptMesh = new TMesh;
@@ -149,17 +150,17 @@ TVector TTriangle::RandomPointOnSurface() const
 }
 
 
-void TTriangle::printDebug (const string& indent) const
+void TTriangle::printDebug (const std::string& indent) const
 {
 
-  GOM.debug() << indent << "[_Triangle_]" << endl;
+  GOM.debug() << indent << "[_Triangle_]" << std::endl;
 
-  string new_indent = TDebug::Indent(indent);
+  std::string new_indent = TDebug::Indent(indent);
   
-  GOM.debug() << new_indent << "Vertex 1 : "; atVertex[0].printDebug(new_indent); GOM.debug() << endl;
-  GOM.debug() << new_indent << "Vertex 2 : "; atVertex[1].printDebug(new_indent); GOM.debug() << endl;
-  GOM.debug() << new_indent << "Vertex 3 : "; atVertex[2].printDebug(new_indent); GOM.debug() << endl;
-  GOM.debug() << new_indent << "Normal   : ";     tNormal.printDebug(new_indent); GOM.debug() << endl;
+  GOM.debug() << new_indent << "Vertex 1 : "; atVertex[0].printDebug(new_indent); GOM.debug() << std::endl;
+  GOM.debug() << new_indent << "Vertex 2 : "; atVertex[1].printDebug(new_indent); GOM.debug() << std::endl;
+  GOM.debug() << new_indent << "Vertex 3 : "; atVertex[2].printDebug(new_indent); GOM.debug() << std::endl;
+  GOM.debug() << new_indent << "Normal   : ";     tNormal.printDebug(new_indent); GOM.debug() << std::endl;
 
 }  /* printDebug() */
 

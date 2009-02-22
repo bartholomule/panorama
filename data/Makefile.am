@@ -1,0 +1,4 @@
+SUBDIRS =					\
+	include					\
+	texture					\
+	gradient

@@ -24,382 +24,390 @@
 #include "llapi/attribute.h"
 #include "llapi/pattern.h"
 
-struct TAttribPattern : public TAttribute
-{
-
-  magic_pointer<TPattern> tValue;
-  
-  TAttribPattern (void)                                 { eType = FX_PATTERN; }
-  TAttribPattern (magic_pointer<TPattern> p): tValue(p) { eType = FX_PATTERN; }
-  TAttribPattern (TColor c)
-  {
-    eType = FX_PATTERN;
-    tValue.set(new TPattern(c));
-  }
-  TAttribPattern (TScalar s)
-  {
-    eType = FX_PATTERN;
-    tValue.set(new TPattern(s));
-  }
-  TAttribPattern (TVector v)
-  {
-    eType = FX_PATTERN;
-    tValue.set(new TPattern(TColor(v.x(),v.y(),v.z())));
-  }  
-  
-  virtual string AttributeName() const { return "pattern"; }
-  TATTRIB_CLONE_NEW_DEF(TAttribPattern);
-  virtual string toString() const
-  {
-    string s = "pattern(";
-    if( tValue )
-    {
-      s += tValue->className();
-    }
-    else
-    {
-      s += "NULL";
-    }
-    return s + ")";
-  };
-  
-};  /* struct TAttribPattern */
-
 #include "llapi/bsdf.h"
-
-struct TAttribBsdf : public TAttribute
-{
-
-  magic_pointer<TBsdf> tValue;
-  
-  TAttribBsdf (void)                                   { eType = FX_BSDF; }
-  TAttribBsdf (magic_pointer<TBsdf> p): tValue(p)      { eType = FX_BSDF; }
-  
-  virtual string AttributeName() const { return "bsdf"; }
-  TATTRIB_CLONE_NEW_DEF(TAttribBsdf);
-  virtual string toString() const
-  {
-    string s = "bsdf(";
-    if( tValue )
-    {
-      s += tValue->className();
-    }
-    else
-    {
-      s += "NULL";
-    }
-    return s + ")";
-  };  
-};  /* struct TAttribBsdf */
-
 #include "llapi/perturbation.h"
-
-struct TAttribPerturbation : public TAttribute
-{
-
-  magic_pointer<TPerturbation> tValue;
-  
-  TAttribPerturbation (void)
-  {
-    eType = FX_PERTURBATION;
-  }
-  TAttribPerturbation (magic_pointer<TPerturbation> p):
-    tValue(p)
-  {
-    eType = FX_PERTURBATION;
-  }
-  
-  virtual string AttributeName() const { return "perturbation"; }
-  TATTRIB_CLONE_NEW_DEF(TAttribPerturbation);
- 
-  virtual string toString() const
-  {
-    string s = "perturbation(";
-    if( tValue )
-    {
-      s += tValue->className();
-    }
-    else
-    {
-      s += "NULL";
-    }
-    return s + ")";
-  };  
-};  /* struct TAttribPerturbation */
-
 #include "llapi/image.h"
-struct TAttribImage : public TAttribute
-{
-  magic_pointer<TImage> tValue;
-  
-  TAttribImage (void)
-  {
-    eType = FX_IMAGE;
-  }
-  TAttribImage (magic_pointer<TImage> p):
-    tValue(p)
-  {
-    eType = FX_IMAGE;
-  }
-  
-  virtual string AttributeName() const { return "image"; }
-  TATTRIB_CLONE_NEW_DEF(TAttribImage);
-
-  virtual string toString() const
-  {
-    if( tValue )
-    {
-      char buffer[1024];
-      sprintf( buffer, "image(%d x %d)", int(tValue->width()), int(tValue->height()) );
-      return buffer;
-    }
-    else
-    {
-      return "image(NULL)";
-    }
-  }  
-}; /* struct TAttribImage */
-
 #include "llapi/renderer.h"
-struct TAttribRenderer : public TAttribute
-{
-  magic_pointer<TRenderer> tValue;
-  
-  TAttribRenderer (void)
-  {
-    eType = FX_RENDERER;
-  }
-  TAttribRenderer (magic_pointer<TRenderer> p):
-    tValue(p)
-  {
-    eType = FX_RENDERER;
-  }
-  
-  virtual string AttributeName() const { return "renderer"; }
-  TATTRIB_CLONE_NEW_DEF(TAttribRenderer);
-
-  virtual string toString() const
-  {
-    string s = "renderer(";
-    if( tValue )
-    {
-      s += tValue->className();
-    }
-    else
-    {
-      s += "NULL";
-    }
-    return s + ")";
-  }
-}; /* struct TAttribRenderer */
-
 #include "llapi/camera.h"
-struct TAttribCamera : public TAttribute
-{
-  magic_pointer<TCamera> tValue;
-  
-  TAttribCamera (void)
-  {
-    eType = FX_CAMERA;
-  }
-  TAttribCamera (magic_pointer<TCamera> p):
-    tValue(p)
-  {
-    eType = FX_CAMERA;
-  }
-  
-  virtual string AttributeName() const { return "camera"; }
-  TATTRIB_CLONE_NEW_DEF(TAttribCamera);
-  virtual string toString() const
-  {
-    string s = "camera(";
-    if( tValue )
-    {
-      s += tValue->className();
-    }
-    else
-    {
-      s += "NULL";
-    }
-    return s + ")";
-  }
-}; /* struct TAttribCamera */
-
 #include "llapi/object.h"
-struct TAttribObject : public TAttribute
-{
-  magic_pointer<TObject> tValue;
-
-  TAttribObject (void)
-  {
-    eType = FX_OBJECT;
-  }
-  TAttribObject ( magic_pointer<TObject> p ):
-    tValue(p)
-  {
-    eType = FX_OBJECT;
-  }
-
-  virtual string AttributeName() const { return "object"; }
-  TATTRIB_CLONE_NEW_DEF(TAttribObject);
-
-  virtual string toString() const
-  {
-    string s = "object(";
-    if( tValue )
-    {
-      s += tValue->className();
-    }
-    else
-    {
-      s += "NULL";
-    }
-    return s + ")";
-  }  
-}; /* struct TAttribObject */
-
 #include "llapi/scene.h"
-struct TAttribScene : public TAttribute
-{
-  magic_pointer<TScene> tValue;
-
-  TAttribScene (void)
-  {
-    eType = FX_SCENE;
-  }
-  TAttribScene ( magic_pointer<TScene> p ):
-    tValue(p)
-  {
-    eType = FX_SCENE;
-  }
-
-  virtual string AttributeName() const { return "scene"; }
-  TATTRIB_CLONE_NEW_DEF(TAttribScene);
-
-  virtual string toString() const
-  {
-    string s = "scene(";
-    if( tValue )
-    {
-      s += tValue->className();
-    }
-    else
-    {
-      s += "NULL";
-    }
-    return s + ")";
-  }  
-}; /* struct TAttribScene */
-
 #include "llapi/material.h"
-struct TAttribMaterial : public TAttribute
-{
-  magic_pointer<TMaterial> tValue;
-
-  TAttribMaterial (void)
-  {
-    eType = FX_MATERIAL;
-  }
-  TAttribMaterial ( magic_pointer<TMaterial> p ):
-    tValue(p)
-  {
-    eType = FX_MATERIAL;
-  }
-
-  virtual string AttributeName() const { return "material"; }
-  TATTRIB_CLONE_NEW_DEF(TAttribMaterial);
-
-  virtual string toString() const
-  {
-    string s = "material(";
-    if( tValue )
-    {
-      s += tValue->className();
-    }
-    else
-    {
-      s += "NULL";
-    }
-    return s + ")";
-  }
-}; /* struct TAttribMaterial */
-
 #include "llapi/image_io.h"
-struct TAttribImageIO : public TAttribute
-{
-  magic_pointer<TImageIO> tValue;
-
-  TAttribImageIO (void)
-  {
-    eType = FX_IMAGE_IO;
-  }
-  TAttribImageIO ( magic_pointer<TImageIO> p ):
-    tValue(p)
-  {
-    eType = FX_IMAGE_IO;
-  }
-
-  virtual string AttributeName() const { return "imageio"; }
-  TATTRIB_CLONE_NEW_DEF(TAttribImageIO);
-
-  virtual string toString() const
-  {
-    string s = "imageio(";
-    if( tValue )
-    {
-      s += tValue->className();
-    }
-    else
-    {
-      s += "NULL";
-    }
-    return s + ")";
-  }
-}; /* struct TAttribImageIO */
-
 #include "hlapi/aggregate.h"
-struct TAttribAggregate : public TAttribute
+
+
+namespace panorama
 {
-  magic_pointer<TAggregate> tValue;
 
-  TAttribAggregate (void)
+#if 0
+  struct TAttribPattern : public TAttribute
   {
-    eType = FX_AGGREGATE;
-  }
-  TAttribAggregate ( magic_pointer<TAggregate> p ):
-    tValue(p)
-  {
-    eType = FX_AGGREGATE;
-  }
 
-  virtual string AttributeName() const { return "aggregate"; }
-  TATTRIB_CLONE_NEW_DEF(TAttribAggregate);
+    rc_pointer<TPattern> tValue;
 
-  virtual string toString() const
-  {
-    string s = "aggregate(";
-    if( tValue )
+    TAttribPattern(void) { eType = FX_PATTERN; }
+    TAttribPattern(rc_pointer<TPattern> p): tValue(p) { eType = FX_PATTERN; }
+    TAttribPattern(TColor c)
     {
-      s += tValue->className();
+      eType = FX_PATTERN;
+      tValue.set(new TPattern(c));
     }
-    else
+    TAttribPattern (TScalar s)
     {
-      s += "NULL";
+      eType = FX_PATTERN;
+      tValue.set(new TPattern(s));
     }
-    return s + ")";
-  }  
-}; /* struct TAttribAggregate */
+    TAttribPattern (TVector v)
+    {
+      eType = FX_PATTERN;
+      tValue.set(new TPattern(TColor(v.x(),v.y(),v.z())));
+    }
 
-magic_pointer<TAttribPattern> get_pattern(const magic_pointer<TAttribute> attr);
-magic_pointer<TAttribBsdf>    get_bsdf(const magic_pointer<TAttribute> attr);
-magic_pointer<TAttribPerturbation> get_perturbation(const magic_pointer<TAttribute> attr);
-magic_pointer<TAttribImage> get_image(const magic_pointer<TAttribute> attr);
-magic_pointer<TAttribRenderer> get_renderer(const magic_pointer<TAttribute> attr);
-magic_pointer<TAttribCamera> get_camera(const magic_pointer<TAttribute> attr);
-magic_pointer<TAttribObject> get_object(const magic_pointer<TAttribute> attr);
-magic_pointer<TAttribScene> get_scene(const magic_pointer<TAttribute> attr);
-magic_pointer<TAttribMaterial> get_material(const magic_pointer<TAttribute> attr);
-magic_pointer<TAttribImageIO> get_imageio(const magic_pointer<TAttribute> attr);
-magic_pointer<TAttribAggregate> get_aggregate(const magic_pointer<TAttribute> attr);
+    virtual std::string AttributeName() const { return "pattern"; }
+    virtual TAttribPattern* clone_new() const { return new TAttribPattern(*this); }
+    virtual std::string toString() const
+    {
+      std::string s = "pattern(";
+      if( tValue )
+      {
+        s += tValue->className();
+      }
+      else
+      {
+        s += "NULL";
+      }
+      return s + ")";
+    };
+
+  };  /* struct TAttribPattern */
+
+
+  struct TAttribBsdf : public TAttribute
+  {
+
+    rc_pointer<TBsdf> tValue;
+
+    TAttribBsdf (void)                                   { eType = FX_BSDF; }
+    TAttribBsdf (rc_pointer<TBsdf> p): tValue(p)      { eType = FX_BSDF; }
+
+    virtual std::string AttributeName() const { return "bsdf"; }
+    virtual TAttribBsdf* clone_new() const { return new TAttribBsdf(*this); }
+    virtual std::string toString() const
+    {
+      std::string s = "bsdf(";
+      if( tValue )
+      {
+        s += tValue->className();
+      }
+      else
+      {
+        s += "NULL";
+      }
+      return s + ")";
+    };
+  };  /* struct TAttribBsdf */
+
+  struct TAttribPerturbation : public TAttribute
+  {
+
+    rc_pointer<TPerturbation> tValue;
+
+    TAttribPerturbation (void)
+    {
+      eType = FX_PERTURBATION;
+    }
+    TAttribPerturbation (rc_pointer<TPerturbation> p):
+      tValue(p)
+    {
+      eType = FX_PERTURBATION;
+    }
+
+    virtual std::string AttributeName() const { return "perturbation"; }
+    virtual TAttribPerturbation* clone_new() const { return new TAttribPerturbation(*this); }
+
+    virtual std::string toString() const
+    {
+      std::string s = "perturbation(";
+      if( tValue )
+      {
+        s += tValue->className();
+      }
+      else
+      {
+        s += "NULL";
+      }
+      return s + ")";
+    };
+  };  /* struct TAttribPerturbation */
+
+  struct TAttribImage : public TAttribute
+  {
+    rc_pointer<TImage> tValue;
+
+    TAttribImage (void)
+    {
+      eType = FX_IMAGE;
+    }
+    TAttribImage (rc_pointer<TImage> p):
+      tValue(p)
+    {
+      eType = FX_IMAGE;
+    }
+
+    virtual std::string AttributeName() const { return "image"; }
+    virtual TAttribImage* clone_new() const { return new TAttribImage(*this); }
+
+    virtual std::string toString() const
+    {
+      if( tValue )
+      {
+        char buffer[1024];
+        sprintf( buffer, "image(%d x %d)", int(tValue->width()), int(tValue->height()) );
+        return buffer;
+      }
+      else
+      {
+        return "image(NULL)";
+      }
+    }
+  }; /* struct TAttribImage */
+
+  struct TAttribRenderer : public TAttribute
+  {
+    rc_pointer<TRenderer> tValue;
+
+    TAttribRenderer (void)
+    {
+      eType = FX_RENDERER;
+    }
+    TAttribRenderer (rc_pointer<TRenderer> p):
+      tValue(p)
+    {
+      eType = FX_RENDERER;
+    }
+
+    virtual std::string AttributeName() const { return "renderer"; }
+    virtual TAttribRenderer* clone_new() const { return new TAttribRenderer(*this); }
+
+    virtual std::string toString() const
+    {
+      std::string s = "renderer(";
+      if( tValue )
+      {
+        s += tValue->className();
+      }
+      else
+      {
+        s += "NULL";
+      }
+      return s + ")";
+    }
+  }; /* struct TAttribRenderer */
+
+  struct TAttribCamera : public TAttribute
+  {
+    rc_pointer<TCamera> tValue;
+
+    TAttribCamera (void)
+    {
+      eType = FX_CAMERA;
+    }
+    TAttribCamera (rc_pointer<TCamera> p):
+      tValue(p)
+    {
+      eType = FX_CAMERA;
+    }
+
+    virtual std::string AttributeName() const { return "camera"; }
+    virtual TAttribCamera* clone_new() const { return new TAttribCamera(*this); }
+    virtual std::string toString() const
+    {
+      std::string s = "camera(";
+      if( tValue )
+      {
+        s += tValue->className();
+      }
+      else
+      {
+        s += "NULL";
+      }
+      return s + ")";
+    }
+  }; /* struct TAttribCamera */
+
+  struct TAttribObject : public TAttribute
+  {
+    rc_pointer<TObject> tValue;
+
+    TAttribObject (void)
+    {
+      eType = FX_OBJECT;
+    }
+    TAttribObject ( rc_pointer<TObject> p ):
+      tValue(p)
+    {
+      eType = FX_OBJECT;
+    }
+
+    virtual std::string AttributeName() const { return "object"; }
+    virtual TAttribObject* clone_new() const { return new TAttribObject(*this); }
+
+    virtual std::string toString() const
+    {
+      std::string s = "object(";
+      if( tValue )
+      {
+        s += tValue->className();
+      }
+      else
+      {
+        s += "NULL";
+      }
+      return s + ")";
+    }
+  }; /* struct TAttribObject */
+
+  struct TAttribScene : public TAttribute
+  {
+    rc_pointer<TScene> tValue;
+
+    TAttribScene (void)
+    {
+      eType = FX_SCENE;
+    }
+    TAttribScene ( rc_pointer<TScene> p ):
+      tValue(p)
+    {
+      eType = FX_SCENE;
+    }
+
+    virtual std::string AttributeName() const { return "scene"; }
+    virtual TAttribScene* clone_new() const { return new TAttribScene(*this); }
+
+    virtual std::string toString() const
+    {
+      std::string s = "scene(";
+      if( tValue )
+      {
+        s += tValue->className();
+      }
+      else
+      {
+        s += "NULL";
+      }
+      return s + ")";
+    }
+  }; /* struct TAttribScene */
+
+  struct TAttribMaterial : public TAttribute
+  {
+    rc_pointer<TMaterial> tValue;
+
+    TAttribMaterial (void)
+    {
+      eType = FX_MATERIAL;
+    }
+    TAttribMaterial ( rc_pointer<TMaterial> p ):
+      tValue(p)
+    {
+      eType = FX_MATERIAL;
+    }
+
+    virtual std::string AttributeName() const { return "material"; }
+    virtual TAttribMaterial* clone_new() const { return new TAttribMaterial(*this); }
+
+    virtual std::string toString() const
+    {
+      std::string s = "material(";
+      if( tValue )
+      {
+        s += tValue->className();
+      }
+      else
+      {
+        s += "NULL";
+      }
+      return s + ")";
+    }
+  }; /* struct TAttribMaterial */
+
+  struct TAttribImageIO : public TAttribute
+  {
+    rc_pointer<TImageIO> tValue;
+
+    TAttribImageIO (void)
+    {
+      eType = FX_IMAGE_IO;
+    }
+    TAttribImageIO ( rc_pointer<TImageIO> p ):
+      tValue(p)
+    {
+      eType = FX_IMAGE_IO;
+    }
+
+    virtual std::string AttributeName() const { return "imageio"; }
+    virtual TAttribImageIO* clone_new() const { return new TAttribImageIO(*this); }
+
+    virtual std::string toString() const
+    {
+      std::string s = "imageio(";
+      if( tValue )
+      {
+        s += tValue->className();
+      }
+      else
+      {
+        s += "NULL";
+      }
+      return s + ")";
+    }
+  }; /* struct TAttribImageIO */
+
+  struct TAttribAggregate : public TAttribute
+  {
+    rc_pointer<TAggregate> tValue;
+
+    TAttribAggregate (void)
+    {
+      eType = FX_AGGREGATE;
+    }
+    TAttribAggregate ( rc_pointer<TAggregate> p ):
+      tValue(p)
+    {
+      eType = FX_AGGREGATE;
+    }
+
+    virtual std::string AttributeName() const { return "aggregate"; }
+    virtual TAttribAggregate* clone_new() const { return new TAttribAggregate(*this); }
+
+    virtual std::string toString() const
+    {
+      std::string s = "aggregate(";
+      if( tValue )
+      {
+        s += tValue->className();
+      }
+      else
+      {
+        s += "NULL";
+      }
+      return s + ")";
+    }
+  }; /* struct TAttribAggregate */
+
+  rc_pointer<TAttribPattern> get_pattern(const rc_pointer<TAttribute> attr);
+  rc_pointer<TAttribBsdf>    get_bsdf(const rc_pointer<TAttribute> attr);
+  rc_pointer<TAttribPerturbation> get_perturbation(const rc_pointer<TAttribute> attr);
+  rc_pointer<TAttribImage> get_image(const rc_pointer<TAttribute> attr);
+  rc_pointer<TAttribRenderer> get_renderer(const rc_pointer<TAttribute> attr);
+  rc_pointer<TAttribCamera> get_camera(const rc_pointer<TAttribute> attr);
+  rc_pointer<TAttribObject> get_object(const rc_pointer<TAttribute> attr);
+  rc_pointer<TAttribScene> get_scene(const rc_pointer<TAttribute> attr);
+  rc_pointer<TAttribMaterial> get_material(const rc_pointer<TAttribute> attr);
+  rc_pointer<TAttribImageIO> get_imageio(const rc_pointer<TAttribute> attr);
+  rc_pointer<TAttribAggregate> get_aggregate(const rc_pointer<TAttribute> attr);
+#endif /* 0 */
+
+} // end namespace panorama
 
 #endif /* !defined(EXTENDED_ATTRIBUTE_H) */

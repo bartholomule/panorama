@@ -23,16 +23,16 @@
 #include "llapi/gradient.h"
 #include "scene_window.h"
 
-multimap<string, string>   tConfigData;
+std::multimap<std::string, std::string>   tConfigData;
 
-static string   _tTopDir;
-static string   _tLocalPath;
+static std::string   _tTopDir;
+static std::string   _tLocalPath;
 
-bool ProcessConfigFile (const string& rktCONFIG, multimap<string, string>& rtMAP)
+bool ProcessConfigFile (const std::string& rktCONFIG, std::multimap<std::string, std::string>& rtMAP)
 {
 
-  string     tOptionName, tOptionValue;
-  ifstream   tConfigFile;
+  std::string     tOptionName, tOptionValue;
+  std::ifstream   tConfigFile;
   char*      pcBuffer = new char[200];
 
   tConfigFile.open (rktCONFIG.c_str());
@@ -46,11 +46,11 @@ bool ProcessConfigFile (const string& rktCONFIG, multimap<string, string>& rtMAP
   {
     Byte   J;
     bool   gAppend;
-    
+
     tOptionName  = "";
     tOptionValue = "";
     gAppend      = false;
-    
+
     tConfigFile.getline (pcBuffer, 200);
 
     // Checks for an empty line
@@ -58,13 +58,13 @@ bool ProcessConfigFile (const string& rktCONFIG, multimap<string, string>& rtMAP
     {
       continue;
     }
-    
+
     // Checks for a comment
     if ( pcBuffer[0] == '#' )
     {
       continue;
     }
-    
+
     // Gets option name (until the first occurrence of character '=')
     for (J = 0; ( ( J < strlen (pcBuffer) ) && ( pcBuffer[J] != '=' ) ) ;J++)
     {
@@ -76,14 +76,14 @@ bool ProcessConfigFile (const string& rktCONFIG, multimap<string, string>& rtMAP
     {
       continue;
     }
-    
+
     // Checks if we are adding a new value for that option, or substituting previous ones
     if ( ( J > 0 ) && ( pcBuffer[J - 1] == '+' ) )
     {
       tOptionName = tOptionName.substr (0, J - 1);
       gAppend     = true;
     }
-         
+
     // Gets option value (until the end of the line)
     for (J++; ( J < strlen (pcBuffer) ) ;J++)
     {
@@ -93,8 +93,8 @@ bool ProcessConfigFile (const string& rktCONFIG, multimap<string, string>& rtMAP
     if ( !gAppend )
     {
       // Removes every previous option with the same name
-      multimap<string, string>::iterator   iter;
-      
+      std::multimap<std::string, std::string>::iterator   iter;
+
       while ( (iter = rtMAP.find (tOptionName)) != rtMAP.end() )
       {
         rtMAP.erase (iter);
@@ -102,27 +102,27 @@ bool ProcessConfigFile (const string& rktCONFIG, multimap<string, string>& rtMAP
     }
 
     // Inserts a new option entry in the map
-    rtMAP.insert (pair<const string, string> (tOptionName, tOptionValue));
+    rtMAP.insert (std::pair<const std::string, std::string> (tOptionName, tOptionValue));
   }
 
   tConfigFile.close();
   delete pcBuffer;
-  
+
   return true;
-  
+
 }  /* ProcessConfigFile() */
 
 
 void SetPaths (void)
 {
-  
+
   char*   pcEnv;
 
   _tTopDir = TOPDIR;
 
   if ( (pcEnv = getenv ("HOME")) != NULL )
   {
-    _tLocalPath = string (pcEnv) + "/.panorama/";
+    _tLocalPath = std::string (pcEnv) + "/.panorama/";
     if ( !FileExists (_tLocalPath + "config") )
     {
       _tLocalPath = _tTopDir + "/etc/";
@@ -140,34 +140,32 @@ int main (int argc, char *argv[])
 {
 
   Gtk::Main      tMainApp (&argc, &argv);
-  string         appname = string ("Panorama");
-  string         appid = string ("0.0.5");
 
   SetPaths();
 
   if ( !FileExists (_tLocalPath + "config") )
   {
-    GOM.error() << "WARNING: No configuration file." << endl;
+    GOM.error() << "WARNING: No configuration file." << std::endl;
   }
   else
   {
     if ( !ProcessConfigFile (_tLocalPath + "config", tConfigData) )
     {
-      GOM.error() << "ERROR: Couldn't read configuration file." << endl;
+      GOM.error() << "ERROR: Couldn't read configuration file." << std::endl;
       exit (1);
     }
   }
 
-  multimap<string, string>::const_iterator   iter = tConfigData.find ("PluginConfigFile");
-  string   tPluginConfigFile = ( iter != tConfigData.end() ) ? (*iter).second : _tLocalPath + "pluginrc";
+  std::multimap<std::string, std::string>::const_iterator   iter = tConfigData.find ("PluginConfigFile");
+  std::string   tPluginConfigFile = ( iter != tConfigData.end() ) ? (*iter).second : _tLocalPath + "pluginrc";
 
   if ( !FileExists (tPluginConfigFile) )
   {
-    GOM.error() << "ERROR: Plugin configuration file '" << tPluginConfigFile << "' does not exist." << endl;
+    GOM.error() << "ERROR: Plugin configuration file '" << tPluginConfigFile << "' does not exist." << std::endl;
     exit (1);
   }
 
-  GOM.out() << "Loading plugins..." << endl;
+  GOM.out() << "Loading plugins..." << std::endl;
   tPluginManager.initialize (tPluginConfigFile, 0);
 
   TGradient::_initialize();
@@ -175,11 +173,10 @@ int main (int argc, char *argv[])
   TSceneManager::_initialize();
   tImageManager.initialize();
 
-  TSceneWindow   tMainWindow (&tMainApp);
-  tMainWindow.show();
-  
-  tMainApp.run();
-  
+  TSceneWindow   tMainWindow ();
+
+  Gtk::Main::run();
+
   return 0;
 
 }  /* main() */

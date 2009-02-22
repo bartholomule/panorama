@@ -276,7 +276,7 @@ bool TBox::findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) const
 }  /* findAllIntersections() */
 
 
-void TBox::getMesh (list<TMesh*>& rtMESH_LIST) const
+void TBox::getMesh (std::list<TMesh*>& rtMESH_LIST) const
 {
 
   TMesh*   ptMesh;
@@ -368,7 +368,7 @@ void TBox::getMesh (list<TMesh*>& rtMESH_LIST) const
 }  /* getMesh() */
 
 
-int TBox::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
+int TBox::setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
   if ( rktNAME == "point1" )
   {
@@ -413,19 +413,19 @@ int TBox::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eT
     return TObject::setAttribute (rktNAME, nVALUE, eTYPE);
   }
 
-  tXmin = min (tP1.x(), tP2.x());
-  tYmin = min (tP1.y(), tP2.y());
-  tZmin = min (tP1.z(), tP2.z());
-  tXmax = max (tP1.x(), tP2.x());
-  tYmax = max (tP1.y(), tP2.y());
-  tZmax = max (tP1.z(), tP2.z());  
+  tXmin = std::min (tP1.x(), tP2.x());
+  tYmin = std::min (tP1.y(), tP2.y());
+  tZmin = std::min (tP1.z(), tP2.z());
+  tXmax = std::max (tP1.x(), tP2.x());
+  tYmax = std::max (tP1.y(), tP2.y());
+  tZmax = std::max (tP1.z(), tP2.z());  
   
   return FX_ATTRIB_OK;
 
 }  /* setAttribute() */
 
 
-int TBox::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
+int TBox::getAttribute (const std::string& rktNAME, NAttribute& rnVALUE)
 {
 
 #if !defined(NEW_ATTRIBUTES)

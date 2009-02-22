@@ -35,7 +35,7 @@ void TRectangle::update (void)
 
   bDom = Dominant (tNormal);
 
-  // Convert vertex to 2D vectors.
+  // Convert vertex to 2D std::vectors.
   atCoord[0] = Convert3DTo2D (atVertex[0], bDom);
   atCoord[1] = Convert3DTo2D (atVertex[1], bDom);
   atCoord[2] = Convert3DTo2D (atVertex[2], bDom);
@@ -50,12 +50,12 @@ bool TRectangle::initialize (void)
 {
   bool val = true;
   
-  TVector   tMin (min (min (atVertex[0].x(), atVertex[1].x()), min (atVertex[2].x(), atVertex[3].x())),
-                  min (min (atVertex[0].y(), atVertex[1].y()), min (atVertex[2].y(), atVertex[3].y())),
-                  min (min (atVertex[0].z(), atVertex[1].z()), min (atVertex[2].z(), atVertex[3].z())));
-  TVector   tMax (max (max (atVertex[0].x(), atVertex[1].x()), max (atVertex[2].x(), atVertex[3].x())),
-                  max (max (atVertex[0].y(), atVertex[1].y()), max (atVertex[2].y(), atVertex[3].y())),
-                  max (max (atVertex[0].z(), atVertex[1].z()), max (atVertex[2].z(), atVertex[3].z())));
+  TVector   tMin (std::min (std::min (atVertex[0].x(), atVertex[1].x()), std::min (atVertex[2].x(), atVertex[3].x())),
+                  std::min (std::min (atVertex[0].y(), atVertex[1].y()), std::min (atVertex[2].y(), atVertex[3].y())),
+                  std::min (std::min (atVertex[0].z(), atVertex[1].z()), std::min (atVertex[2].z(), atVertex[3].z())));
+  TVector   tMax (std::max (std::max (atVertex[0].x(), atVertex[1].x()), std::max (atVertex[2].x(), atVertex[3].x())),
+                  std::max (std::max (atVertex[0].y(), atVertex[1].y()), std::max (atVertex[2].y(), atVertex[3].y())),
+                  std::max (std::max (atVertex[0].z(), atVertex[1].z()), std::max (atVertex[2].z(), atVertex[3].z())));
 
   tBoundingBox.set (tMin, tMax);
 
@@ -89,7 +89,7 @@ bool TRectangle::inside (const TVector& rktPOINT) const
   TVector2   v1, v2, v3, v4;
   TVector2   tInt;
 
-  // Convert point to a 2D vector.
+  // Convert point to a 2D std::vector.
   tInt = Convert3DTo2D (rktPOINT, bDom);
 
   // Center coordinate axis around test point.
@@ -125,7 +125,7 @@ void TRectangle::setVertex (const TVector& rktVERTEX)
 }  /* setVertex() */
 
 
-void TRectangle::getMesh (list<TMesh*>& rtMESH_LIST) const
+void TRectangle::getMesh (std::list<TMesh*>& rtMESH_LIST) const
 {
 
   TMesh*   ptMesh = new TMesh;
@@ -138,18 +138,18 @@ void TRectangle::getMesh (list<TMesh*>& rtMESH_LIST) const
 }  /* getMesh() */
 
 
-void TRectangle::printDebug (const string& indent) const
+void TRectangle::printDebug (const std::string& indent) const
 {
 
-  GOM.debug() << indent << "[_Rectangle_]" << endl;
+  GOM.debug() << indent << "[_Rectangle_]" << std::endl;
 
-  string new_indent = TDebug::Indent(indent);
+  std::string new_indent = TDebug::Indent(indent);
   
-  GOM.debug() << new_indent << "Vertex 1 : " << endl; atVertex[0].printDebug(new_indent); GOM.debug() << endl;
-  GOM.debug() << new_indent << "Vertex 2 : " << endl; atVertex[1].printDebug(new_indent); GOM.debug() << endl;
-  GOM.debug() << new_indent << "Vertex 3 : " << endl; atVertex[2].printDebug(new_indent); GOM.debug() << endl;
-  GOM.debug() << new_indent << "Vertex 4 : " << endl; atVertex[3].printDebug(new_indent); GOM.debug() << endl;
-  GOM.debug() << new_indent << "Normal   : " << endl; tNormal.printDebug(new_indent); GOM.debug() << endl;
+  GOM.debug() << new_indent << "Vertex 1 : " << std::endl; atVertex[0].printDebug(new_indent); GOM.debug() << std::endl;
+  GOM.debug() << new_indent << "Vertex 2 : " << std::endl; atVertex[1].printDebug(new_indent); GOM.debug() << std::endl;
+  GOM.debug() << new_indent << "Vertex 3 : " << std::endl; atVertex[2].printDebug(new_indent); GOM.debug() << std::endl;
+  GOM.debug() << new_indent << "Vertex 4 : " << std::endl; atVertex[3].printDebug(new_indent); GOM.debug() << std::endl;
+  GOM.debug() << new_indent << "Normal   : " << std::endl; tNormal.printDebug(new_indent); GOM.debug() << std::endl;
   
 }  /* printDebug() */
 

@@ -36,7 +36,7 @@ TBsdfCookTorrance::TBsdfCookTorrance (void)
 }  /* TBsdfCookTorrance() */
 
 
-int TBsdfCookTorrance::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
+int TBsdfCookTorrance::setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
 
   if ( rktNAME == "roughness" )
@@ -103,7 +103,7 @@ int TBsdfCookTorrance::setAttribute (const string& rktNAME, NAttribute nVALUE, E
 }  /* setAttribute() */
 
 
-int TBsdfCookTorrance::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
+int TBsdfCookTorrance::getAttribute (const std::string& rktNAME, NAttribute& rnVALUE)
 {
 
 #if !defined(NEW_ATTRIBUTES)

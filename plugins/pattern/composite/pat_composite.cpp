@@ -27,7 +27,7 @@
 DEFINE_PLUGIN ("PatternComposite", FX_PATTERN_CLASS, TPatternComposite);
 
 
-int TPatternComposite::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
+int TPatternComposite::setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
 
   if ( rktNAME == "pattern1" )
@@ -116,7 +116,7 @@ int TPatternComposite::setAttribute (const string& rktNAME, NAttribute nVALUE, E
 }  /* setAttribute() */
 
 
-int TPatternComposite::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
+int TPatternComposite::getAttribute (const std::string& rktNAME, NAttribute& rnVALUE)
 {
 
 #if !defined(NEW_ATTRIBUTES)

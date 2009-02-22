@@ -18,50 +18,40 @@
 
 #include "llapi/atmosphere.h"
 
-TColor TAtmosphere::filterRadiance (const TSurfaceData& rktDATA, const TColor& rktRAD) const
+namespace panorama
 {
 
-  TColor   tRadiance = rktRAD;
-  
-  //
-  // [_ERROR_] This code is not finished. It will only work if the objects do not intersect,
-  // and the objects are accesed in back to front order.
-  //
-  for (vector<magic_pointer<TAtmosphericObject> >::const_iterator tIter = tAtmObjectList.begin(); ( tIter != tAtmObjectList.end() ) ;tIter++)
+  TColor TAtmosphere::filterRadiance (const TSurfaceData& rktDATA, const TColor& rktRAD) const
   {
-    tRadiance = (*tIter)->filterRadiance (rktDATA, tRadiance);
-  }
 
-  return tRadiance;
-  
-}  /* filterRadiance() */
+    TColor   tRadiance = rktRAD;
+
+    //
+    // [_ERROR_] This code is not finished. It will only work if the objects do not intersect,
+    // and the objects are accesed in back to front order.
+    //
+    for (std::vector<rc_pointer<TAtmosphericObject> >::const_iterator tIter = tAtmObjectList.begin(); ( tIter != tAtmObjectList.end() ) ;tIter++)
+    {
+      tRadiance = (*tIter)->filterRadiance (rktDATA, tRadiance);
+    }
+
+    return tRadiance;
+
+  }  /* filterRadiance() */
 
 
-TScalar TAtmosphere::transparency (const TVector& rktPOINT1, const TVector& rktPOINT2) const
-{
-
-  TScalar   tTransparency = 1;
-  
-  for (vector<magic_pointer<TAtmosphericObject> >::const_iterator tIter = tAtmObjectList.begin(); ( tIter != tAtmObjectList.end() ) ;tIter++)
+  TScalar TAtmosphere::transparency (const TPoint& rktPOINT1, const TPoint& rktPOINT2) const
   {
-    tTransparency *= (*tIter)->transparency (rktPOINT1, rktPOINT2);
-  }
 
-  return tTransparency;
-  
-}  /* transparency() */
+    TScalar   tTransparency = 1;
 
+    for (std::vector<rc_pointer<TAtmosphericObject> >::const_iterator tIter = tAtmObjectList.begin(); ( tIter != tAtmObjectList.end() ) ;tIter++)
+    {
+      tTransparency *= (*tIter)->transparency (rktPOINT1, rktPOINT2);
+    }
 
-bool TAtmosphere::initialize (TScene* ptSCENE)
-{
-  bool val = true;
-  
-  ptScene = ptSCENE;
-  
-  for (vector<magic_pointer<TAtmosphericObject> >::iterator tIter = tAtmObjectList.begin(); ( tIter != tAtmObjectList.end() ) ;tIter++)
-  {
-    val = val && (*tIter)->initialize (ptScene);
-  }
+    return tTransparency;
 
-  return val;
-}  /* initialize() */
+  }  /* transparency() */
+
+}

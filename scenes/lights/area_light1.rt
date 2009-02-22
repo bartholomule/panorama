@@ -48,15 +48,15 @@ addObject(junk);
 scene
 {
   camera   = c;
-  width	   = 200;
-  height   = 200;
+  width	   = 600;
+  height   = 600;
   //  defaultmaterial = MyLambertian { color = CWhite; };
 
   output   = class png { name = "area_light1.png"; };
   renderer = class Raytracer 
   {
     sampling = "uniform";
-    aa_depth = 1;
+    aa_depth = 8;
 //    aa_depth = 2;
 //    sampling = "stochastic";
 //    aa_depth = 8;

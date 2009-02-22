@@ -84,8 +84,8 @@ class TRaytracer : public TRenderer
       return (ptScene != NULL) && TRenderer::initialize(rtSCENE);
     }
 
-    int setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
-    int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
+    int setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
+    int getAttribute (const std::string& rktNAME, NAttribute& rnVALUE);
     void getAttributeList (TAttributeList& rtLIST) const;
 
     void setAmbientLight (const TColor& rktCOLOR);
@@ -99,10 +99,10 @@ class TRaytracer : public TRenderer
     TColor specularReflectedLight (const TSurfaceData& rktDATA, Word wDEPTH, size_t* pzOBJ_CODE = NULL) const;
     TColor specularTransmittedLight (const TSurfaceData& rktDATA, Word wDEPTH, size_t* pzOBJ_CODE = NULL) const;
 
-    string className (void) const { return "Raytracer"; }
+    std::string className (void) const { return "Raytracer"; }
     virtual TRaytracer* clone_new() const { return new TRaytracer(*this); }
   
-    void printDebug (const string& indent) const;
+    void printDebug (const std::string& indent) const;
     
 };  /* class TRaytracer */
 

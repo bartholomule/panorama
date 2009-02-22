@@ -40,7 +40,7 @@ TImageWindow::~TImageWindow ()
 TImageWindow::TImageWindow (TScene* ptSCENE):
   ptProgress(NULL)
 {
-  string             tTitle;
+  std::string             tTitle;
   NAttribute         nAttrib;
   
   gRenderingDone     = false;
@@ -88,7 +88,7 @@ TImageWindow::TImageWindow (TScene* ptSCENE):
 
   ptVBox->pack_start (*ptMenuBar, 0, 1, 0);
 
-  ptPreview = new Gtk::Preview (GTK_PREVIEW_COLOR);
+  ptPreview = new Gtk::DrawingArea();
   ptPreview->size (sBuffers.ptImage->width(), sBuffers.ptImage->height());
   ptPreview->show();
 
@@ -97,16 +97,16 @@ TImageWindow::TImageWindow (TScene* ptSCENE):
   ptScene->imageIO()->getAttribute ("name", nAttrib);
 
 #if !defined(NEW_ATTRIBUTES)
-  tTitle = string ("Image - ") + (char*) nAttrib.pvValue;
+  tTitle = std::string ("Image - ") + (char*) nAttrib.pvValue;
 #else
   magic_pointer<TAttribString> str = get_string(nAttrib);
   if( !!str )
   {
-    tTitle = string ("Image - ") + str->tValue;
+    tTitle = std::string ("Image - ") + str->tValue;
   }
   else
   {
-    tTitle = string ("Image - NO NAME");
+    tTitle = std::string ("Image - NO NAME");
   }
 #endif
   set_title (tTitle.c_str());
@@ -114,10 +114,10 @@ TImageWindow::TImageWindow (TScene* ptSCENE):
 }  /* TImageWindow() */
 
 
-void TImageWindow::saveImage (const string& name)
+void TImageWindow::saveImage (const std::string& name)
 {
 
-  string   tName = name;
+  std::string   tName = name;
 
   if( name.empty() )
   {
@@ -180,9 +180,18 @@ void TImageWindow::drawRow (size_t zROW)
 	ptRow [(J * numPixelCopies + K) * 3 + 2] = (Byte) tPixel.blue();
       }
     }
+
+    ptPreview->draw_rgb_image(get_style()->get_fg_gc(Gtk::STATE_NORMAL),
+			      0, zROW * numPixelCopies + I,
+			      sBuffers.ptImage->width() * numPixelCopies, numPixelCopies,
+			      Gdk::RGB_DITHER_MAX,
+			      ptRow,
+			      sBuffers.ptImage->width() * numPixelCopies);
+    /*
     ptPreview->draw_row (ptRow, 0,
 			 zROW * numPixelCopies + I,
 			 sBuffers.ptImage->width() * numPixelCopies);
+    */
   }
   delete ptRow;
 
@@ -307,26 +316,26 @@ void TImageWindow::filterImage(TImageFilter* ptFilter)
   {
     static const char* zb = "ZBuffer (Distance)";
     static const char* nb = "NBuffer (Normal)";    
-    string missing = "";
-    string missing2 = " not generated";
+    std::string missing = "";
+    std::string missing2 = " not generated";
     if(missing_buffers & FX_ZBUFFER)
     {
       if(missing_buffers & FX_NBUFFER)
       {
-	missing = zb + string(" and ") + nb + string(" buffers were") + missing2;
+	missing = zb + std::string(" and ") + nb + std::string(" buffers were") + missing2;
       }
       else
       {
-	missing = zb + string(" buffer was") + missing2;
+	missing = zb + std::string(" buffer was") + missing2;
       }
     }
     else if(missing_buffers & FX_NBUFFER)
     {
-      missing = nb + string(" buffer was") + missing2;      
+      missing = nb + std::string(" buffer was") + missing2;      
     }
     else
     {
-      missing = string("[Unknown buffer type] was") + missing2;            
+      missing = std::string("[Unknown buffer type] was") + missing2;            
     }
 
     MessageDialog("Cannot apply filter", missing);
@@ -338,7 +347,7 @@ void TImageWindow::filterImage(TImageFilter* ptFilter)
   ptFilter->setScene(ptScene);
   ptFilter->filter(sBuffers);
 #if DEBUG_IT
-  GOM.debug() << "Done with filter..." << endl;
+  GOM.debug() << "Done with filter..." << std::endl;
 #endif
   // Refresh the screen here...
   drawImage();

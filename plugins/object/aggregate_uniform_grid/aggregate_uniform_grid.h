@@ -47,13 +47,13 @@ class TAggregateUniformGrid : public TAggregate
       
     bool initialize (void);
 
-    int setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
+    int setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
 
     bool findFirstIntersection (const TRay& rktRAY, TSurfaceData& rtDATA) const;
 
-    void printDebug (const string& indent) const;
+    void printDebug (const std::string& indent) const;
 
-    string className (void) const { return "AggregateUniformGrid"; }
+    std::string className (void) const { return "AggregateUniformGrid"; }
 
 };  /* class TAggregateUniformGrid */
 

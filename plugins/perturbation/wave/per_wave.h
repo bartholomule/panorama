@@ -36,7 +36,7 @@ class TPerturbationWave : public TPerturbation
 {
 
 protected:
-  vector<TWaveSource> all_wave_sources;
+  std::vector<TWaveSource> all_wave_sources;
   TScalar tMin_freq;
   TScalar tMax_freq;
   TVector tMin_coord;
@@ -53,11 +53,11 @@ public:
 
   virtual TVector perturbNormal (const TSurfaceData& rktDATA) const;
 
-  virtual int setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
-  virtual int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
+  virtual int setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
+  virtual int getAttribute (const std::string& rktNAME, NAttribute& rnVALUE);
   virtual void getAttributeList (TAttributeList& rtLIST) const;
 
-  virtual string className (void) const { return "PerturbationWave"; }
+  virtual std::string className (void) const { return "PerturbationWave"; }
   virtual TPerturbationWave* clone_new() const { return new TPerturbationWave(*this); }  
 
   static TVector wave_contribution(const TVector& location, const TWaveSource& ws);

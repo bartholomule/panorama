@@ -45,13 +45,13 @@ class TPerturbationMarble : public TPerturbation
       
     TVector perturbNormal (const TSurfaceData& rktDATA) const;
 
-    int setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
-    int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
+    int setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
+    int getAttribute (const std::string& rktNAME, NAttribute& rnVALUE);
     void getAttributeList (TAttributeList& rtLIST) const;
 
     void setMarblePattern (magic_pointer<TPatternMarble> ptPATTERN) { ptMarblePattern = ptPATTERN; }
 
-    string className (void) const { return "PerturbationMarble"; }
+    std::string className (void) const { return "PerturbationMarble"; }
     TPerturbationMarble* clone_new() const { return new TPerturbationMarble(*this); }
 };  /* class TPerturbationMarble */
 
@@ -68,7 +68,7 @@ inline TVector TPerturbationMarble::perturbNormal (const TSurfaceData& rktDATA) 
 
     if ( !ptMarblePattern )
     {
-      GOM.error() << ("Error: marble_pattern must be set") << endl;
+      GOM.error() << ("Error: marble_pattern must be set") << std::endl;
       exit (1);
     }
 

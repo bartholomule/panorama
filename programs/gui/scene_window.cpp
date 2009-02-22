@@ -22,81 +22,129 @@
 #include "scene_callbacks.h"
 #include "scene_window.h"
 #include "message_dialog.h"
-#include <gtk--/fileselection.h>
-#include <gtk--/box.h>
-#include <gtk--/menu.h>
+#include <gtkmm/fileselection.h>
+#include <gtkmm/box.h>
+#include <gtkmm/menu.h>
+#include <gtkmm/stock.h>
 #include "common.h"
 
-using SigC::slot;
-using SigC::bind;
-
-size_t TSceneWindow::_zWindows = 0;
+size_t TSceneWindow::window_count = 0;
 
 TSceneWindow::TSceneWindow (Gtk::Main* ptMAIN)
 {
   Gtk::VBox *ptVBox = manage(new Gtk::VBox);
-  ptMain          = ptMAIN;
   ptFileSelection = NULL;
-  ptScene         = NULL;
+  ptScene.set(NULL);
   ptTree          = NULL;
   gModified       = false;
 
   ptSWnd = new Gtk::ScrolledWindow;
   //  ptVBox->add (*ptSWnd);
 
-  ptMenuBar = manage(new Gtk::MenuBar());
-  using namespace Gtk::Menu_Helpers;
-  MenuList* menu_list;
-  Gtk::Menu* scene_menu = manage(new Gtk::Menu());
-  Gtk::Menu* render_menu = manage(new Gtk::Menu());
-  Gtk::Menu* objects_menu = manage(new Gtk::Menu());
-  Gtk::Menu* windows_menu = manage(new Gtk::Menu());
-  Gtk::Menu* help_menu = manage(new Gtk::Menu());      
+  action_group = Gtk::ActionGroup::create();
 
-  menu_list = &scene_menu->items();
-  menu_list->push_back(MenuElem("_New window",ALT|'n',bind(slot(sceneNewCB),this)));
-  menu_list->push_back(MenuElem("_Open",ALT|'o',bind(slot(sceneReplaceCB),this)));
-  menu_list->push_back(MenuElem("_Save",ALT|'s',bind(slot(sceneMenuCB),"save")));
-  menu_list->push_back(MenuElem("Save _as",ALT|'a',bind(slot(sceneMenuCB),"save as")));
-  menu_list->push_back(MenuElem("_Close",ALT|'c',bind(slot(sceneCloseCB),this)));
-  menu_list->push_back(SeparatorElem());
-  menu_list->push_back(MenuElem("E_xit",ALT|'x',slot(sceneQuitCB)));
+  action_group->add(Gtk::Action::create("SceneNewWindow", Gtk::Stock::NEW, "_New window"),
+		    sigc::bind(sigc::mem_fun(*this, &TSceneWindow::unimplemented),
+			       "New"));
 
-  menu_list = &render_menu->items();
-  menu_list->push_back(MenuElem("_Render",ALT|'r',bind(slot(sceneRenderCB),this)));
+  action_group->add(Gtk::Action::create("SceneOpen", Gtk::Stock::OPEN, "_Open"),
+		    sigc::bind(sigc::mem_fun(*this, &TSceneWindow::unimplemented),
+			       "Open"));
 
-  menu_list = &objects_menu->items();
+  action_group->add(Gtk::Action::create("SceneSave", Gtk::Stock::SAVE, "_Save"),
+		    sigc::bind(sigc::mem_fun(*this, &TSceneWindow::unimplemented),
+			       "Save"));
+
+  action_group->add(Gtk::Action::create("SceneSaveAs", Gtk::Stock::SAVE_AS, "Save _as"),
+		    sigc::bind(sigc::mem_fun(*this, &TSceneWindow::unimplemented),
+			       "Save As"));
+
+  action_group->add(Gtk::Action::create("SceneClose", Gtk::Stock::CLOSE, "_Close"),
+		    sigc::bind(sigc::mem_fun(*this, &TSceneWindow::unimplemented),
+			       "Close"));
+
+  action_group->add(Gtk::Action::create("SceneExit", Gtk::Stock::QUIT, "E_xit"),
+		    sigc::bind(sigc::mem_fun(*this, &TSceneWindow::unimplemented),
+			       "Exit"));
+
+  action_group->add(Gtk::Action::create("Render", "_Render"),
+		    sigc::bind(sigc::mem_fun(*this, &TSceneWindow::unimplemented),
+			       "Render"));
+
+  action_group->add(Gtk::Action::create("MaterialEditor", "_Material editor"),
+		    sigc::bind(sigc::mem_fun(*this, &TSceneWindow::unimplemented),
+			       "Material editor"));
+
+  action_group->add(Gtk::Action::create("PluginList", "_Plugin list"),
+		    sigc::bind(sigc::mem_fun(*this, &TSceneWindow::unimplemented),
+			       "Plugin list"));
+
+  action_group->add(Gtk::Action::create("HelpAbout", Gtk::Stock::HELP, "_About"),
+		    sigc::bind(sigc::mem_fun(*this, &TSceneWindow::unimplemented),
+			       "About"));
+
+  Glib::ustring menu_xml =
+    "<ui>"
+    "  <menubar name='Menu'>"
+    "    <menu action='SceneMenu'>"
+    "      <menu action='SceneNewWindow'/>"
+    "      <menu action='SceneOpen'/>"
+    "      <menu action='SceneSave'/>"
+    "      <menu action='SceneSaveAs'/>"
+    "      <menu action='SceneClose'/>"
+    "      <menu action='SceneExit'/>"
+    "    </menu>"
+    "    <menu action='RenderMenu'>"
+    "      <menu action='Render'/>"
+    "    </menu>"
+    "    <menu action='ObjectsMenu'>"
+    "      <menu action='Camera'/>"
+    "      <menu action='Light'/>"
+    "    </menu>"
+    "    <menu action='WindowsMenu'>"
+    "      <menu action='MaterialEditor'/>"
+    "      <menu action='PluginList'/>"
+    "    </menu>"
+    "    <menu action='HelpMenu'>"
+    "      <menu action='HelpAbout'/>"
+    "    </menu>"
+    "  </menubar>"
+    "</ui>";
+
+  try
+  {
+    ui_manager->add_ui_from_string(menu_xml);
+  }
+  catch(const Glib::Error& ex)
+  {
+    std::cerr << "building menus failed: " <<  ex.what();
+  }
+
+  //Get the menubar and add it to a container widget:
+  Gtk::Widget* menu_bar = ui_manager->get_widget("/Menu");
+  if(menu_bar)
+  {
+    ptVBox->pack_start(*menu_bar, Gtk::PACK_SHRINK);
+  }
+
+  // FIXME! Get the proper menu entries for cameras, objects, lights
+  /*
   Gtk::Menu* tmp_menu = createPluginMenu(FX_CAMERA_CLASS,sceneCameraCB,this);
   menu_list->push_back(MenuElem("_Camera",*manage(tmp_menu)));
   tmp_menu = createPluginMenu(FX_LIGHT_CLASS,sceneLightCB,this);  
   menu_list->push_back(MenuElem("_Light",*manage(tmp_menu)));
+  */
 
-  menu_list = &windows_menu->items();
-  menu_list->push_back(MenuElem("_Material editor",ALT|'m',slot(sceneMaterialWindowCB)));
-  menu_list->push_back(MenuElem("_Plugin list",ALT|'p',slot(scenePluginWindowCB)));  
-
-  menu_list = &help_menu->items();
-  menu_list->push_back(MenuElem("A_bout",bind(slot(sceneMenuCB),"about")));  
-
-  // Add them to the bar...
-  menu_list = &ptMenuBar->items();
-  menu_list->push_back(MenuElem("_Scene",*scene_menu));
-  menu_list->push_back(MenuElem("_Render",*render_menu));
-  menu_list->push_back(MenuElem("_Objects",*objects_menu));
-  menu_list->push_back(MenuElem("_Windows",*windows_menu));
-  menu_list->push_back(MenuElem("_Help",*help_menu));      
-
-  ptVBox->pack_start (*ptMenuBar, 0, 0, 0);
   ptVBox->pack_start (*ptSWnd, 1, 1, 0);  
   add(*ptVBox);
-  
+
   show_all();
-  
-  set_usize (600, 400);
+
+  set_default_size (600, 400);
 
   setSceneFile();
 
-  _zWindows++;
+  window_count++;
 
 }  /* TSceneWindow() */
 
@@ -104,9 +152,9 @@ TSceneWindow::TSceneWindow (Gtk::Main* ptMAIN)
 void TSceneWindow::setSceneFile (void)
 {
 
-  string   tTitle;
-  string   tName;
-  string   tFormat;
+  std::string   tTitle;
+  std::string   tName;
+  std::string   tFormat;
 
   if ( ptFileSelection )
   {
@@ -115,14 +163,14 @@ void TSceneWindow::setSceneFile (void)
     delete ptFileSelection;
     ptFileSelection = NULL;
   }
-  
+
   if ( gModified )
   {
     // Save last scene file
     ptScene->finalize();
   }
 
-  delete ptScene;
+  ptScene.set(NULL);
 
   if ( tName != "" )
   {
@@ -130,28 +178,28 @@ void TSceneWindow::setSceneFile (void)
 
     if ( !TSceneManager::_knownFormat (tFormat) )
     {
-      GOM.error() << "ERROR: Scene format not supported" << endl;
+      GOM.error() << "ERROR: Scene format not supported" << std::endl;
       exit (1);
     }
-  
+
     ptScene = TSceneManager::_load (tName, tFormat);
-  
+
     if ( ptScene )
     {
-      setSensitive ("<Main>/Scene/Save", true);
-      setSensitive ("<Main>/Scene/Save as", true);
-      setSensitive ("<Main>/Scene/Close", true);
-      setSensitive ("<Main>/Render/Render", true);
+      setSensitive("/Menu/SceneMenu/SceneSave", true);
+      setSensitive("/Menu/SceneMenu/SceneSaveAs", true);
+      setSensitive("/Menu/SceneMenu/SceneClose", true);
+      setSensitive("/Menu/RenderMenu/Render", true);
     }
   }
   else
   {
-    ptScene = new TScene;
-    
-    setSensitive ("<Main>/Scene/Save", false);
-    setSensitive ("<Main>/Scene/Save as", false);
-    setSensitive ("<Main>/Scene/Close", false);
-    setSensitive ("<Main>/Render/Render", false);
+    ptScene.set(new TScene);
+
+    setSensitive("/Menu/SceneMenu/SceneSave", false);
+    setSensitive("/Menu/SceneMenu/SceneSaveAs", false);
+    setSensitive("/Menu/SceneMenu/SceneClose", false);
+    setSensitive("/Menu/RenderMenu/Render", false);
   }
 
   if ( tName == "" )
@@ -160,7 +208,7 @@ void TSceneWindow::setSceneFile (void)
   }
   else
   {
-    tTitle = string ("Scene - ") + tName;
+    tTitle = std::string ("Scene - ") + tName;
     set_title (tTitle.c_str());
   }
   
@@ -177,7 +225,7 @@ void TSceneWindow::setSceneFile (void)
   ptTree = new TSceneTree (ptScene);
   ptTree->show();
 
-  ptSWnd->add_with_viewport (*ptTree);
+  ptSWnd->add(*ptTree);
 }  /* setSceneFile() */
 
 
@@ -186,7 +234,7 @@ void TSceneWindow::openNewSceneWindow (void)
 
   TSceneWindow*   ptWnd;
   
-  ptWnd = new TSceneWindow (ptMain);
+  ptWnd = new TSceneWindow (NULL);
 
   ptWnd->ptFileSelection = ptFileSelection;
   ptFileSelection        = NULL;
@@ -198,19 +246,15 @@ void TSceneWindow::openNewSceneWindow (void)
 }  /* openNewSceneWindow() */
 
 
-bool TSceneWindow::setSensitive (const char* pkcPATH, bool gSENSITIVE)
+void TSceneWindow::setSensitive(const std::string& name, bool value)
 {
-
-#if FIXME
-  Gtk::MenuPath*   ptMenuPath;
-
-  if ( (ptMenuPath = ptMenuFactory->factory_find (pkcPATH)) != NULL )
+  Gtk::Widget* widget = ui_manager->get_widget(name);
+  if( widget )
   {
-//    ptMenuPath->widget->set_sensitive (gSENSITIVE);
-    return true;
+    widget->set_sensitive(value);
   }
-
-#endif /* FIXME */
-  return false;
-  
-}  /* setSensitive() */
+  else
+  {
+    std::cerr << "Unable to get widget for \"" << name << "\"" << std::endl;
+  }
+}

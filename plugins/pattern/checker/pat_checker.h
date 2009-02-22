@@ -41,8 +41,8 @@ class TPatternChecker : public TPattern
       return ( tCheckerBoard.evaluate (rktDATA.localPoint()) == 1 ) ? tColor : tBaseColor;
     }
 
-    int setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
-    int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
+    int setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
+    int getAttribute (const std::string& rktNAME, NAttribute& rnVALUE);
     void getAttributeList (TAttributeList& rtLIST) const;
 
     void setColor (const TColor& rktCOLOR)
@@ -62,7 +62,7 @@ class TPatternChecker : public TPattern
       tCheckerBoard.setBorder (tSIZE);
     }
 
-    string className (void) const { return "PatternChecker"; }
+    std::string className (void) const { return "PatternChecker"; }
     TPatternChecker* clone_new() const { return new TPatternChecker(*this); }
   
 };  /* class TPatternChecker */

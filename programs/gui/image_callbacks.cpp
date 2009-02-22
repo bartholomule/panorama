@@ -27,7 +27,7 @@ void imageMenuCB (const char* s)
 {
   
   MessageDialog ("Image window menu",
-		 string("This option is not implemented yet:" + string(s)).c_str());
+		 std::string("This option is not implemented yet:" + std::string(s)).c_str());
   
 }  /* imageMenuCB() */
 
@@ -74,7 +74,7 @@ void imageSaveAsCB (TImageWindow* ptWnd)
   {
     ptWnd->ptFileSelection = new Gtk::FileSelection ("Select image file...");
 
-    ptWnd->ptFileSelection->get_ok_button()->clicked.connect(bind(slot(ptWnd, &TImageWindow::saveImage),string("")));
+    ptWnd->ptFileSelection->get_ok_button()->clicked.connect(bind(slot(ptWnd, &TImageWindow::saveImage),std::string("")));
     ptWnd->ptFileSelection->get_cancel_button()->clicked.connect(bind(slot(imageCancelCB), ptWnd));
 
     ptWnd->ptFileSelection->show();
@@ -96,7 +96,7 @@ void imageFilterCB2(cb2_item cb_data, TImageFilter* ptFilter)
   ptWnd->filterImage(ptFilter);     
 }
 
-void imageFilterCB (TImageWindow* ptWND, string filter_name)
+void imageFilterCB (TImageWindow* ptWND, std::string filter_name)
 {
 
   TImageFilter* ptFilter = (TImageFilter*)tPluginManager.newObject(filter_name);

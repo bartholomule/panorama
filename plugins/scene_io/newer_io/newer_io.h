@@ -26,12 +26,12 @@ class TSceneNEWER : public TBaseClass
 
   public:
 
-    static string    _tInputFileName;
+    static std::string    _tInputFileName;
     static DWord     _dwLineNumber;
     static TScene*   _ptParsedScene;
     
-    static int _save (const string& rktNAME, const TScene* pktSCENE);
-    static TScene* _load (const string& rktNAME);
+    static int _save (const std::string& rktNAME, const TScene* pktSCENE);
+    static TScene* _load (const std::string& rktNAME);
 
 };  /* class TSceneRT */
 

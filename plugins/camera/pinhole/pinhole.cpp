@@ -22,7 +22,7 @@
 
 DEFINE_PLUGIN ("PinholeCamera", FX_CAMERA_CLASS, TPinholeCamera);
 
-int TPinholeCamera::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
+int TPinholeCamera::setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
 
   if ( rktNAME == "angle" )
@@ -54,7 +54,7 @@ int TPinholeCamera::setAttribute (const string& rktNAME, NAttribute nVALUE, EAtt
 }  /* setAttribute() */
 
 
-int TPinholeCamera::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
+int TPinholeCamera::getAttribute (const std::string& rktNAME, NAttribute& rnVALUE)
 {
 
   if ( rktNAME == "angle" )
@@ -94,7 +94,7 @@ bool TPinholeCamera::initialize (void)
 
   if ( fabs (dotProduct (tDirection, tUp)) == 1 )
   {
-    GOM.error() << "Error: Camera direction and up vectors cannot be parallel" << endl;
+    GOM.error() << "Error: Camera direction and up std::vectors cannot be parallel" << std::endl;
     val = false;
   }
   
@@ -141,15 +141,15 @@ bool TPinholeCamera::getPlaneProjection (const TVector& rktPOINT, TVector2& rtPR
 }  /* getPlaneProjection() */
 
 
-void TPinholeCamera::printDebug (const string& indent) const
+void TPinholeCamera::printDebug (const std::string& indent) const
 {
 
-  GOM.debug() << indent << "[_" << className() << "_]" << endl;
+  GOM.debug() << indent << "[_" << className() << "_]" << std::endl;
 
-  string new_indent = TDebug::Indent(indent);
+  std::string new_indent = TDebug::Indent(indent);
 
-  GOM.debug() << new_indent << "Angle     : " << getAngle() << endl;
-  GOM.debug() << new_indent << "Up vector : "; tUp.printDebug(new_indent);
+  GOM.debug() << new_indent << "Angle     : " << getAngle() << std::endl;
+  GOM.debug() << new_indent << "Up std::vector : "; tUp.printDebug(new_indent);
   GOM.debug() << new_indent << "Look at   : "; tLookAt.printDebug(new_indent);
   
 }  /* printDebug() */

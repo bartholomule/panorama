@@ -1,2 +1,6 @@
+Makefile.in
 Makefile
-*.d
+.deps
+.*.libs
+*.lo
+stamp-h1

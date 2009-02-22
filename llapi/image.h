@@ -16,8 +16,8 @@
 *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef _IMAGE__
-#define _IMAGE__
+#ifndef PANORAMA_IMAGE_H_INCLUDED
+#define PANORAMA_IMAGE_H_INCLUDED
 
 #include <map>
 #include <string>
@@ -25,8 +25,11 @@
 #include "llapi/llapi_defs.h"
 #include "llapi/frame.h"
 
-class TImage : public TFrame<TColor>
+namespace panorama
 {
+
+  class TImage : public TFrame<TColor>
+  {
 
   protected:
 
@@ -51,6 +54,7 @@ class TImage : public TFrame<TColor>
     float minIntensity (void) const { return fMinIntensity; }
     float maxIntensity (void) const { return fMaxIntensity; }
 
-};  /* class TImage */
+  };  /* class TImage */
+} // end namespace panorama
 
-#endif  /* _IMAGE__ */
+#endif  /* PANORAMA_IMAGE_H_INCLUDED */

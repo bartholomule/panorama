@@ -25,301 +25,293 @@
 #include "llapi/base_class.h"
 #include "llapi/machine.h"
 
-template <class TItem>
-class TVector2D
+namespace panorama
 {
+	template <class TItem>
+	class TVector2D : public StringDumpable
+	{
 
-  protected:
+	protected:
 
-    TItem   vx, vy;
+		TItem   vx, vy;
 
-  public:
+	public:
 
-    TVector2D (TItem X = 0, TItem Y = 0) :
-      vx (X), vy (Y) {}
+		TVector2D (TItem X = 0, TItem Y = 0) :
+			vx (X), vy (Y) {}
 
-    TVector2D (const TVector2D& rktVECTOR) :
-      vx (rktVECTOR.x()), vy (rktVECTOR.y()) {}
+		TVector2D (const TVector2D& rktVECTOR) :
+			vx (rktVECTOR.x()), vy (rktVECTOR.y()) {}
 
-    TVector2D& operator = (const TVector2D& rktVECTOR)
-    {
-      vx = rktVECTOR.x();
-      vy = rktVECTOR.y();
+		TVector2D& operator = (const TVector2D& rktVECTOR)
+		{
+			vx = rktVECTOR.x();
+			vy = rktVECTOR.y();
 
-      return *this;
-    }
+			return *this;
+		}
 
-    TItem& operator [] (Byte bVAL)
-    {
-      assert ( bVAL < 2 );
+		TItem& operator [] (Byte bVAL)
+		{
+			assert ( bVAL < 2 );
       
-      return ( bVAL == 0 ) ? vx : vy;
-    }
+			return ( bVAL == 0 ) ? vx : vy;
+		}
 
-    TItem operator [] (Byte bVAL) const
-    {
-      assert ( bVAL < 2 );
+		TItem operator [] (Byte bVAL) const
+		{
+			assert ( bVAL < 2 );
       
-      return ( bVAL == 0 ) ? vx : vy;
-    }
+			return ( bVAL == 0 ) ? vx : vy;
+		}
 
-    TItem x (void) const { return vx; }
-    TItem y (void) const { return vy; }
+		TItem x (void) const { return vx; }
+		TItem y (void) const { return vy; }
 
-    void set (TItem X = 0, TItem Y = 0)
-    {
-      vx = X;
-      vy = Y;
-    }
+		void set (TItem X = 0, TItem Y = 0)
+		{
+			vx = X;
+			vy = Y;
+		}
 
-    TVector2D<TItem>& operator += (const TVector2D<TItem>& rktVECTOR);
-    TVector2D<TItem>& operator -= (const TVector2D<TItem>& rktVECTOR);
-    TVector2D<TItem>& operator *= (const TVector2D<TItem>& rktVECTOR);
-    TVector2D<TItem>& operator /= (const TVector2D<TItem>& rktVECTOR);
+		TVector2D<TItem>& operator += (const TVector2D<TItem>& rktVECTOR);
+		TVector2D<TItem>& operator -= (const TVector2D<TItem>& rktVECTOR);
+		TVector2D<TItem>& operator *= (const TVector2D<TItem>& rktVECTOR);
+		TVector2D<TItem>& operator /= (const TVector2D<TItem>& rktVECTOR);
     
-    TVector2D<TItem>& operator += (TItem tITEM);
-    TVector2D<TItem>& operator -= (TItem tITEM);
-    TVector2D<TItem>& operator *= (TItem tITEM);
-    TVector2D<TItem>& operator /= (TItem tITEM);
-    
-    TItem norm (void) const;
+		TVector2D<TItem>& operator += (TItem tITEM);
+		TVector2D<TItem>& operator -= (TItem tITEM);
+		TVector2D<TItem>& operator *= (TItem tITEM);
+		TVector2D<TItem>& operator /= (TItem tITEM);
 
-    void normalize (void);
+		TItem norm (void) const;
 
-    void printDebug (const string& indent) const;
+		void normalize (void);
 
-    EClass classType (void) const { return FX_VECTOR2_CLASS; }
-    string className (void) const { return "Vector2"; }
+		EClass classType (void) const { return FX_VECTOR2_CLASS; }
+		std::string className (void) const { return "Vector2"; }
 
-};  /* class TVector2D */
+	};  /* class TVector2D */
 
 
-template <class TItem>
-inline TItem TVector2D<TItem>::norm (void) const
-{
+	template <class TItem>
+	inline TItem TVector2D<TItem>::norm (void) const
+	{
 
-  return sqrt (vx * vx + vy * vy);
+		return sqrt (vx * vx + vy * vy);
 
-}  /* norm() */
+	}  /* norm() */
 
 
-template <class TItem>
-inline void TVector2D<TItem>::normalize (void)
-{
+	template <class TItem>
+	inline void TVector2D<TItem>::normalize (void)
+	{
 
-  TItem   tNorm = norm();
+		TItem   tNorm = norm();
 
-  assert ( tNorm > 0.0 );
+		assert ( tNorm > 0.0 );
   
-  vx /= tNorm;
-  vy /= tNorm;
+		vx /= tNorm;
+		vy /= tNorm;
 
-}  /* normalize() */
+	}  /* normalize() */
 
+	template <class TItem>
+	inline TVector2D<TItem>& TVector2D<TItem>::operator += (const TVector2D<TItem>& rktVECTOR)
+	{
 
-template <class TItem>
-inline void TVector2D<TItem>::printDebug (const string& indent) const
-{
+		vx += rktVECTOR.x();
+		vy += rktVECTOR.y();
 
-  GOM.debug() << indent << "TVector2D <" << vx << ", " << vy << ">" << endl;
+		return *this;
 
-}  /* printDebug() */
+	}  /* operator += () */
 
 
-template <class TItem>
-inline TVector2D<TItem>& TVector2D<TItem>::operator += (const TVector2D<TItem>& rktVECTOR)
-{
+	template <class TItem>
+	inline TVector2D<TItem>& TVector2D<TItem>::operator -= (const TVector2D<TItem>& rktVECTOR)
+	{
 
-  vx += rktVECTOR.x();
-  vy += rktVECTOR.y();
+		vx -= rktVECTOR.x();
+		vy -= rktVECTOR.y();
 
-  return *this;
+		return *this;
 
-}  /* operator += () */
+	}  /* operator -= () */
 
 
-template <class TItem>
-inline TVector2D<TItem>& TVector2D<TItem>::operator -= (const TVector2D<TItem>& rktVECTOR)
-{
+	template <class TItem>
+	inline TVector2D<TItem>& TVector2D<TItem>::operator *= (const TVector2D<TItem>& rktVECTOR)
+	{
 
-  vx -= rktVECTOR.x();
-  vy -= rktVECTOR.y();
+		vx *= rktVECTOR.x();
+		vy *= rktVECTOR.y();
 
-  return *this;
+		return *this;
 
-}  /* operator -= () */
+	}  /* operator *= () */
 
 
-template <class TItem>
-inline TVector2D<TItem>& TVector2D<TItem>::operator *= (const TVector2D<TItem>& rktVECTOR)
-{
+	template <class TItem>
+	inline TVector2D<TItem>& TVector2D<TItem>::operator /= (const TVector2D<TItem>& rktVECTOR)
+	{
 
-  vx *= rktVECTOR.x();
-  vy *= rktVECTOR.y();
+		vx /= rktVECTOR.x();
+		vy /= rktVECTOR.y();
 
-  return *this;
+		return *this;
 
-}  /* operator *= () */
+	}  /* operator /= () */
 
 
-template <class TItem>
-inline TVector2D<TItem>& TVector2D<TItem>::operator /= (const TVector2D<TItem>& rktVECTOR)
-{
+	template <class TItem>
+	inline TVector2D<TItem>& TVector2D<TItem>::operator += (TItem tITEM)
+	{
 
-  vx /= rktVECTOR.x();
-  vy /= rktVECTOR.y();
+		vx += tITEM;
+		vy += tITEM;
 
-  return *this;
+		return *this;
 
-}  /* operator /= () */
+	}  /* operator += () */
 
 
-template <class TItem>
-inline TVector2D<TItem>& TVector2D<TItem>::operator += (TItem tITEM)
-{
+	template <class TItem>
+	inline TVector2D<TItem>& TVector2D<TItem>::operator -= (TItem tITEM)
+	{
 
-  vx += tITEM;
-  vy += tITEM;
+		vx -= tITEM;
+		vy -= tITEM;
 
-  return *this;
+		return *this;
 
-}  /* operator += () */
+	}  /* operator -= () */
 
 
-template <class TItem>
-inline TVector2D<TItem>& TVector2D<TItem>::operator -= (TItem tITEM)
-{
+	template <class TItem>
+	inline TVector2D<TItem>& TVector2D<TItem>::operator *= (TItem tITEM)
+	{
 
-  vx -= tITEM;
-  vy -= tITEM;
+		vx *= tITEM;
+		vy *= tITEM;
 
-  return *this;
+		return *this;
 
-}  /* operator -= () */
+	}  /* operator *= () */
 
 
-template <class TItem>
-inline TVector2D<TItem>& TVector2D<TItem>::operator *= (TItem tITEM)
-{
+	template <class TItem>
+	inline TVector2D<TItem>& TVector2D<TItem>::operator /= (TItem tITEM)
+	{
 
-  vx *= tITEM;
-  vy *= tITEM;
+		vx /= tITEM;
+		vy /= tITEM;
 
-  return *this;
+		return *this;
 
-}  /* operator *= () */
+	}  /* operator /= () */
 
 
-template <class TItem>
-inline TVector2D<TItem>& TVector2D<TItem>::operator /= (TItem tITEM)
-{
+	template <class TItem>
+	inline TVector2D<TItem> operator - (const TVector2D<TItem>& rktVECTOR)
+	{
 
-  vx /= tITEM;
-  vy /= tITEM;
+		return TVector2D<TItem> (-rktVECTOR.x(), -rktVECTOR.y());
 
-  return *this;
+	}  /* operator - () */
 
-}  /* operator /= () */
 
+	template <class TItem>
+	inline TVector2D<TItem> operator - (const TVector2D<TItem>& rktVECTOR1, const TVector2D<TItem>& rktVECTOR2)
+	{
 
-template <class TItem>
-inline TVector2D<TItem> operator - (const TVector2D<TItem>& rktVECTOR)
-{
+		return TVector2D<TItem> (rktVECTOR1.x() - rktVECTOR2.x(), rktVECTOR1.y() - rktVECTOR2.y());
 
-  return TVector2D<TItem> (-rktVECTOR.x(), -rktVECTOR.y());
+	}  /* operator - () */
 
-}  /* operator - () */
 
+	template <class TItem>
+	inline TVector2D<TItem> operator + (const TVector2D<TItem>& rktVECTOR1, const TVector2D<TItem>& rktVECTOR2)
+	{
 
-template <class TItem>
-inline TVector2D<TItem> operator - (const TVector2D<TItem>& rktVECTOR1, const TVector2D<TItem>& rktVECTOR2)
-{
+		return TVector2D<TItem> (rktVECTOR1.x() + rktVECTOR2.x(), rktVECTOR1.y() + rktVECTOR2.y());
 
-  return TVector2D<TItem> (rktVECTOR1.x() - rktVECTOR2.x(), rktVECTOR1.y() - rktVECTOR2.y());
+	}  /* operator + () */
 
-}  /* operator - () */
 
+	template <class TItem>
+	inline TVector2D<TItem> operator * (const TVector2D<TItem>& rktVECTOR1, const TVector2D<TItem>& rktVECTOR2)
+	{
 
-template <class TItem>
-inline TVector2D<TItem> operator + (const TVector2D<TItem>& rktVECTOR1, const TVector2D<TItem>& rktVECTOR2)
-{
+		return TVector2D<TItem> (rktVECTOR1.x() * rktVECTOR2.x(), rktVECTOR1.y() * rktVECTOR2.y());
 
-  return TVector2D<TItem> (rktVECTOR1.x() + rktVECTOR2.x(), rktVECTOR1.y() + rktVECTOR2.y());
+	}  /* operator * () */
 
-}  /* operator + () */
 
+	template <class TItem>
+	inline TVector2D<TItem> operator / (const TVector2D<TItem>& rktVECTOR, TItem tITEM)
+	{
 
-template <class TItem>
-inline TVector2D<TItem> operator * (const TVector2D<TItem>& rktVECTOR1, const TVector2D<TItem>& rktVECTOR2)
-{
+		return TVector2D<TItem> (rktVECTOR.x() / tITEM, rktVECTOR.y() / tITEM);
 
-  return TVector2D<TItem> (rktVECTOR1.x() * rktVECTOR2.x(), rktVECTOR1.y() * rktVECTOR2.y());
+	}  /* operator / () */
 
-}  /* operator * () */
 
+	template <class TItem>
+	inline TVector2D<TItem> operator * (const TVector2D<TItem>& rktVECTOR, TItem tITEM)
+	{
 
-template <class TItem>
-inline TVector2D<TItem> operator / (const TVector2D<TItem>& rktVECTOR, TItem tITEM)
-{
+		return TVector2D<TItem> (rktVECTOR.x() * tITEM, rktVECTOR.y() * tITEM);
 
-  return TVector2D<TItem> (rktVECTOR.x() / tITEM, rktVECTOR.y() / tITEM);
+	}  /* operator * () */
 
-}  /* operator / () */
 
+	template <class TItem>
+	inline TVector2D<TItem> operator * (TItem tITEM, const TVector2D<TItem>& rktVECTOR)
+	{
 
-template <class TItem>
-inline TVector2D<TItem> operator * (const TVector2D<TItem>& rktVECTOR, TItem tITEM)
-{
+		return rktVECTOR * tITEM;
 
-  return TVector2D<TItem> (rktVECTOR.x() * tITEM, rktVECTOR.y() * tITEM);
+	}  /* operator * () */
 
-}  /* operator * () */
 
+	template <class TItem>
+	inline TItem Distance (const TVector2D<TItem>& rktVECTOR1, const TVector2D<TItem>& rktVECTOR2)
+	{
 
-template <class TItem>
-inline TVector2D<TItem> operator * (TItem tITEM, const TVector2D<TItem>& rktVECTOR)
-{
+		return (TVector2D<TItem> (rktVECTOR2 - rktVECTOR1)).norm();
 
-  return rktVECTOR * tITEM;
+	}  /* Distance() */
 
-}  /* operator * () */
 
+	template <class TItem>
+	inline TItem dotProduct (const TVector2D<TItem>& rktVEC1, const TVector2D<TItem>& rktVEC2)
+	{
 
-template <class TItem>
-inline TItem Distance (const TVector2D<TItem>& rktVECTOR1, const TVector2D<TItem>& rktVECTOR2)
-{
+		return (rktVEC1.x() * rktVEC2.x() +
+			rktVEC1.y() * rktVEC2.y());
 
-  return (TVector2D<TItem> (rktVECTOR2 - rktVECTOR1)).norm();
+	}  /* dotProduct() */
 
-}  /* Distance() */
 
+	template <class TItem>
+	inline bool operator == (const TVector2D<TItem>& rktVECTOR1, const TVector2D<TItem>& rktVECTOR2)
+	{
 
-template <class TItem>
-inline TItem dotProduct (const TVector2D<TItem>& rktVEC1, const TVector2D<TItem>& rktVEC2)
-{
+		return ( (rktVECTOR1.x() == rktVECTOR2.x()) &&
+			(rktVECTOR1.y() == rktVECTOR2.y()) );
 
-  return (rktVEC1.x() * rktVEC2.x() +
-          rktVEC1.y() * rktVEC2.y());
+	}  /* operator == () */
 
-}  /* dotProduct() */
 
+	template <class TItem>
+	inline TVector2D<TItem> crossProduct (const TVector2D<TItem>& rktVECTOR1, const TVector2D<TItem>& rktVECTOR2)
+	{
 
-template <class TItem>
-inline bool operator == (const TVector2D<TItem>& rktVECTOR1, const TVector2D<TItem>& rktVECTOR2)
-{
+		return TVector2D<TItem> (rktVECTOR1.x() * rktVECTOR2.y() - rktVECTOR1.y() * rktVECTOR2.x());
 
-  return ( (rktVECTOR1.x() == rktVECTOR2.x()) &&
-           (rktVECTOR1.y() == rktVECTOR2.y()) );
+	}  /* crossProduct() */
 
-}  /* operator == () */
-
-
-template <class TItem>
-inline TVector2D<TItem> crossProduct (const TVector2D<TItem>& rktVECTOR1, const TVector2D<TItem>& rktVECTOR2)
-{
-
-  return TVector2D<TItem> (rktVECTOR1.x() * rktVECTOR2.y() - rktVECTOR1.y() * rktVECTOR2.x());
-
-}  /* crossProduct() */
+}
 
 #endif  /* _VECTOR_2D__ */

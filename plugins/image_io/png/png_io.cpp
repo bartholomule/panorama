@@ -35,7 +35,7 @@ extern "C" {
   void error_callback (png_structp ptPng, png_const_charp kcpMsg)
   {
 
-    GOM.error() << kcpMsg << endl;
+    GOM.error() << kcpMsg << std::endl;
 
   }  /* error_callback() */
 
@@ -49,7 +49,7 @@ extern "C" {
 #endif
   {
 
-    ifstream* ptInput = (ifstream *) png_get_io_ptr (ptPng);
+    std::ifstream* ptInput = (std::ifstream *) png_get_io_ptr (ptPng);
     ptInput->read ((char*)bpData, zLength);
 
   }  /* user_read_data() */
@@ -63,7 +63,7 @@ extern "C" {
 #endif
   {
 
-    ofstream* ptOutput = (ofstream *) png_get_io_ptr (ptPng);
+    std::ofstream* ptOutput = (std::ofstream *) png_get_io_ptr (ptPng);
     ptOutput->write ((char*)bpData, zLength);
 
   }  /* user_write_data() */
@@ -71,7 +71,7 @@ extern "C" {
   void user_flush_data(png_structp ptPng)
   {
 
-    ofstream *ptOutput = (ofstream *) png_get_io_ptr (ptPng);
+    std::ofstream *ptOutput = (std::ofstream *) png_get_io_ptr (ptPng);
     ptOutput->flush();
 
   }  /* user_flush_data() */
@@ -83,7 +83,7 @@ int TImagePng::save (const TImage* pktIMAGE) {
   TColor        tColor;
   TColor        tPixel;
   size_t        zWidth, zHeight;
-  ofstream      tOutput;
+  std::ofstream tOutput;
   png_structp   ptPng;
   png_infop     ptInfo;
   png_bytep     pbRow;
@@ -176,7 +176,7 @@ TImage* TImagePng::load (void)
   TColor        tColor;
   TImage*       ptImage;
   DWord         dwWidth, dwHeight;
-  ifstream      tInput;
+  std::ifstream tInput;
   Byte          abHeader[8];
   int           iIsPng;
   Word          wInterlacePasses;
@@ -192,7 +192,7 @@ TImage* TImagePng::load (void)
   {
     if( !bSilent )
     {
-      GOM.error() << "TImagePng::load : Error loading " << tFileName << endl;
+      GOM.error() << "TImagePng::load : Error loading " << tFileName << std::endl;
     }
     return NULL;
   }
@@ -205,7 +205,7 @@ TImage* TImagePng::load (void)
   {
     if( !bSilent )
     {
-      GOM.error() << "TImagePng::load : " << tFileName << " is not a PNG file." << endl;
+      GOM.error() << "TImagePng::load : " << tFileName << " is not a PNG file." << std::endl;
     }
     tInput.close();
     return NULL;
@@ -217,7 +217,7 @@ TImage* TImagePng::load (void)
   {
     if( !bSilent )
     {
-      GOM.error() << "TImagePng::load : Error loading " << tFileName << endl;
+      GOM.error() << "TImagePng::load : Error loading " << tFileName << std::endl;
     }
     tInput.close();
     return NULL;
@@ -228,7 +228,7 @@ TImage* TImagePng::load (void)
   {
     if( !bSilent )
     {
-      GOM.error() << "TImagePng::load : Error loading " << tFileName << endl;
+      GOM.error() << "TImagePng::load : Error loading " << tFileName << std::endl;
     }
     png_destroy_read_struct (&ptPng, (png_infopp) NULL, (png_infopp) NULL);
     tInput.close();
@@ -240,7 +240,7 @@ TImage* TImagePng::load (void)
   {
     if( !bSilent )
     {
-      GOM.error() << "TImagePng::load : Error loading " << tFileName << endl;
+      GOM.error() << "TImagePng::load : Error loading " << tFileName << std::endl;
     }
     png_destroy_read_struct (&ptPng, &ptInfo, (png_infopp) NULL);
     tInput.close();
@@ -267,7 +267,7 @@ TImage* TImagePng::load (void)
   {
     if( !bSilent )
     {
-      GOM.error() << "TImagePng::load : Error loading " << tFileName << endl;
+      GOM.error() << "TImagePng::load : Error loading " << tFileName << std::endl;
     }
     return NULL;
   }
@@ -319,7 +319,7 @@ TImage* TImagePng::load (void)
     if( !bSilent )
     {
       GOM.error() << "TImagePng::load : Error loading " << tFileName
-	   << " alpha channel not supported" << endl;
+	   << " alpha channel not supported" << std::endl;
     }
     png_destroy_read_struct (&ptPng, &ptInfo, (png_infopp) NULL);
     tInput.close();
@@ -364,7 +364,7 @@ TImage* TImagePng::load (void)
 }  /* TImagePng::load() */
 
 
-int TImagePng::setAttribute (const string& rktNAME, NAttribute nVALUE,
+int TImagePng::setAttribute (const std::string& rktNAME, NAttribute nVALUE,
 			     EAttribType eTYPE)
 {
   
@@ -406,7 +406,7 @@ int TImagePng::setAttribute (const string& rktNAME, NAttribute nVALUE,
 }  /* TImagePng::setAttribute() */
 
 
-int TImagePng::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
+int TImagePng::getAttribute (const std::string& rktNAME, NAttribute& rnVALUE)
 {
 
   if ( rktNAME == "compression" )

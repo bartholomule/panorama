@@ -37,7 +37,7 @@ TBsdfSchlick::TBsdfSchlick (void)
 }  /* TBsdfSchlick() */
 
 
-int TBsdfSchlick::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
+int TBsdfSchlick::setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
 
   if ( rktNAME == "roughness" )
@@ -133,7 +133,7 @@ int TBsdfSchlick::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttri
 }  /* setAttribute() */
 
 
-int TBsdfSchlick::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
+int TBsdfSchlick::getAttribute (const std::string& rktNAME, NAttribute& rnVALUE)
 {
 
 #if !defined(NEW_ATTRIBUTES)

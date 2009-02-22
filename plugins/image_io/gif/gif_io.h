@@ -34,7 +34,7 @@ class TImageGif : public TImageIO
     int save (const TImage* pktIMAGE);
     TImage* load (void);
 
-    string className (void) const { return "ImageGif"; }
+    std::string className (void) const { return "ImageGif"; }
   
 };  /* class TImageGif */
 

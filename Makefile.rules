@@ -2,6 +2,11 @@
 %.o: %.cpp
 		@echo Compiling $<...
 		${CXX} -c ${CXXFLAGS} $< -o $@
+
+%.lo: %.cpp
+		@echo Compiling $<...
+		${LIBTOOL} --mode=compile ${CXX} -c ${CXXFLAGS} $< 
+
 %.cpp: %.l
 		@echo Generating scanner...
 		${LEX} ${LEXFLAGS} $< > $@

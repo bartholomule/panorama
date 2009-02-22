@@ -24,7 +24,7 @@
 
 TSceneFormatMap   TSceneManager::_tSceneFormatMap;
 
-magic_pointer<TScene> TSceneManager::_load (const string& rktNAME, const string& rktFORMAT)
+magic_pointer<TScene> TSceneManager::_load (const std::string& rktNAME, const std::string& rktFORMAT)
 {
 
   magic_pointer<TScene> ptScene;// = NULL; by default
@@ -33,7 +33,7 @@ magic_pointer<TScene> TSceneManager::_load (const string& rktNAME, const string&
 
   if ( !_knownFormat (rktFORMAT) )
   {
-    GOM.error() << "ERROR: Scene format does not exist" << endl;
+    GOM.error() << "ERROR: Scene format does not exist" << std::endl;
     return magic_pointer<TScene>(NULL);
   }
   
@@ -53,7 +53,7 @@ magic_pointer<TScene> TSceneManager::_load (const string& rktNAME, const string&
 }  /* _load() */
 
 
-int TSceneManager::_save (const string& rktNAME, const string& rktFORMAT, const TScene* pktSCENE)
+int TSceneManager::_save (const std::string& rktNAME, const std::string& rktFORMAT, const TScene* pktSCENE)
 {
 
   int result = -1;
@@ -62,7 +62,7 @@ int TSceneManager::_save (const string& rktNAME, const string& rktFORMAT, const 
 
   if ( !_knownFormat (rktFORMAT) )
   {
-    GOM.error() << "ERROR: Scene format does not exist" << endl;
+    GOM.error() << "ERROR: Scene format does not exist" << std::endl;
     return -1;
   }
   
@@ -82,7 +82,7 @@ int TSceneManager::_save (const string& rktNAME, const string& rktFORMAT, const 
 }  /* _save() */
 
 
-bool TSceneManager::_knownFormat (const string& rktNAME)
+bool TSceneManager::_knownFormat (const std::string& rktNAME)
 {
 
   return ( _tSceneFormatMap.find (rktNAME) != _tSceneFormatMap.end() );
@@ -90,7 +90,7 @@ bool TSceneManager::_knownFormat (const string& rktNAME)
 }  /* _knownFormat() */
 
 
-void TSceneManager::_addFormat (const string& rktNAME, TCreateFunction* pfCREATE )
+void TSceneManager::_addFormat (const std::string& rktNAME, TCreateFunction* pfCREATE )
 {
 
   // [_TODO_] Check if this format is already registered.

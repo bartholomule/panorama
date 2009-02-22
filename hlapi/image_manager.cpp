@@ -27,12 +27,12 @@
 #include "plugins/image_io/gif/gif_io.h"
 #include "llapi/attribute.h"
 
-extern multimap<string, string>   tConfigData;
+extern std::multimap<std::string, std::string>   tConfigData;
 
 TImageManager     tImageManager;
 TImageFormatMap   TImageManager::_tImageFormatMap;
 
-TImage* TImageManager::_load (const string& rktNAME, const string& rktFORMAT)
+TImage* TImageManager::_load (const std::string& rktNAME, const std::string& rktFORMAT)
 {
 
   TImage*      ptImage = NULL;
@@ -53,7 +53,7 @@ TImage* TImageManager::_load (const string& rktNAME, const string& rktFORMAT)
     // If the user wants to have the type auto-detected...
     if( ( rktFORMAT == "auto" ) || ( rktFORMAT == "guess" ) )
     {
-      cout << "TImageManager: Auto detecting image format..." << endl;
+      std::cout << "TImageManager: Auto detecting image format..." << std::endl;
       // Go through the list and try them in order until one succeeds.
       for(TImageFormatMap::iterator il = TImageManager::_tImageFormatMap.begin();
 	  il != TImageManager::_tImageFormatMap.end();
@@ -80,17 +80,17 @@ TImage* TImageManager::_load (const string& rktNAME, const string& rktFORMAT)
 	    // If the loader worked... Return the image.
 	    if( ptImage )
 	    {
-	      cout << "TImageManager: Loaded " << rktNAME
+	      std::cout << "TImageManager: Loaded " << rktNAME
 		   << " as " <<  il->first
-		   << endl;
+		   << std::endl;
 	      return ptImage;
 	    }
 	  } // The loader was created.
 	} // Creation function exists...
       } // For all entries in the image data map...
 
-      cout << "TImageManager: Could not guess type of "
-	   << "\"" << rktNAME << "\"" << endl;
+      std::cout << "TImageManager: Could not guess type of "
+	   << "\"" << rktNAME << "\"" << std::endl;
       // If it has made it to this point, none of the loaders worked...
       return NULL;
       
@@ -115,7 +115,7 @@ TImage* TImageManager::_load (const string& rktNAME, const string& rktFORMAT)
 }  /* _load() */
 
 
-int TImageManager::_save (const string& rktNAME, const string& rktFORMAT, const TImage* ptIMAGE)
+int TImageManager::_save (const std::string& rktNAME, const std::string& rktFORMAT, const TImage* ptIMAGE)
 {
 
   int          iResult;
@@ -145,7 +145,7 @@ int TImageManager::_save (const string& rktNAME, const string& rktFORMAT, const 
 }  /* _save() */
 
 
-bool TImageManager::_knownFormat (const string& rktFORMAT)
+bool TImageManager::_knownFormat (const std::string& rktFORMAT)
 {
 
   return ( _tImageFormatMap.find (rktFORMAT) != _tImageFormatMap.end() );
@@ -153,7 +153,7 @@ bool TImageManager::_knownFormat (const string& rktFORMAT)
 }  /* _knownFormat() */
 
 
-void TImageManager::_addFormat (const string& rktFORMAT, TCreateFunction* pfCREATE)
+void TImageManager::_addFormat (const std::string& rktFORMAT, TCreateFunction* pfCREATE)
 {
   
   // [_TODO_] Check if this format is already registered.
@@ -162,7 +162,7 @@ void TImageManager::_addFormat (const string& rktFORMAT, TCreateFunction* pfCREA
 }  /* _addFormat() */
 
 
-void TImageManager::_addFormat (const string& rktFORMAT, TCreateFunction* pfCREATE, const string& rktALIAS)
+void TImageManager::_addFormat (const std::string& rktFORMAT, TCreateFunction* pfCREATE, const std::string& rktALIAS)
 {
   
   // [_TODO_] Check if this format is already registered.
@@ -172,7 +172,7 @@ void TImageManager::_addFormat (const string& rktFORMAT, TCreateFunction* pfCREA
 }  /* _addFormat() */
 
 
-TImageIO* TImageManager::_getImageIO (const string& rktFORMAT)
+TImageIO* TImageManager::_getImageIO (const std::string& rktFORMAT)
 {
 
   TCreateFunction*   pfCreate;
@@ -202,14 +202,14 @@ void TImageManager::_initialize (void)
 }  /* _initialize() */
 
 
-TImage* TImageManager::loadImage (const string& rktNAME, const string& rktFORMAT)
+TImage* TImageManager::loadImage (const std::string& rktNAME, const std::string& rktFORMAT)
 {
 
-  string        tFileName;
+  std::string        tFileName;
   TImageData*   ptImageData;
   TImage*       ptImage = NULL;
 
-  cout << "Loading image : " << rktNAME << endl;
+  std::cout << "Loading image : " << rktNAME << std::endl;
 
   bool   gAbsolutePath = ( rktNAME[0] == '/' );
 
@@ -219,7 +219,7 @@ TImage* TImageManager::loadImage (const string& rktNAME, const string& rktFORMAT
   }
   else
   {
-    multimap<string, string>::const_iterator   iter;
+    std::multimap<std::string, std::string>::const_iterator   iter;
 
     iter = tConfigData.find ("TexturePath");
     while ( ( iter != tConfigData.end() ) && ( (*iter).first == "TexturePath" ) )
@@ -265,7 +265,7 @@ TImageManager::~TImageManager (void)
 }  /* ~TImageManager() */
 
 
-TImage* TImageManager::newImage (const string& rktNAME, const string& rktFORMAT)
+TImage* TImageManager::newImage (const std::string& rktNAME, const std::string& rktFORMAT)
 {
 
   TImageData*               ptImageData;

@@ -30,7 +30,7 @@ void TObject::createMatrices (void)
 
   ptMatrix->setIdentity();
   ptInverseMatrix->setIdentity();
-  
+
 }  /* createMatrices() */
 
 
@@ -56,7 +56,7 @@ bool TObject::initialize (void)
     if(!contains_objects && !is_light_only)
     {
       val = false;
-      GOM.error() << "Object of type " << className() << " has no material." << endl;
+      GOM.error() << "Object of type " << className() << " has no material." << std::endl;
     }
   }
   else
@@ -70,7 +70,7 @@ bool TObject::initialize (void)
 
 void TObject::translate (const TVector& rktNEW_POS)
 {
-  //  GOM.debug() << "TObject: Translating:"; rktNEW_POS.printDebug(""); GOM.debug() << endl;
+  //  GOM.debug() << "TObject: Translating:"; rktNEW_POS.printDebug(""); GOM.debug() << std::endl;
   ptMatrix.copy_for_write();
   ptInverseMatrix.copy_for_write();  
   
@@ -84,7 +84,7 @@ void TObject::translate (const TVector& rktNEW_POS)
   // FIXME!  If it proves that translations are not working correctly, fix this:
   //TVolume::translate (rktNEW_POS);
 
-  //  GOM.debug() << "TObject: translate: new location="; location().printDebug(""); GOM.debug() << endl;
+  //  GOM.debug() << "TObject: translate: new location="; location().printDebug(""); GOM.debug() << std::endl;
   
 }  /* translate() */
 
@@ -185,32 +185,32 @@ void TObject::setLocation(const TVector& rktLOCATION)
   
   TVector difference = rktLOCATION - location();
 
-  translate (difference);
+  this->TObject::translate(difference);
 
   // FIXME!  If TEntity::tLocation is no longer modified by anything, remove
   // this! 
   //  TEntity::tLocation = zero_vector;
 }
 
-void TObject::streamDebug (ostream& o, const string& indent) const
+void TObject::streamDebug (std::ostream& o, const std::string& indent) const
 {
   TVolume::streamDebug (o,indent);
-  string new_indent = TDebug::Indent(indent);
+  std::string new_indent = TDebug::Indent(indent);
   
-  o << new_indent << "Code     : " << zObjectCode << endl;
-  o << new_indent << "Location : "; location().printDebug(new_indent); o << endl;
+  o << new_indent << "Code     : " << zObjectCode << std::endl;
+  o << new_indent << "Location : "; location().printDebug(new_indent); o << std::endl;
   if( !!ptMaterial )
   {
     ptMaterial->printDebug(new_indent);
   }
   else
   {
-    o << new_indent << "Material : NULL" << endl;
+    o << new_indent << "Material : NULL" << std::endl;
   }
-  o << indent << "." << endl;  
+  o << indent << "." << std::endl;  
 }
 
-int TObject::setAttribute (const string& rktNAME, NAttribute nVALUE,
+int TObject::setAttribute (const std::string& rktNAME, NAttribute nVALUE,
 			       EAttribType eTYPE)
 {
   if(rktNAME == "material")
@@ -237,7 +237,7 @@ int TObject::setAttribute (const string& rktNAME, NAttribute nVALUE,
   }
 }
 
-int TObject::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
+int TObject::getAttribute (const std::string& rktNAME, NAttribute& rnVALUE)
 {
   if(rktNAME == "material")
   {

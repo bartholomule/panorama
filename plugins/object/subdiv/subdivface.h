@@ -31,9 +31,9 @@ class TSubdivFace
 
     bool                              gSubdivided, gFinal, gFoundBoundingBox;
     TBoundingBox                      tBoundingBox;
-    vector<TSubdivVert*>              tVerts;
-    map<TSubdivVert*, TSubdivFace*>   tGeneratedFaces;
-    vector<TSubdivFace*>              tFaces;
+    std::vector<TSubdivVert*>              tVerts;
+    std::map<TSubdivVert*, TSubdivFace*>   tGeneratedFaces;
+    std::vector<TSubdivFace*>              tFaces;
     TSubdivVert*                      ptFacePoint;
 
     TSubdivFace*   ptParent;
@@ -68,7 +68,7 @@ class TSubdivFace
 
   public:
  
-    TSubdivFace (const vector<TSubdivVert*>& rktVERTLIST);
+    TSubdivFace (const std::vector<TSubdivVert*>& rktVERTLIST);
 
     bool findAllIntersections (const TSubdiv& rktSUBDIV, 
                                const TRay& rktORIGRAY, 

@@ -565,7 +565,7 @@ void TBezierSubsurface::subdivide (void)
 
 
 //
-//  Find the tangent vector in the S direction, given a position in
+//  Find the tangent std::vector in the S direction, given a position in
 //  parametric space.
 //
 TVector TBezierSubsurface::getTangentS (const TVector2 &rktPOS)
@@ -621,7 +621,7 @@ TVector TBezierSubsurface::getTangentS (const TVector2 &rktPOS)
 
 
 //
-//  Find the tangent vector in the T direction, given a position in
+//  Find the tangent std::vector in the T direction, given a position in
 //  parametric space.
 //
 TVector TBezierSubsurface::getTangentT (const TVector2 &rktPOS)

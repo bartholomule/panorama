@@ -33,8 +33,8 @@ typedef TSceneRT::attrib_type attrib_type;
 #define SCENE		(TSceneRT::_ptParsedScene)
 #define PARENT_OBJECT   (TSceneRT::_ptParent)
 #define WORLD           (TSceneRT::_ptWorld)
-extern void rt_error (const string& rksTEXT);
-extern void rt_warning (const string& rksTEXT);
+extern void rt_error (const std::string& rksTEXT);
+extern void rt_warning (const std::string& rksTEXT);
 //---------------------------------------------------------------------------
 
 magic_pointer<TProcedural> get_procedural_var(magic_pointer<TAttribute> p, bool active)
@@ -44,7 +44,7 @@ magic_pointer<TProcedural> get_procedural_var(magic_pointer<TAttribute> p, bool 
   {
     if( active )
     {
-      GOM.error() << "Cannot get a procedural var from a NULL object" << endl;
+      GOM.error() << "Cannot get a procedural var from a NULL object" << std::endl;
       exit(1);
     }
     else
@@ -53,66 +53,66 @@ magic_pointer<TProcedural> get_procedural_var(magic_pointer<TAttribute> p, bool 
     }
   }
 
-  //  GOM.debug() << "getting var from " << p->toString() << endl;
+  //  GOM.debug() << "getting var from " << p->toString() << std::endl;
 
-  //  GOM.debug() << "obj..." << endl;
+  //  GOM.debug() << "obj..." << std::endl;
   magic_pointer<TAttribObject> obj = get_object(p);
   if( !!obj )
   {
     return rcp_static_cast<TProcedural>(obj->tValue);
   }
   
-  // GOM.debug() << "mat..." << endl;
+  // GOM.debug() << "mat..." << std::endl;
   magic_pointer<TAttribMaterial> mat = get_material(p);
   if( !!mat )
   {
     return rcp_static_cast<TProcedural>(mat->tValue);    
   }
   
-  // GOM.debug() << "bsdf..." << endl;
+  // GOM.debug() << "bsdf..." << std::endl;
   magic_pointer<TAttribBsdf> bsdf = get_bsdf(p);
   if( !!bsdf )
   {
     return rcp_static_cast<TProcedural>(bsdf->tValue);    
   }
   
-  // GOM.debug() << "pert..." << endl;
+  // GOM.debug() << "pert..." << std::endl;
   magic_pointer<TAttribPerturbation> pert = get_perturbation(p); 
   if( !!pert )
   {
     return rcp_static_cast<TProcedural>(pert->tValue);    
   }
   
-  // GOM.debug() << "scene..." << endl;
+  // GOM.debug() << "scene..." << std::endl;
   magic_pointer<TAttribScene> scene = get_scene(p);
   if( !!scene )
   {
-    // GOM.error() << "Warning: Ignoring locally defined scene, using global" << endl;
+    // GOM.error() << "Warning: Ignoring locally defined scene, using global" << std::endl;
     return rcp_static_cast<TProcedural>(TSceneRT::_ptParsedScene);    
   }
   
-  // GOM.debug() << "camera..." << endl;
+  // GOM.debug() << "camera..." << std::endl;
   magic_pointer<TAttribCamera> camera = get_camera(p);
   if( !!camera )
   {
     return rcp_static_cast<TProcedural>(camera->tValue);    
   }
   
-  // GOM.debug() << "rend..." << endl;
+  // GOM.debug() << "rend..." << std::endl;
   magic_pointer<TAttribRenderer> rend = get_renderer(p);
   if( !!rend )
   {
     return rcp_static_cast<TProcedural>(rend->tValue);    
   }
 
-  // GOM.debug() << "img..." << endl;
+  // GOM.debug() << "img..." << std::endl;
   magic_pointer<TAttribImageIO> img = get_imageio(p);
   if( !!img )
   {
     return rcp_static_cast<TProcedural>(img->tValue);        
   }
   
-  // GOM.debug() << "pat..." << endl;
+  // GOM.debug() << "pat..." << std::endl;
   magic_pointer<TAttribPattern> pat = get_pattern(p); // converts, do last.
   if( !!pat )
   {
@@ -121,7 +121,7 @@ magic_pointer<TProcedural> get_procedural_var(magic_pointer<TAttribute> p, bool 
 
   if( active )
   {
-    GOM.error() << "Unable to get procedural var" << endl;
+    GOM.error() << "Unable to get procedural var" << std::endl;
     exit(1);
   }
   else
@@ -130,7 +130,7 @@ magic_pointer<TProcedural> get_procedural_var(magic_pointer<TAttribute> p, bool 
   }
 }
 
-magic_pointer<TAttribute> GetParameter (const string& rktATTRIB)
+magic_pointer<TAttribute> GetParameter (const std::string& rktATTRIB)
 {
   magic_pointer<TProcedural> data = get_procedural_var(DATA);
 
@@ -141,7 +141,7 @@ magic_pointer<TAttribute> GetParameter (const string& rktATTRIB)
   }
   else
   {
-    // GOM.debug() << "Data (as procedural) was apparently non-null" << endl;
+    // GOM.debug() << "Data (as procedural) was apparently non-null" << std::endl;
   }
   magic_pointer<TAttribute> tattr;
 
@@ -153,7 +153,7 @@ magic_pointer<TAttribute> GetParameter (const string& rktATTRIB)
   return tattr;
 }
 
-void SetParameter (const string& rktATTRIB, magic_pointer<TAttribute> attr)
+void SetParameter (const std::string& rktATTRIB, magic_pointer<TAttribute> attr)
 {
   if( !attr )
   {
@@ -163,11 +163,11 @@ void SetParameter (const string& rktATTRIB, magic_pointer<TAttribute> attr)
 
   EAttribType eTYPE = attr->eType;
   int   iResult;
-  // GOM.debug() << "Attempting to set value " << rktATTRIB << "(" << EAttribType_to_str(eTYPE) << ")" << endl;
+  // GOM.debug() << "Attempting to set value " << rktATTRIB << "(" << EAttribType_to_str(eTYPE) << ")" << std::endl;
   
   if( !!DATA )
   {
-    // GOM.debug() << "Data is a " << DATA->toString() << endl;
+    // GOM.debug() << "Data is a " << DATA->toString() << std::endl;
   }
   
   magic_pointer<TProcedural> data = get_procedural_var(DATA);
@@ -179,11 +179,11 @@ void SetParameter (const string& rktATTRIB, magic_pointer<TAttribute> attr)
   }
   else
   {
-    // GOM.debug() << "Data (as procedural) was apparently non-null" << endl;
+    // GOM.debug() << "Data (as procedural) was apparently non-null" << std::endl;
   }
 
 #if !defined(NEW_ATTRIBUTES)
-  GOM.error() << "WARNING: old attributes are untested!" << endl;
+  GOM.error() << "WARNING: old attributes are untested!" << std::endl;
   NAttribute nAttrib;
 
   switch(eTYPE)
@@ -233,11 +233,11 @@ void SetParameter (const string& rktATTRIB, magic_pointer<TAttribute> attr)
   }
   iResult = data->setAttribute (rktATTRIB, nAttrib, eTYPE);
 #else
-  // GOM.debug() << "Identifier check:" << endl;
-  // GOM.debug() << "it is \"" << data->identifier() << "\"" << endl;
-  // GOM.debug() << "Attempting to call setAttribute" << endl;
+  // GOM.debug() << "Identifier check:" << std::endl;
+  // GOM.debug() << "it is \"" << data->identifier() << "\"" << std::endl;
+  // GOM.debug() << "Attempting to call setAttribute" << std::endl;
   iResult = data->setAttribute (rktATTRIB, attr, eTYPE);
-  // GOM.debug() << "Called, returned." << endl;
+  // GOM.debug() << "Called, returned." << std::endl;
 #endif
 
   if ( iResult == FX_ATTRIB_WRONG_PARAM )
@@ -247,15 +247,15 @@ void SetParameter (const string& rktATTRIB, magic_pointer<TAttribute> attr)
   }
   else if ( iResult == FX_ATTRIB_WRONG_TYPE )
   {
-    string type_given = EAttribType_to_str(eTYPE);
-    string type_expected;
+    std::string type_given = EAttribType_to_str(eTYPE);
+    std::string type_expected;
     TAttributeList tal;
 
     data->getAttributeList (tal);
 
     type_expected = EAttribType_to_str (tal[rktATTRIB]);
     
-    rt_error (string("incorrect type in attribute value: " +
+    rt_error (std::string("incorrect type in attribute value: " +
 		    type_given + " expected "
 		    + type_expected).c_str());
     exit (1);
@@ -270,13 +270,13 @@ void SetParameter (const string& rktATTRIB, magic_pointer<TAttribute> attr)
     rt_error (TProcedural::_tUserErrorMessage.c_str());
     exit (1);
   }
-  // GOM.debug() << "Parameter was successfully set" << endl;
+  // GOM.debug() << "Parameter was successfully set" << std::endl;
 
 }  /* SetParameter() */
 
-string check_get_string(const magic_pointer<TAttribute> t)
+std::string check_get_string(const magic_pointer<TAttribute> t)
 {
-  string s;
+  std::string s;
   if( !!t )
   {
     if( t->eType == FX_STRING || t->eType == FX_STRING_LIST )
@@ -288,13 +288,13 @@ string check_get_string(const magic_pointer<TAttribute> t)
       }
       else
       {
-	rt_error("Cannot extract string from a real string (BUG?!?)");
+	rt_error("Cannot extract std::string from a real std::string (BUG?!?)");
       }
     }
     else
     {
       GOM.error() << "Warning: usage on line " << TSceneRT::_dwLineNumber
-	   << " as a string requires conversion" << endl;
+	   << " as a std::string requires conversion" << std::endl;
       magic_pointer<TAttribString> sa = get_string(t);
       if( !!sa )
       {
@@ -302,7 +302,7 @@ string check_get_string(const magic_pointer<TAttribute> t)
       }
       else
       {
-	rt_error("Cannot extract string");
+	rt_error("Cannot extract std::string");
       }      
     }
   }

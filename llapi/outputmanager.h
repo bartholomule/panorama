@@ -1,20 +1,20 @@
 /*
- * $Header: /home/kevin/work/migrate_me/cvs/panorama/panorama/panorama/llapi/Attic/outputmanager.h,v 1.1.2.1 2003/08/24 09:01:12 kpharris Exp $
+ * $Header: /home/kevin/work/migrate_me/cvs/panorama/panorama/panorama/llapi/Attic/outputmanager.h,v 1.1.2.2 2009/02/22 10:14:20 kpharris Exp $
  *
  * Part of GNU Panorama - A framework for 3D graphics production
  * Copyright (C) 2003 Kevin Harris
  *
- * This program is free software; you can redistribute it and/or modify 
- * it under the terms of the GNU General Public License as published by 
- * the Free Software Foundation; either version 2 of the License, or    
- * (at your option) any later version.                                  
- *                                                                      
- * This program is distributed in the hope that it will be useful, but  
- * WITHOUT ANY WARRANTY; without even the implied warranty of           
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU    
- * General Public License for more details.                             
- * *  You should have received a copy of the GNU General Public License 
- * along with this program; if not, write to the Free Software          
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ * *  You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
@@ -27,16 +27,19 @@
 #include <iostream>
 #include <string>
 
+
+#error "Don't use this.  I want to delete it."
+
 #if defined(NO_DEBUG)
 // A barfbucket to drop stuff that we don't care about.  This should be (in
-// theory) a little faster than the default debug ignoring mechanism. 
+// theory) a little faster than the default debug ignoring mechanism.
 class barfbucket
 {
 public:
   inline barfbucket() { }
 
   inline friend barfbucket& operator<<(barfbucket& b, const std::string& s) { return b; }
-  inline friend barfbucket& operator<<(barfbucket& b, const char* s) { return b; }  
+  inline friend barfbucket& operator<<(barfbucket& b, const char* s) { return b; }
 };
 
 template <typename trash>
@@ -54,7 +57,7 @@ inline barfbucket& operator<<(barfbucket& b, std::ostream&(*ignored)(std::ostrea
 typedef std::ostream& (*strmanip)(std::ostream&);
 
 /**
- * 
+ *
  * This is a class to be used in managing output for most everything.
  * It will handle:
  * debug
@@ -64,11 +67,11 @@ typedef std::ostream& (*strmanip)(std::ostream&);
  *
  * This file was hacked (Kevin Harris) for use in my personal project, and to
  * reverse the order of comparison for debug output.  This leads me to question
- * whether or not it worked in Panorama (it was never checked in). 
- * 
+ * whether or not it worked in Panorama (it was never checked in).
+ *
  * @author Kevin Harris <kpharris@users.sourceforge.net>
- * @version $Revision: 1.1.2.1 $
- * 
+ * @version $Revision: 1.1.2.2 $
+ *
  */
 class TOutputManager
 {
@@ -99,7 +102,7 @@ protected:
 	  stream->flush();
 	  if( deleteable && int(counts) <= 1 )
 	  {
-	    delete stream;	  
+	    delete stream;
 	  }
 	}
 	stream = str.stream;
@@ -132,12 +135,12 @@ protected:
   }; // class StreamData
 
   typedef std::map<std::string, StreamData> map_type;
-  /** A map of string->stream, used to name streams. */
+  /** A map of std::string->stream, used to name streams. */
   map_type streamMap;
 
   /** The minimum debug level of a message before output is done. */
   int maxDebugLevel;
-  
+
 public:
   /**@name Functions required for existance of a class */
   /** Default constructor */
@@ -168,7 +171,7 @@ public:
 			    bool enabled = true);
 
   /**
-   *@returns The stream corresponding to the given name 
+   *@returns The stream corresponding to the given name
    */
   virtual std::ostream& Stream(const std::string& name);
 
@@ -198,7 +201,7 @@ public:
   {
     return debug(maxDebugLevel);
   }
-  /**@returns the 'debug' stream, only if the minimum debug level is met */  
+  /**@returns the 'debug' stream, only if the minimum debug level is met */
   std::ostream& debug(int level)
   {
     if( level <= maxDebugLevel)
@@ -214,8 +217,8 @@ public:
     return b;
   }
 #endif
-  /**@returns the 'error' stream */  
-  std::ostream& error() { return Stream("error"); }    
+  /**@returns the 'error' stream */
+  std::ostream& error() { return Stream("error"); }
 
   /**
    * Enables the stream of the given name.
@@ -225,8 +228,8 @@ public:
   /**
    * Disable the stream of the given name.
    *@returns if the stream was enabled.
-   */  
-  virtual bool DisableStream(const std::string& name);  
+   */
+  virtual bool DisableStream(const std::string& name);
 
 #if defined(MEMBER_TEMPLATES_WORK)
   /**
@@ -245,40 +248,40 @@ public:
   template <class T>
   std::ostream& operator<<(const T& data) { return out(data); }
   /** Send the given data to the 'output' stream */
-  template <class T>  
+  template <class T>
   std::ostream& out(const T& data)   { return out() << data;   }
-#if !defined(NO_DEBUG)  
+#if !defined(NO_DEBUG)
   /** Send the given data to the 'debug' stream (only if the level is met) */
-  template <class T>  
+  template <class T>
   std::ostream& debug(int level, const T& data) { return debug(level) << data; }
 #else
   /** Absorb all of the junk... (level doesn't matter) */
-  template <class T>  
-  barfbucket& debug(int level, const T& data) { return debug(); }  
+  template <class T>
+  barfbucket& debug(int level, const T& data) { return debug(); }
 #endif /* !defined(NO_DEBUG) */
-  
-  /** Send the given data to the 'error' stream */  
-  template <class T>  
-  std::ostream& error(const T& data) { return error() << data; }      
+
+  /** Send the given data to the 'error' stream */
+  template <class T>
+  std::ostream& error(const T& data) { return error() << data; }
 #else /* Member templates don't work */
   /**
    * Send the given text to the named stream.
-   */  
+   */
   void WriteToStream(const std::string& name,
 		     const std::string& text);
 
   /** A stream insertion operator which will send output to the 'output' stream
-   */  
+   */
   std::ostream& operator<<(const std::string& text) { return out(text); }
   /** A stream insertion operator which will send output to the 'output' stream
    */
   std::ostream& operator<<(const char* text)        { return out(text); }
-  
+
   /** Send the given text to the 'output' stream */
   std::ostream& out(const std::string& text)        { return out() << text;   }
   /** Send the given text to the 'output' stream */
   std::ostream& out(const char* text)               { return out() << text;   }
-#if !defined(NO_DEBUG)    
+#if !defined(NO_DEBUG)
   /** Send the given text to the 'debug' stream (only if the level is met) */
   std::ostream& debug(int level, const std::string& text) { return debug(level) << text; }
   /** Send the given text to the 'debug' stream (only if the level is met) */
@@ -286,14 +289,14 @@ public:
 #else
   /* Eat the input, and ignore it. (level doesn't matter) */
   barfbucket& debug(int level, const std::string& text) { return debug(); }
-  /* Eat the input, and ignore it. (level doesn't matter) */  
+  /* Eat the input, and ignore it. (level doesn't matter) */
   barfbucket& debug(int level, const char* text)        { return debug(); }
-  
+
 #endif /* !defined(NO_DEBUG)   */
   /** Send the given text to the 'error' stream */
   std::ostream& error(const std::string& text) { return error() << text; }
   /** Send the given text to the 'error' stream */
-  std::ostream& error(const char* text)        { return error() << text; }  
+  std::ostream& error(const char* text)        { return error() << text; }
 #endif
 }; // class TOutputManager
 

@@ -69,8 +69,8 @@ int TImageTiff::save (const TImage* pktIMAGE) {
 #if defined(LZW_SUPPORT)
 #warning "Using LZW compresion (a UniSys patent) when compression is requested"
     GOM.error() << "TiffIO:Warning:LZW comressed TIFF images may not be useable with"
-	 << endl
-	 << "  some installations of panorama (due to UniSys patent)." << endl;
+	 << std::endl
+	 << "  some installations of panorama (due to UniSys patent)." << std::endl;
     
     TIFFSetField(tif, TIFFTAG_COMPRESSION, COMPRESSION_LZW);
     
@@ -78,7 +78,7 @@ int TImageTiff::save (const TImage* pktIMAGE) {
     TIFFSetField(tif, TIFFTAG_COMPRESSION, COMPRESSION_PACKBITS);
 #else
     
-    GOM.error() << "TiffIO:Warning:Compression was requested, but not supported by your tifflib." << endl;
+    GOM.error() << "TiffIO:Warning:Compression was requested, but not supported by your tifflib." << std::endl;
     TIFFSetField(tif, TIFFTAG_COMPRESSION, COMPRESSION_NONE);
 #endif /* compression type support */
   }
@@ -98,7 +98,7 @@ int TImageTiff::save (const TImage* pktIMAGE) {
   TIFFSetField(tif, TIFFTAG_DATETIME, (void*)time_buffer);
 
   // Stick a software tag in the file.
-  TIFFSetField(tif, TIFFTAG_SOFTWARE, (void*)string(string("Panorama TIFF output plugin (c)2001 Kevin Harris\r\n") + string(TIFFGetVersion())).c_str());  
+  TIFFSetField(tif, TIFFTAG_SOFTWARE, (void*)string(string("Panorama TIFF output plugin (c)2001 Kevin Harris\r\n") + std::string(TIFFGetVersion())).c_str());  
 
   // Get the strip size, and make sure it is what it should be (if the above
   // tags were entered correctly).
@@ -109,7 +109,7 @@ int TImageTiff::save (const TImage* pktIMAGE) {
     {
       GOM.error() << "Tiff reports strip as " << strip_size
 	   << " bytes instead of expected " << 3 * zWidth * rowsperstrip
-	   << " bytes." << endl;
+	   << " bytes." << std::endl;
     }
     TIFFClose(tif);        
     return(-1);
@@ -148,7 +148,7 @@ int TImageTiff::save (const TImage* pktIMAGE) {
     {
       if( !bSilent )
       {
-	GOM.error() << "TiffIO:Error writing strip " << strip << endl;
+	GOM.error() << "TiffIO:Error writing strip " << strip << std::endl;
       }
       delete[] strip_data;
       TIFFClose(tif);          
@@ -181,7 +181,7 @@ int TImageTiff::save (const TImage* pktIMAGE) {
     {
       if( !bSilent )
       {
-	GOM.error() << "TiffIO:Error writing partial strip " << strip << endl;
+	GOM.error() << "TiffIO:Error writing partial strip " << strip << std::endl;
       }
       delete[] strip_data;
       TIFFClose(tif);          
@@ -193,7 +193,7 @@ int TImageTiff::save (const TImage* pktIMAGE) {
     if( !bSilent )
     {
       GOM.error() << "TiffIO:Math error... y (" << y
-	   << ") != zHeight (" << zHeight << ")" << endl;
+	   << ") != zHeight (" << zHeight << ")" << std::endl;
     }
     delete[] strip_data;
     TIFFClose(tif);    
@@ -227,7 +227,7 @@ TImage* TImageTiff::load (void)
   {
     if( !bSilent )
     {
-      GOM.error() << "TImageTiff::load : Error loading " << tFileName << endl;
+      GOM.error() << "TImageTiff::load : Error loading " << tFileName << std::endl;
     }
     return NULL;
   }
@@ -266,7 +266,7 @@ TImage* TImageTiff::load (void)
 	{
 	  GOM.error() << "TImageTiff::load : Error loading " << tFileName
 	       << " (RGBAImageGet failed)"
-	       << endl;
+	       << std::endl;
 	}
       }      
       _TIFFfree(raster);
@@ -277,7 +277,7 @@ TImage* TImageTiff::load (void)
       {      
 	GOM.error() << "TImageTiff::load : Error loading " << tFileName
 	     << " (out of memory?)"
-	     << endl;
+	     << std::endl;
       }
     }    
     TIFFRGBAImageEnd(&img);
@@ -288,7 +288,7 @@ TImage* TImageTiff::load (void)
     {    
       GOM.error() << "TImageTiff::load : Error loading " << tFileName
 	   << " (" << emsg << ")"
-	   << endl;
+	   << std::endl;
     }
   }
   TIFFClose(tif);
@@ -298,7 +298,7 @@ TImage* TImageTiff::load (void)
 }  /* TImageTiff::load() */
 
 
-int TImageTiff::setAttribute (const string& rktNAME, NAttribute nVALUE,
+int TImageTiff::setAttribute (const std::string& rktNAME, NAttribute nVALUE,
 			     EAttribType eTYPE)
 {
   
@@ -331,7 +331,7 @@ int TImageTiff::setAttribute (const string& rktNAME, NAttribute nVALUE,
 }  /* TImageTiff::setAttribute() */
 
 
-int TImageTiff::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
+int TImageTiff::getAttribute (const std::string& rktNAME, NAttribute& rnVALUE)
 {
 
   if ( rktNAME == "compression" )

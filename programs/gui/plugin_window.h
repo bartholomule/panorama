@@ -19,7 +19,7 @@
 #ifndef _PLUGIN_WINDOW__
 #define _PLUGIN_WINDOW__
 
-#include <gtk--/window.h>
+#include <gtkmm/window.h>
 
 class TPluginWindow : public Gtk::Window
 {

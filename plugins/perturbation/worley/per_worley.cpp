@@ -25,7 +25,7 @@
 DEFINE_PLUGIN ("PerturbationWorley", FX_PERTURBATION_CLASS, TPerturbationWorley);
 
 
-int TPerturbationWorley::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
+int TPerturbationWorley::setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
 
   if ( rktNAME == "bump" )
@@ -85,7 +85,7 @@ int TPerturbationWorley::setAttribute (const string& rktNAME, NAttribute nVALUE,
 }  /* setAttribute() */
 
 
-int TPerturbationWorley::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
+int TPerturbationWorley::getAttribute (const std::string& rktNAME, NAttribute& rnVALUE)
 {
 
 #if !defined(NEW_ATTRIBUTES)

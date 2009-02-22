@@ -32,7 +32,7 @@ class TBezierSurface : public TObject
 
   protected:
 
-    vector<TBezierSubsurface*>   tSurfaceList;
+    std::vector<TBezierSubsurface*>   tSurfaceList;
     TBezierSubsurface*           ptCurrentSurface;
     int                          iBuildU, iBuildV;
 
@@ -45,10 +45,10 @@ class TBezierSurface : public TObject
 
     bool findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) const;
 
-    int setAttribute (const string& rktNAME, NAttribute nVALUE, 
+    int setAttribute (const std::string& rktNAME, NAttribute nVALUE, 
                       EAttribType eTYPE);
 
-    string className (void) const { return "BezierSurface"; }
+    std::string className (void) const { return "BezierSurface"; }
 
 };  /* class TBezierSurface */
 

@@ -173,12 +173,12 @@ attrib_to_type<magic_pointer<TBsdf> >(magic_pointer<TAttribute> atp,
     return bsdf->tValue;
   }
   
-  string barf = "NULL attribute";
+  std::string barf = "NULL attribute";
   if( !!atp )
   {
     barf = atp->toString();
   }
-  GOM.error() << "Error: Cannot extract bsdf from " << barf << endl;
+  GOM.error() << "Error: Cannot extract bsdf from " << barf << std::endl;
   exit(1);
 }
 
@@ -217,12 +217,12 @@ attrib_to_type<const magic_pointer<TBsdf> >(magic_pointer<TAttribute> atp,
     return bsdf->tValue;
   }  
 
-  string barf = "NULL attribute";
+  std::string barf = "NULL attribute";
   if( !!atp )
   {
     barf = atp->toString();
   }
-  GOM.error() << "Error: Cannot extract bsdf from " << barf << endl;
+  GOM.error() << "Error: Cannot extract bsdf from " << barf << std::endl;
   exit(1);  
 }
 
@@ -258,12 +258,12 @@ attrib_to_type<magic_pointer<TCamera> >(magic_pointer<TAttribute> atp,
   {
     return cam->tValue;
   }
-  string barf = "NULL attribute";
+  std::string barf = "NULL attribute";
   if( !!atp )
   {
     barf = atp->toString();
   }
-  GOM.error() << "Error: Cannot extract camera from " << barf << endl;
+  GOM.error() << "Error: Cannot extract camera from " << barf << std::endl;
   exit(1);    
 }
 
@@ -299,12 +299,12 @@ attrib_to_type<const magic_pointer<TCamera> >(magic_pointer<TAttribute> atp,
   {
     return cam->tValue;
   }
-  string barf = "NULL attribute";
+  std::string barf = "NULL attribute";
   if( !!atp )
   {
     barf = atp->toString();
   }
-  GOM.error() << "Error: Cannot extract camera from " << barf << endl;
+  GOM.error() << "Error: Cannot extract camera from " << barf << std::endl;
   exit(1);    
 }
 
@@ -559,7 +559,7 @@ attrib_to_type<magic_pointer<TRenderer> >(magic_pointer<TAttribute> atp,
   {
     return rend->tValue;
   }
-  GOM.error() << "attrib_to_type(renderer): Cannot extract renderer!" << endl;
+  GOM.error() << "attrib_to_type(renderer): Cannot extract renderer!" << std::endl;
   return magic_pointer<TRenderer>(NULL);
 }
 
@@ -596,7 +596,7 @@ attrib_to_type<const magic_pointer<TRenderer> >(magic_pointer<TAttribute> atp,
   {
     return rend->tValue;
   }
-  GOM.error() << "attrib_to_type(renderer): Cannot extract renderer!" << endl;
+  GOM.error() << "attrib_to_type(renderer): Cannot extract renderer!" << std::endl;
   return magic_pointer<TRenderer>(NULL);
 }
 
@@ -641,7 +641,7 @@ attrib_to_type<magic_pointer<TObject> >(magic_pointer<TAttribute> atp,
     return rcp_static_cast<TObject>(agg->tValue);
   }  
 
-  GOM.error() << "attrib_to_type(object): Cannot extract object!" << endl;
+  GOM.error() << "attrib_to_type(object): Cannot extract object!" << std::endl;
   return magic_pointer<TObject>(NULL);
 }
 
@@ -678,7 +678,7 @@ attrib_to_type<const magic_pointer<TObject> >(magic_pointer<TAttribute> atp,
   {
     return obj->tValue;
   }
-  GOM.error() << "attrib_to_type(object): Cannot extract object!" << endl;
+  GOM.error() << "attrib_to_type(object): Cannot extract object!" << std::endl;
   return magic_pointer<TObject>(NULL);
 }
 
@@ -716,7 +716,7 @@ attrib_to_type<magic_pointer<TImageIO> >(magic_pointer<TAttribute> atp,
   {
     return io->tValue;
   }
-  GOM.error() << "attrib_to_type(ImageIO): Cannot extract ImageIO!" << endl;
+  GOM.error() << "attrib_to_type(ImageIO): Cannot extract ImageIO!" << std::endl;
   return magic_pointer<TImageIO>(NULL);
 }
 
@@ -753,7 +753,7 @@ attrib_to_type<const magic_pointer<TImageIO> >(magic_pointer<TAttribute> atp,
   {
     return io->tValue;
   }
-  GOM.error() << "attrib_to_type(ImageIO): Cannot extract ImageIO!" << endl;
+  GOM.error() << "attrib_to_type(ImageIO): Cannot extract ImageIO!" << std::endl;
   return magic_pointer<TImageIO>(NULL);
 }
 
@@ -790,7 +790,7 @@ attrib_to_type<magic_pointer<TScene> >(magic_pointer<TAttribute> atp,
   {
     return scene->tValue;
   }
-  GOM.error() << "attrib_to_type(scene): Cannot extract scene!" << endl;
+  GOM.error() << "attrib_to_type(scene): Cannot extract scene!" << std::endl;
   return magic_pointer<TScene>(NULL);
 }
 
@@ -827,7 +827,7 @@ attrib_to_type<const magic_pointer<TScene> >(magic_pointer<TAttribute> atp,
   {
     return scene->tValue;
   }
-  GOM.error() << "attrib_to_type(scene): Cannot extract scene!" << endl;
+  GOM.error() << "attrib_to_type(scene): Cannot extract scene!" << std::endl;
   return magic_pointer<TScene>(NULL);
 }
 
@@ -870,7 +870,7 @@ attrib_to_type<magic_pointer<TAggregate> >(magic_pointer<TAttribute> atp,
       }
     }
   }
-  GOM.error() << "attrib_to_type(aggregate): Cannot extract aggregate!" << endl;
+  GOM.error() << "attrib_to_type(aggregate): Cannot extract aggregate!" << std::endl;
   return magic_pointer<TAggregate>(NULL);
 }
 
@@ -913,7 +913,7 @@ attrib_to_type<const magic_pointer<TAggregate> >(magic_pointer<TAttribute> atp,
       }
     }
   }
-  GOM.error() << "attrib_to_type(aggregate): Cannot extract aggregate!" << endl;
+  GOM.error() << "attrib_to_type(aggregate): Cannot extract aggregate!" << std::endl;
   return magic_pointer<TAggregate>(NULL);
 }
 

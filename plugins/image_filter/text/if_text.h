@@ -27,8 +27,8 @@ class TIF_Text : public TImageFilter
 
   protected:
 
-    string   tFontFile;
-    string   tText;
+    std::string   tFontFile;
+    std::string   tText;
     Word     wSize;
     Word     wFaceNumber;
     TColor   tColor;
@@ -42,12 +42,12 @@ class TIF_Text : public TImageFilter
 
     void filter (SBuffers& rsBUFFERS);
 
-    int setAttribute (const string& rktNAME, NAttribute nVALUE,
+    int setAttribute (const std::string& rktNAME, NAttribute nVALUE,
                       EAttribType eTYPE);
-    int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
+    int getAttribute (const std::string& rktNAME, NAttribute& rnVALUE);
     void getAttributeList (TAttributeList& rtLIST) const;
 
-    string className (void) const { return "IF_Text"; }
+    std::string className (void) const { return "IF_Text"; }
 
     virtual TIF_Text* clone_new() const { return new TIF_Text(*this); }
   

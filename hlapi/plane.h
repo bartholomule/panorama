@@ -68,8 +68,8 @@ class TPlane : public TObject
       return tBBox;
     }
     
-    int setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
-    int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
+    int setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
+    int getAttribute (const std::string& rktNAME, NAttribute& rnVALUE);
     void getAttributeList (TAttributeList& rtLIST) const;
 
     virtual void setNormal (const TVector& rktNORMAL)
@@ -89,8 +89,8 @@ class TPlane : public TObject
     //
     virtual bool inside (const TVector& rktPOINT) const { return true; }
 
-    void printDebug (const string& indent) const;
-    string className (void) const { return "Plane"; }
+    void printDebug (const std::string& indent) const;
+    std::string className (void) const { return "Plane"; }
     
 };  /* class TPlane */
 

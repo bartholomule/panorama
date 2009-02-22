@@ -25,7 +25,7 @@
 
 DEFINE_PLUGIN ("PatternNoise", FX_PATTERN_CLASS, TPatternNoise);
 
-int TPatternNoise::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
+int TPatternNoise::setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
 
   if ( rktNAME == "color" )
@@ -107,7 +107,7 @@ int TPatternNoise::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttr
 }  /* setAttribute() */
 
 
-int TPatternNoise::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
+int TPatternNoise::getAttribute (const std::string& rktNAME, NAttribute& rnVALUE)
 {
 
 #if !defined(NEW_ATTRIBUTES)
@@ -121,7 +121,7 @@ int TPatternNoise::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
   }
   else if ( rktNAME == "zoom" )
   {
-    // [_ERROR_] It should return the inverse of this vector.
+    // [_ERROR_] It should return the inverse of this std::vector.
     rnVALUE.pvValue = &tZoom;
   }
 #else

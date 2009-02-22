@@ -24,11 +24,11 @@
 
 bool TLight::findAllIntersections(const class TRay &, class TSpanList &) const
 {
-  //      GOM.debug() << "Pure light with intersection test!!" << endl;
+  //      GOM.debug() << "Pure light with intersection test!!" << std::endl;
   return false;
 }
 
-int TLight::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
+int TLight::setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
 
   if ( rktNAME == "color" )
@@ -141,7 +141,7 @@ int TLight::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType 
 }  /* setAttribute() */
 
 
-int TLight::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
+int TLight::getAttribute (const std::string& rktNAME, NAttribute& rnVALUE)
 {
   
 #if !defined(NEW_ATTRIBUTES)

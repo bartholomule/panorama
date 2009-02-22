@@ -46,8 +46,8 @@ class TSphere : public TObject
       
     bool initialize (void);
 
-    int setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
-    int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
+    int setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
+    int getAttribute (const std::string& rktNAME, NAttribute& rnVALUE);
     void getAttributeList (TAttributeList& rtLIST) const;
     
     void setRadius (TScalar tRADIUS);
@@ -58,8 +58,8 @@ class TSphere : public TObject
 
     TVector RandomPointOnSurface() const;
   
-    void printDebug (const string& indent) const;
-    string className (void) const { return "Sphere"; }
+    void printDebug (const std::string& indent) const;
+    std::string className (void) const { return "Sphere"; }
 
 };  /* class TSphere */
 

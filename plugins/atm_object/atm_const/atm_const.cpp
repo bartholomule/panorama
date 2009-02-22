@@ -32,7 +32,7 @@ TAtmConst::TAtmConst (void) :
 }  /* TAtmConst() */
 
 
-int TAtmConst::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
+int TAtmConst::setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
 
   if ( rktNAME == "extinction" )
@@ -121,7 +121,7 @@ int TAtmConst::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribTy
 }  /* setAttribute() */
 
 
-int TAtmConst::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
+int TAtmConst::getAttribute (const std::string& rktNAME, NAttribute& rnVALUE)
 {
 
 #if !defined(NEW_ATTRIBUTES)  

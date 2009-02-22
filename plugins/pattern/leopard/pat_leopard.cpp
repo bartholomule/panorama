@@ -25,7 +25,7 @@
 
 DEFINE_PLUGIN ("PatternLeopard", FX_PATTERN_CLASS, TPatternLeopard);
 
-int TPatternLeopard::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
+int TPatternLeopard::setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
 
   if ( rktNAME == "color" )
@@ -96,7 +96,7 @@ int TPatternLeopard::setAttribute (const string& rktNAME, NAttribute nVALUE, EAt
 }  /* setAttribute() */
 
 
-int TPatternLeopard::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
+int TPatternLeopard::getAttribute (const std::string& rktNAME, NAttribute& rnVALUE)
 {
 
 #if !defined(NEW_ATTRIBUTES)
@@ -110,7 +110,7 @@ int TPatternLeopard::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
   }
   else if ( rktNAME == "zoom" )
   {
-    // [_ERROR_] It should return the inverse of this vector.
+    // [_ERROR_] It should return the inverse of this std::vector.
     rnVALUE.pvValue = &tZoom;
   }
 #else

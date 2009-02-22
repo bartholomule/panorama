@@ -83,7 +83,7 @@ class TPriorityQueue
       return TPQNode<TItem> (atData [zPOS + 1], afPriority [zPOS + 1]);
     }
 
-    void printDebug (const string& indent) const;
+    void printDebug (const std::string& indent) const;
     
 };  /* class TPriorityQueue */
 
@@ -191,18 +191,18 @@ void TPriorityQueue<TItem>::downHeap (size_t zPOS)
 
 
 template <class TItem>
-void TPriorityQueue<TItem>::printDebug (const string& indent) const
+void TPriorityQueue<TItem>::printDebug (const std::string& indent) const
 {
 
-  GOM.debug(indent + "[_TPriorityQueue_]") << endl;
+  GOM.debug(indent + "[_TPriorityQueue_]") << std::endl;
 
-  string new_indent = indent + TBaseClass::standardIndent();
+  std::string new_indent = indent + TDebug::StandardIndent();
   
-
   for (size_t J = 1; ( J <= zSize ) ;J++)
   {
+    std::string tString;
     tString << atData[J] + ", " << afPriority[J];
-    GOM.debug(new_indent + tString) << endl;
+    GOM.debug(new_indent + tString) << std::endl;
   }
   
 }  /* printDebug() */

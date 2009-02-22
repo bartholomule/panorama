@@ -84,7 +84,7 @@ TColor TPointLight::scatteredLight (const TSurfaceData& rktDATA) const
 }  /* scatteredLight() */
 
 
-int TPointLight::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
+int TPointLight::setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
 
   if ( rktNAME == "falloff" )
@@ -192,7 +192,7 @@ int TPointLight::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttrib
 }  /* setAttribute() */
 
 
-int TPointLight::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
+int TPointLight::getAttribute (const std::string& rktNAME, NAttribute& rnVALUE)
 {
 
 #if !defined(NEW_ATTRIBUTES)
@@ -283,19 +283,19 @@ bool TPointLight::initialize (void)
 }  /* initialize() */
 
 
-void TPointLight::printDebug (const string& indent) const
+void TPointLight::printDebug (const std::string& indent) const
 {
 
-  GOM.debug() << indent << "[_" << className() << "_]" << endl;
+  GOM.debug() << indent << "[_" << className() << "_]" << std::endl;
 
-  string new_indent = TDebug::Indent(indent);
+  std::string new_indent = TDebug::Indent(indent);
 
-  GOM.debug() << new_indent << "a (falloff)        : " << tFalloff [0] << endl;
-  GOM.debug() << new_indent << "b (falloff)        : " << tFalloff [1] << endl;
-  GOM.debug() << new_indent << "c (falloff)        : " << tFalloff [2] << endl;
-  GOM.debug() << new_indent << "Distance threshold : " << tDistanceThreshold << endl;
-  GOM.debug() << new_indent << "Cosine threshold   : " << tCosThreshold << endl;
+  GOM.debug() << new_indent << "a (falloff)        : " << tFalloff [0] << std::endl;
+  GOM.debug() << new_indent << "b (falloff)        : " << tFalloff [1] << std::endl;
+  GOM.debug() << new_indent << "c (falloff)        : " << tFalloff [2] << std::endl;
+  GOM.debug() << new_indent << "Distance threshold : " << tDistanceThreshold << std::endl;
+  GOM.debug() << new_indent << "Cosine threshold   : " << tCosThreshold << std::endl;
   GOM.debug() << new_indent << "Cone axis          : "; tConeAxis.printDebug(new_indent);
-  GOM.debug() << indent << "." << endl;
+  GOM.debug() << indent << "." << std::endl;
 
 }  /* printDebug() */

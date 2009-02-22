@@ -87,7 +87,8 @@ aggregate
   plane
   {
     translate( <-2.5,0,2.5> );
-    normal = <.707,0,-.707>;
+
+    normal = <0.707,0.0,-0.707>;
   };      
   material = MyLambertian
   {
@@ -99,14 +100,14 @@ aggregate
 scene
 {
   camera = c;
-  width	 = 400;
-  height = 400;
+  width	 = 600;
+  height = 600;
   output = class png { name = "area_light2.png"; };
   renderer = class Raytracer 
   {
 //    sampling = "adaptive";
 //    max_diff = 0.01;
-    aa_depth = 2;
-    sampling = "stochastic";
+    aa_depth = 16;
+    sampling = "uniform";
   };
 };

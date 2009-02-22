@@ -42,17 +42,17 @@ class TProjector : public TPointLight
 
     TProjector (void);
 
-    int setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
-    int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
+    int setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
+    int getAttribute (const std::string& rktNAME, NAttribute& rnVALUE);
     void getAttributeList (TAttributeList& rtLIST) const;
     
     bool initialize (void);
     
     TColor color (const TVector& rktPOS) const;
 
-    string className (void) const { return "Projector"; }
+    std::string className (void) const { return "Projector"; }
 
-    void printDebug (const string& indent) const;
+    void printDebug (const std::string& indent) const;
 
     virtual TProjector* clone_new() const { return new TProjector(*this); }
     

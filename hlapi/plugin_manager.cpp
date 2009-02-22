@@ -17,7 +17,7 @@
 */
 
 #include "llapi/warning_eliminator.h"
-#if defined(STATIC_LINK) && ( STATIC_LINK == 0 )
+#if !defined(STATIC_LINK) || (defined(STATIC_LINK) && ( STATIC_LINK == 0 ))
 #include <dlfcn.h>
 #endif
 
@@ -26,7 +26,7 @@
 #include "llapi/file.h"
 #include "hlapi/plugin_manager.h"
 
-extern multimap<string, string>   tConfigData;
+extern std::multimap<std::string, std::string>   tConfigData;
 
 TPluginManager   tPluginManager;
 
@@ -35,7 +35,7 @@ TPluginManager   tPluginManager;
 #define RTLD_GLOBAL 0
 #endif
 
-int TPluginManager::loadPlugin (const string& rktNAME)
+int TPluginManager::loadPlugin (const std::string& rktNAME)
 {
 #if ( STATIC_LINK == 0 )
 
@@ -52,12 +52,12 @@ int TPluginManager::loadPlugin (const string& rktNAME)
   }
   else
   {
-    multimap<string, string>::const_iterator   iter;
+    std::multimap<std::string, std::string>::const_iterator   iter;
 
     iter = tConfigData.find ("PluginPath");
     while ( ( iter != tConfigData.end() ) && ( (*iter).first == "PluginPath" ) )
     {
-      string   tAux (iter->second + '/' + rktNAME);
+      std::string tAux (iter->second + '/' + rktNAME);
       
       if ( FileExists (tAux) )
       {
@@ -70,8 +70,8 @@ int TPluginManager::loadPlugin (const string& rktNAME)
   
   if ( !pvHandle )
   {
-    GOM.error() << "Cannot open plugin " << rktNAME << endl;
-    GOM.error() << dlerror() << endl;
+    GOM.error() << "Cannot open plugin " << rktNAME << std::endl;
+    GOM.error() << dlerror() << std::endl;
   }
   else
   {
@@ -80,12 +80,12 @@ int TPluginManager::loadPlugin (const string& rktNAME)
     pkcError = dlerror();
     if ( pkcError )
     {
-      GOM.error() << "ERROR: " << pkcError << endl;
+      GOM.error() << "ERROR: " << pkcError << std::endl;
       dlclose (pvHandle);
     }
     else
     {
-      static string filler;
+      static std::string filler;
       if(rktNAME.length() > filler.length())
       {
 	filler.insert(filler.begin(),
@@ -99,16 +99,16 @@ int TPluginManager::loadPlugin (const string& rktNAME)
     
       if ( iError )
       {
-        GOM.error() << "Error registering plugin" << endl;
+        GOM.error() << "Error registering plugin" << std::endl;
         dlclose (pvHandle);
       }
       else
       {
 	GOM.error() << "Loading plugin "
 	     << rktNAME
-	     << filler.substr(0,max(filler.length() - rktNAME.length(),(size_t)1))
+	     << filler.substr(0, std::max(filler.length() - rktNAME.length(),(size_t)1))
 	     << "\r"
-	     << flush;
+	     << std::flush;
 	registerPlugin (ptPluginData);
       }
     }
@@ -121,26 +121,26 @@ int TPluginManager::loadPlugin (const string& rktNAME)
 }  /* loadPlugin() */
 
 
-bool TPluginManager::initialize (const string& rktCONFIG_FILE, DWord dwVERSION)
+bool TPluginManager::initialize (const std::string& rktCONFIG_FILE, DWord dwVERSION)
 {
 
 #if defined(DEBUG)
 #if defined(__PRETTY_FUNCTION__)
-  GOM.debug() << __PRETTY_FUNCTION__ << endl;
+  GOM.debug() << __PRETTY_FUNCTION__ << std::endl;
 #elif defined(__FUNCTION__)
-  GOM.debug() << __FUNCTION__ << endl;
+  GOM.debug() << __FUNCTION__ << std::endl;
 #elif defined(__FUNCTION)
 #endif /* defined(__PRETTY_FUNCTION__) */
 #endif /* defined(DEBUG) */
   bool val = true;
 #if ( STATIC_LINK == 0 )
 
-  ifstream   tFile;
+  std::ifstream   tFile;
   char       acPluginName [200];
 
   dwVersion = dwVERSION;
 
-  tFile.open (rktCONFIG_FILE.c_str(), ios::in);
+  tFile.open (rktCONFIG_FILE.c_str(), std::ios::in);
 
   while ( !tFile.eof() )
   {
@@ -171,7 +171,7 @@ int TPluginManager::registerPlugin (TPluginData* ptDATA)
   
   if ( tPluginDataMap.find (ptDATA->tPluginName) != tPluginDataMap.end() )
   {
-    GOM.error() << "ERROR: Plugin already loaded : \"" << ptDATA->tPluginName << "\""<< endl;
+    GOM.error() << "ERROR: Plugin already loaded : \"" << ptDATA->tPluginName << "\""<< std::endl;
     return -1;
   }
 
@@ -185,7 +185,7 @@ int TPluginManager::registerPlugin (TPluginData* ptDATA)
   else
   {
     // Register class
-    list<string>   tList;
+    std::list<std::string>   tList;
 
     tList.push_back (ptDATA->tPluginName);
     tPluginList [ptDATA->eClass] = tList;
@@ -198,7 +198,7 @@ int TPluginManager::registerPlugin (TPluginData* ptDATA)
 }  /* registerPlugin() */
 
 
-TBaseClass* TPluginManager::newObject (const string& rktCLASS, const TBaseClass* pktPARENT)
+TBaseClass* TPluginManager::newObject (const std::string& rktCLASS, const TBaseClass* pktPARENT)
 {
 
   TPluginData*               ptPluginData;

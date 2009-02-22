@@ -16,55 +16,68 @@
 *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef _LLAPI_DEFS__
-#define _LLAPI_DEFS__
+#ifndef LLAPI_DEFS_H_INCLUDED
+#define LLAPI_DEFS_H_INCLUDED
 
+#include <limits>
 #include <cfloat>
-#include "llapi/vector2d.h"
-#include "llapi/vector3d.h"
+
+#include "llapi/vector2.hpp"
+#include "llapi/vector3.hpp"
+#include "llapi/point2.hpp"
+#include "llapi/point3.hpp"
+#include "llapi/mat_4x4.hpp"
+#include "llapi/quaternion.hpp"
 #include "llapi/frame.h"
-#include "llapi/matrix.h"
 #include "llapi/interval.h"
-#include "llapi/quaternion.h"
 
-//
-// Minimum distance between scalar values
-//
-#define FX_EPSILON (1e-5)
+namespace panorama
+{
+  //
+  // Base type used in coordinates and limit values of this type
+  //
+  typedef double TScalar;
 
-//
-// Huge scalar value
-//
-#define FX_HUGE (1e8)
+  //
+  // Minimum distance between scalar values
+  //
+  const TScalar FX_EPSILON = std::numeric_limits<TScalar>::epsilon();
 
-//
-// Base type used in coordinates and limit values of this type
-//
-typedef double   TScalar;
+  //
+  // Huge scalar value
+  //
+  const TScalar FX_HUGE = std::numeric_limits<TScalar>::max() / 4;
 
-#define SCALAR_MAX            DBL_MAX
-#define SCALAR_MIN            DBL_MIN
+  const TScalar SCALAR_MAX = std::numeric_limits<TScalar>::max();
+  const TScalar SCALAR_MIN = std::numeric_limits<TScalar>::min();
 
-//
-// Template instances & specific types used in this program
-//
-typedef TVector3D<TScalar>          TVector;
-typedef TVector2D<TScalar>          TVector2;
-typedef TBaseMatrix<TScalar>        TMatrix;
-typedef TBaseInterval<TScalar>      TInterval;
-typedef quaternion<TScalar>         TQuaternion;
-typedef TFrame<float>               TZBuffer;
-typedef TFrame<TVector>             TNBuffer;
+  //
+  // Template instances & specific types used in this program
+  //
+  typedef vector3<TScalar> TVector;
+  typedef vector2<TScalar> TVector2;
+  typedef point3<TScalar> TPoint;
+  typedef point2<TScalar> TPoint2;
+  typedef matrix_4x4<TScalar> TMatrix;
+  typedef quaternion<TScalar> TQuaternion;
+  typedef TBaseInterval<TScalar> TInterval;
+  typedef TFrame<float> TZBuffer;
+  typedef TFrame<TVector> TNBuffer;
 
-//
-// Default index of refraction for medium
-//
-#define FX_MEDIUM_IOR          (1)
+  //
+  // Default index of refraction for medium
+  //
+  const TScalar FX_MEDIUM_IOR = 1;
 
-//
-// Buffer flags
-//
-#define FX_ZBUFFER       (1)
-#define FX_NBUFFER       (2)
+  //
+  // Buffer flags
+  //
+  enum EBufferType
+  {
+    FX_ZBUFFER = 1,
+    FX_NBUFFER = 2
+  };
 
-#endif  /* _LLAPI_DEFS__ */
+} // end namespace panorama
+
+#endif  /* LLAPI_DEFS_H_INCLUDED */

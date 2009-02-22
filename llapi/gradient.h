@@ -65,9 +65,9 @@ class TGradient
 
   protected:
 
-    mutable list<TGradientSegment*> tSegmentList;
-    string                          tName;
-    string                          tFileName;
+    mutable std::list<TGradientSegment*> tSegmentList;
+    std::string                          tName;
+    std::string                          tFileName;
     mutable bool                    bLoaded;
     
     TScalar  calcLinearFactor (TScalar tMIDDLE, TScalar tPOS) const;
@@ -84,7 +84,7 @@ class TGradient
     
     TGradient();
     ~TGradient();
-    bool    loadGradient (const string& rktNAME);
+    bool    loadGradient (const std::string& rktNAME);
     TColor  getColorAt (const TScalar& rktPOSITION) const;
 
 };  /* class TGradient */

@@ -20,10 +20,10 @@
 #include "llapi/image_io.h"
 #include "llapi/attribute.h"
 
-int TImageIO::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
+int TImageIO::setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
 
-  GOM.debug() << __FUNCTION__ << "(" << rktNAME << ")" << endl;
+  GOM.debug() << __FUNCTION__ << "(" << rktNAME << ")" << std::endl;
   if ( rktNAME == "name" )
   {
 #if !defined(NEW_ATTRIBUTES)    
@@ -53,7 +53,7 @@ int TImageIO::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribTyp
 }  /* setAttribute() */
 
 
-int TImageIO::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
+int TImageIO::getAttribute (const std::string& rktNAME, NAttribute& rnVALUE)
 {
 
   if ( rktNAME == "name" )

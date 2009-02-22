@@ -60,8 +60,8 @@ class TPatternWood : public TPattern
       return evaluate (tPoint);
     }
 
-    int setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
-    int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
+    int setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
+    int getAttribute (const std::string& rktNAME, NAttribute& rnVALUE);
     void getAttributeList (TAttributeList& rtLIST) const;
 
     void setColor (const TColor& rktCOLOR)
@@ -73,7 +73,7 @@ class TPatternWood : public TPattern
       tBaseColor = rktCOLOR;
     }
 
-    string className (void) const { return "PatternWood"; }
+    std::string className (void) const { return "PatternWood"; }
     TPatternWood* clone_new() const { return new TPatternWood(*this); }
 
 };  /* class TPatternWood */

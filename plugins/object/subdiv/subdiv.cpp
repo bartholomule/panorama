@@ -50,7 +50,7 @@ bool TSubdiv::findAllIntersections (const TRay& rktRAY,
   tScale = tTransformRay.applyTransform (ptInverseMatrix);
 
   gFoundIntersection = false;
-  for (vector<TSubdivFace*>::const_iterator tIter = tFaces.begin(); ( tIter != tFaces.end() ) ;tIter++)
+  for (std::vector<TSubdivFace*>::const_iterator tIter = tFaces.begin(); ( tIter != tFaces.end() ) ;tIter++)
   {
     if ( (*tIter)->findAllIntersections (*this, rktRAY, tScale,
                                          tTransformRay, rtLIST) )
@@ -64,10 +64,10 @@ bool TSubdiv::findAllIntersections (const TRay& rktRAY,
 }  /* findAllIntersections() */
 
 
-int TSubdiv::setAttribute (const string& rktNAME, NAttribute nVALUE, 
+int TSubdiv::setAttribute (const std::string& rktNAME, NAttribute nVALUE, 
                            EAttribType eTYPE)
 {
-  string   tVal;
+  std::string   tVal;
 
   if ( rktNAME == "method" )
   {
@@ -165,10 +165,10 @@ int TSubdiv::setAttribute (const string& rktNAME, NAttribute nVALUE,
 }  /* setAttribute() */
 
 //
-//  Attempt to process the specification for a vector.  
+//  Attempt to process the specification for a std::vector.  
 //  If there is an error, return true.
 //
-bool TSubdiv::addVertex (const string& rktVALUE)
+bool TSubdiv::addVertex (const std::string& rktVALUE)
 {
   Byte    bMatched;
   char    acName[256];
@@ -191,10 +191,10 @@ bool TSubdiv::addVertex (const string& rktVALUE)
 //  surface.  
 //  If there is an error, return true.
 //
-bool TSubdiv::addFace (const string& rktVALUE)
+bool TSubdiv::addFace (const std::string& rktVALUE)
 {
-  vector<string>         tPointNames;
-  vector<TSubdivVert*>   tFacePoints;
+  std::vector<std::string>         tPointNames;
+  std::vector<TSubdivVert*>   tFacePoints;
   char                   acName[256];
   char*                  pcStr;
   Byte                   bMatched;
@@ -219,7 +219,7 @@ bool TSubdiv::addFace (const string& rktVALUE)
     return true;
   }
 
-  for (vector<string>::const_iterator tIter = tPointNames.begin(); ( tIter != tPointNames.end() ) ;tIter++)
+  for (std::vector<std::string>::const_iterator tIter = tPointNames.begin(); ( tIter != tPointNames.end() ) ;tIter++)
   {
     if ( tPoints.find (*tIter) == tPoints.end() )
     {

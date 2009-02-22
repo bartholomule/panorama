@@ -29,14 +29,14 @@ int TImageTga::save (const TImage* pktIMAGE)
 
   TColor     tColor;
   TColor     tPixel;
-  ofstream   sFile;
+  std::ofstream   sFile;
   size_t     zWidth  = pktIMAGE->width();
   size_t     zHeight = pktIMAGE->height();
   Byte*      pbRow   = new Byte [zWidth * 3];
 
-  sFile.open (tFileName.c_str(), ios::binary | ios::out);
+  sFile.open (tFileName.c_str(), std::ios::binary | std::ios::out);
 
-  sFile << (Byte) 0;                         // Length of identifier string
+  sFile << (Byte) 0;                         // Length of identifier std::string
   sFile << (Byte) 0;                         // Color map type (0 = no color map)
   sFile << (Byte) 2;                         // Image type (2 = RGB)
   sFile << (Byte) 0;                         // First color map entry (LSB)
@@ -82,7 +82,7 @@ int TImageTga::save (const TImage* pktIMAGE)
 TImage* TImageTga::load (void)
 {
 
-  ifstream   sFile;
+  std::ifstream   sFile;
   Byte       bRed, bGreen, bBlue;
   Byte       bAux;
   TColor     tColor;
@@ -96,14 +96,14 @@ TImage* TImageTga::load (void)
   Byte       bPixelSize;
   int        iStart, iStop, iAdd;
 
-  sFile.open (tFileName.c_str(), ios::in | ios::binary);
+  sFile.open (tFileName.c_str(), std::ios::in | std::ios::binary);
 
   if ( !sFile )
   {
     return NULL;
   }
   
-  bAux = sFile.get();                             // Length of identifier string
+  bAux = sFile.get();                             // Length of identifier std::string
   bIndentifierLength = bAux;
 
   bAux = sFile.get();                             // Color map type (0 = no color map)
@@ -116,7 +116,7 @@ TImage* TImageTga::load (void)
   {
     if( !bSilent )
     {
-      GOM.error() << "TImageTga::load : Unsupported image type. Error loading " << tFileName << endl;
+      GOM.error() << "TImageTga::load : Unsupported image type. Error loading " << tFileName << std::endl;
     }
     return NULL;    
   }
@@ -154,7 +154,7 @@ TImage* TImageTga::load (void)
   {
     if( !bSilent )
     {
-      GOM.error() << "TImageTga::load : Unsupported pixel size. Error loading " << tFileName << endl;
+      GOM.error() << "TImageTga::load : Unsupported pixel size. Error loading " << tFileName << std::endl;
     }
     return NULL;    
   }
@@ -162,11 +162,11 @@ TImage* TImageTga::load (void)
   bAux = sFile.get();                             // Attributes 
   bAttributes = bAux;
 
-  sFile.seekg(sFile.tellg() + long(bIndentifierLength));
+  sFile.seekg(bIndentifierLength, std::ios::cur);
   
   if ( bColorMapType )                            // Ignore color map
   {
-    sFile.seekg (sFile.tellg() + long((bSizeofMapEntry / 8) * zCountColors));
+    sFile.seekg ((bSizeofMapEntry / 8) * zCountColors, std::ios::cur);
   }
 
   if ( bAttributes & 0x20 )                       // Check origin (upper or lower left)
@@ -268,7 +268,7 @@ TImage* TImageTga::load (void)
 }  /* load() */
 
 
-inline void TImageTga::grabRGB (Byte bPixelSize, ifstream &sTGAStream, Byte& bRed, Byte& bGreen, Byte& bBlue) 
+inline void TImageTga::grabRGB (Byte bPixelSize, std::ifstream &sTGAStream, Byte& bRed, Byte& bGreen, Byte& bBlue) 
 {
   Byte bAux;
  

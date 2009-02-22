@@ -257,7 +257,7 @@ TScalar TPatternCrackle::evaluate (const TVector& rktPOINT, TVector* ptGRADIENT)
 }  /* evaluate() */
 
 
-int TPatternCrackle::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
+int TPatternCrackle::setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
 
   if ( rktNAME == "color" )
@@ -337,7 +337,7 @@ int TPatternCrackle::setAttribute (const string& rktNAME, NAttribute nVALUE, EAt
 }  /* setAttribute() */
 
 
-int TPatternCrackle::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
+int TPatternCrackle::getAttribute (const std::string& rktNAME, NAttribute& rnVALUE)
 {
 
 #if !defined(NEW_ATTRIBUTES)
@@ -351,7 +351,7 @@ int TPatternCrackle::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
   }
   else if ( rktNAME == "zoom" )
   {
-    // [_ERROR_] It should return the inverse of this vector.
+    // [_ERROR_] It should return the inverse of this std::vector.
     rnVALUE.pvValue = &tZoom;
   }
 #else

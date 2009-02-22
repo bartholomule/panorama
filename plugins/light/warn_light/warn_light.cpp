@@ -41,7 +41,7 @@ TScalar TWarnLight::attenuation (const TVector& rktPOINT) const
 }  /* attenuation() */
 
 
-int TWarnLight::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
+int TWarnLight::setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
 
   if ( rktNAME == "point_at" )
@@ -92,7 +92,7 @@ int TWarnLight::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribT
 }  /* setAttribute() */
 
 
-int TWarnLight::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
+int TWarnLight::getAttribute (const std::string& rktNAME, NAttribute& rnVALUE)
 {
 
 #if !defined(NEW_ATTRIBUTES)
@@ -151,15 +151,15 @@ bool TWarnLight::initialize (void)
 }  /* initialize() */
 
 
-void TWarnLight::printDebug (const string& indent) const
+void TWarnLight::printDebug (const std::string& indent) const
 {
 
   TPointLight::printDebug(indent);
   
-  string new_indent = TDebug::Indent(indent);
+  std::string new_indent = TDebug::Indent(indent);
 
   GOM.debug() << new_indent << "Light axis : "; tLightAxis.printDebug(new_indent);
-  GOM.debug() << new_indent << "Exponent   : " << tExponent << endl;
-  GOM.debug() << indent << "." << endl;
+  GOM.debug() << new_indent << "Exponent   : " << tExponent << std::endl;
+  GOM.debug() << indent << "." << std::endl;
   
 }  /* printDebug() */

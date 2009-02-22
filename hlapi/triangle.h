@@ -57,12 +57,12 @@ class TTriangle : public TPlane
 
     bool inside (const TVector& rktPOINT) const;
 
-    void getMesh (list<TMesh*>& rtMESH_LIST) const;
+    void getMesh (std::list<TMesh*>& rtMESH_LIST) const;
     
     TVector RandomPointOnSurface() const;
 
-    void printDebug (const string& indent) const;
-    string className (void) const { return "Triangle"; }
+    void printDebug (const std::string& indent) const;
+    std::string className (void) const { return "Triangle"; }
   
     virtual TUserFunctionMap getUserFunctions();
   

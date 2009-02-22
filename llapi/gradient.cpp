@@ -21,7 +21,7 @@
 #include "llapi/file.h"
 #include "llapi/gradient.h"
 
-extern multimap<string, string>   tConfigData;
+extern std::multimap<std::string, std::string>   tConfigData;
 
 TGradient::TGradient()
 {
@@ -34,26 +34,26 @@ TGradient::~TGradient()
 }
 
 
-bool TGradient::loadGradient (const string& rktNAME)
+bool TGradient::loadGradient (const std::string& rktNAME)
 {
 
-  ifstream                 tFile;
-  string                   tGimp, tGradient;
+  std::ifstream                 tFile;
+  std::string                   tGimp, tGradient;
   int                      i, iNumSegments, iGradientType, iGradientColorType;
   TScalar                  tLeftR, tLeftG, tLeftB, tLeftA;
   TScalar                  tRightR, tRightG, tRightB, tRightA;
   struct TGradientSegment* ptSeg;
-  string                   tAux;
+  std::string              tAux;
   bool                     gAbsolutePath = ( rktNAME[0] == '/' );
 
   if ( gAbsolutePath )
   {
-    tFile.open (rktNAME.c_str(), ios::in);
+    tFile.open (rktNAME.c_str(), std::ios::in);
     tAux = rktNAME;
   }
   else
   {
-    multimap<string, string>::const_iterator   iter;
+    std::multimap<std::string, std::string>::const_iterator   iter;
 
     iter = tConfigData.find ("GradientPath");
     while ( ( iter != tConfigData.end() ) && ( (*iter).first == "GradientPath" ) )
@@ -62,7 +62,7 @@ bool TGradient::loadGradient (const string& rktNAME)
       
       if ( FileExists (tAux) )
       {
-        tFile.open (tAux.c_str(), ios::in);
+        tFile.open (tAux.c_str(), std::ios::in);
         break;
       }
       iter++;
@@ -80,7 +80,7 @@ bool TGradient::loadGradient (const string& rktNAME)
   
   if ( !tFile )
   {
-    GOM.error() << "Error opening gradient file " << rktNAME << endl; 
+    GOM.error() << "Error opening gradient file " << rktNAME << std::endl; 
     bLoaded = false;
     
     return bLoaded;
@@ -90,7 +90,7 @@ bool TGradient::loadGradient (const string& rktNAME)
   
   if( tGimp != "GIMP" || tGradient != "Gradient")
   {
-    GOM.error() << "Incorrect header in gradient file " << rktNAME << endl; 
+    GOM.error() << "Incorrect header in gradient file " << rktNAME << std::endl; 
     bLoaded = false;
     
     return bLoaded;
@@ -100,7 +100,7 @@ bool TGradient::loadGradient (const string& rktNAME)
   
   if ( iNumSegments < 1 )
   {
-    GOM.error() << "Illegal segment count in gradient file " << rktNAME << endl; 
+    GOM.error() << "Illegal segment count in gradient file " << rktNAME << std::endl; 
     bLoaded = false;
     
     return bLoaded;
@@ -117,7 +117,7 @@ bool TGradient::loadGradient (const string& rktNAME)
 
     if (tFile.eof())
     {      
-      GOM.error() << "EOF reading gradient file " << rktNAME << endl; 
+      GOM.error() << "EOF reading gradient file " << rktNAME << std::endl; 
       bLoaded = false;
       tSegmentList.clear();
       
@@ -375,7 +375,7 @@ TColor TGradient::getColorAt (const TScalar& rktPOS) const
   
   tPos = ( rktPOS < 0.0 ) ? 0.0 : ( rktPOS > 1.0) ? 1.0 : rktPOS;
   
-  for (list<TGradientSegment*>::iterator tIter = tSegmentList.begin(); ( tIter != tSegmentList.end() ) ;tIter++)
+  for (std::list<TGradientSegment*>::iterator tIter = tSegmentList.begin(); ( tIter != tSegmentList.end() ) ;tIter++)
   {
     ptSegment = *tIter;
     
@@ -432,13 +432,13 @@ TColor TGradient::getColorAt (const TScalar& rktPOS) const
     
     default:
     {
-      GOM.error() << "Unknown gradient type " << (int) ptSegment->eGradientType << endl;
+      GOM.error() << "Unknown gradient type " << (int) ptSegment->eGradientType << std::endl;
       tFactor = 0.0;
     }
     break;
   }  /* switch */
   
-  //GOM.debug() << tFactor << endl;
+  //GOM.debug() << tFactor << std::endl;
   
   if ( ptSegment->eGradientColorType == FX_GRAD_RGB )
   {
@@ -492,7 +492,7 @@ TColor TGradient::getColorAt (const TScalar& rktPOS) const
 
       default:
       {
-        GOM.error() << "Unknown gradient color type " << (int) ptSegment->eGradientColorType << endl;
+        GOM.error() << "Unknown gradient color type " << (int) ptSegment->eGradientColorType << std::endl;
         tFactor = 0.0;
       }
       break;

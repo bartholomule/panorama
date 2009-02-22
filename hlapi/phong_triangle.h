@@ -46,8 +46,8 @@ class TPhongTriangle : public TTriangle
 
     void addVertex (const TVector& rktVERTEX, const TVector& rktNORMAL );
 
-    void printDebug (const string& indent) const;
-    string className (void) const { return "PhongTriangle"; }
+    void printDebug (const std::string& indent) const;
+    std::string className (void) const { return "PhongTriangle"; }
 
     virtual TUserFunctionMap getUserFunctions();  
     

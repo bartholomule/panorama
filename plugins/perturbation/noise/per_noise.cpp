@@ -25,7 +25,7 @@
 
 DEFINE_PLUGIN ("PerturbationNoise", FX_PERTURBATION_CLASS, TPerturbationNoise);
 
-int TPerturbationNoise::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
+int TPerturbationNoise::setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
 
   if ( rktNAME == "bump" )
@@ -85,7 +85,7 @@ int TPerturbationNoise::setAttribute (const string& rktNAME, NAttribute nVALUE, 
 }  /* setAttribute() */
 
 
-int TPerturbationNoise::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
+int TPerturbationNoise::getAttribute (const std::string& rktNAME, NAttribute& rnVALUE)
 {
 
 #if !defined(NEW_ATTRIBUTES)

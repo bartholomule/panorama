@@ -51,7 +51,7 @@ TPluginWindow::TPluginWindow (void)
     ptSubtree->show();
     
     ptPluginList = &tClassIter->second;
-    for (list<string>::const_iterator tPluginIter = ptPluginList->begin(); ( tPluginIter != ptPluginList->end() ) ;tPluginIter++)
+    for (std::list<string>::const_iterator tPluginIter = ptPluginList->begin(); ( tPluginIter != ptPluginList->end() ) ;tPluginIter++)
     {
       ptItem = new Gtk::TreeItem (tPluginIter->c_str());
       ptItem->show();

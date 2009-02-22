@@ -50,7 +50,7 @@ TColor TOF_Cartoon::filterRadiance (TSurfaceData& rtDATA, const TColor& rktRAD) 
 }  /* filterRadiance() */
 
 
-int TOF_Cartoon::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
+int TOF_Cartoon::setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
 
   if ( rktNAME == "outline" )
@@ -101,7 +101,7 @@ int TOF_Cartoon::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttrib
 }  /* setAttribute() */
 
 
-int TOF_Cartoon::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
+int TOF_Cartoon::getAttribute (const std::string& rktNAME, NAttribute& rnVALUE)
 {
 
 #if !defined(NEW_ATTRIBUTES)

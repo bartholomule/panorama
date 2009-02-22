@@ -132,7 +132,7 @@ bool TUniformGrid::findIntersectionInsideVoxel (TUGLatticeCoord tVOXEL_X, TUGLat
                                                 const TRay& rktRAY, TSurfaceData& rtDATA) const
 {
 
-  list<TUGVoxel>*   ptBucket;
+  std::list<TUGVoxel>*   ptBucket;
   TUGBucketType     tIndex;
   TVector           tPoint2GC;
   TScalar           tNorm;
@@ -144,11 +144,11 @@ bool TUniformGrid::findIntersectionInsideVoxel (TUGLatticeCoord tVOXEL_X, TUGLat
 
   if ( ptBucket )
   {
-    for (list<TUGVoxel>::iterator tIter = ptBucket->begin(); ( tIter != ptBucket->end() ) ;tIter++)
+    for (std::list<TUGVoxel>::iterator tIter = ptBucket->begin(); ( tIter != ptBucket->end() ) ;tIter++)
     {
       if ( ( tIter->i == tVOXEL_X ) && ( tIter->j == tVOXEL_Y ) && ( tIter->k == tVOXEL_Z ) )
       {
-        for (list<magic_pointer<const TObject> >::const_iterator tIter1 = tIter->tObjectList.begin(); ( tIter1 != tIter->tObjectList.end() ) ;tIter1++)
+        for (std::list<magic_pointer<const TObject> >::const_iterator tIter1 = tIter->tObjectList.begin(); ( tIter1 != tIter->tObjectList.end() ) ;tIter1++)
         {
           if ( (*tIter1)->findFirstIntersection (tRayTmp, rtDATA) )
           {
@@ -2042,7 +2042,7 @@ bool TUniformGrid::findFirstIntersection7 (const TRay& rktRAY, TSurfaceData& rtD
 void TUniformGrid::add (TUGLatticeCoord tI, TUGLatticeCoord tJ, TUGLatticeCoord tK, magic_pointer<const TObject> pktOBJECT)
 {
 
-  list<TUGVoxel>*   ptBucket;
+  std::list<TUGVoxel>*   ptBucket;
   TUGVoxel          tVoxel;
   TUGBucketType     tIndex;
 
@@ -2051,7 +2051,7 @@ void TUniformGrid::add (TUGLatticeCoord tI, TUGLatticeCoord tJ, TUGLatticeCoord 
 
   if ( ptBucket )
   {
-    for (list<TUGVoxel>::iterator tIter = ptBucket->begin(); ( tIter != ptBucket->end() ) ;tIter++)
+    for (std::list<TUGVoxel>::iterator tIter = ptBucket->begin(); ( tIter != ptBucket->end() ) ;tIter++)
     {
       if ( ( tIter->i == tI ) && ( tIter->j == tJ ) && ( tIter->k == tK ) )
       {
@@ -2073,7 +2073,7 @@ void TUniformGrid::add (TUGLatticeCoord tI, TUGLatticeCoord tJ, TUGLatticeCoord 
   tVoxel.j = tJ;
   tVoxel.k = tK;
   tVoxel.tObjectList.push_back (pktOBJECT);
-  ptBucket = new list<TUGVoxel>;
+  ptBucket = new std::list<TUGVoxel>;
   ptBucket->push_back (tVoxel);
   aptVoxelHashTable [tIndex] = ptBucket;
   
@@ -2086,7 +2086,7 @@ bool TUniformGrid::initialize (void)
 {
   bool val = true;
   
-  list<TUGVoxel>*   ptBucket;
+  std::list<TUGVoxel>*   ptBucket;
 
   tMinX = ktLatticeCoordMax;
   tMinY = ktLatticeCoordMax;
@@ -2100,7 +2100,7 @@ bool TUniformGrid::initialize (void)
     ptBucket = aptVoxelHashTable [m];
     if ( ptBucket )
     {
-      for (list<TUGVoxel>::iterator tIter = ptBucket->begin(); ( tIter != ptBucket->end() ) ;tIter++)
+      for (std::list<TUGVoxel>::iterator tIter = ptBucket->begin(); ( tIter != ptBucket->end() ) ;tIter++)
       {
         tMinX = ( tIter->i < tMinX ) ? tIter->i : tMinX;
         tMinY = ( tIter->j < tMinY ) ? tIter->j : tMinY;
@@ -2121,7 +2121,7 @@ bool TUniformGrid::initialize (void)
 }  /* initialize() */
 
 
-void TUniformGrid::calculateVoxelSize (const vector<magic_pointer<TObject> >& rktOBJECT_LIST)
+void TUniformGrid::calculateVoxelSize (const std::vector<magic_pointer<TObject> >& rktOBJECT_LIST)
 {
 
   TScalar   tTmp;
@@ -2129,7 +2129,7 @@ void TUniformGrid::calculateVoxelSize (const vector<magic_pointer<TObject> >& rk
   size_t    zObjetListSize = rktOBJECT_LIST.size();
 
   tVoxelSizeTmp = 0;
-  for (vector<magic_pointer<TObject> >::const_iterator tIter = rktOBJECT_LIST.begin(); ( tIter != rktOBJECT_LIST.end() ) ;tIter++)
+  for (std::vector<magic_pointer<TObject> >::const_iterator tIter = rktOBJECT_LIST.begin(); ( tIter != rktOBJECT_LIST.end() ) ;tIter++)
   {
     // We calculate bounding box side mean value
     tTmp  = 0;
@@ -2295,7 +2295,7 @@ void TUniformGrid::printGrid (void) const
   size_t   zElements       = 0;
   size_t   zVoxelsNonEmpty = 0;
   
-  GOM.debug() << "TUniformGrid::printGrid tVoxelSize " << tVoxelSize << endl;
+  GOM.debug() << "TUniformGrid::printGrid tVoxelSize " << tVoxelSize << std::endl;
   
   for (size_t m = 0; ( m < ktHashSize ) ;m++)
   {
@@ -2339,7 +2339,7 @@ void TUniformGrid::printGrid (void) const
         }
         break;
       }
-      for (list<TUGVoxel>::const_iterator tIter = (aptVoxelHashTable [m])->begin(); ( tIter != (aptVoxelHashTable [m])->end() ) ;tIter++)
+      for (std::list<TUGVoxel>::const_iterator tIter = (aptVoxelHashTable [m])->begin(); ( tIter != (aptVoxelHashTable [m])->end() ) ;tIter++)
       {
         if ( tIter->tObjectList.size() > 0 )
         {
@@ -2354,13 +2354,13 @@ void TUniformGrid::printGrid (void) const
     }
   }
 
-  GOM.debug() << "TUniformGrid::printGrid empty buckets = " << zCont0 << endl;
-  GOM.debug() << "TUniformGrid::printGrid buckets with 1 element    = " << zCont1 << endl;
-  GOM.debug() << "TUniformGrid::printGrid buckets with 2 elements   = " << zCont2 << endl;
-  GOM.debug() << "TUniformGrid::printGrid buckets with 3 elements   = " << zCont3 << endl;
-  GOM.debug() << "TUniformGrid::printGrid buckets with 4 elements   = " << zCont4 << endl;
-  GOM.debug() << "TUniformGrid::printGrid buckets with 5 elements   = " << zCont5 << endl;
-  GOM.debug() << "TUniformGrid::printGrid buckets with more elements = " << zContDefault << endl;
-  GOM.debug() << "TUniformGrid::printGrid non empty voxels = " << zVoxelsNonEmpty << endl;
+  GOM.debug() << "TUniformGrid::printGrid empty buckets = " << zCont0 << std::endl;
+  GOM.debug() << "TUniformGrid::printGrid buckets with 1 element    = " << zCont1 << std::endl;
+  GOM.debug() << "TUniformGrid::printGrid buckets with 2 elements   = " << zCont2 << std::endl;
+  GOM.debug() << "TUniformGrid::printGrid buckets with 3 elements   = " << zCont3 << std::endl;
+  GOM.debug() << "TUniformGrid::printGrid buckets with 4 elements   = " << zCont4 << std::endl;
+  GOM.debug() << "TUniformGrid::printGrid buckets with 5 elements   = " << zCont5 << std::endl;
+  GOM.debug() << "TUniformGrid::printGrid buckets with more elements = " << zContDefault << std::endl;
+  GOM.debug() << "TUniformGrid::printGrid non empty voxels = " << zVoxelsNonEmpty << std::endl;
 
 }  /* printGrid() */

@@ -23,40 +23,43 @@
 #include "llapi/bounding_box.h"
 #include "llapi/surface_data.h"
 
-class TScene;
-
-struct TAtmSampleData
+namespace panorama
 {
 
-  TScalar   tExtinction;        // Extinction coefficient at sample point
-  TScalar   tAlbedo;
-  
-};  /* struct TAtmSampleData */
+  class TScene;
+
+  struct TAtmSampleData
+  {
+
+    TScalar tExtinction; // Extinction coefficient at sample point
+    TScalar tAlbedo;
+
+  };  /* struct TAtmSampleData */
 
 
-class TAtmosphericObject : public TProcedural
-{
+  class TAtmosphericObject : public TProcedural
+  {
 
   protected:
 
     mutable Word   wSamplesTaken;
-    
-    TScene*        ptScene;
-    Word           wSamples;
-    TScalar        tJitter;
-    TScalar        tTransparencyThreshold;
-    TScalar        tSlopeThreshold;
-    TScalar        tMinStepSize;
-    TBoundingBox   tBoundingBox;
-    
+
+    TScene* ptScene;
+    Word wSamples;
+    TScalar tJitter;
+    TScalar tTransparencyThreshold;
+    TScalar tSlopeThreshold;
+    TScalar tMinStepSize;
+    TBoundingBox tBoundingBox;
+
     TColor evaluateScattering (const TSurfaceData& rktDATA) const;
-    TColor evaluateInterval (const TVector& rktPOINT1,
-                             const TVector& rktPOINT2,
-                             TScalar tSTEP_SIZE,
-                             TScalar& rtTRANSPARENCY,
-                             TColor& rtTOTAL_SCAT,
-                             const TColor& rktSCAT1,
-                             const TSurfaceData& rktDATA) const;
+    TColor evaluateInterval (const TPoint& rktPOINT1,
+      const TPoint& rktPOINT2,
+      TScalar tSTEP_SIZE,
+      TScalar& rtTRANSPARENCY,
+      TColor& rtTOTAL_SCAT,
+      const TColor& rktSCAT1,
+      const TSurfaceData& rktDATA) const;
   public:
 
     TAtmosphericObject (void) :
@@ -67,22 +70,20 @@ class TAtmosphericObject : public TProcedural
       tSlopeThreshold (1),
       tMinStepSize (1) {}
 
-    int setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
-    int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
+    AttributeErrorCode setAttribute (const std::string& rktNAME, const Attribute& nVALUE);
+    AttributeErrorCode getAttribute (const std::string& rktNAME, Attribute& rnVALUE);
     void getAttributeList (TAttributeList& rtLIST) const;
-    
-    virtual TAtmSampleData sampleData (const TVector& rktPOINT) const = 0;
+
+    virtual TAtmSampleData sampleData (const TPoint& rktPOINT) const = 0;
     virtual TColor filterRadiance (const TSurfaceData& rktDATA, const TColor& rktRAD) const;
-    virtual TScalar transparency (const TVector& rktPOINT1, const TVector& rktPOINT2) const = 0;
-    
-    virtual bool initialize (TScene* ptSCENE)
-    {
-      ptScene = ptSCENE;
-      return (ptScene != NULL) && TProcedural::initialize();
-    }
+    virtual TScalar transparency (const TPoint& rktPOINT1, const TPoint& rktPOINT2) const = 0;
 
     EClass classType (void) const { return FX_ATM_OBJECT_CLASS; }
 
-};  /* class TAtmosphericObject */
+    virtual std::string internalMembers(const Indentation& indent, StringDumpable::PrefixType prefix) const;
+    virtual std::string name() const;
+
+  };  /* class TAtmosphericObject */
+} // end namespace panorama
 
 #endif  /* _ATMOSPHERIC_OBJECT__ */

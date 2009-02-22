@@ -25,7 +25,7 @@
 
 DEFINE_PLUGIN ("PerturbationLeopard", FX_PERTURBATION_CLASS, TPerturbationLeopard);
 
-int TPerturbationLeopard::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
+int TPerturbationLeopard::setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
 
   if ( rktNAME == "bump" )
@@ -85,7 +85,7 @@ int TPerturbationLeopard::setAttribute (const string& rktNAME, NAttribute nVALUE
 }  /* setAttribute() */
 
 
-int TPerturbationLeopard::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
+int TPerturbationLeopard::getAttribute (const std::string& rktNAME, NAttribute& rnVALUE)
 {
 
 #if !defined(NEW_ATTRIBUTES)

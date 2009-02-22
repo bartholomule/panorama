@@ -1,7 +1,7 @@
 /*
   Revision History:
   06Jun2000 (KH) began writing this file.  Wrote members for the base object,
-  bool, real, vector, and string classes (223 lines including comments).
+  bool, real, std::vector, and std::string classes (223 lines including comments).
  */
 #include "dynamic_objects.h"
 #include <cstdio>
@@ -12,7 +12,7 @@
 // base dynamic object
 //
 const char* Tdynamic_base::skcpType = "none";
-int Tdynamic_base::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
+int Tdynamic_base::setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
   if( rktNAME == "typeof")
   {
@@ -23,7 +23,7 @@ int Tdynamic_base::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttr
     return TProcedural::setAttribute(rktNAME, nVALUE, eTYPE);
   }
 }
-int Tdynamic_base::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
+int Tdynamic_base::getAttribute (const std::string& rktNAME, NAttribute& rnVALUE)
 {
   if( rktNAME == "typeof")
   {
@@ -45,7 +45,7 @@ void Tdynamic_base::getAttributeList (TAttributeList& rtLIST) const
 // "real" number
 //
 const char* Tdynamic_real::skcpType = "real";
-int Tdynamic_real::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
+int Tdynamic_real::setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
   if( rktNAME == "value")
   {
@@ -59,7 +59,7 @@ int Tdynamic_real::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttr
     return Tdynamic_base::setAttribute(rktNAME, nVALUE, eTYPE);
   }
 }
-int Tdynamic_real::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
+int Tdynamic_real::getAttribute (const std::string& rktNAME, NAttribute& rnVALUE)
 {
   if( rktNAME == "value")
   {
@@ -79,7 +79,7 @@ void Tdynamic_real::getAttributeList (TAttributeList& rtLIST) const
 // boolean value
 //
 const char* Tdynamic_bool::skcpType = "bool";
-int Tdynamic_bool::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
+int Tdynamic_bool::setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
   if( rktNAME == "value")
   {
@@ -93,7 +93,7 @@ int Tdynamic_bool::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttr
     return Tdynamic_base::setAttribute(rktNAME, nVALUE, eTYPE);
   }
 }
-int Tdynamic_bool::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
+int Tdynamic_bool::getAttribute (const std::string& rktNAME, NAttribute& rnVALUE)
 {
   if( rktNAME == "value")
   {
@@ -110,10 +110,10 @@ void Tdynamic_bool::getAttributeList (TAttributeList& rtLIST) const
 }
 
 //
-// vector
+// std::vector
 //
 const char* Tdynamic_vector::skcpType = "vector";
-int Tdynamic_vector::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
+int Tdynamic_vector::setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
   if( rktNAME == "value")
   {
@@ -155,7 +155,7 @@ int Tdynamic_vector::setAttribute (const string& rktNAME, NAttribute nVALUE, EAt
     return Tdynamic_base::setAttribute(rktNAME, nVALUE, eTYPE);
   }
 }
-int Tdynamic_vector::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
+int Tdynamic_vector::getAttribute (const std::string& rktNAME, NAttribute& rnVALUE)
 {
   if( rktNAME == "value")
   {
@@ -194,16 +194,16 @@ void Tdynamic_vector::getAttributeList (TAttributeList& rtLIST) const
 
 
 //
-// string value
+// std::string value
 //
 const char* Tdynamic_string::skcpType = "string";
-int Tdynamic_string::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
+int Tdynamic_string::setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
   if( rktNAME == "value")
   {
     CHECK_FX_TYPE(FX_STRING);    
     
-    Value = string((const char*)nVALUE.pvValue);
+    Value = std::string((const char*)nVALUE.pvValue);
     return FX_ATTRIB_OK;
   }
   else
@@ -211,7 +211,7 @@ int Tdynamic_string::setAttribute (const string& rktNAME, NAttribute nVALUE, EAt
     return Tdynamic_base::setAttribute(rktNAME, nVALUE, eTYPE);
   }
 }
-int Tdynamic_string::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
+int Tdynamic_string::getAttribute (const std::string& rktNAME, NAttribute& rnVALUE)
 {
   if( rktNAME == "value")
   {
@@ -237,7 +237,7 @@ const char* Tdynamic_object::getDynamicType (void) const
   sprintf(buffer,"%s",className().c_str());
   return buffer;
 }
-int Tdynamic_object::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
+int Tdynamic_object::setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
   if( rktNAME == "objptr")
   {
@@ -261,7 +261,7 @@ int Tdynamic_object::setAttribute (const string& rktNAME, NAttribute nVALUE, EAt
     return Tdynamic_base::setAttribute(rktNAME, nVALUE, eTYPE);
   }
 }
-int Tdynamic_object::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
+int Tdynamic_object::getAttribute (const std::string& rktNAME, NAttribute& rnVALUE)
 {
   if( rktNAME == "objptr")
   {
@@ -304,11 +304,11 @@ void Tdynamic_object::getAttributeList (TAttributeList& rtLIST) const
 // reference of some sort.
 //
 const char* Tdynamic_reference::skcpType = "reference";
-int Tdynamic_reference::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
+int Tdynamic_reference::setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
   return Tdynamic_object::setAttribute(rktNAME, nVALUE, eTYPE);
 }
-int Tdynamic_reference::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
+int Tdynamic_reference::getAttribute (const std::string& rktNAME, NAttribute& rnVALUE)
 {
   return Tdynamic_object::getAttribute (rktNAME, rnVALUE);
 }
@@ -352,7 +352,7 @@ extern int yyerror(const char*);
     }                                                                       \
   }
 
-int Tdotted_list::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
+int Tdotted_list::setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
   magic_pointer<Tdynamic_base> next = base;
   int ret_val = FX_ATTRIB_OK;
@@ -380,7 +380,7 @@ int Tdotted_list::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttri
   return FX_ATTRIB_WRONG_PARAM;
 }
 
-int Tdotted_list::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
+int Tdotted_list::getAttribute (const std::string& rktNAME, NAttribute& rnVALUE)
 {
   magic_pointer<Tdynamic_base> next = base;
   int ret_val = FX_ATTRIB_OK;

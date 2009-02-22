@@ -21,9 +21,9 @@
 
 #include <string>
 using std::string;
-#include <gtk--/dialog.h>
+#include <gtkmm/dialog.h>
 
-void MessageDialog (const string& rktTITLE, const string& rktTEXT);
+void MessageDialog (const std::string& rktTITLE, const std::string& rktTEXT);
 
 void MessageDialogCloseCB (Gtk::Dialog* ptDLG);
 

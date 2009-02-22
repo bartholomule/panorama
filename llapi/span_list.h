@@ -16,14 +16,20 @@
 *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef _SPAN_LIST__
-#define _SPAN_LIST__
+#ifndef PANORAMA_SPAN_LIST_H_INCLUDED
+#define PANORAMA_SPAN_LIST_H_INCLUDED
 
 #include <map>
 #include "llapi/surface_data.h"
+#include "llapi/string_dumpable.hpp"
 
-class TSpanList : public std::multimap<TScalar, TSurfaceData, less <TScalar> >
+namespace panorama
 {
+
+  class TSpanList
+    : public std::multimap<TScalar, TSurfaceData, std::less<TScalar> >
+    , public StringDumpable
+  {
 
   public:
 
@@ -32,7 +38,7 @@ class TSpanList : public std::multimap<TScalar, TSurfaceData, less <TScalar> >
 
       value_type entry = value_type(rktDATA.distance(), rktDATA);
       insert(entry);
-      
+
     }
 
     TSurfaceData first (void) const
@@ -44,14 +50,17 @@ class TSpanList : public std::multimap<TScalar, TSurfaceData, less <TScalar> >
 
     TSurfaceData last (void) const
     {
-      TSpanList::const_iterator   tIter = end();
+      TSpanList::const_iterator tIter = end();
 
       tIter--;
       return (*tIter).second;
     }
 
-    void printDebug (const string& indent) const;
-    
-};  /* class TSpanList */
+    virtual std::string internalMembers(const Indentation& indent, StringDumpable::PrefixType prefix) const;
 
-#endif  /* _SPAN_LIST__ */
+    virtual std::string name() const;
+
+  };  /* class TSpanList */
+} // end namespace panorama
+
+#endif  /* PANORAMA_SPAN_LIST_H_INCLUDED */

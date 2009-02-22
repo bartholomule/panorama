@@ -50,7 +50,7 @@ protected:
       
       if ( !ptPattern )
       {
-        GOM.error() << "Error: source pattern must be set" << endl;
+        GOM.error() << "Error: source pattern must be set" << std::endl;
 	exit (1);
       }
 
@@ -62,8 +62,8 @@ protected:
       return tColor;
     }
 
-    int setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
-    int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
+    int setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
+    int getAttribute (const std::string& rktNAME, NAttribute& rnVALUE);
     void getAttributeList (TAttributeList& rtLIST) const;
 
     void setPattern (pattern_pointer ptPATTERN)
@@ -71,7 +71,7 @@ protected:
       ptPattern = ptPATTERN;
     }
 
-    string className (void) const { return "PatternAmplifier"; }
+    std::string className (void) const { return "PatternAmplifier"; }
   
     TPatternAmplifier* clone_new() const { return new TPatternAmplifier(*this); }  
 

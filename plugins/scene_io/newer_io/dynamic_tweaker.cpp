@@ -19,7 +19,7 @@ magic_pointer<Tdynamic_base> convert_object(NAttribute nVALUE, EAttribType eTYPE
   case FX_REAL:
     return new Tdynamic_real(nVALUE.dValue);
   case FX_STRING:
-    printf("Created a dynamic string from barf\n");
+    printf("Created a dynamic std::string from barf\n");
     return new Tdynamic_string(string((const char*)nVALUE.pvValue));
   case FX_COLOR:
   case FX_VECTOR:
@@ -145,7 +145,7 @@ bool convert_object ( const magic_pointer<Tdynamic_base>& mpdb, NAttribute& rnVA
 magic_pointer<Tdynamic_base> add(const magic_pointer<Tdynamic_base>& mp1,
 				 const magic_pointer<Tdynamic_base>& mp2)
 {
-  // Add is valid for (real,real), (vector,vector), (string,string)
+  // Add is valid for (real,real), (vector,vector), (string,std::string)
   cast_check_and_op(+, Tdynamic_real,   Tdynamic_real,   Tdynamic_real,   getValue, getValue);
   cast_check_and_op(+, Tdynamic_vector, Tdynamic_vector, Tdynamic_vector, getValue, getValue);
   //  cast_check_and_op(+, Tdynamic_string, Tdynamic_string, Tdynamic_string, getValue, getValue);  
@@ -383,7 +383,7 @@ const TProcedural* get_object(const magic_pointer<Tdynamic_base>& tdb, bool bail
   }
   else if( is_string(tdb) )
   {
-    string name = get_string(tdb);
+    std::string name = get_string(tdb);
 
     // First, look at the attributes of the current object
     if( current_object != NULL )
@@ -407,7 +407,7 @@ const TProcedural* get_object(const magic_pointer<Tdynamic_base>& tdb, bool bail
 	}
 	else
 	{
-	  string message = string("attribute ") + name + string(" is not an object");
+	  std::string message = std::string("attribute ") + name + std::string(" is not an object");
 	  yyerror(message.c_str());
 	  exit(1);
 	}
@@ -421,12 +421,12 @@ const TProcedural* get_object(const magic_pointer<Tdynamic_base>& tdb, bool bail
       return get_object(located_object);
     }
 
-    string message = name + string(" could not be found");
+    std::string message = name + std::string(" could not be found");
     yyerror(message.c_str());
     exit(1);
   } // is_string(tdb)
 
-  string message = string("I don't know how to extract an object from a \"") + tdb->getDynamicType() + string("\"");
+  std::string message = std::string("I don't know how to extract an object from a \"") + tdb->getDynamicType() + std::string("\"");
   yyerror(message.c_str());
   exit(1);
 } // get_object
@@ -446,7 +446,7 @@ string get_string(const magic_pointer<Tdynamic_base>& tdb, bool bail)
     NAttribute val;
     if( convert_object(tdb, val, FX_STRING) )
     {
-      return string((const char*)val.pvValue);
+      return std::string((const char*)val.pvValue);
     }
   }
 
@@ -473,7 +473,7 @@ string get_string(const magic_pointer<Tdynamic_base>& tdb, bool bail)
     char buffer[1024];
     memset(buffer,'\0',1024);    
     TVector vec = get_vector(tdb);
-    string ret_string = "";
+    std::string ret_string = "";
     ret_string += "[";
     sprintf(buffer,"%f",(float)vec.x());
     ret_string += buffer;
@@ -489,7 +489,7 @@ string get_string(const magic_pointer<Tdynamic_base>& tdb, bool bail)
   
   if( bail )
   {
-    if( tdb->getDynamicType() == string("string") )
+    if( tdb->getDynamicType() == std::string("string") )
     {
       printf("FOOBAR!!! Something hosed!!!\n");
       printf("pointer=0x%06x, dynamic_string pointer=0x%06x\n",

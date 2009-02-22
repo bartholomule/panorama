@@ -22,29 +22,38 @@
 #include "llapi/scene.h"
 #include "scene_tree.h"
 #include <string>
-#include <gtk--/window.h>
-#include <gtk--/scrolledwindow.h>
-#include <gtk--/menubar.h>
-#include <gtk--/main.h>
-#include <gtk--/fileselection.h>
+#include <gtkmm/window.h>
+#include <gtkmm/scrolledwindow.h>
+#include <gtkmm/main.h>
+#include <gtkmm/fileselection.h>
+#include <gtkmm/uimanager.h>
 
 class TSceneWindow : public Gtk::Window
 {
 
 protected:
 
+  static size_t window_count;
+
   Gtk::ScrolledWindow* ptSWnd;
-  Gtk::MenuBar*        ptMenuBar;
   TSceneTree*        ptTree;
-  string             tSceneName;
-  TScene*            ptScene;
+  std::string        tSceneName;
+  magic_pointer<TScene> ptScene;
   bool               gModified;
 
-  bool setSensitive (const char* pkcPATH, bool gSENSITIVE);
-    
+  Glib::RefPtr<Gtk::UIManager> ui_manager;
+  Glib::RefPtr<Gtk::ActionGroup> action_group;
+
+  void setSensitive(const std::string& name, bool value);
+  
+  // Callbacks:
+  virtual void unimplemented(const std::string& name);
+  //  virtual void create_new_window() const;
+  //  virtual void open_file_dialog();
+
 public:
 
-  static size_t   _zWindows;
+
 
   Gtk::Main*            ptMain;
   Gtk::FileSelection*   ptFileSelection;
@@ -53,14 +62,13 @@ public:
 
   void setSceneFile (void);
   void openNewSceneWindow (void);
-  void setSceneTree (void);
 
-  TScene* scene (void) const { return ptScene; }
-    
+  magic_pointer<TScene> scene (void) const { return ptScene; }
+
   gint delete_event_impl (GdkEventAny* ptEVENT)
   {
-    _zWindows--;
-    if ( !_zWindows )
+    window_count--;
+    if ( !window_count )
     {
       //      ptMain->quit();
       Gtk::Main::quit();

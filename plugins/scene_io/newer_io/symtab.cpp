@@ -25,7 +25,7 @@ void initialize_scope(stack_item_type& sit, const stack_item_type& parent_scope)
   }
 }
 
-void put_top(const string& name, const item_type& it)
+void put_top(const std::string& name, const item_type& it)
 {
   scope_type& st=*scope_stack.top();
 
@@ -46,7 +46,7 @@ void put_top(const string& name, const item_type& it)
 }
 
 
-item_type locate_reference(const string& name, const stack_item_type& table)
+item_type locate_reference(const std::string& name, const stack_item_type& table)
 {
   item_type located_reference = NULL;
 
@@ -58,7 +58,7 @@ item_type locate_reference(const string& name, const stack_item_type& table)
   return located_reference;
 }
 
-item_type locate_reference(const string& name)
+item_type locate_reference(const std::string& name)
 {
   item_type located_instance = NULL;
 
@@ -103,7 +103,7 @@ void init_symtab()
 // Members for the scope_object class.
 //
 const char* scope_object::skcpType = "scope";
-int scope_object::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
+int scope_object::setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
   scope_type::iterator i = scope->find(rktNAME);
   
@@ -134,7 +134,7 @@ int scope_object::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttri
   }
 }
 
-int scope_object::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
+int scope_object::getAttribute (const std::string& rktNAME, NAttribute& rnVALUE)
 {
   scope_type::const_iterator i = scope->find(rktNAME);
   

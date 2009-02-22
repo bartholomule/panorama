@@ -29,27 +29,27 @@ typedef TSceneRT::attrib_type attrib_type;
 
 #define POP()           top(); TSceneRT::_tDataStack.pop()  // Fix to STL's pop()
 
-#define DATA		(TSceneRT::_tDataStack.top())
+#define DATA            (TSceneRT::_tDataStack.top())
 #define DATAMAP         (TSceneRT::_tDataMap)
-#define DATASTACK       (TSceneRT::_tDataStack) 
-#define SCENE		(TSceneRT::_ptParsedScene)
+#define DATASTACK       (TSceneRT::_tDataStack)
+#define SCENE           (TSceneRT::_ptParsedScene)
 #define PARENT_OBJECT   (TSceneRT::_ptParent)
 #define WORLD           (TSceneRT::_ptWorld)
-extern void rt_error (const string& rksTEXT);
-extern void rt_warning (const string& rksTEXT);
+extern void rt_error (const std::string& rksTEXT);
+extern void rt_warning (const std::string& rksTEXT);
 //---------------------------------------------------------------------------
 
 static void PrintJunk(magic_pointer<TAttribute> attr)
 {
-  GOM.out() << attr->toString() << endl;
+  GOM.out() << attr->toString() << std::endl;
 }
 
-static string env(string s)
+static std::string env(std::string s)
 {
   char* env_text = getenv(s.c_str());
   if( env_text != NULL )
   {
-    return string(env_text);
+    return std::string(env_text);
   }
   else
   {
@@ -58,12 +58,12 @@ static string env(string s)
   }
 }
 
-static string envnull(string s)
+static std::string envnull(std::string s)
 {
   char* env_text = getenv(s.c_str());
   if( env_text != NULL )
   {
-    return string(env_text);
+    return std::string(env_text);
   }
   else
   {
@@ -82,31 +82,31 @@ static void PrintFunctionList()
 {
   TUserFunctionMap all_functions = all_user_functions();
 
-  GOM.out() << "Currently accessable functions are:" << endl;
+  GOM.out() << "Currently accessable functions are:" << std::endl;
   for( TUserFunctionMap::iterator i = all_functions.begin();
        i != all_functions.end();
        ++i )
   {
-    string function_name = i->first;
-    vector<user_arg_type> args = i->second->required_args();
+    std::string function_name = i->first;
+    std::vector<user_arg_type> args = i->second->required_args();
 
     GOM.out() << "  " << function_name << "(";
 
-    vector<user_arg_type>::iterator i = args.begin();
+    std::vector<user_arg_type>::iterator i = args.begin();
 
     if( i != args.end() )
     {
       GOM.out() << (*i)->AttributeName();
       for( ++i;
-	   i != args.end();
-	   ++i )
+           i != args.end();
+           ++i )
       {
-	GOM.out() << ", " << (*i)->AttributeName();
+        GOM.out() << ", " << (*i)->AttributeName();
       }
     }
 
-    GOM.out() << ")" << endl;
-    
+    GOM.out() << ")" << std::endl;
+
   }
 }
 
@@ -115,11 +115,11 @@ static void Halt()
   GOM.error() << "Terminating due to halt request on line "
        << TSceneRT::_dwLineNumber
        << "."
-       << endl;
-  exit(1);  
+       << std::endl;
+  exit(1);
 }
 
-static string AttributeType(magic_pointer<TAttribute> attr)
+static std::string AttributeType(magic_pointer<TAttribute> attr)
 {
   if( !!attr )
   {
@@ -128,10 +128,10 @@ static string AttributeType(magic_pointer<TAttribute> attr)
   else
   {
     return "undefined";
-  }  
+  }
 }
 
-static string AttributeList(magic_pointer<TAttribute> attr)
+static std::string AttributeList(magic_pointer<TAttribute> attr)
 {
   magic_pointer<TProcedural> proc = get_procedural_var(attr);
   if( !proc )
@@ -141,20 +141,20 @@ static string AttributeList(magic_pointer<TAttribute> attr)
   }
   else
   {
-    string attr_str = "";
-    
+    std::string attr_str = "";
+
     attr_str = "( ";
     TAttributeList attr_list;
     proc->getAttributeList(attr_list);
     for(TAttributeList::const_iterator i = attr_list.begin();
-	i != attr_list.end();
-	++i)
+        i != attr_list.end();
+        ++i)
     {
       attr_str += i->first + " ";
     }
     attr_str += ")";
     return attr_str;
-  }  
+  }
 }
 
 static TVector getVector(magic_pointer<TAttribute> atp)
@@ -164,7 +164,7 @@ static TVector getVector(magic_pointer<TAttribute> atp)
   {
     return vec->tValue;
   }
-  rt_error("cannot extract vector from " + ((!!atp)?(atp->toString()):("NULL attribute")));
+  rt_error("cannot extract std::vector from " + ((!!atp)?(atp->toString()):("NULL attribute")));
   return TVector();
 }
 
@@ -186,7 +186,7 @@ static TVector2 getVector2(magic_pointer<TAttribute> atp)
   {
     return vec->tValue;
   }
-  rt_error("cannot extract vector2 from " + ((!!atp)?(atp->toString()):("NULL attribute")));
+  rt_error("cannot extract std::vector2 from " + ((!!atp)?(atp->toString()):("NULL attribute")));
   return TVector2();
 }
 
@@ -223,7 +223,7 @@ static TScalar getScalar(magic_pointer<TAttribute> atp)
   return TScalar(0);
 }
 
-static void evaluate(const string& s)
+static void evaluate(const std::string& s)
 {
   rt_error("EVAL DOES NOT WORK! DO NOT USE IT!");
   exit(1);
@@ -244,12 +244,12 @@ static void debug(bool b)
   }
   else
   {
-    GOM.DisableStream("debug");    
+    GOM.DisableStream("debug");
   }
 }
 
 
-static string ifnull(string test, string failure)
+static std::string ifnull(std::string test, std::string failure)
 {
   if( !test.empty() )
   {
@@ -283,7 +283,7 @@ void GlobalInitFunctions (void)
 
   double (*fn)(double);
   double (*fn2)(double,double);
-#if defined(MATH_USE_INF_TESTS)  
+#if defined(MATH_USE_INF_TESTS)
 #if defined(INF_TEST_REQUIRES_THROW)
   int (*fn3)(double) throw();
 #else
@@ -294,7 +294,7 @@ void GlobalInitFunctions (void)
   GLOBAL_FUNCTIONS.clear();
 
   // Functions for random numbers
-  GLOBAL_FUNCTIONS["setRandSeed"] = create_user_function(&SeedRandom);  
+  GLOBAL_FUNCTIONS["setRandSeed"] = create_user_function(&SeedRandom);
   GLOBAL_FUNCTIONS["rand"] = create_user_function(&frand);
 
   // Functions for language features
@@ -307,23 +307,23 @@ void GlobalInitFunctions (void)
   GLOBAL_FUNCTIONS["eval"] = create_user_function(&evaluate);
   GLOBAL_FUNCTIONS["env"] = create_user_function(&env);
   GLOBAL_FUNCTIONS["envnull"] = create_user_function(&envnull);
-  GLOBAL_FUNCTIONS["reduction_reporting"] = create_user_function(&set_reduction_reporting);  
+  GLOBAL_FUNCTIONS["reduction_reporting"] = create_user_function(&set_reduction_reporting);
   GLOBAL_FUNCTIONS["debug"] = create_user_function(&debug);
-  GLOBAL_FUNCTIONS["debuglevel"] = create_user_function(&set_debug_level);    
-  
+  GLOBAL_FUNCTIONS["debuglevel"] = create_user_function(&set_debug_level);
+
   // Functions for type conversions
   GLOBAL_FUNCTIONS["vector"]  = create_user_function(&getVector);
   GLOBAL_FUNCTIONS["vector2"] = create_user_function(&getVector2);
   GLOBAL_FUNCTIONS["real"]    = create_user_function(&getScalar);
   GLOBAL_FUNCTIONS["int"]     = create_user_function(&getInt);
-  GLOBAL_FUNCTIONS["bool"]    = create_user_function(&getBool);  
-  GLOBAL_FUNCTIONS["color"]   = create_user_function(&getColor);        
+  GLOBAL_FUNCTIONS["bool"]    = create_user_function(&getBool);
+  GLOBAL_FUNCTIONS["color"]   = create_user_function(&getColor);
 
   // General useful functions
   GLOBAL_FUNCTIONS["ifnull"]  = create_user_function(&ifnull);
   GLOBAL_FUNCTIONS["min"]  = create_user_function(&minimum_value);
-  GLOBAL_FUNCTIONS["max"]  = create_user_function(&maximum_value);  
-  
+  GLOBAL_FUNCTIONS["max"]  = create_user_function(&maximum_value);
+
   // Math functions
   // Trig functions
   fn = &std::sin;
@@ -354,7 +354,7 @@ void GlobalInitFunctions (void)
 #if defined(MATH_USE_ARC_HYP_TRIG)
 #undef asinh
 #undef acosh
-#undef atanh  
+#undef atanh
 
   fn = &std::asinh;
   GLOBAL_FUNCTIONS["asinh"] = create_user_function(fn);
@@ -364,7 +364,7 @@ void GlobalInitFunctions (void)
   GLOBAL_FUNCTIONS["atanh"] = create_user_function(fn);
 #endif
 #endif /* 0 */
-  
+
   // Logarithmic functions
   fn = &std::exp;
   GLOBAL_FUNCTIONS["exp"] = create_user_function(fn);
@@ -379,7 +379,7 @@ void GlobalInitFunctions (void)
   fn2 = &std::hypot;
   GLOBAL_FUNCTIONS["hypot"] = create_user_function(fn2);
 #endif
-  
+
 
   // Misc math functions
   fn = &std::sqrt;
@@ -420,7 +420,7 @@ void GlobalInitFunctions (void)
   fn2 = &std::copysign;
   GLOBAL_FUNCTIONS["copysign"] = create_user_function(fn2);
 #endif /* MATH_USE_COPYSIGN */
-  
+
   GLOBAL_FUNCTIONS["sign"] = create_user_function(&sign);
 
 }  /* InitFunctions() */
@@ -430,59 +430,59 @@ TUserFunctionMap all_user_functions()
 {
   TUserFunctionMap temp_map;
 
-  // GOM.debug() << "Getting global functions." << endl;
+  // GOM.debug() << "Getting global functions." << std::endl;
   temp_map.insert(GLOBAL_FUNCTIONS.begin(),
-		  GLOBAL_FUNCTIONS.end());
-  
+                  GLOBAL_FUNCTIONS.end());
 
-  stack<attrib_type> temp_stack;
+
+  std::stack<attrib_type> temp_stack;
 
   // Copy from the current stack to a new one...
   while( !DATASTACK.empty() )
   {
     magic_pointer<TAttribute> attr = DATASTACK.top();
     DATASTACK.pop();
-    
+
     temp_stack.push(attr);
   }
 
   // Now, copy back, collecting any procedural variables in the stack...
-  // GOM.debug() << "Getting all local functions (in all scopes)." << endl;
+  // GOM.debug() << "Getting all local functions (in all scopes)." << std::endl;
 
   while( !temp_stack.empty() )
   {
     magic_pointer<TAttribute> attr = temp_stack.top();
     temp_stack.pop();
 
-    //    GOM.debug() << "Adding functions from " << attr->toString() << endl;
-    
+    //    GOM.debug() << "Adding functions from " << attr->toString() << std::endl;
+
 
     DATASTACK.push(attr);
 
     if( !!attr)
     {
       magic_pointer<TProcedural> proc = get_procedural_var(attr);
-      
+
       if( !!proc )
       {
-	TUserFunctionMap new_map = proc->getUserFunctions();
+        TUserFunctionMap new_map = proc->getUserFunctions();
 
-	// I (KH) believe that the following line is failing (new values are
-	// NOT overwriting previous values) on gcc-2.95.3.  Therefore, I am
-	// going to try to manually insert all of the items.
-	//    temp_map.insert(new_map.begin(), new_map.end());
+        // I (KH) believe that the following line is failing (new values are
+        // NOT overwriting previous values) on gcc-2.95.3.  Therefore, I am
+        // going to try to manually insert all of the items.
+        //    temp_map.insert(new_map.begin(), new_map.end());
 
-	for(TUserFunctionMap::iterator i = new_map.begin();
-	    i != new_map.end();
-	    ++i)
-	{
-	  //	  GOM.debug() << "Manually placing " << i->first << " into the map." << endl;
-	  temp_map[i->first] = i->second;
-	}
+        for(TUserFunctionMap::iterator i = new_map.begin();
+            i != new_map.end();
+            ++i)
+        {
+          //      GOM.debug() << "Manually placing " << i->first << " into the map." << std::endl;
+          temp_map[i->first] = i->second;
+        }
       }
     }
   }
 
-  // GOM.debug() << "Returning functions..." << endl;
+  // GOM.debug() << "Returning functions..." << std::endl;
   return temp_map;
 }

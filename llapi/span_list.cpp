@@ -19,16 +19,36 @@
 #include "llapi/warning_eliminator.h"
 #include "llapi/span_list.h"
 
-void TSpanList::printDebug (const string& indent) const
+namespace panorama
 {
-
-  GOM.debug() << indent << "[_SpanList_]" << endl;
-
-  string new_indent = TDebug::Indent(indent);
-
-  for (TSpanList::const_iterator tIter = begin(); ( tIter != end() ) ;tIter++)
+  std::string TSpanList::internalMembers(const Indentation& indent,
+    StringDumpable::PrefixType prefix) const;
   {
-    (*tIter).second.printDebug(new_indent);
+    std::string tag = indent.level();
+    if( prefix == E_PREFIX_CLASSNAME )
+    {
+      tag = indent.level() + TSpanList::name() + "::";
+    }
+
+    Indentation nextIndent = indent.nextLevel();
+    std::string retval;
+
+    if( !empty() )
+    {
+      for (TSpanList::const_iterator tIter = begin(); ( tIter != end() ) ;tIter++)
+      {
+        retval += tag + string_format("%1=%2\n", tIter->first, toString(tIter->second, nextIndent, prefix));
+      }
+    }
+    else
+    {
+      retval = "EMPTY";
+    }
+    return retval;
   }
-  
-}  /* printDebug() */
+
+  std::string TSpanList::name() const
+  {
+    return "SpanList";
+  }
+} // namespace panroama

@@ -34,11 +34,11 @@ class TImageTga : public TImageIO
     int save (const TImage* pktIMAGE);
     TImage* load (void);
 
-    string className (void) const { return "ImageTga"; }
+    std::string className (void) const { return "ImageTga"; }
 
   protected:
 
-    inline void grabRGB (Byte bPixelSize, ifstream &sTGAStream, Byte& bRed, Byte& bGreen, Byte& bBlue); 
+    inline void grabRGB (Byte bPixelSize, std::ifstream &sTGAStream, Byte& bRed, Byte& bGreen, Byte& bBlue); 
     
 };  /* class TImageTga */
 

@@ -395,7 +395,7 @@ void TIF_Lens_Flare::flaresByLightsources (void)
 
   ptSceneCamera = ptScene->camera();
 
-  for (vector<magic_pointer<TLight> >::const_iterator tIter = ptScene->lightList().begin(); ( tIter != ptScene->lightList().end() ) ;tIter++)
+  for (std::vector<magic_pointer<TLight> >::const_iterator tIter = ptScene->lightList().begin(); ( tIter != ptScene->lightList().end() ) ;tIter++)
   {
     ptLight = rcp_static_cast<const TLight>(*tIter);
 
@@ -493,7 +493,7 @@ void TIF_Lens_Flare::filter (SBuffers& rsBUFFERS)
 }  /* filter() */
 
 
-int TIF_Lens_Flare::setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
+int TIF_Lens_Flare::setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE)
 {
 
   if ( rktNAME == "lf_type" )
@@ -508,9 +508,9 @@ int TIF_Lens_Flare::setAttribute (const string& rktNAME, NAttribute nVALUE, EAtt
     if ( val )
     {
 #if !defined(NEW_ATTRIBUTES)
-      string tType ((char *) nVALUE.pvValue);
+      std::string tType ((char *) nVALUE.pvValue);
 #else
-      string tType = str->tValue;
+      std::string tType = str->tValue;
 #endif
       
       if ( tType == "near" )
@@ -546,9 +546,9 @@ int TIF_Lens_Flare::setAttribute (const string& rktNAME, NAttribute nVALUE, EAtt
     if ( val )
     {
 #if !defined(NEW_ATTRIBUTES)      
-      string tForm ((char *) nVALUE.pvValue);
+      std::string tForm ((char *) nVALUE.pvValue);
 #else
-      string tForm = str->tValue;
+      std::string tForm = str->tValue;
 #endif
 
       if ( tForm == "pentagons" )
@@ -678,7 +678,7 @@ int TIF_Lens_Flare::setAttribute (const string& rktNAME, NAttribute nVALUE, EAtt
 }  /* setAttribute() */
 
 
-int TIF_Lens_Flare::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
+int TIF_Lens_Flare::getAttribute (const std::string& rktNAME, NAttribute& rnVALUE)
 {
 #if !defined(NEW_ATTRIBUTES)
   if ( rktNAME == "lf_type" )
@@ -736,8 +736,8 @@ int TIF_Lens_Flare::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
 #else
   if ( rktNAME == "lf_type" )
   {
-    static map<ELFTypes,string> type_strings;
-    static vector<string> type_choices;
+    static std::map<ELFTypes,std::string> type_strings;
+    static std::vector<std::string> type_choices;
     
     if( type_strings.empty() )
     {
@@ -753,8 +753,8 @@ int TIF_Lens_Flare::getAttribute (const string& rktNAME, NAttribute& rnVALUE)
   }
   else if ( rktNAME == "lf_form" )
   {
-    static map<ELFForms,string> form_strings;
-    static vector<string> form_choices;
+    static std::map<ELFForms,std::string> form_strings;
+    static std::vector<std::string> form_choices;
     if( form_strings.empty() )
     {
       form_strings[FX_CIRCLE] = "circles";

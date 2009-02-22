@@ -84,14 +84,14 @@ class TBsdfSchlick : public TBsdf
       rtDIR = ( dotProduct (v, rktDATA.normal()) > 0 ) ? v : -v;
     }
 
-    int setAttribute (const string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
-    int getAttribute (const string& rktNAME, NAttribute& rnVALUE);
+    int setAttribute (const std::string& rktNAME, NAttribute nVALUE, EAttribType eTYPE);
+    int getAttribute (const std::string& rktNAME, NAttribute& rnVALUE);
     void getAttributeList (TAttributeList& rtLIST) const;
 
     inline TScalar getA (void) const { return A; }
     inline TScalar getB (void) const { return B; }
 
-    string className (void) const { return "BsdfSchlick"; }
+    std::string className (void) const { return "BsdfSchlick"; }
 
     TBsdfSchlick* clone_new() const { return new TBsdfSchlick(*this); }
   

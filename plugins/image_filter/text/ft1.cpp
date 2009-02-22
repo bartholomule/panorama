@@ -45,7 +45,7 @@ void TIF_Text::filter (SBuffers& rsBUFFERS)
   iError = TT_Init_FreeType (&tEngine);
   if ( iError )
   {
-    GOM.error() << "Could not create FreeType engine." << endl;
+    GOM.error() << "Could not create FreeType engine." << std::endl;
     return;
   }
   
@@ -56,12 +56,12 @@ void TIF_Text::filter (SBuffers& rsBUFFERS)
   }
   else
   {
-    multimap<string, string>::const_iterator   iter;
+    multimap<string, std::string>::const_iterator   iter;
 
     iter = tConfigData.find ("FontPath");
     while ( ( iter != tConfigData.end() ) && ( (*iter).first == "FontPath" ) )
     {
-      string   tAux ((*iter).second + "/" + tFontFile);
+      std::string   tAux ((*iter).second + "/" + tFontFile);
       
       if ( FileExists (tAux) )
       {
@@ -74,56 +74,56 @@ void TIF_Text::filter (SBuffers& rsBUFFERS)
 
   if ( iError )
   {
-    GOM.error() << "Could not open file '" << tFontFile << "'." << endl;
+    GOM.error() << "Could not open file '" << tFontFile << "'." << std::endl;
     return;
   }
 
   iError = TT_Set_Raster_Gray_Palette (tEngine, abPalette);
   if ( iError )
   {
-    GOM.error() << "Could not set raster palette." << endl;
+    GOM.error() << "Could not set raster palette." << std::endl;
     return;
   }
     
   iError = TT_Get_Face_Properties (tFace, &tFaceProps);
   if ( iError )
   {
-    GOM.error() << "Could not get face properties." << endl;
+    GOM.error() << "Could not get face properties." << std::endl;
     return;
   }
 
   iError = TT_New_Instance (tFace, &tInstance);
   if ( iError )
   {
-    GOM.error() << "Could not create instance." << endl;
+    GOM.error() << "Could not create instance." << std::endl;
     return;
   }
 
   iError = TT_Set_Instance_Resolutions (tInstance, 72, 72);
   if ( iError )
   {
-    GOM.error() << "Could not set resolution." << endl;
+    GOM.error() << "Could not set resolution." << std::endl;
     return;
   }
 
   iError = TT_Set_Instance_CharSize (tInstance, wSize);
   if ( iError )
   {
-    GOM.error() << "Could not set character size." << endl;
+    GOM.error() << "Could not set character size." << std::endl;
     return;
   }
 
   iError = TT_Get_CharMap (tFace, 0, &tCharMap);
   if ( iError )
   {
-    GOM.error() << "Could not get charmap." << endl;
+    GOM.error() << "Could not get charmap." << std::endl;
     return;
   }
 
   iError = TT_New_Glyph (tFace, &tGlyph);
   if ( iError )
   {
-    GOM.error() << "Could not create glyph." << endl;
+    GOM.error() << "Could not create glyph." << std::endl;
     return;
   }
 
@@ -150,15 +150,15 @@ void TIF_Text::filter (SBuffers& rsBUFFERS)
     uIndex = TT_Char_Index (tCharMap, tText[tI]);
     if ( ! uIndex )
     {
-      GOM.error() << "Could not find char index for '" << tText[tI] << "'." << endl;
+      GOM.error() << "Could not find char index for '" << tText[tI] << "'." << std::endl;
       continue;
     }
     
     iError = TT_Load_Glyph (tInstance, tGlyph, uIndex, TTLOAD_DEFAULT);
     if ( iError )
     {
-      GOM.error() << "Could not load glyph for '" << tText[tI] << "'." << endl;
-      GOM.error() << "Error code: " << iError << endl;
+      GOM.error() << "Could not load glyph for '" << tText[tI] << "'." << std::endl;
+      GOM.error() << "Error code: " << iError << std::endl;
       continue;
     }
 
