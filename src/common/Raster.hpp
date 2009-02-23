@@ -1,5 +1,5 @@
 /*
- * $Id: Raster.hpp,v 1.1.2.1 2009/02/22 10:09:56 kpharris Exp $
+ * $Id: Raster.hpp,v 1.1.2.2 2009/02/23 04:56:13 kpharris Exp $
  *
  * Part of GNU Panorama -- a framework for graphics production.
  * Copyright (C) 2009 Kevin Harris
@@ -44,7 +44,7 @@ namespace panorama
 	 * have iterators (at this time).
 	 *
 	 * @author Kevin Harris <kpharris@users.sourceforge.net>
-	 * @version $Revision: 1.1.2.1 $
+	 * @version $Revision: 1.1.2.2 $
 	 *
 	 */
 	template <typename T>
@@ -110,12 +110,14 @@ namespace panorama
 
 		/**
 		 * Resize the current raster to the given width and height, shifting old
-		 * data to be centered at cx,cy in the newly sized raster, and filling the
-		 * rest with the given fill data.
+		 * data to have the upper left at ux,uy in the newly sized raster, and
+		 * filling the rest with the given fill data.
 		 *
+		 * If ux or uy are out of range (abs(ux) >= width || abs(uy) >= height),
+		 * no data will be copied and the entire raster will be filled.
 		 */
 		void resize(unsigned width, unsigned height,
-			int cx, int cy, const T& fill);
+			int ux, int uy, const T& fill);
 
 		/**
 		 *
@@ -183,6 +185,8 @@ namespace panorama
 		unsigned height;
 		/** The actual raster data. */
 		T* raster_data;
+
+		void swap(Raster<T>& rast);
 	}; // class Raster
 
 	/**
@@ -200,7 +204,7 @@ namespace panorama
 	 * row number be changed.
 	 *
 	 * @author Kevin Harris
-	 * @version $Revision: 1.1.2.1 $
+	 * @version $Revision: 1.1.2.2 $
 	 */
 	template <class T>
 	class Scanline
@@ -352,29 +356,13 @@ namespace panorama
 		// Generic check for self-assignment
 		if( &old != this )
 		{
-			delete[] raster_data;
+			// Instead of doing actual assignment, do a copy/swap.  This gives
+			// strong exception safety.
+			Raster<T> copy = old;
+			this->swap(copy);
 
-			width = old.width;
-			height = old.height;
-
-			unsigned linear_size = width * height;
-			// Check to see that the size is non-zero, and make sure no null-data
-			// crept into the old copy.
-			if( (linear_size > 0) && old.raster_data )
-			{
-				raster_data = new T[linear_size];
-
-				for( unsigned i = 0; i < linear_size; ++i )
-				{
-					raster_data[i] = old.raster_data[i];
-				}
-			}
-			else
-			{
-				raster_data = NULL;
-				width = 0;
-				height = 0;
-			}
+			// This doesn't do anything for this class, but is good to do in general.
+			BaseClass::operator=(old);
 		}
 		return(*this);
 	} // Raster::operator=(Raster)
@@ -442,13 +430,13 @@ namespace panorama
 		Y_WITHIN_HEIGHT(y1);
 		Y_WITHIN_HEIGHT(y2);
 
-		if (x1 >= x2 )
+		if (x1 > x2 )
 		{
-			BLOCXX_THROW(OutOfBoundsException, blocxx::Format("X dimensions are incorrectly ordered: %1 >= %2", x1, x2).c_str());
+			BLOCXX_THROW(OutOfBoundsException, blocxx::Format("X dimensions are incorrectly ordered: %1 > %2", x1, x2).c_str());
 		}
-		if( y1 >= y2 )
+		if( y1 > y2 )
 		{
-			BLOCXX_THROW(OutOfBoundsException, blocxx::Format("Y dimensions are incorrectly ordered: %1 >= %2", y1, y2).c_str());
+			BLOCXX_THROW(OutOfBoundsException, blocxx::Format("Y dimensions are incorrectly ordered: %1 > %2", y1, y2).c_str());
 		}
 
 		// Both of these add 1, because it is inclusive...
@@ -471,109 +459,68 @@ namespace panorama
 	template <class T>
 	void Raster<T>::resize(unsigned width, unsigned height, bool preserve)
 	{
-		// FIXME! Strong exception safety
-		unsigned old_width = this->width;
-		unsigned old_height = this->height;
-		T* old_data = raster_data;
-
-
 		// If there is no change in size, do nothing but return.
-		if( (width == old_width) && (height == old_height) )
+		if( (width == this->width) && (height == this->height) )
 		{
 			return;
 		}
 
-		if( (width > 0) && (height > 0) )
-		{
-			this->width = width;
-			this->height = height;
-			raster_data = new T[width * height];
-		}
-		else
-		{
-			// Destroy the current Raster, as a zero-sized resize was given.
-			this->width = 0;
-			this->height = 0;
-			raster_data = NULL;
-		}
+		Raster<T> resized(width, height);
 
 		// If it was requested to preserve data, copy as much as possible...
-		if( preserve && old_data && raster_data )
+		if( preserve && this->raster_data && resized.raster_data )
 		{
-			unsigned max_x = std::min(old_width, width);
-			unsigned max_y = std::min(old_height, height);
+			unsigned max_x = std::min(this->width, width);
+			unsigned max_y = std::min(this->height, height);
 			for( unsigned y = 0; y < max_y; ++y )
 			{
 				for( unsigned x = 0; x < max_x; ++x )
 				{
-					raster_data[(y * width) + x] = old_data[(y * old_width) + x];
+					resized.raster_data[(y * width) + x] = raster_data[(y * this->width) + x];
 				}
 			}
 		}
 
-		// Delete the old data (if any).
-		delete[] old_data;
+		this->swap(resized);
 	}
 
 	template <class T>
 	void Raster<T>::resize(unsigned width, unsigned height,
-		int cx, int cy, const T& fill)
+		int ux, int uy, const T& fill)
 	{
-		// FIXME! Strong exception safety
-		unsigned old_width = this->width;
-		unsigned old_height = this->height;
-		int old_mid_x = old_width / 2;
-		int old_mid_y = old_height / 2;
-		T* old_data = raster_data;
-
 		// If there is no change, return, doing nothing.
-		if( (old_width == width) && (old_height == height) &&
-			(old_mid_x == cx) && (old_mid_y == cy) )
+		if( (this->width == width) && (this->height == height) &&
+			(ux == 0) && (uy == 0) )
 		{
 			return;
 		}
 
-		if( (width > 0) && (height > 0) )
-		{
-			this->width = width;
-			this->height = height;
-			raster_data = new T[width * height];
-		}
-		else
-		{
-			// Destroy the current Raster, as a zero-sized resize was given.
-			this->width = 0;
-			this->height = 0;
-			raster_data = NULL;
-		}
+		Raster<T> resized(width, height);
 
 		// If it is possible to preserve data, copy as much as possible, and fill
 		// the rest.
-		if( old_data && raster_data )
+		if( !empty() && !resized.empty() )
 		{
-			int olx = cx - old_mid_x;
-			int oux = cx + (old_width - old_mid_x);
-			int oly = cy - old_mid_y;
-			int ouy = cy + (old_height - old_mid_y);
+			int oux = ux + this->width;
+			int ouy = uy + this->height;
 
-			unsigned min_x = std::max(olx, 0);
-			unsigned max_x = std::min(oux, int(width));
-			unsigned min_y = std::max(oly, 0);
-			unsigned max_y = std::min(ouy, int(height));
+			unsigned min_x = std::max(ux, 0);
+			unsigned max_x = std::max(std::min(oux, int(width)), 0);
+			unsigned min_y = std::max(uy, 0);
+			unsigned max_y = std::max(std::min(ouy, int(height)), 0);
 
-
-			int x_shift = -olx;
-			int y_shift = -oly;
+			int x_shift = -ux;
+			int y_shift = -uy;
 			// Copy any useful data.
 			for( unsigned y = min_y; y < max_y; ++y )
 			{
 				unsigned old_y = y + y_shift;
-				unsigned old_lin_y = old_y * old_width;
+				unsigned old_lin_y = old_y * this->width;
 				unsigned lin_y = y * width;
 				for( unsigned x = min_x; x < max_x; ++x )
 				{
 					unsigned old_x = x + x_shift;
-					raster_data[lin_y + x] = old_data[old_lin_y + old_x];
+					resized.raster_data[lin_y + x] = raster_data[old_lin_y + old_x];
 				}
 			}
 
@@ -604,7 +551,7 @@ namespace panorama
 			{
 				for( unsigned x = 0; x < width; ++x )
 				{
-					raster_data[(y * width) + x] = fill;
+					resized.raster_data[(y * width) + x] = fill;
 				}
 			}
 			// (2) Fill below the copied rectangle, if it needs it...
@@ -612,7 +559,7 @@ namespace panorama
 			{
 				for( unsigned x = 0; x < width; ++x )
 				{
-					raster_data[(y * width) + x] = fill;
+					resized.raster_data[(y * width) + x] = fill;
 				}
 			}
 			// (3) Fill the gap on the left (if any)
@@ -622,7 +569,7 @@ namespace panorama
 				{
 					for( unsigned x = 0; x < min_x; ++x )
 					{
-						raster_data[(y * width) + x] = fill;
+						resized.raster_data[(y * width) + x] = fill;
 					}
 				}
 			}
@@ -633,7 +580,7 @@ namespace panorama
 				{
 					for( unsigned x = max_x; x < width; ++x )
 					{
-						raster_data[(y * width) + x] = fill;
+						resized.raster_data[(y * width) + x] = fill;
 					}
 				}
 			}
@@ -641,15 +588,14 @@ namespace panorama
 		else
 		{
 			// Preservation is not possible, fill everything.
-			unsigned max_linear = this->width * this->height;
+			unsigned max_linear = width * height;
 			for( unsigned i = 0; i < max_linear; ++i )
 			{
-				raster_data[i] = fill;
+				resized.raster_data[i] = fill;
 			}
 		}
 
-		// Delete the old data (if any).
-		delete[] old_data;
+		this->swap(resized);
 	}
 
 
@@ -678,6 +624,14 @@ namespace panorama
 		collector.addMember("width", width);
 		collector.addMember("height", height);
 		collector.addMember("raster_data", "...");
+	}
+
+	template <typename T>
+	void Raster<T>::swap(Raster<T>& rast)
+	{
+		std::swap(width, rast.width);
+		std::swap(height, rast.height);
+		std::swap(raster_data, rast.raster_data);
 	}
 
 	// **********************************************************************

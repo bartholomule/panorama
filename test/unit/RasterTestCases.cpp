@@ -83,15 +83,96 @@ AUTO_UNIT_TEST(raster_reinterpret)
 
 AUTO_UNIT_TEST(raster_resize_regular)
 {
-	// FIXME!
+	panorama::Raster<int> raster = getFilledRaster(7,4);
+	unitAssertEquals(28u, raster.getNumPixels());
+	raster.resize(2,3);
+	unitAssertEquals(6u, raster.getNumPixels());
+	unitAssertEquals(2u, raster.getWidth());
+	unitAssertEquals(3u, raster.getHeight());
+
+	// The data must be preserved...
+	unitAssertEquals(1, raster(0,0));
+	unitAssertEquals(2, raster(1,0));
+	unitAssertEquals(2, raster(0,1));
+	unitAssertEquals(4, raster(1,1));
+	unitAssertEquals(3, raster(0,2));
+	unitAssertEquals(6, raster(1,2));
 }
 
 AUTO_UNIT_TEST(raster_resize_fill)
 {
-	// FIXME!
+	panorama::Raster<int> raster = getFilledRaster(2,2);
+	unitAssertEquals(4u, raster.getNumPixels());
+	raster.resize(4,4,1,1,-1);
+	unitAssertEquals(16u, raster.getNumPixels());
+
+	// Verify the fill spots.
+	unitAssertEquals(-1, raster(0,0));
+	unitAssertEquals(-1, raster(1,0));
+	unitAssertEquals(-1, raster(2,0));
+	unitAssertEquals(-1, raster(3,0));
+	unitAssertEquals(-1, raster(0,1));
+	unitAssertEquals(-1, raster(3,1));
+	unitAssertEquals(-1, raster(0,2));
+	unitAssertEquals(-1, raster(3,2));
+	unitAssertEquals(-1, raster(0,3));
+	unitAssertEquals(-1, raster(1,3));
+	unitAssertEquals(-1, raster(2,3));
+	unitAssertEquals(-1, raster(3,3));
+
+	// Verify the copied data.
+	unitAssertEquals(1, raster(1,1));
+	unitAssertEquals(2, raster(2,1));
+	unitAssertEquals(2, raster(1,2));
+	unitAssertEquals(4, raster(2,2));
+
+	raster.resize(0,0);
+	unitAssert(raster.empty());
+	unitAssertEquals(0u, raster.getNumPixels());
+	// Since the raster was zeroed, resizing it with a fill should fill everything.
+	raster.resize(3,3,1,1,10);
+	unitAssertEquals(9u, raster.getNumPixels());
+	unitAssertEquals(10, raster(0,0));
+	unitAssertEquals(10, raster(1,0));
+	unitAssertEquals(10, raster(2,0));
+	unitAssertEquals(10, raster(0,1));
+	unitAssertEquals(10, raster(1,1));
+	unitAssertEquals(10, raster(2,1));
+	unitAssertEquals(10, raster(0,2));
+	unitAssertEquals(10, raster(1,2));
+	unitAssertEquals(10, raster(2,2));
 }
 
 AUTO_UNIT_TEST(raster_subraster)
 {
-	// FIXME!
+	panorama::Raster<int> raster = getFilledRaster(10,10);
+
+	// Bad...
+	{
+		unitAssertThrows(raster.subRaster(1,0,0,1)); // x1 > x2
+		unitAssertThrows(raster.subRaster(0,1,1,0)); // y1 > y2
+		unitAssertThrows(raster.subRaster(0,0,1,10)); // y2 >= height
+		unitAssertThrows(raster.subRaster(0,0,1,11)); // y2 >= height
+		unitAssertThrows(raster.subRaster(0,0,10,1)); // x1 >= width
+		unitAssertThrows(raster.subRaster(0,0,11,1)); // x1 >= width
+	}
+	{
+		// The one pixel at 0,0
+		panorama::Raster<int> r1 = raster.subRaster(0,0,0,0);
+		unitAssertEquals(1u, r1.getWidth());
+		unitAssertEquals(1u, r1.getHeight());
+		unitAssertEquals(1u, r1.getNumPixels());
+		unitAssertEquals(1, r1(0,0));
+	}
+	{
+		// Four pixels: (5,5), (6,5), (5,6), (6,6)
+		panorama::Raster<int> r1 = raster.subRaster(5,5,6,6);
+		unitAssertEquals(2u, r1.getWidth());
+		unitAssertEquals(2u, r1.getHeight());
+		unitAssertEquals(4u, r1.getNumPixels());
+		unitAssertEquals(36, r1(0,0));
+		unitAssertEquals(42, r1(1,0));
+		unitAssertEquals(42, r1(0,1));
+		unitAssertEquals(49, r1(1,1));
+	}
 }
