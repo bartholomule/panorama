@@ -1,5 +1,5 @@
 /*
- * $Id: StringDumpable.cpp,v 1.1.2.1 2009/02/22 10:09:56 kpharris Exp $
+ * $Id: StringDumpable.cpp,v 1.1.2.2 2009/02/25 04:48:10 kpharris Exp $
  *
  * Part of GNU Panorama
  * Copyright (C) 2009 Kevin Harris
@@ -89,14 +89,7 @@ namespace panorama
 
 	blocxx::String StringDumpable::toString(const Indentation& indent, PrefixType prefix) const
 	{
-		MemberStringDumpCollector collector(prefix, indent.indent());
-		collectInternalMembers(collector);
-		return (
-			indent.initial() + name() + "\n" +
-			indent + "{\n" +
-			collector.toString() +
-			indent + "}"
-		);
+		return toStringAsMembers(*this, indent, prefix);
 	}
 
 	blocxx::String StringDumpable::toString() const
@@ -167,15 +160,6 @@ namespace panorama
 		return indent.initial() + i;
 	}
 
-
-	blocxx::String toString(
-		const StringDumpable& d,
-		const Indentation& indent,
-		StringDumpable::PrefixType prefix)
-	{
-		return d.toString(indent, prefix);
-	}
-
 	MemberStringDumpCollector::MemberStringDumpCollector(StringDumpable::PrefixType prefix, const Indentation& indent)
 		: m_prefix(prefix), m_indent(indent)
 	{
@@ -184,6 +168,12 @@ namespace panorama
 	blocxx::String MemberStringDumpCollector::toString() const
 	{
 		return m_text;
+	}
+
+	blocxx::String toString(const StringDumpable& object,
+		const Indentation& indent,	StringDumpable::PrefixType prefix)
+	{
+		return object.toString(indent, prefix);
 	}
 } // namespace panorama
 

@@ -1,5 +1,5 @@
 /*
- * $Id: StringDumpable.hpp,v 1.1.2.1 2009/02/22 10:09:56 kpharris Exp $
+ * $Id: StringDumpable.hpp,v 1.1.2.2 2009/02/25 04:48:11 kpharris Exp $
  *
  * Part of GNU Panorama
  *
@@ -46,7 +46,7 @@ namespace panorama
 	 * from this can have its members converted (one way) to a string.
 	 *
 	 * @author Kevin Harris <kpharris@users.sourceforge.net>
-	 * @version $Revision: 1.1.2.1 $
+	 * @version $Revision: 1.1.2.2 $
 	 *
 	 */
 	class StringDumpable
@@ -54,13 +54,14 @@ namespace panorama
 	public:
 		enum PrefixType { E_PREFIX_NONE, E_PREFIX_CLASSNAME };
 
+		typedef bool CanBeStringDumpedTag;
+
 		StringDumpable();
 		virtual ~StringDumpable();
 
 		virtual void collectInternalMembers(MemberStringDumpCollector& collector) const = 0;
 
 		virtual blocxx::String toString(const Indentation& indent, PrefixType prefix) const;
-
 		virtual blocxx::String name() const = 0;
 
 		blocxx::String toString() const;
@@ -131,6 +132,11 @@ namespace panorama
 		return refToString(p, indent, prefix);
 	}
 
+	blocxx::String toString(const StringDumpable& object,
+		const Indentation& indent = Indentation(),
+		StringDumpable::PrefixType prefix = StringDumpable::E_PREFIX_NONE);
+
+
 	// A generic templated toString() can't be used because it eats classes
 	// derived from StringDumpable.  Provide string conversions for the common
 	// native types to avoid the need.
@@ -148,11 +154,6 @@ namespace panorama
 	blocxx::String toString(const std::string& i, const Indentation& indent = Indentation(), StringDumpable::PrefixType prefix = StringDumpable::E_PREFIX_NONE);
 	blocxx::String toString(const blocxx::String& i, const Indentation& indent = Indentation(), StringDumpable::PrefixType prefix = StringDumpable::E_PREFIX_NONE);
 	blocxx::String toString(const char* i, const Indentation& indent = Indentation(), StringDumpable::PrefixType prefix = StringDumpable::E_PREFIX_NONE);
-
-	blocxx::String toString(const StringDumpable& d,
-		const Indentation& indent = Indentation(),
-		StringDumpable::PrefixType prefix = StringDumpable::E_PREFIX_NONE);
-
 
 	template <typename ArrayType>
 	blocxx::String arrayToString(const ArrayType& vec,
@@ -204,7 +205,7 @@ namespace panorama
 		template <typename T>
 		void addMember(const blocxx::String& name, const T& value)
 		{
-			m_text += m_indent + name + " = " + ::panorama::toString(value, m_indent.indentInside(), m_prefix) + ";\n";
+			m_text += m_indent + name + " = " + ::panorama::toString(value, m_indent.indentInside(), const_cast<const StringDumpable::PrefixType&>(m_prefix)) + ";\n";
 		}
 
 		blocxx::String toString() const;
@@ -213,6 +214,32 @@ namespace panorama
 		Indentation m_indent;
 		blocxx::String m_text;
 	};
+
+	template <typename T>
+	blocxx::String toStringAsMembers(const T& object, const Indentation& indent = Indentation(), StringDumpable::PrefixType prefix = StringDumpable::E_PREFIX_NONE, typename T::CanBeStringDumpedTag tag = typename T::CanBeStringDumpedTag())
+	{
+		MemberStringDumpCollector collector(prefix, indent.indent());
+		object.collectInternalMembers(collector);
+		return (
+			indent.initial() + object.name() + "\n" +
+			indent + "{\n" +
+			collector.toString() +
+			indent + "}"
+		);
+	}
+
+	// This version uses a simplified tag-based operation instead of requiring
+	// virtual functions.  This makes it more suitable for use in objects such
+	// as numeric types where the virtual function calls would be undesirable.
+	template <typename T>
+	blocxx::String toString(const T& object,
+		const Indentation& indent = Indentation(),
+		StringDumpable::PrefixType prefix = StringDumpable::E_PREFIX_NONE,
+		typename T::CanBeStringDumpedTag tag = typename T::CanBeStringDumpedTag())
+	{
+		return object.toString(indent, prefix);
+	}
+
 } // namespace panorama
 
 
