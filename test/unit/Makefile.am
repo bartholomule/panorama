@@ -3,13 +3,15 @@ BUILT_TESTS = \
 CopyCounterTestCases \
 CloneableTestCases \
 StringDumpableTestCases \
-RasterTestCases
+RasterTestCases \
+Coord2TestCases
 
 # Put new test source lists here.
 CopyCounterTestCases_SOURCES = CopyCounterTestCases.cpp
 CloneableTestCases_SOURCES = CloneableTestCases.cpp
 StringDumpableTestCases_SOURCES = StringDumpableTestCases.cpp
 RasterTestCases_SOURCES = RasterTestCases.cpp
+Coord2TestCases_SOURCES = Coord2TestCases.cpp
 
 #
 # Everything below here should normally be ignored
