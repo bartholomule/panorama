@@ -1,5 +1,5 @@
 /*
- * $Id: GenericCoord2.hpp,v 1.1.2.1 2009/02/25 04:49:19 kpharris Exp $
+ * $Id: GenericCoord2.hpp,v 1.1.2.2 2009/02/28 22:16:06 kpharris Exp $
  *
  * Part of GNU Panorama
  * Copyright (C) 2003 Kevin Harris
@@ -45,7 +45,6 @@
 */
 
 #include <cmath>
-#include <ostream>
 #include <algorithm>
 #include "panorama/common/StringDumpable.hpp"
 
