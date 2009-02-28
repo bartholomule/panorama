@@ -4,7 +4,8 @@ CopyCounterTestCases \
 CloneableTestCases \
 StringDumpableTestCases \
 RasterTestCases \
-Coord2TestCases
+Coord2TestCases \
+Coord3TestCases
 
 # Put new test source lists here.
 CopyCounterTestCases_SOURCES = CopyCounterTestCases.cpp
@@ -12,6 +13,7 @@ CloneableTestCases_SOURCES = CloneableTestCases.cpp
 StringDumpableTestCases_SOURCES = StringDumpableTestCases.cpp
 RasterTestCases_SOURCES = RasterTestCases.cpp
 Coord2TestCases_SOURCES = Coord2TestCases.cpp
+Coord3TestCases_SOURCES = Coord3TestCases.cpp
 
 #
 # Everything below here should normally be ignored

@@ -1,5 +1,5 @@
 /*
- * $Id: Types.hpp,v 1.1.2.1 2009/02/25 04:49:19 kpharris Exp $
+ * $Id: Types.hpp,v 1.1.2.2 2009/02/28 22:16:36 kpharris Exp $
  *
  * Part of GNU Panorama -- A framework for graphics production.
  * Copyright (C) 2009 Kevin Harris
@@ -27,11 +27,13 @@
  */
 
 #include "panorama/common/GenericCoord2.hpp"
+#include "panorama/common/GenericCoord3.hpp"
 
 namespace panorama
 {
 	typedef double NumberType;
 	typedef GenericCoord2<NumberType> Coord2;
+	typedef GenericCoord3<NumberType> Coord3;
 }
 
 #endif /* !defined(PANORAMA_TYPES_HPP) */
