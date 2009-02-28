@@ -1,8 +1,8 @@
 /*
- * $Id: GenericCoord3.hpp,v 1.1.2.1 2009/02/28 22:16:36 kpharris Exp $
+ * $Id: GenericCoord3.hpp,v 1.1.2.2 2009/02/28 22:21:45 kpharris Exp $
  *
  * Part GNU Panorama
- * Copyright (C) 2003 Kevin Harris
+ * Copyright (C) 2009 Kevin Harris
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -49,6 +49,10 @@
   extension to .hpp, added a GPL heading.
   28Feb2009 Renamed to GenericCoord3
 */
+
+/**
+ * @author Kevin Harris
+ */
 
 #include <cmath>
 #include "panorama/common/StringDumpable.hpp"
