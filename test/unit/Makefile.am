@@ -7,7 +7,9 @@ RasterTestCases \
 Coord2TestCases \
 Coord3TestCases \
 Vector2TestCases \
-Vector3TestCases
+Vector3TestCases \
+Point2TestCases \
+Point3TestCases
 
 # Put new test source lists here.
 CopyCounterTestCases_SOURCES = CopyCounterTestCases.cpp
@@ -18,6 +20,8 @@ Coord2TestCases_SOURCES = Coord2TestCases.cpp
 Coord3TestCases_SOURCES = Coord3TestCases.cpp
 Vector2TestCases_SOURCES = Vector2TestCases.cpp
 Vector3TestCases_SOURCES = Vector3TestCases.cpp
+Point2TestCases_SOURCES = Point2TestCases.cpp
+Point3TestCases_SOURCES = Point3TestCases.cpp
 
 #
 # Everything below here should normally be ignored
@@ -53,5 +57,7 @@ INCLUDES = \
 AM_CPPFLAGS = $($(@:%.o=%)_INCLUDES)
 
 noinst_PROGRAMS = $(PROGS) $(BUILT_TESTS)
+
+all-local: $(BUILT_TESTS)
 
 include $(top_srcdir)/Makefile-executable.inc

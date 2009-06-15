@@ -286,10 +286,10 @@ AUTO_UNIT_TEST(vector2_non_member_functions)
 	}
 	// maxComponent
 	{
-		ASSERT_EQUAL(100, maxComponent(Coord2(0,100)));
-		ASSERT_EQUAL(100, maxComponent(Coord2(100,0)));
-		ASSERT_EQUAL(0, maxComponent(Coord2(0,0)));
-		ASSERT_EQUAL(0, maxComponent(Coord2(-1,0)));
-		ASSERT_EQUAL(0, maxComponent(Coord2(0,-1)));
+		ASSERT_EQUAL(100, maxComponent(Vector2(0,100)));
+		ASSERT_EQUAL(100, maxComponent(Vector2(100,0)));
+		ASSERT_EQUAL(0, maxComponent(Vector2(0,0)));
+		ASSERT_EQUAL(0, maxComponent(Vector2(-1,0)));
+		ASSERT_EQUAL(0, maxComponent(Vector2(0,-1)));
 	}
 }

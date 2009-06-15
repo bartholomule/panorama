@@ -16,7 +16,9 @@ Types.hpp \
 GenericCoord2.hpp \
 GenericCoord3.hpp \
 GenericVector2.hpp \
-GenericVector3.hpp
+GenericVector3.hpp \
+GenericPoint2.hpp \
+GenericPoint3.hpp
 
 AM_CPPFLAGS = -I$(top_srcdir)/src
 libpanorama_common_la_LIBADD =
