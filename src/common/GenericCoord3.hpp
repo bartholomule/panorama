@@ -1,5 +1,5 @@
 /*
- * $Id: GenericCoord3.hpp,v 1.1.2.2 2009/02/28 22:21:45 kpharris Exp $
+ * $Id: GenericCoord3.hpp,v 1.1.2.3 2009/06/15 01:26:18 kpharris Exp $
  *
  * Part GNU Panorama
  * Copyright (C) 2009 Kevin Harris
@@ -356,7 +356,7 @@ namespace panorama
 	}
 
 	template <class T>
-	inline T average(const GenericCoord3<T>& c)
+	inline T averageComponent(const GenericCoord3<T>& c)
 	{
 		return (c.x() + c.y() + c.z()) / T(3);
 	}
@@ -368,13 +368,13 @@ namespace panorama
 	}
 
 	template <class T>
-	inline T max(const GenericCoord3<T>& c)
+	inline T maxComponent(const GenericCoord3<T>& c)
 	{
 		return std::max(std::max(c.x(), c.y()), c.z());
 	}
 
 	template <class T>
-	inline GenericCoord3<T> abs_vector(const GenericCoord3<T>& v)
+	inline GenericCoord3<T> abs(const GenericCoord3<T>& v)
 	{
 		return GenericCoord3<T>(std::max(v.x(), -v.x()), std::max(v.y(), -v.y()), std::max(v.z(), -v.z()));
 	}

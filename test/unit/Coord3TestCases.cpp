@@ -347,49 +347,49 @@ AUTO_UNIT_TEST(coord3_non_member_functions)
 		ASSERT_EQUAL(0.200, c.y());
 		ASSERT_EQUAL(0.125, c.z());
 	}
-	// average
+	// averageComponent
 	{
-		ASSERT_EQUAL(6, average(Coord3(4,6,8)));
-		ASSERT_EQUAL(6, average(Coord3(4,8,6)));
-		ASSERT_EQUAL(6, average(Coord3(8,4,6)));
-		ASSERT_EQUAL(6, average(Coord3(8,6,4)));
-		ASSERT_EQUAL(6, average(Coord3(6,4,8)));
-		ASSERT_EQUAL(6, average(Coord3(6,8,4)));
+		ASSERT_EQUAL(6, averageComponent(Coord3(4,6,8)));
+		ASSERT_EQUAL(6, averageComponent(Coord3(4,8,6)));
+		ASSERT_EQUAL(6, averageComponent(Coord3(8,4,6)));
+		ASSERT_EQUAL(6, averageComponent(Coord3(8,6,4)));
+		ASSERT_EQUAL(6, averageComponent(Coord3(6,4,8)));
+		ASSERT_EQUAL(6, averageComponent(Coord3(6,8,4)));
 
-		ASSERT_EQUAL(66.6666666, average(Coord3(0,100,100)));
-		ASSERT_EQUAL(100, average(Coord3(0,100,200)));
-		ASSERT_EQUAL(5, average(Coord3(4,5,6)));
+		ASSERT_EQUAL(66.6666666, averageComponent(Coord3(0,100,100)));
+		ASSERT_EQUAL(100, averageComponent(Coord3(0,100,200)));
+		ASSERT_EQUAL(5, averageComponent(Coord3(4,5,6)));
 	}
-	// max
+	// maxComponent
 	{
-		ASSERT_EQUAL(100, max(Coord3(0,50,100)));
-		ASSERT_EQUAL(100, max(Coord3(0,100,50)));
-		ASSERT_EQUAL(100, max(Coord3(50,0,100)));
-		ASSERT_EQUAL(100, max(Coord3(50,100,0)));
-		ASSERT_EQUAL(100, max(Coord3(100,0,50)));
-		ASSERT_EQUAL(100, max(Coord3(100,50,0)));
-		ASSERT_EQUAL(0, max(Coord3(0,0,0)));
-		ASSERT_EQUAL(0, max(Coord3(-1,0,-1)));
-		ASSERT_EQUAL(0, max(Coord3(0,-1,-4)));
+		ASSERT_EQUAL(100, maxComponent(Coord3(0,50,100)));
+		ASSERT_EQUAL(100, maxComponent(Coord3(0,100,50)));
+		ASSERT_EQUAL(100, maxComponent(Coord3(50,0,100)));
+		ASSERT_EQUAL(100, maxComponent(Coord3(50,100,0)));
+		ASSERT_EQUAL(100, maxComponent(Coord3(100,0,50)));
+		ASSERT_EQUAL(100, maxComponent(Coord3(100,50,0)));
+		ASSERT_EQUAL(0, maxComponent(Coord3(0,0,0)));
+		ASSERT_EQUAL(0, maxComponent(Coord3(-1,0,-1)));
+		ASSERT_EQUAL(0, maxComponent(Coord3(0,-1,-4)));
 	}
-	// abs_vector
+	// abs
 	{
-		Coord3 c = abs_vector(Coord3(-3,5,1));
+		Coord3 c = abs(Coord3(-3,5,1));
 		ASSERT_EQUAL(3, c.x());
 		ASSERT_EQUAL(5, c.y());
 		ASSERT_EQUAL(1, c.z());
 
-		c = abs_vector(Coord3(5,-3, 1));
+		c = abs(Coord3(5,-3, 1));
 		ASSERT_EQUAL(5, c.x());
 		ASSERT_EQUAL(3, c.y());
 		ASSERT_EQUAL(1, c.z());
 
-		c = abs_vector(Coord3(5,3, -1));
+		c = abs(Coord3(5,3, -1));
 		ASSERT_EQUAL(5, c.x());
 		ASSERT_EQUAL(3, c.y());
 		ASSERT_EQUAL(1, c.z());
 
-		c = abs_vector(Coord3(0,0,0));
+		c = abs(Coord3(0,0,0));
 		ASSERT_EQUAL(0, c.x());
 		ASSERT_EQUAL(0, c.y());
 		ASSERT_EQUAL(0, c.z());

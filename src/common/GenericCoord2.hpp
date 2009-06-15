@@ -1,5 +1,5 @@
 /*
- * $Id: GenericCoord2.hpp,v 1.1.2.2 2009/02/28 22:16:06 kpharris Exp $
+ * $Id: GenericCoord2.hpp,v 1.1.2.3 2009/06/15 01:26:18 kpharris Exp $
  *
  * Part of GNU Panorama
  * Copyright (C) 2003 Kevin Harris
@@ -127,7 +127,6 @@ namespace panorama
 		{
 			return(T(sqrt(double(x() * x() + y() * y()))));
 		}
-
 
 		// Functions required for the tag-based toString interface
 		void collectInternalMembers(MemberStringDumpCollector& collector) const;
@@ -339,19 +338,19 @@ namespace panorama
 	}
 
 	template <class T>
-	inline T average(const GenericCoord2<T>& c)
+	inline T averageComponent(const GenericCoord2<T>& c)
 	{
 		return((c.x() + c.y()) / 2);
 	}
 
 	template <class T>
-	inline T max(const GenericCoord2<T>& c)
+	inline T maxComponent(const GenericCoord2<T>& c)
 	{
 		return(std::max(c.x(), c.y()));
 	}
 
 	template <class T>
-	inline GenericCoord2<T> abs_vector(const GenericCoord2<T>& v)
+	inline GenericCoord2<T> abs(const GenericCoord2<T>& v)
 	{
 		return GenericCoord2<T>(std::max(v.x(), -v.x()), std::max(v.y(), -v.y()));
 	}

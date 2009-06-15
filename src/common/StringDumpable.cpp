@@ -1,5 +1,5 @@
 /*
- * $Id: StringDumpable.cpp,v 1.1.2.2 2009/02/25 04:48:10 kpharris Exp $
+ * $Id: StringDumpable.cpp,v 1.1.2.3 2009/06/15 01:26:18 kpharris Exp $
  *
  * Part of GNU Panorama
  * Copyright (C) 2009 Kevin Harris
@@ -95,6 +95,15 @@ namespace panorama
 	blocxx::String StringDumpable::toString() const
 	{
 		return toString(Indentation(), E_PREFIX_NONE);
+	}
+
+	blocxx::String StringDumpable::prefixName(PrefixType prefix) const
+	{
+		if( prefix == StringDumpable::E_PREFIX_CLASSNAME )
+		{
+			return name();
+		}
+		return blocxx::String();
 	}
 
 	std::ostream& operator<<(std::ostream& o, const StringDumpable& s)

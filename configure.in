@@ -1,10 +1,8 @@
 dnl Process this file with autoconf to produce a configure script.
 
-# FIXME! This email address will need to be sent back to a GNU list... I'd hope
-# it is one that isn't full of spam.
 AC_INIT(panorama, 0.19, panorama-devel@lists.sourceforge.net)
 AM_INIT_AUTOMAKE(panorama, 0.19)
-AM_CONFIG_HEADER(llapi/panorama_config.h)
+AM_CONFIG_HEADER(src/common/Config.h)
 AC_PREREQ(2.57)
 
 dnl ---------------------------------------------------------------------------
@@ -588,16 +586,17 @@ AC_SUBST(CBINLINKFLAGS)
 AC_SUBST(CFLAGS)
 AC_SUBST(CXXFLAGS)
 
+# Makefile.empty
+# src/general/Makefile
+# test/test_framework/Makefile
+
 AC_OUTPUT(
 	Makefile
-	Makefile.empty
 	Makefile.vars
 	Makefile.targets
 	src/Makefile
-	src/general/Makefile
 	src/common/Makefile
 	test/Makefile
-	test/test_framework/Makefile
 	test/unit/Makefile
 	data/Makefile
 	data/gradient/Makefile

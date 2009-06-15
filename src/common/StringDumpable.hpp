@@ -1,5 +1,5 @@
 /*
- * $Id: StringDumpable.hpp,v 1.1.2.2 2009/02/25 04:48:11 kpharris Exp $
+ * $Id: StringDumpable.hpp,v 1.1.2.3 2009/06/15 01:26:18 kpharris Exp $
  *
  * Part of GNU Panorama
  *
@@ -46,7 +46,7 @@ namespace panorama
 	 * from this can have its members converted (one way) to a string.
 	 *
 	 * @author Kevin Harris <kpharris@users.sourceforge.net>
-	 * @version $Revision: 1.1.2.2 $
+	 * @version $Revision: 1.1.2.3 $
 	 *
 	 */
 	class StringDumpable
@@ -63,6 +63,8 @@ namespace panorama
 
 		virtual blocxx::String toString(const Indentation& indent, PrefixType prefix) const;
 		virtual blocxx::String name() const = 0;
+
+		blocxx::String prefixName(PrefixType prefix) const;
 
 		blocxx::String toString() const;
 

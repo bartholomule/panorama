@@ -294,32 +294,32 @@ AUTO_UNIT_TEST(coord2_non_member_functions)
 		ASSERT_EQUAL(0.5, c.x());
 		ASSERT_EQUAL(0.2, c.y());
 	}
-	// average
+	// averageComponent
 	{
-		ASSERT_EQUAL(5, average(Coord2(4,6)));
-		ASSERT_EQUAL(5, average(Coord2(6,4)));
-		ASSERT_EQUAL(50, average(Coord2(0,100)));
-		ASSERT_EQUAL(50, average(Coord2(100,0)));
+		ASSERT_EQUAL(5, averageComponent(Coord2(4,6)));
+		ASSERT_EQUAL(5, averageComponent(Coord2(6,4)));
+		ASSERT_EQUAL(50, averageComponent(Coord2(0,100)));
+		ASSERT_EQUAL(50, averageComponent(Coord2(100,0)));
 	}
-	// max
+	// maxComponent
 	{
-		ASSERT_EQUAL(100, max(Coord2(0,100)));
-		ASSERT_EQUAL(100, max(Coord2(100,0)));
-		ASSERT_EQUAL(0, max(Coord2(0,0)));
-		ASSERT_EQUAL(0, max(Coord2(-1,0)));
-		ASSERT_EQUAL(0, max(Coord2(0,-1)));
+		ASSERT_EQUAL(100, maxComponent(Coord2(0,100)));
+		ASSERT_EQUAL(100, maxComponent(Coord2(100,0)));
+		ASSERT_EQUAL(0, maxComponent(Coord2(0,0)));
+		ASSERT_EQUAL(0, maxComponent(Coord2(-1,0)));
+		ASSERT_EQUAL(0, maxComponent(Coord2(0,-1)));
 	}
-	// abs_vector
+	// abs
 	{
-		Coord2 c = abs_vector(Coord2(-3,5));
+		Coord2 c = abs(Coord2(-3,5));
 		ASSERT_EQUAL(3, c.x());
 		ASSERT_EQUAL(5, c.y());
 
-		c = abs_vector(Coord2(5,-3));
+		c = abs(Coord2(5,-3));
 		ASSERT_EQUAL(5, c.x());
 		ASSERT_EQUAL(3, c.y());
 
-		c = abs_vector(Coord2(0,0));
+		c = abs(Coord2(0,0));
 		ASSERT_EQUAL(0, c.x());
 		ASSERT_EQUAL(0, c.y());
 	}

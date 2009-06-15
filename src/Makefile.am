@@ -1,7 +1,6 @@
 SUBDIRS = \
 	.  \
 	blocxx_export \
-	general \
 	common
 
 # $(1) = symlink name
