@@ -9,7 +9,8 @@ Coord3TestCases \
 Vector2TestCases \
 Vector3TestCases \
 Point2TestCases \
-Point3TestCases
+Point3TestCases \
+CapabilitiesTestCases
 
 # Put new test source lists here.
 CopyCounterTestCases_SOURCES = CopyCounterTestCases.cpp
@@ -22,6 +23,7 @@ Vector2TestCases_SOURCES = Vector2TestCases.cpp
 Vector3TestCases_SOURCES = Vector3TestCases.cpp
 Point2TestCases_SOURCES = Point2TestCases.cpp
 Point3TestCases_SOURCES = Point3TestCases.cpp
+CapabilitiesTestCases_SOURCES = CapabilitiesTestCases.cpp
 
 #
 # Everything below here should normally be ignored
