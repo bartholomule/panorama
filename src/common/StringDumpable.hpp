@@ -1,5 +1,5 @@
 /*
- * $Id: StringDumpable.hpp,v 1.1.2.3 2009/06/15 01:26:18 kpharris Exp $
+ * $Id: StringDumpable.hpp,v 1.1.2.4 2010/03/03 17:55:22 kpharris Exp $
  *
  * Part of GNU Panorama
  *
@@ -46,7 +46,7 @@ namespace panorama
 	 * from this can have its members converted (one way) to a string.
 	 *
 	 * @author Kevin Harris <kpharris@users.sourceforge.net>
-	 * @version $Revision: 1.1.2.3 $
+	 * @version $Revision: 1.1.2.4 $
 	 *
 	 */
 	class StringDumpable
@@ -134,6 +134,18 @@ namespace panorama
 		return refToString(p, indent, prefix);
 	}
 
+	// This version uses a simplified tag-based operation instead of requiring
+	// virtual functions.  This makes it more suitable for use in objects such
+	// as numeric types where the virtual function calls would be undesirable.
+	template <typename T>
+	blocxx::String toString(const T& object,
+		const Indentation& indent = Indentation(),
+		StringDumpable::PrefixType prefix = StringDumpable::E_PREFIX_NONE,
+		typename T::CanBeStringDumpedTag tag = typename T::CanBeStringDumpedTag())
+	{
+		return object.toString(indent, prefix);
+	}
+
 	blocxx::String toString(const StringDumpable& object,
 		const Indentation& indent = Indentation(),
 		StringDumpable::PrefixType prefix = StringDumpable::E_PREFIX_NONE);
@@ -207,7 +219,8 @@ namespace panorama
 		template <typename T>
 		void addMember(const blocxx::String& name, const T& value)
 		{
-			m_text += m_indent + name + " = " + ::panorama::toString(value, m_indent.indentInside(), const_cast<const StringDumpable::PrefixType&>(m_prefix)) + ";\n";
+			Indentation indent = m_indent.indentInside();
+			m_text += m_indent + name + " = " + ::panorama::toString(value, indent, m_prefix) + ";\n";
 		}
 
 		blocxx::String toString() const;
@@ -228,18 +241,6 @@ namespace panorama
 			collector.toString() +
 			indent + "}"
 		);
-	}
-
-	// This version uses a simplified tag-based operation instead of requiring
-	// virtual functions.  This makes it more suitable for use in objects such
-	// as numeric types where the virtual function calls would be undesirable.
-	template <typename T>
-	blocxx::String toString(const T& object,
-		const Indentation& indent = Indentation(),
-		StringDumpable::PrefixType prefix = StringDumpable::E_PREFIX_NONE,
-		typename T::CanBeStringDumpedTag tag = typename T::CanBeStringDumpedTag())
-	{
-		return object.toString(indent, prefix);
 	}
 
 } // namespace panorama
