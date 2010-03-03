@@ -196,7 +196,6 @@ AUTO_UNIT_TEST(coord3_member_operators)
 
 AUTO_UNIT_TEST(coord3_non_member_operators)
 {
-	// FIXME!
 	Coord3 coordA(2,5,11);
 	Coord3 coordB(10,20,30);
 

@@ -20,6 +20,7 @@ GenericVector2.hpp \
 GenericVector3.hpp \
 GenericPoint2.hpp \
 GenericPoint3.hpp \
+GenericONB.hpp \
 Capabilities.hpp
 
 AM_CPPFLAGS = -I$(top_srcdir)/src
