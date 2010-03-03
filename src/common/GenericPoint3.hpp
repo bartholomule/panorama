@@ -1,5 +1,5 @@
 /*
- * $Id: GenericPoint3.hpp,v 1.1.2.1 2009/06/15 03:53:45 kpharris Exp $
+ * $Id: GenericPoint3.hpp,v 1.1.2.2 2010/03/03 17:54:10 kpharris Exp $
  *
  * Part of GNU Panorama
  * Copyright (C) 2003 Kevin Harris
@@ -224,7 +224,7 @@ namespace panorama
 			tag = GenericPoint3<T>::name();
 		}
 
-		return indent + tag +
+		return indent.initial() + tag +
 			"(" +
 			panorama::toString(x(), indent.indentInside(), prefix) +
 			"," +

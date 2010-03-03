@@ -1,5 +1,5 @@
 /*
- * $Id: GenericCoord2.hpp,v 1.1.2.3 2009/06/15 01:26:18 kpharris Exp $
+ * $Id: GenericCoord2.hpp,v 1.1.2.4 2010/03/03 17:54:09 kpharris Exp $
  *
  * Part of GNU Panorama
  * Copyright (C) 2003 Kevin Harris
@@ -19,8 +19,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
  */
 
-#if    !defined(PANORAMA__GENERICCOORD2_HPP)
-#define         PANORAMA__GENERICCOORD2_HPP
+#if    !defined(PANORAMA__GENERIC_COORD2_HPP)
+#define         PANORAMA__GENERIC_COORD2_HPP
 
 /*
   GenericCoord2.hpp
@@ -370,7 +370,7 @@ namespace panorama
 		{
 			tag = GenericCoord2<T>::name();
 		}
-		return indent + tag +
+		return indent.initial() + tag +
 			"{" +
 			panorama::toString(x(), indent.indentInside(), prefix) +
 			"," +
@@ -380,4 +380,4 @@ namespace panorama
 
 } // namespace panorama
 
-#endif /* !defined(PANORAMA__GENERICCOORD2_HPP) */
+#endif /* !defined(PANORAMA__GENERIC_COORD2_HPP) */

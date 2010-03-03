@@ -1,5 +1,5 @@
 /*
- * $Id: GenericCoord3.hpp,v 1.1.2.3 2009/06/15 01:26:18 kpharris Exp $
+ * $Id: GenericCoord3.hpp,v 1.1.2.4 2010/03/03 17:54:10 kpharris Exp $
  *
  * Part GNU Panorama
  * Copyright (C) 2009 Kevin Harris
@@ -405,7 +405,7 @@ namespace panorama
 		{
 			tag = GenericCoord3<T>::name();
 		}
-		return indent + tag +
+		return indent.initial() + tag +
 			"{" +
 			panorama::toString(x(), indent.indentInside(), prefix) +
 			"," +

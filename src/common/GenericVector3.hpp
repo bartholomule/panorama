@@ -1,5 +1,5 @@
 /*
- * $Id: GenericVector3.hpp,v 1.1.2.1 2009/06/15 01:26:18 kpharris Exp $
+ * $Id: GenericVector3.hpp,v 1.1.2.2 2010/03/03 17:54:10 kpharris Exp $
  *
  * Part of GNU Panorama
  * Copyright (C) 2003 Kevin Harris
@@ -132,6 +132,7 @@ namespace panorama
 		inline GenericVector3<T>& operator/=(U factor);
 
 
+		// Functions required for the tag-based toString interface
 		void collectInternalMembers(MemberStringDumpCollector& collector) const;
 		blocxx::String toString(const Indentation& indent = Indentation(), StringDumpable::PrefixType prefix = StringDumpable::E_PREFIX_NONE ) const;
 
@@ -355,7 +356,7 @@ namespace panorama
 			tag = GenericVector3<T>::name();
 		}
 
-		return indent + tag +
+		return indent.initial() + tag +
 			"<" +
 			panorama::toString(x(), indent.indentInside(), prefix) +
 			"," +
