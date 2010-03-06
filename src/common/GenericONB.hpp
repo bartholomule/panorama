@@ -1,5 +1,5 @@
 /*
- * $Id: GenericONB.hpp,v 1.1.2.1 2010/03/03 18:07:21 kpharris Exp $
+ * $Id: GenericONB.hpp,v 1.1.2.2 2010/03/06 20:44:07 kpharris Exp $
  *
  * Part of GNU Panorama
  * Copyright (C) 2010 Kevin Harris
@@ -46,9 +46,6 @@
  * @author Kevin Harris
  */
 
-
-#include <cmath>
-#include <algorithm>
 #include "panorama/common/StringDumpable.hpp"
 #include "panorama/common/GenericVector3.hpp"
 
@@ -111,41 +108,41 @@ namespace panorama
 		}
 
 		// Take an external coord, and convert to one for this ONB
-		GenericCoord3<T> into_onb(const GenericCoord3<T>& c) const
+		GenericCoord3<T> globalToLocal(const GenericCoord3<T>& c) const
 		{
 			GenericVector3<T> cv(c);
 			return GenericCoord3<T>(dotprod(cv,m_u),dotprod(cv,m_v),dotprod(cv,m_w));
 		}
 
 		// Take an external point, and convert to one for this ONB
-		GenericPoint3<T> into_onb(const GenericPoint3<T>& c) const
+		GenericPoint3<T> globalToLocal(const GenericPoint3<T>& c) const
 		{
 			GenericVector3<T> cv(c.x(), c.y(), c.z());
 			return GenericPoint3<T>(dotprod(cv,m_u),dotprod(cv,m_v),dotprod(cv,m_w));
 		}
 
 		// Take an external vector, and convert to one for this ONB
-		GenericVector3<T> into_onb(const GenericVector3<T>& c) const
+		GenericVector3<T> globalToLocal(const GenericVector3<T>& c) const
 		{
 			return GenericVector3<T>(dotprod(c,m_u),dotprod(c,m_v),dotprod(c,m_w));
 		}
 
 		// Take an internal coord, and convert to one for a 'global' ONB.
-		GenericCoord3<T> outof_onb(const GenericCoord3<T>& c) const
+		GenericCoord3<T> localToGlobal(const GenericCoord3<T>& c) const
 		{
 			GenericVector3<T> cv(m_u * c.x() + m_v * c.y() + m_w * c.z());
 			return( GenericCoord3<T>(cv.x(), cv.y(), cv.z()) );
 		}
 
 		// Take an internal point, and convert to one for a 'global' ONB.
-		GenericPoint3<T> outof_onb(const GenericPoint3<T>& c) const
+		GenericPoint3<T> localToGlobal(const GenericPoint3<T>& c) const
 		{
 			GenericVector3<T> cv(m_u * c.x() + m_v * c.y() + m_w * c.z());
 			return( GenericPoint3<T>(cv.x(), cv.y(), cv.z()) );
 		}
 
 		// Take an internal vector, and convert to one for a 'global' ONB.
-		GenericVector3<T> outof_onb(const GenericVector3<T>& c) const
+		GenericVector3<T> localToGlobal(const GenericVector3<T>& c) const
 		{
 			return(m_u * c.x() + m_v * c.y() + m_w * c.z());
 		}

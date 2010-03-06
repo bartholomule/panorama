@@ -11,6 +11,7 @@ Vector3TestCases \
 Point2TestCases \
 Point3TestCases \
 ONBTestCases \
+FrameTestCases \
 CapabilitiesTestCases
 
 # Put new test source lists here.
@@ -25,6 +26,7 @@ Vector3TestCases_SOURCES = Vector3TestCases.cpp
 Point2TestCases_SOURCES = Point2TestCases.cpp
 Point3TestCases_SOURCES = Point3TestCases.cpp
 ONBTestCases_SOURCES = ONBTestCases.cpp
+FrameTestCases_SOURCES = FrameTestCases.cpp
 CapabilitiesTestCases_SOURCES = CapabilitiesTestCases.cpp
 
 #

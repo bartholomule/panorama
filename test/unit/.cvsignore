@@ -15,4 +15,5 @@ Vector3TestCases
 Point2TestCases
 Point3TestCases
 ONBTestCases
+FrameTestCases
 CapabilitiesTestCases

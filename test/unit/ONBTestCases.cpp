@@ -26,14 +26,14 @@ AUTO_UNIT_TEST(onb_identity_transform)
 	Vector3 y(0,1,0);
 	Vector3 z(0,0,1);
 
-	ASSERT_VECTORS_EQUAL(x, o.into_onb(x));
-	ASSERT_VECTORS_EQUAL(x, o.outof_onb(x));
+	ASSERT_VECTORS_EQUAL(x, o.globalToLocal(x));
+	ASSERT_VECTORS_EQUAL(x, o.localToGlobal(x));
 
-	ASSERT_VECTORS_EQUAL(y, o.into_onb(y));
-	ASSERT_VECTORS_EQUAL(y, o.outof_onb(y));
+	ASSERT_VECTORS_EQUAL(y, o.globalToLocal(y));
+	ASSERT_VECTORS_EQUAL(y, o.localToGlobal(y));
 
-	ASSERT_VECTORS_EQUAL(z, o.into_onb(z));
-	ASSERT_VECTORS_EQUAL(z, o.outof_onb(z));
+	ASSERT_VECTORS_EQUAL(z, o.globalToLocal(z));
+	ASSERT_VECTORS_EQUAL(z, o.localToGlobal(z));
 }
 
 AUTO_UNIT_TEST(onb_identity_transform_explicit)
@@ -43,14 +43,14 @@ AUTO_UNIT_TEST(onb_identity_transform_explicit)
 	Vector3 z(0,0,1);
 	ONB o(x,y,z); // no transform
 
-	ASSERT_VECTORS_EQUAL(x, o.into_onb(x));
-	ASSERT_VECTORS_EQUAL(x, o.outof_onb(x));
+	ASSERT_VECTORS_EQUAL(x, o.globalToLocal(x));
+	ASSERT_VECTORS_EQUAL(x, o.localToGlobal(x));
 
-	ASSERT_VECTORS_EQUAL(y, o.into_onb(y));
-	ASSERT_VECTORS_EQUAL(y, o.outof_onb(y));
+	ASSERT_VECTORS_EQUAL(y, o.globalToLocal(y));
+	ASSERT_VECTORS_EQUAL(y, o.localToGlobal(y));
 
-	ASSERT_VECTORS_EQUAL(z, o.into_onb(z));
-	ASSERT_VECTORS_EQUAL(z, o.outof_onb(z));
+	ASSERT_VECTORS_EQUAL(z, o.globalToLocal(z));
+	ASSERT_VECTORS_EQUAL(z, o.localToGlobal(z));
 }
 
 AUTO_UNIT_TEST(onb_identity_transform_explicit_normalized)
@@ -60,14 +60,14 @@ AUTO_UNIT_TEST(onb_identity_transform_explicit_normalized)
 	Vector3 z(0,0,1);
 	ONB o(2*x,3*y,4*z); // no net transform as these are all normalized
 
-	ASSERT_VECTORS_EQUAL(x, o.into_onb(x));
-	ASSERT_VECTORS_EQUAL(x, o.outof_onb(x));
+	ASSERT_VECTORS_EQUAL(x, o.globalToLocal(x));
+	ASSERT_VECTORS_EQUAL(x, o.localToGlobal(x));
 
-	ASSERT_VECTORS_EQUAL(y, o.into_onb(y));
-	ASSERT_VECTORS_EQUAL(y, o.outof_onb(y));
+	ASSERT_VECTORS_EQUAL(y, o.globalToLocal(y));
+	ASSERT_VECTORS_EQUAL(y, o.localToGlobal(y));
 
-	ASSERT_VECTORS_EQUAL(z, o.into_onb(z));
-	ASSERT_VECTORS_EQUAL(z, o.outof_onb(z));
+	ASSERT_VECTORS_EQUAL(z, o.globalToLocal(z));
+	ASSERT_VECTORS_EQUAL(z, o.localToGlobal(z));
 }
 
 AUTO_UNIT_TEST(onb_flip_x)
@@ -79,27 +79,27 @@ AUTO_UNIT_TEST(onb_flip_x)
 	Vector3 y(0,1,0);
 	Vector3 z(0,0,1);
 
-	ASSERT_VECTORS_EQUAL(-x, o.into_onb(x));
-	ASSERT_VECTORS_EQUAL(-x, o.outof_onb(x));
-	ASSERT_VECTORS_EQUAL(x, o.into_onb(-x));
-	ASSERT_VECTORS_EQUAL(x, o.outof_onb(-x));
+	ASSERT_VECTORS_EQUAL(-x, o.globalToLocal(x));
+	ASSERT_VECTORS_EQUAL(-x, o.localToGlobal(x));
+	ASSERT_VECTORS_EQUAL(x, o.globalToLocal(-x));
+	ASSERT_VECTORS_EQUAL(x, o.localToGlobal(-x));
 
-	ASSERT_VECTORS_EQUAL(y, o.into_onb(y));
-	ASSERT_VECTORS_EQUAL(y, o.outof_onb(y));
-	ASSERT_VECTORS_EQUAL(-y, o.into_onb(-y));
-	ASSERT_VECTORS_EQUAL(-y, o.outof_onb(-y));
+	ASSERT_VECTORS_EQUAL(y, o.globalToLocal(y));
+	ASSERT_VECTORS_EQUAL(y, o.localToGlobal(y));
+	ASSERT_VECTORS_EQUAL(-y, o.globalToLocal(-y));
+	ASSERT_VECTORS_EQUAL(-y, o.localToGlobal(-y));
 
-	ASSERT_VECTORS_EQUAL(z, o.into_onb(z));
-	ASSERT_VECTORS_EQUAL(z, o.outof_onb(z));
-	ASSERT_VECTORS_EQUAL(-z, o.into_onb(-z));
-	ASSERT_VECTORS_EQUAL(-z, o.outof_onb(-z));
+	ASSERT_VECTORS_EQUAL(z, o.globalToLocal(z));
+	ASSERT_VECTORS_EQUAL(z, o.localToGlobal(z));
+	ASSERT_VECTORS_EQUAL(-z, o.globalToLocal(-z));
+	ASSERT_VECTORS_EQUAL(-z, o.localToGlobal(-z));
 
-	ASSERT_VECTORS_EQUAL(-x+y, o.into_onb(x+y));
-	ASSERT_VECTORS_EQUAL(-x+y, o.outof_onb(x+y));
-	ASSERT_VECTORS_EQUAL(-x+z, o.into_onb(x+z));
-	ASSERT_VECTORS_EQUAL(-x+z, o.outof_onb(x+z));
-	ASSERT_VECTORS_EQUAL(y+z, o.into_onb(y+z));
-	ASSERT_VECTORS_EQUAL(y+z, o.outof_onb(y+z));
+	ASSERT_VECTORS_EQUAL(-x+y, o.globalToLocal(x+y));
+	ASSERT_VECTORS_EQUAL(-x+y, o.localToGlobal(x+y));
+	ASSERT_VECTORS_EQUAL(-x+z, o.globalToLocal(x+z));
+	ASSERT_VECTORS_EQUAL(-x+z, o.localToGlobal(x+z));
+	ASSERT_VECTORS_EQUAL(y+z, o.globalToLocal(y+z));
+	ASSERT_VECTORS_EQUAL(y+z, o.localToGlobal(y+z));
 }
 
 AUTO_UNIT_TEST(onb_flip_y)
@@ -111,27 +111,27 @@ AUTO_UNIT_TEST(onb_flip_y)
 	Vector3 y(0,1,0);
 	Vector3 z(0,0,1);
 
-	ASSERT_VECTORS_EQUAL(x, o.into_onb(x));
-	ASSERT_VECTORS_EQUAL(x, o.outof_onb(x));
-	ASSERT_VECTORS_EQUAL(-x, o.into_onb(-x));
-	ASSERT_VECTORS_EQUAL(-x, o.outof_onb(-x));
+	ASSERT_VECTORS_EQUAL(x, o.globalToLocal(x));
+	ASSERT_VECTORS_EQUAL(x, o.localToGlobal(x));
+	ASSERT_VECTORS_EQUAL(-x, o.globalToLocal(-x));
+	ASSERT_VECTORS_EQUAL(-x, o.localToGlobal(-x));
 
-	ASSERT_VECTORS_EQUAL(-y, o.into_onb(y));
-	ASSERT_VECTORS_EQUAL(-y, o.outof_onb(y));
-	ASSERT_VECTORS_EQUAL(y, o.into_onb(-y));
-	ASSERT_VECTORS_EQUAL(y, o.outof_onb(-y));
+	ASSERT_VECTORS_EQUAL(-y, o.globalToLocal(y));
+	ASSERT_VECTORS_EQUAL(-y, o.localToGlobal(y));
+	ASSERT_VECTORS_EQUAL(y, o.globalToLocal(-y));
+	ASSERT_VECTORS_EQUAL(y, o.localToGlobal(-y));
 
-	ASSERT_VECTORS_EQUAL(z, o.into_onb(z));
-	ASSERT_VECTORS_EQUAL(z, o.outof_onb(z));
-	ASSERT_VECTORS_EQUAL(-z, o.into_onb(-z));
-	ASSERT_VECTORS_EQUAL(-z, o.outof_onb(-z));
+	ASSERT_VECTORS_EQUAL(z, o.globalToLocal(z));
+	ASSERT_VECTORS_EQUAL(z, o.localToGlobal(z));
+	ASSERT_VECTORS_EQUAL(-z, o.globalToLocal(-z));
+	ASSERT_VECTORS_EQUAL(-z, o.localToGlobal(-z));
 
-	ASSERT_VECTORS_EQUAL(x-y, o.into_onb(x+y));
-	ASSERT_VECTORS_EQUAL(x-y, o.outof_onb(x+y));
-	ASSERT_VECTORS_EQUAL(x+z, o.into_onb(x+z));
-	ASSERT_VECTORS_EQUAL(x+z, o.outof_onb(x+z));
-	ASSERT_VECTORS_EQUAL(-y+z, o.into_onb(y+z));
-	ASSERT_VECTORS_EQUAL(-y+z, o.outof_onb(y+z));
+	ASSERT_VECTORS_EQUAL(x-y, o.globalToLocal(x+y));
+	ASSERT_VECTORS_EQUAL(x-y, o.localToGlobal(x+y));
+	ASSERT_VECTORS_EQUAL(x+z, o.globalToLocal(x+z));
+	ASSERT_VECTORS_EQUAL(x+z, o.localToGlobal(x+z));
+	ASSERT_VECTORS_EQUAL(-y+z, o.globalToLocal(y+z));
+	ASSERT_VECTORS_EQUAL(-y+z, o.localToGlobal(y+z));
 }
 
 AUTO_UNIT_TEST(onb_flip_z)
@@ -143,27 +143,27 @@ AUTO_UNIT_TEST(onb_flip_z)
 	Vector3 y(0,1,0);
 	Vector3 z(0,0,1);
 
-	ASSERT_VECTORS_EQUAL(x, o.into_onb(x));
-	ASSERT_VECTORS_EQUAL(x, o.outof_onb(x));
-	ASSERT_VECTORS_EQUAL(-x, o.into_onb(-x));
-	ASSERT_VECTORS_EQUAL(-x, o.outof_onb(-x));
+	ASSERT_VECTORS_EQUAL(x, o.globalToLocal(x));
+	ASSERT_VECTORS_EQUAL(x, o.localToGlobal(x));
+	ASSERT_VECTORS_EQUAL(-x, o.globalToLocal(-x));
+	ASSERT_VECTORS_EQUAL(-x, o.localToGlobal(-x));
 
-	ASSERT_VECTORS_EQUAL(y, o.into_onb(y));
-	ASSERT_VECTORS_EQUAL(y, o.outof_onb(y));
-	ASSERT_VECTORS_EQUAL(-y, o.into_onb(-y));
-	ASSERT_VECTORS_EQUAL(-y, o.outof_onb(-y));
+	ASSERT_VECTORS_EQUAL(y, o.globalToLocal(y));
+	ASSERT_VECTORS_EQUAL(y, o.localToGlobal(y));
+	ASSERT_VECTORS_EQUAL(-y, o.globalToLocal(-y));
+	ASSERT_VECTORS_EQUAL(-y, o.localToGlobal(-y));
 
-	ASSERT_VECTORS_EQUAL(-z, o.into_onb(z));
-	ASSERT_VECTORS_EQUAL(-z, o.outof_onb(z));
-	ASSERT_VECTORS_EQUAL(z, o.into_onb(-z));
-	ASSERT_VECTORS_EQUAL(z, o.outof_onb(-z));
+	ASSERT_VECTORS_EQUAL(-z, o.globalToLocal(z));
+	ASSERT_VECTORS_EQUAL(-z, o.localToGlobal(z));
+	ASSERT_VECTORS_EQUAL(z, o.globalToLocal(-z));
+	ASSERT_VECTORS_EQUAL(z, o.localToGlobal(-z));
 
-	ASSERT_VECTORS_EQUAL(x+y, o.into_onb(x+y));
-	ASSERT_VECTORS_EQUAL(x+y, o.outof_onb(x+y));
-	ASSERT_VECTORS_EQUAL(x-z, o.into_onb(x+z));
-	ASSERT_VECTORS_EQUAL(x-z, o.outof_onb(x+z));
-	ASSERT_VECTORS_EQUAL(y-z, o.into_onb(y+z));
-	ASSERT_VECTORS_EQUAL(y-z, o.outof_onb(y+z));
+	ASSERT_VECTORS_EQUAL(x+y, o.globalToLocal(x+y));
+	ASSERT_VECTORS_EQUAL(x+y, o.localToGlobal(x+y));
+	ASSERT_VECTORS_EQUAL(x-z, o.globalToLocal(x+z));
+	ASSERT_VECTORS_EQUAL(x-z, o.localToGlobal(x+z));
+	ASSERT_VECTORS_EQUAL(y-z, o.globalToLocal(y+z));
+	ASSERT_VECTORS_EQUAL(y-z, o.localToGlobal(y+z));
 }
 
 
@@ -175,27 +175,27 @@ AUTO_UNIT_TEST(onb_rotation_90degrees_around_z)
 	Vector3 y(0,1,0);
 	Vector3 z(0,0,1);
 
-	ASSERT_VECTORS_EQUAL(-y, o.into_onb(x));
-	ASSERT_VECTORS_EQUAL(y, o.outof_onb(x));
-	ASSERT_VECTORS_EQUAL(y, o.into_onb(-x));
-	ASSERT_VECTORS_EQUAL(-y, o.outof_onb(-x));
+	ASSERT_VECTORS_EQUAL(-y, o.globalToLocal(x));
+	ASSERT_VECTORS_EQUAL(y, o.localToGlobal(x));
+	ASSERT_VECTORS_EQUAL(y, o.globalToLocal(-x));
+	ASSERT_VECTORS_EQUAL(-y, o.localToGlobal(-x));
 
-	ASSERT_VECTORS_EQUAL(x, o.into_onb(y));
-	ASSERT_VECTORS_EQUAL(-x, o.outof_onb(y));
-	ASSERT_VECTORS_EQUAL(-x, o.into_onb(-y));
-	ASSERT_VECTORS_EQUAL(x, o.outof_onb(-y));
+	ASSERT_VECTORS_EQUAL(x, o.globalToLocal(y));
+	ASSERT_VECTORS_EQUAL(-x, o.localToGlobal(y));
+	ASSERT_VECTORS_EQUAL(-x, o.globalToLocal(-y));
+	ASSERT_VECTORS_EQUAL(x, o.localToGlobal(-y));
 
-	ASSERT_VECTORS_EQUAL(z, o.into_onb(z));
-	ASSERT_VECTORS_EQUAL(z, o.outof_onb(z));
-	ASSERT_VECTORS_EQUAL(-z, o.into_onb(-z));
-	ASSERT_VECTORS_EQUAL(-z, o.outof_onb(-z));
+	ASSERT_VECTORS_EQUAL(z, o.globalToLocal(z));
+	ASSERT_VECTORS_EQUAL(z, o.localToGlobal(z));
+	ASSERT_VECTORS_EQUAL(-z, o.globalToLocal(-z));
+	ASSERT_VECTORS_EQUAL(-z, o.localToGlobal(-z));
 
-	ASSERT_VECTORS_EQUAL(x-y, o.into_onb(x+y));
-	ASSERT_VECTORS_EQUAL(-x+y, o.outof_onb(x+y));
-	ASSERT_VECTORS_EQUAL(-y+z, o.into_onb(x+z));
-	ASSERT_VECTORS_EQUAL(y+z, o.outof_onb(x+z));
-	ASSERT_VECTORS_EQUAL(x+z, o.into_onb(y+z));
-	ASSERT_VECTORS_EQUAL(-x+z, o.outof_onb(y+z));
+	ASSERT_VECTORS_EQUAL(x-y, o.globalToLocal(x+y));
+	ASSERT_VECTORS_EQUAL(-x+y, o.localToGlobal(x+y));
+	ASSERT_VECTORS_EQUAL(-y+z, o.globalToLocal(x+z));
+	ASSERT_VECTORS_EQUAL(y+z, o.localToGlobal(x+z));
+	ASSERT_VECTORS_EQUAL(x+z, o.globalToLocal(y+z));
+	ASSERT_VECTORS_EQUAL(-x+z, o.localToGlobal(y+z));
 }
 
 AUTO_UNIT_TEST(onb_rotation_minus90degrees_around_z)
@@ -206,27 +206,27 @@ AUTO_UNIT_TEST(onb_rotation_minus90degrees_around_z)
 	Vector3 y(0,1,0);
 	Vector3 z(0,0,1);
 
-	ASSERT_VECTORS_EQUAL(y, o.into_onb(x));
-	ASSERT_VECTORS_EQUAL(-y, o.outof_onb(x));
-	ASSERT_VECTORS_EQUAL(-y, o.into_onb(-x));
-	ASSERT_VECTORS_EQUAL(y, o.outof_onb(-x));
+	ASSERT_VECTORS_EQUAL(y, o.globalToLocal(x));
+	ASSERT_VECTORS_EQUAL(-y, o.localToGlobal(x));
+	ASSERT_VECTORS_EQUAL(-y, o.globalToLocal(-x));
+	ASSERT_VECTORS_EQUAL(y, o.localToGlobal(-x));
 
-	ASSERT_VECTORS_EQUAL(-x, o.into_onb(y));
-	ASSERT_VECTORS_EQUAL(x, o.outof_onb(y));
-	ASSERT_VECTORS_EQUAL(x, o.into_onb(-y));
-	ASSERT_VECTORS_EQUAL(-x, o.outof_onb(-y));
+	ASSERT_VECTORS_EQUAL(-x, o.globalToLocal(y));
+	ASSERT_VECTORS_EQUAL(x, o.localToGlobal(y));
+	ASSERT_VECTORS_EQUAL(x, o.globalToLocal(-y));
+	ASSERT_VECTORS_EQUAL(-x, o.localToGlobal(-y));
 
-	ASSERT_VECTORS_EQUAL(z, o.into_onb(z));
-	ASSERT_VECTORS_EQUAL(z, o.outof_onb(z));
-	ASSERT_VECTORS_EQUAL(-z, o.into_onb(-z));
-	ASSERT_VECTORS_EQUAL(-z, o.outof_onb(-z));
+	ASSERT_VECTORS_EQUAL(z, o.globalToLocal(z));
+	ASSERT_VECTORS_EQUAL(z, o.localToGlobal(z));
+	ASSERT_VECTORS_EQUAL(-z, o.globalToLocal(-z));
+	ASSERT_VECTORS_EQUAL(-z, o.localToGlobal(-z));
 
-	ASSERT_VECTORS_EQUAL(-x+y, o.into_onb(x+y));
-	ASSERT_VECTORS_EQUAL(x-y, o.outof_onb(x+y));
-	ASSERT_VECTORS_EQUAL(y+z, o.into_onb(x+z));
-	ASSERT_VECTORS_EQUAL(-y+z, o.outof_onb(x+z));
-	ASSERT_VECTORS_EQUAL(-x+z, o.into_onb(y+z));
-	ASSERT_VECTORS_EQUAL(x+z, o.outof_onb(y+z));
+	ASSERT_VECTORS_EQUAL(-x+y, o.globalToLocal(x+y));
+	ASSERT_VECTORS_EQUAL(x-y, o.localToGlobal(x+y));
+	ASSERT_VECTORS_EQUAL(y+z, o.globalToLocal(x+z));
+	ASSERT_VECTORS_EQUAL(-y+z, o.localToGlobal(x+z));
+	ASSERT_VECTORS_EQUAL(-x+z, o.globalToLocal(y+z));
+	ASSERT_VECTORS_EQUAL(x+z, o.localToGlobal(y+z));
 }
 
 AUTO_UNIT_TEST(onb_rotation_180degrees_around_z)
@@ -237,27 +237,27 @@ AUTO_UNIT_TEST(onb_rotation_180degrees_around_z)
 	Vector3 y(0,1,0);
 	Vector3 z(0,0,1);
 
-	ASSERT_VECTORS_EQUAL(-x, o.into_onb(x));
-	ASSERT_VECTORS_EQUAL(-x, o.outof_onb(x));
-	ASSERT_VECTORS_EQUAL(x, o.into_onb(-x));
-	ASSERT_VECTORS_EQUAL(x, o.outof_onb(-x));
+	ASSERT_VECTORS_EQUAL(-x, o.globalToLocal(x));
+	ASSERT_VECTORS_EQUAL(-x, o.localToGlobal(x));
+	ASSERT_VECTORS_EQUAL(x, o.globalToLocal(-x));
+	ASSERT_VECTORS_EQUAL(x, o.localToGlobal(-x));
 
-	ASSERT_VECTORS_EQUAL(-y, o.into_onb(y));
-	ASSERT_VECTORS_EQUAL(-y, o.outof_onb(y));
-	ASSERT_VECTORS_EQUAL(y, o.into_onb(-y));
-	ASSERT_VECTORS_EQUAL(y, o.outof_onb(-y));
+	ASSERT_VECTORS_EQUAL(-y, o.globalToLocal(y));
+	ASSERT_VECTORS_EQUAL(-y, o.localToGlobal(y));
+	ASSERT_VECTORS_EQUAL(y, o.globalToLocal(-y));
+	ASSERT_VECTORS_EQUAL(y, o.localToGlobal(-y));
 
-	ASSERT_VECTORS_EQUAL(z, o.into_onb(z));
-	ASSERT_VECTORS_EQUAL(z, o.outof_onb(z));
-	ASSERT_VECTORS_EQUAL(-z, o.into_onb(-z));
-	ASSERT_VECTORS_EQUAL(-z, o.outof_onb(-z));
+	ASSERT_VECTORS_EQUAL(z, o.globalToLocal(z));
+	ASSERT_VECTORS_EQUAL(z, o.localToGlobal(z));
+	ASSERT_VECTORS_EQUAL(-z, o.globalToLocal(-z));
+	ASSERT_VECTORS_EQUAL(-z, o.localToGlobal(-z));
 
-	ASSERT_VECTORS_EQUAL(-x-y, o.into_onb(x+y));
-	ASSERT_VECTORS_EQUAL(-x-y, o.outof_onb(x+y));
-	ASSERT_VECTORS_EQUAL(-x+z, o.into_onb(x+z));
-	ASSERT_VECTORS_EQUAL(-x+z, o.outof_onb(x+z));
-	ASSERT_VECTORS_EQUAL(-y+z, o.into_onb(y+z));
-	ASSERT_VECTORS_EQUAL(-y+z, o.outof_onb(y+z));
+	ASSERT_VECTORS_EQUAL(-x-y, o.globalToLocal(x+y));
+	ASSERT_VECTORS_EQUAL(-x-y, o.localToGlobal(x+y));
+	ASSERT_VECTORS_EQUAL(-x+z, o.globalToLocal(x+z));
+	ASSERT_VECTORS_EQUAL(-x+z, o.localToGlobal(x+z));
+	ASSERT_VECTORS_EQUAL(-y+z, o.globalToLocal(y+z));
+	ASSERT_VECTORS_EQUAL(-y+z, o.localToGlobal(y+z));
 }
 
 // FIXME! More tests needed.
