@@ -1,5 +1,5 @@
 /*
- * $Id: GenericFrame.hpp,v 1.1.2.1 2010/03/06 20:44:07 kpharris Exp $
+ * $Id: GenericFrame.hpp,v 1.1.2.2 2010/03/07 18:43:35 kpharris Exp $
  *
  * Part of "Panorama" a playground for graphics development
  * Copyright (C) 2003 Kevin Harris
@@ -200,7 +200,6 @@ namespace panorama
 		{
 			tag = GenericFrame<T>::name();
 		}
-		Indentation internalIndent("", "", "");
 		return indent.initial() + tag +
 			"{" +
 			panorama::toString(o(), indent.indentInside(), prefix) +

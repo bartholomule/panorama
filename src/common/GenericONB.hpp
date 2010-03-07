@@ -1,5 +1,5 @@
 /*
- * $Id: GenericONB.hpp,v 1.1.2.2 2010/03/06 20:44:07 kpharris Exp $
+ * $Id: GenericONB.hpp,v 1.1.2.3 2010/03/07 18:43:35 kpharris Exp $
  *
  * Part of GNU Panorama
  * Copyright (C) 2010 Kevin Harris
@@ -200,7 +200,6 @@ namespace panorama
 		{
 			tag = GenericONB<T>::name();
 		}
-		Indentation internalIndent("", "", "");
 		return indent.initial() + tag +
 			"{" +
 			panorama::toString(u(), indent.indentInside(), prefix) +
