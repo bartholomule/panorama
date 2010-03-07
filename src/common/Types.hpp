@@ -1,5 +1,5 @@
 /*
- * $Id: Types.hpp,v 1.1.2.6 2010/03/06 20:44:07 kpharris Exp $
+ * $Id: Types.hpp,v 1.1.2.7 2010/03/07 18:49:12 kpharris Exp $
  *
  * Part of GNU Panorama -- A framework for graphics production.
  * Copyright (C) 2010 Kevin Harris
@@ -34,6 +34,8 @@
 #include "panorama/common/GenericPoint3.hpp"
 #include "panorama/common/GenericONB.hpp"
 #include "panorama/common/GenericFrame.hpp"
+#include "panorama/common/GenericInterval.hpp"
+#include "panorama/common/GenericLine2.hpp"
 
 namespace panorama
 {
@@ -46,6 +48,8 @@ namespace panorama
 	typedef GenericPoint3<NumberType> Point3;
 	typedef GenericONB<NumberType> ONB;
 	typedef GenericFrame<NumberType> Frame;
+	typedef GenericInterval<NumberType> Interval;
+	typedef GenericLine2<NumberType> Line2;
 }
 
 #endif /* !defined(PANORAMA_TYPES_HPP) */

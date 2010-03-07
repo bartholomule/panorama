@@ -17,7 +17,6 @@ AUTO_UNIT_TEST(frame_string_convert)
 	Frame f(o,u,v,w);
 	unitAssertEquals("{(1,2,3),<1,0,0>,<0,1,0>,<0,0,1>}", panorama::toString(f));
 	unitAssertEquals("Frame\n{\n  origin = (1,2,3);\n  u = <1,0,0>;\n  v = <0,1,0>;\n  w = <0,0,1>;\n}", toStringAsMembers(f));
-	ONB::CanBeStringDumpedTag foo;
 }
 
 AUTO_UNIT_TEST(onb_identity_transform)

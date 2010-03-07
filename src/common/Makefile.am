@@ -22,6 +22,8 @@ GenericPoint2.hpp \
 GenericPoint3.hpp \
 GenericONB.hpp \
 GenericFrame.hpp \
+GenericInterval.hpp \
+GenericLine2.hpp \
 Capabilities.hpp
 
 AM_CPPFLAGS = -I$(top_srcdir)/src
