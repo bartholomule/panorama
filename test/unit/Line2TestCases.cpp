@@ -15,7 +15,7 @@ AUTO_UNIT_TEST(line2_string_convert)
 	Interval l(10,20);
 	Line2 line(o, d, l);
 	unitAssertEquals("|(0,0),<0,1>,[10,20]|", panorama::toString(line));
-	unitAssertEquals("Line2\n{\n  origin = (0,0);\n  direction = <0,1>;\n  limits = [10,20];\n}", toStringAsMembers(line));
+	unitAssertEquals("Line\n{\n  origin = (0,0);\n  direction = <0,1>;\n  limits = [10,20];\n}", toStringAsMembers(line));
 }
 
 AUTO_UNIT_TEST(line2_minmax)

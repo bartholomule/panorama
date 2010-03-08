@@ -14,7 +14,8 @@ ONBTestCases \
 FrameTestCases \
 CapabilitiesTestCases \
 IntervalTestCases \
-Line2TestCases
+Line2TestCases \
+Line3TestCases
 
 # Put new test source lists here.
 CopyCounterTestCases_SOURCES = CopyCounterTestCases.cpp
@@ -32,6 +33,7 @@ FrameTestCases_SOURCES = FrameTestCases.cpp
 CapabilitiesTestCases_SOURCES = CapabilitiesTestCases.cpp
 IntervalTestCases_SOURCES = IntervalTestCases.cpp
 Line2TestCases_SOURCES = Line2TestCases.cpp
+Line3TestCases_SOURCES = Line3TestCases.cpp
 
 #
 # Everything below here should normally be ignored
