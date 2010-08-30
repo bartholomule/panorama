@@ -1,5 +1,5 @@
 /*
- * $Id: GenericRGBAColor.hpp,v 1.1.2.1 2010/08/30 06:00:50 kpharris Exp $
+ * $Id: GenericRGBAColor.hpp,v 1.1.2.2 2010/08/30 07:03:49 kpharris Exp $
  *
  * Part of "Panorama" a playground for graphics development
  * Copyright (C) 2003 Kevin Harris
@@ -24,6 +24,7 @@
 
 #include "StringDumpable.hpp"
 #include "GenericRGBColor.hpp"
+#include "Larger.hpp"
 #include <limits>
 
 namespace panorama
@@ -76,7 +77,7 @@ namespace panorama
 	 * class as an array of three ints.
 	 *
 	 * @author Kevin Harris <kpharris@users.sourceforge.net>
-	 * @version $Revision: 1.1.2.1 $
+	 * @version $Revision: 1.1.2.2 $
 	 *
 	 */
 	template <typename T, typename ColorTraits = RGBAColorTraits<T> >
@@ -216,12 +217,6 @@ namespace panorama
 		template <class U>
 		GenericRGBAColor& operator /=(U factor);          ///< Divide by factor (general)
 		GenericRGBAColor& operator +=(const GenericRGBAColor& r); ///< Add the given to these
-		GenericRGBAColor& operator -=(const GenericRGBAColor& r); ///< Sub the given from these
-		template <typename U, typename ColorTraitsU>
-		GenericRGBAColor& operator +=(const GenericRGBAColor<U, ColorTraitsU>& r); ///< Add the given to these
-		template <typename U, typename ColorTraitsU>
-		GenericRGBAColor& operator -=(const GenericRGBAColor<U, ColorTraitsU>& r); ///< Sub the given from these
-
 
 		// Functions required for the tag-based toString interface
 		void collectInternalMembers(MemberStringDumpCollector& collector) const;
@@ -332,50 +327,28 @@ namespace panorama
 	template <typename T, typename ColorTraits>
 	GenericRGBAColor<T, ColorTraits>& GenericRGBAColor<T, ColorTraits>::operator +=(const GenericRGBAColor<T, ColorTraits>& r)
 	{
-		// FIXME!
-		components[0] += r.components[0];
-		components[1] += r.components[1];
-		components[2] += r.components[2];
-		components[3] += r.components[3];
+		const T m = ColorTraits::max();
+		const typename blocxx::Larger<T>::type alpha1 = m - r.a();
+		const typename blocxx::Larger<T>::type alpha2 = r.a();
+		if( std::numeric_limits<T>::is_exact )
+		{
+			set(
+				(this->r() * alpha2 + r.r() * alpha1) / m,
+				(this->g() * alpha2 + r.g() * alpha1) / m,
+				(this->b() * alpha2 + r.b() * alpha1) / m,
+				this->a() * r.a() );
+		}
+		else
+		{
+			// This saves some FP divs by assuming m == T(1)
+			set(
+				this->r() * alpha2 + r.r() * alpha1,
+				this->g() * alpha2 + r.g() * alpha1,
+				this->b() * alpha2 + r.b() * alpha1,
+				this->a() * r.a() );
+		}
 		return *this;
 	} // GenericRGBAColor::operator+=(GenericRGBAColor)
-
-	/** subtraction/assign */
-	template <typename T, typename ColorTraits>
-	GenericRGBAColor<T, ColorTraits>& GenericRGBAColor<T, ColorTraits>::operator -=(const GenericRGBAColor<T, ColorTraits>& r)
-	{
-		// FIXME!
-		components[0] -= r.components[0];
-		components[1] -= r.components[1];
-		components[2] -= r.components[2];
-		components[3] -= r.components[3];
-		return *this;
-	} // GenericRGBAColor::operator-=(GenericRGBAColor)
-
-	template <typename T, typename ColorTraits>
-	template <typename U, typename ColorTraitsU>
-	GenericRGBAColor<T, ColorTraits>& GenericRGBAColor<T, ColorTraits>::operator +=(const GenericRGBAColor<U, ColorTraitsU>& r)
-	{
-		// FIXME!
-		components[ColorTraits::R] += T(r.r());
-		components[ColorTraits::G] += T(r.g());
-		components[ColorTraits::B] += T(r.b());
-		components[ColorTraits::A] += T(r.a());
-		return *this;
-	} // GenericRGBAColor::operator+=(GenericRGBAColor)
-
-	/** subtraction/assign */
-	template <typename T, typename ColorTraits>
-	template <typename U, typename ColorTraitsU>
-	GenericRGBAColor<T, ColorTraits>& GenericRGBAColor<T, ColorTraits>::operator -=(const GenericRGBAColor<U, ColorTraitsU>& r)
-	{
-		// FIXME! Does this make sense?
-		components[ColorTraits::R] -= T(r.r());
-		components[ColorTraits::G] -= T(r.g());
-		components[ColorTraits::B] -= T(r.b());
-		components[ColorTraits::A] -= T(r.a());
-		return *this;
-	} // GenericRGBAColor::operator-=(GenericRGBAColor)
 
 	/** Multiplication of a color by a factor (non-member) */
 	template <typename T, typename ColorTraits>
@@ -413,36 +386,11 @@ namespace panorama
 		return retval;
 	} // operator+(GenericRGBAColor,GenericRGBAColor)
 
-	template <typename T, typename ColorTraits, typename U, typename ColorTraitsU>
-	GenericRGBAColor<T, ColorTraits> operator+(const GenericRGBAColor<T, ColorTraits>& c1, const GenericRGBAColor<U, ColorTraitsU>& c2)
-	{
-		GenericRGBAColor<T, ColorTraits> retval(c1);
-		retval += c2;
-		return retval;
-	} // operator+(GenericRGBAColor,GenericRGBAColor)
-
-	/** Subtraction of two colors. */
-	template <typename T, typename ColorTraits>
-	GenericRGBAColor<T, ColorTraits> operator-(const GenericRGBAColor<T, ColorTraits>& c1, const GenericRGBAColor<T, ColorTraits>& c2)
-	{
-		GenericRGBAColor<T, ColorTraits> retval(c1);
-		retval -= c2;
-		return retval;
-	} // operator-(GenericRGBAColor,GenericRGBAColor)
-
-	template <typename T, typename ColorTraits, typename U, typename ColorTraitsU>
-	GenericRGBAColor<T, ColorTraits> operator-(const GenericRGBAColor<T, ColorTraits>& c1, const GenericRGBAColor<U, ColorTraitsU>& c2)
-	{
-		GenericRGBAColor<T, ColorTraits> retval(c1);
-		retval -= c2;
-		return retval;
-	} // operator-(GenericRGBAColor,GenericRGBAColor)
-
 	/** Unary negation of a color. */
 	template <typename T, typename ColorTraits>
 	GenericRGBAColor<T, ColorTraits> operator-(const GenericRGBAColor<T, ColorTraits>& c)
 	{
-		return GenericRGBAColor<T, ColorTraits>(-c.r(),-c.g(),-c.b());
+		return GenericRGBAColor<T, ColorTraits>(-c.r(),-c.g(),-c.b(),ColorTraits::max() - c.a());
 	} // operator-(GenericRGBAColor,GenericRGBAColor)
 
 

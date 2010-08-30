@@ -1,13 +1,14 @@
 #define PROVIDE_AUTO_TEST_MAIN
 #include "blocxx_test/CppUnit/AutoTest.hpp"
 #include "panorama/common/Types.hpp"
+#include "panorama/common/Larger.hpp"
 
 using namespace panorama;
 
 double DELTA = 0.00001;
 #define ASSERT_EQUAL(a, b) unitAssertDoublesEqual((a), (b), DELTA)
 
-AUTO_UNIT_TEST(rgbcolor_string_convert)
+AUTO_UNIT_TEST(rgbacolor_string_convert)
 {
 	// Test the tag-based string conversion operations -- we don't want
 	// inheritance or virtual functions.
@@ -30,10 +31,11 @@ AUTO_UNIT_TEST(rgbcolor_string_convert)
 	unitAssertEquals(color2[2], 4);
 	unitAssertEquals(color2[3], 7);
 
-	unitAssertEquals("[- 5,7,9,11 -]", panorama::toString(color + color2));
+	// FIXME! No valid conversion yet exists.
+	//	unitAssertEquals("[- 5,7,9,11 -]", panorama::toString(color + RGBColor(color2)));
 }
 
-AUTO_UNIT_TEST(rgbcolor_reinterpret)
+AUTO_UNIT_TEST(rgbacolor_reinterpret)
 {
 	// This test proves that the structure is packed and double-aligned.  If
 	// this fails anywhere then changes will need to be made to the structure.
@@ -71,7 +73,7 @@ AUTO_UNIT_TEST(rgbcolor_reinterpret)
 	ASSERT_EQUAL(40, colors[1].a());
 }
 
-AUTO_UNIT_TEST(rgbcolor_set_and_get)
+AUTO_UNIT_TEST(rgbacolor_set_and_get)
 {
 	RGBAColor c(0,1,2,3);
 	const RGBAColor c2(c);
@@ -120,10 +122,10 @@ AUTO_UNIT_TEST(rgbcolor_set_and_get)
 	ASSERT_EQUAL(52, c.a());
 }
 
-AUTO_UNIT_TEST(rgbcolor_member_operators)
+AUTO_UNIT_TEST(rgbacolor_member_operators)
 {
-	RGBAColor colorA(2,5,11);
-	RGBAColor colorB(10,20,30);
+	RGBAColor colorA(2,5,11, 0.5);
+	RGBAColor colorB(10,20,30, 0.5);
 	// =
 	{
 		RGBAColor colorC;
@@ -145,32 +147,16 @@ AUTO_UNIT_TEST(rgbcolor_member_operators)
 	{
 		RGBAColor colorC = colorA;
 		colorC += colorC;
-		ASSERT_EQUAL(4, colorC.r());
-		ASSERT_EQUAL(10, colorC.g());
-		ASSERT_EQUAL(22, colorC.b());
+		ASSERT_EQUAL(0.25, colorC.a());
+		ASSERT_EQUAL(2, colorC.r());
+		ASSERT_EQUAL(5, colorC.g());
+		ASSERT_EQUAL(11, colorC.b());
 
 		colorC += colorB;
-		ASSERT_EQUAL(14, colorC.r());
-		ASSERT_EQUAL(30, colorC.g());
-		ASSERT_EQUAL(52, colorC.b());
-	}
-	// -=
-	{
-		RGBAColor colorC = colorA;
-		colorC -= colorC;
-		ASSERT_EQUAL(0, colorC.r());
-		ASSERT_EQUAL(0, colorC.g());
-		ASSERT_EQUAL(0, colorC.b());
-
-		colorC -= colorB;
-		ASSERT_EQUAL(-10, colorC.r());
-		ASSERT_EQUAL(-20, colorC.g());
-		ASSERT_EQUAL(-30, colorC.b());
-
-		colorC -= colorA;
-		ASSERT_EQUAL(-12, colorC.r());
-		ASSERT_EQUAL(-25, colorC.g());
-		ASSERT_EQUAL(-41, colorC.b());
+		ASSERT_EQUAL(6, colorC.r());
+		ASSERT_EQUAL(12.5, colorC.g());
+		ASSERT_EQUAL(20.5, colorC.b());
+		ASSERT_EQUAL(0.125, colorC.a());
 	}
 	// *= (factor)
 	{
@@ -216,35 +202,25 @@ AUTO_UNIT_TEST(rgbcolor_member_operators)
 	}
 }
 
-AUTO_UNIT_TEST(rgbcolor_non_member_operators)
+AUTO_UNIT_TEST(rgbacolor_non_member_operators)
 {
 	// FIXME!
-	RGBAColor colorA(2,5,11);
-	RGBAColor colorB(10,20,30);
+	RGBAColor colorA(2,5,11,0.5);
+	RGBAColor colorB(10,20,30,0.5);
 
 	// +
 	{
 		RGBAColor colorC = colorA + colorA + colorA;
-		ASSERT_EQUAL(6, colorC.r());
-		ASSERT_EQUAL(15, colorC.g());
-		ASSERT_EQUAL(33, colorC.b());
+		ASSERT_EQUAL(2, colorC.r());
+		ASSERT_EQUAL(5, colorC.g());
+		ASSERT_EQUAL(11, colorC.b());
+		ASSERT_EQUAL(0.125, colorC.a());
 
 		RGBAColor colorD = colorC + colorB;
-		ASSERT_EQUAL(16, colorD.r());
-		ASSERT_EQUAL(35, colorD.g());
-		ASSERT_EQUAL(63, colorD.b());
-	}
-	// -
-	{
-		RGBAColor colorC = colorA - colorA - colorA;
-		ASSERT_EQUAL(-2, colorC.r());
-		ASSERT_EQUAL(-5, colorC.g());
-		ASSERT_EQUAL(-11, colorC.b());
-
-		RGBAColor colorD = colorC - colorB;
-		ASSERT_EQUAL(-12, colorD.r());
-		ASSERT_EQUAL(-25, colorD.g());
-		ASSERT_EQUAL(-41, colorD.b());
+		ASSERT_EQUAL(6, colorD.r());
+		ASSERT_EQUAL(12.5, colorD.g());
+		ASSERT_EQUAL(20.5, colorD.b());
+		ASSERT_EQUAL(0.0625, colorD.a());
 	}
 	// * (factor left)
 	{
@@ -308,7 +284,7 @@ AUTO_UNIT_TEST(rgbcolor_non_member_operators)
 	}
 }
 
-AUTO_UNIT_TEST(rgbcolor_non_member_functions)
+AUTO_UNIT_TEST(rgbacolor_non_member_functions)
 {
 	// averageComponent
 	{
