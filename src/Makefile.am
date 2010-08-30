@@ -16,8 +16,9 @@ $(1): Makefile
 endef
 
 # Create rules for symlink creation.
-SYMLINKS = blocxx panorama
+SYMLINKS = blocxx panorama blocxx_test
 $(eval $(call SYMLINK_TEMPLATE,panorama,.))
 $(eval $(call SYMLINK_TEMPLATE,blocxx,blocxx_export/src/blocxx))
+$(eval $(call SYMLINK_TEMPLATE,blocxx_test,blocxx_export/src/blocxx_test))
 
 all-local: $(SYMLINKS)

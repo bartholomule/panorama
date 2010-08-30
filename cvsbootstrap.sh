@@ -30,14 +30,14 @@ for configure_dir in "$PWD" "$PWD/src/blocxx_export"; do
 		exit 1
 	fi
 
-	run_autocmd aclocal-1.9
+	run_autocmd aclocal
 	run_autocmd autoconf
 	run_autocmd autoheader
 
 	if grep AC_PROG_LIBTOOL "${CONFIGURE_SCRIPT}" >/dev/null 2>&1; then
 		run_autocmd libtoolize
 	fi
-	run_autocmd automake-1.9 --foreign --add-missing
+	run_autocmd automake --foreign --add-missing
 
   # Remove default optimizations
 	#sed 's/-O2//g' < configure > configure.fixed && mv configure.fixed configure && chmod +x configure

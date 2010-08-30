@@ -1,5 +1,5 @@
 #define PROVIDE_AUTO_TEST_MAIN
-#include "AutoTest.hpp"
+#include "blocxx_test/CppUnit/AutoTest.hpp"
 #include "panorama/common/Raster.hpp"
 
 AUTO_UNIT_TEST(simple_raster_ops)

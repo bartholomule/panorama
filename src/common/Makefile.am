@@ -20,6 +20,8 @@ GenericVector2.hpp \
 GenericVector3.hpp \
 GenericPoint2.hpp \
 GenericPoint3.hpp \
+GenericRGBColor.hpp \
+GenericRGBAColor.hpp \
 GenericONB.hpp \
 GenericFrame.hpp \
 GenericInterval.hpp \

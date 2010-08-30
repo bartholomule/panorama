@@ -1,5 +1,5 @@
 /*
- * $Id: Types.hpp,v 1.1.2.8 2010/03/08 03:00:40 kpharris Exp $
+ * $Id: Types.hpp,v 1.1.2.9 2010/08/30 06:00:50 kpharris Exp $
  *
  * Part of GNU Panorama -- A framework for graphics production.
  * Copyright (C) 2010 Kevin Harris
@@ -32,6 +32,8 @@
 #include "panorama/common/GenericVector3.hpp"
 #include "panorama/common/GenericPoint2.hpp"
 #include "panorama/common/GenericPoint3.hpp"
+#include "panorama/common/GenericRGBColor.hpp"
+#include "panorama/common/GenericRGBAColor.hpp"
 #include "panorama/common/GenericONB.hpp"
 #include "panorama/common/GenericFrame.hpp"
 #include "panorama/common/GenericInterval.hpp"
@@ -46,6 +48,8 @@ namespace panorama
 	typedef GenericVector3<NumberType> Vector3;
 	typedef GenericPoint2<NumberType> Point2;
 	typedef GenericPoint3<NumberType> Point3;
+	typedef GenericRGBColor<NumberType> RGBColor;
+	typedef GenericRGBAColor<NumberType> RGBAColor;
 	typedef GenericONB<NumberType> ONB;
 	typedef GenericFrame<NumberType> Frame;
 	typedef GenericInterval<NumberType> Interval;

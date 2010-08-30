@@ -1,5 +1,5 @@
 #define PROVIDE_AUTO_TEST_MAIN
-#include "AutoTest.hpp"
+#include "blocxx_test/CppUnit/AutoTest.hpp"
 #include "CopyCounter.hpp"
 
 using panorama::Test::CopyCounter;
