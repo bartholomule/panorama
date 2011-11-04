@@ -1,5 +1,5 @@
 /*
- * $Id: GenericRGBAColor.hpp,v 1.1.2.2 2010/08/30 07:03:49 kpharris Exp $
+ * $Id: GenericRGBAColor.hpp,v 1.1.2.3 2011/11/04 21:44:30 kpharris Exp $
  *
  * Part of "Panorama" a playground for graphics development
  * Copyright (C) 2003 Kevin Harris
@@ -25,6 +25,7 @@
 #include "StringDumpable.hpp"
 #include "GenericRGBColor.hpp"
 #include "Larger.hpp"
+#include "blocxx/Compare.hpp"
 #include <limits>
 
 namespace panorama
@@ -77,7 +78,7 @@ namespace panorama
 	 * class as an array of three ints.
 	 *
 	 * @author Kevin Harris <kpharris@users.sourceforge.net>
-	 * @version $Revision: 1.1.2.2 $
+	 * @version $Revision: 1.1.2.3 $
 	 *
 	 */
 	template <typename T, typename ColorTraits = RGBAColorTraits<T> >
@@ -405,7 +406,7 @@ namespace panorama
 	inline T maxComponent(const GenericRGBAColor<T, ColorTraits>& c)
 	{
 		// FIXME! Max the alpha?
-		return std::max(std::max(c.r(), c.g()), c.b());
+		return blocxx::MultiMax(c.r(), c.g(), c.b());
 	}
 
 	template <typename T, typename ColorTraits>

@@ -1,5 +1,5 @@
 /*
- * $Id: GenericRGBColor.hpp,v 1.1.2.1 2010/08/30 06:00:50 kpharris Exp $
+ * $Id: GenericRGBColor.hpp,v 1.1.2.2 2011/11/04 21:44:30 kpharris Exp $
  *
  * Part of "Panorama" a playground for graphics development
  * Copyright (C) 2003 Kevin Harris
@@ -23,6 +23,7 @@
 #define            PANORAMA__GENERIC_RGBCOLOR_HPP
 
 #include "StringDumpable.hpp"
+#include "blocxx/Compare.hpp"
 #include <limits>
 
 namespace panorama
@@ -75,7 +76,7 @@ namespace panorama
 	 * class as an array of three ints.
 	 *
 	 * @author Kevin Harris <kpharris@users.sourceforge.net>
-	 * @version $Revision: 1.1.2.1 $
+	 * @version $Revision: 1.1.2.2 $
 	 *
 	 */
 	template <typename T, typename ColorTraits = RGBColorTraits<T> >
@@ -399,7 +400,7 @@ namespace panorama
 	template <typename T, typename ColorTraits>
 	inline T maxComponent(const GenericRGBColor<T, ColorTraits>& c)
 	{
-		return std::max(std::max(c.r(), c.g()), c.b());
+		return blocxx::MultiMax(c.r(), c.g(), c.b());
 	}
 
 	template <typename T, typename ColorTraits>
