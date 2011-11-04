@@ -1,5 +1,5 @@
 /*
- * $Id: GenericInterval.hpp,v 1.1.2.1 2010/03/07 18:49:12 kpharris Exp $
+ * $Id: GenericInterval.hpp,v 1.1.2.2 2011/11/04 21:43:33 kpharris Exp $
  *
  * Part of GNU Panorama
  * Copyright (C) 2010 Kevin Harris
@@ -217,29 +217,18 @@ namespace panorama
 			return result;
 		}
 
-		// FIXME! Rewrite this to be simpler.
+		T start = std::max(i1.begin(), i2.begin());
+		T finish = std::min(i1.end(), i2.end());
 
-		if( (i1.begin() <= i2.begin()) && (i2.begin() <= i1.end()) )
+		if( start <= finish )
 		{
-			result = GenericInterval<T>(i2.begin(), std::min(i1.end(), i2.end()));
-		}
-		else if( (i2.begin() <= i1.begin()) && (i1.begin() <= i2.end()) )
-		{
-			result = GenericInterval<T>(i1.begin(), std::min(i1.end(), i2.end()));
-		}
-		else if( (i1.begin() <= i2.end()) && (i2.end() <= i1.end()) )
-		{
-			result = GenericInterval<T>(std::max(i1.begin(), i2.begin()), i2.end());
-		}
-		else if( (i2.begin() <= i1.end()) && (i1.end() <= i2.end()) )
-		{
-			result = GenericInterval<T>(std::max(i1.begin(), i1.begin()), i1.end());
+			result = GenericInterval<T>(start, finish);
 		}
 		else
 		{
-			// Is a case here even valid?
-			// FIXME: FOOBARBAZ
+			// No overlap.  Will return an empty interval.
 		}
+
 		return result;
 	} // intersection(const GenericInterval&) const
 
