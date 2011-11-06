@@ -1,5 +1,5 @@
 /*
- * $Id: GenericCoord3.hpp,v 1.1.2.4 2010/03/03 17:54:10 kpharris Exp $
+ * $Id: GenericCoord3.hpp,v 1.1.2.5 2011/11/06 03:40:41 kpharris Exp $
  *
  * Part GNU Panorama
  * Copyright (C) 2009 Kevin Harris
@@ -73,7 +73,7 @@ namespace panorama
 			};
 		typedef T base;
 
-		GenericCoord3()
+		GenericCoord3():coords(T(), T(), T())
 		{
 		}
 		inline GenericCoord3(T u):coords(u,u,u)
