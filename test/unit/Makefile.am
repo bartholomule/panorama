@@ -17,7 +17,8 @@ FrameTestCases \
 CapabilitiesTestCases \
 IntervalTestCases \
 Line2TestCases \
-Line3TestCases
+Line3TestCases \
+ImageTestCases
 
 # Put new test source lists here.
 CopyCounterTestCases_SOURCES = CopyCounterTestCases.cpp
@@ -38,6 +39,7 @@ CapabilitiesTestCases_SOURCES = CapabilitiesTestCases.cpp
 IntervalTestCases_SOURCES = IntervalTestCases.cpp
 Line2TestCases_SOURCES = Line2TestCases.cpp
 Line3TestCases_SOURCES = Line3TestCases.cpp
+ImageTestCases_SOURCES = ImageTestCases.cpp
 
 # Needed for a new automake
 CopyCounterTestCases_LDFLAGS =
@@ -58,6 +60,7 @@ CapabilitiesTestCases_LDFLAGS =
 IntervalTestCases_LDFLAGS =
 Line2TestCases_LDFLAGS =
 Line3TestCases_LDFLAGS =
+ImageTestCases_LDFLAGS =
 
 #
 # Everything below here should normally be ignored
