@@ -1,19 +1,17 @@
 lib_LTLIBRARIES = libpanorama_common.la
 libpanorama_common_la_SOURCES = \
+BaseClass.cpp \
+Capabilities.cpp \
 Cloneable.cpp \
 StringDumpable.cpp \
-BaseClass.cpp \
-Capabilities.cpp
+TextUtils.cpp
 
 pkgincludedir = $(includedir)/panorama/common
 pkginclude_HEADERS = \
-Config.h \
-Cloneable.hpp \
-StringDumpable.hpp \
+Config.hpp \
 BaseClass.hpp \
-Raster.hpp \
-GenericCoord2.hpp \
-Types.hpp \
+Capabilities.hpp \
+Cloneable.hpp \
 GenericCoord2.hpp \
 GenericCoord3.hpp \
 GenericVector2.hpp \
@@ -26,7 +24,12 @@ GenericONB.hpp \
 GenericFrame.hpp \
 GenericInterval.hpp \
 GenericLine.hpp \
-Capabilities.hpp
+GenericLine2.hpp \
+Raster.hpp \
+StringDumpable.hpp \
+TextUtils.hpp \
+Types.hpp
+
 
 AM_CPPFLAGS = -I$(top_srcdir)/src
 libpanorama_common_la_LIBADD =
