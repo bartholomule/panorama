@@ -1,7 +1,8 @@
 SUBDIRS = \
 	.  \
 	blocxx_export \
-	common
+	common \
+	graphics
 
 # $(1) = symlink name
 # $(2) = relative directory (relative to $(top_builddir)/src)

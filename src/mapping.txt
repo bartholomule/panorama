@@ -1,0 +1,5 @@
+Here are how the old classes have been mapped to the new ones:
+TBaseClass --> BaseClass
+TFrame --> Raster
+TVector --> Vector3, Point3, Coord3
+TVector2 --> Vector2, Point2, Coord2
