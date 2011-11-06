@@ -24,21 +24,23 @@
 # whatever is passed as positional arguments ($(1)).
 define EXECUTABLE_FLAG_TEMPLATE
 
-# Define <foo>_LDFLAGS in terms of the predefined values and any PROJECT_LIBS
-# requested.
+# Define <foo>_LDFLAGS in terms of the predefined values requested.  The
+# resulting LDFLAGS are applied *before* any object files listed on a link line
+# and so should not contain any library references.
 define $(1)_LDFLAGS
--o $(1)$$(EXEEXT)  $$(CXXBINLINKFLAGS_START)  $$($(1)_PROJECT_LIBS)  $$(COMMON_LDFLAGS)
+-o $(1)$$(EXEEXT) $$(CXXBINLINKFLAGS_START) $$(COMMON_LDFLAGS)
 endef
 
-# Define <foo>_LDADD in terms of any EXTERNAL_LIBS and any systemwide
-# predefined append flags
+# Define <foo>_LDADD in terms of any PROJECT_LIBS, EXTERNAL_LIBS and any
+# systemwide predefined append flags
 define $(1)_LDADD
-$$($(1)_EXTERNAL_LIBS) $$(BINLINKAPPENDFLAGS)
+$$($(1)_PROJECT_LIBS) $$($(1)_EXTERNAL_LIBS) $$(BINLINKAPPENDFLAGS)
 endef
 
-# Define <foo>_DEPENCIES to be *.a files listed in _EXTERNAL_LIBS
+# Define <foo>_DEPENCIES to be *.a files listed in _EXTERNAL_LIBS and the
+# objects generated for the target.
 define $(1)_DEPENDENCIES
-$$(filter %.a,$$($(1)_EXTERNAL_LIBS))
+$$(filter %.a,$$($(1)_EXTERNAL_LIBS)) $$($(1)_OBJECTS)
 endef
 
 # A simple makefile testing target.  Note that @ is replaced with $(1) or it
@@ -50,6 +52,9 @@ showflags-$(1):
 	@echo '$(1)_EXTERNAL_LIBS=$$($(1)_EXTERNAL_LIBS:@=$(1))'
 	@echo '$(1)_PROJECT_LIBS=$$($(1)_PROJECT_LIBS:@=$(1))'
 	@echo '$(1)_SOURCES=$$($(1)_SOURCES:@=$(1))'
+	@echo '$(1)_LINK=$$($(1)_LINK:@=$(1))'
+	@echo '$(1)_OBJECTS=$$($(1)_OBJECTS:@=$(1))'
+	@echo 'LIBS=$(LIBS)'
 
 endef # end of EXECUTABLE_FLAG_TEMPLATE
 
