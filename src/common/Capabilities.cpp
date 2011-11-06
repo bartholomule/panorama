@@ -1,5 +1,5 @@
 /*
- * $Id: Capabilities.cpp,v 1.1.2.1 2009/07/19 17:32:34 kpharris Exp $
+ * $Id: Capabilities.cpp,v 1.1.2.2 2011/11/06 03:33:08 kpharris Exp $
  *
  * Part of GNU Panorama
  *
@@ -31,11 +31,11 @@ namespace panorama
       {
 			if( !s.empty() )
 			{
-            s += ", " + item;
+				s += ", " + item;
 			}
 			else
 			{
-            s += item;
+				s += item;
 			}
       }
 
@@ -233,5 +233,77 @@ namespace panorama
 	}
 
 	CAPABILITIES_DEFINITION(MaterialCapabilities);
+
+	///////////////////////////////////////////////////////////////////////////
+
+	///////////////////////////////////////////////////////////////////////////
+
+	blocxx::String ColorCapabilities::toString(const Indentation& indent, StringDumpable::PrefixType prefix) const
+	{
+      blocxx::String retval;
+
+      ADD_TO_RESULT_LONG(ColorCapabilities::GRAYSCALE, "Grayscale");
+      ADD_TO_RESULT_LONG(ColorCapabilities::RGB, "RGB");
+      ADD_TO_RESULT_LONG(ColorCapabilities::TRANSPARENT, "Transparent");
+      ADD_TO_RESULT_LONG(ColorCapabilities::SPECTRA, "Spectra");
+
+      if( retval.empty() )
+      {
+			retval = "NONE";
+      }
+
+      return "{" + retval + "}";
+	}
+
+
+	blocxx::String ColorCapabilities::toStringShort() const
+	{
+      blocxx::String retval;
+
+      ADD_TO_RESULT_SHORT(ColorCapabilities::GRAYSCALE, "G");
+      ADD_TO_RESULT_SHORT(ColorCapabilities::RGB, "C");
+      ADD_TO_RESULT_SHORT(ColorCapabilities::TRANSPARENT, "A");
+      ADD_TO_RESULT_SHORT(ColorCapabilities::SPECTRA, "S");
+
+      return retval;
+	}
+
+	CAPABILITIES_DEFINITION(ColorCapabilities);
+
+	///////////////////////////////////////////////////////////////////////////
+
+	///////////////////////////////////////////////////////////////////////////
+
+	blocxx::String ImageCapabilities::toString(const Indentation& indent, StringDumpable::PrefixType prefix) const
+	{
+      blocxx::String retval;
+
+      ADD_TO_RESULT_LONG(ImageCapabilities::LOSSLESS, "Lossless");
+      ADD_TO_RESULT_LONG(ImageCapabilities::COMPRESSED, "Compressed");
+      ADD_TO_RESULT_LONG(ImageCapabilities::HIGH_BITWIDTH, "High Bitwidth");
+      ADD_TO_RESULT_LONG(ImageCapabilities::BINARY, "Binary");
+
+      if( retval.empty() )
+      {
+			retval = "NONE";
+      }
+
+      return "{" + retval + "}";
+	}
+
+
+	blocxx::String ImageCapabilities::toStringShort() const
+	{
+      blocxx::String retval;
+
+      ADD_TO_RESULT_SHORT(ImageCapabilities::LOSSLESS, "L");
+      ADD_TO_RESULT_SHORT(ImageCapabilities::COMPRESSED, "C");
+      ADD_TO_RESULT_SHORT(ImageCapabilities::HIGH_BITWIDTH, "H");
+      ADD_TO_RESULT_SHORT(ImageCapabilities::BINARY, "B");
+
+      return retval;
+	}
+
+	CAPABILITIES_DEFINITION(ImageCapabilities);
 
 } // namespace amethyst

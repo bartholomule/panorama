@@ -1,5 +1,5 @@
 /*
- * $Id: Capabilities.hpp,v 1.1.2.1 2009/07/19 17:32:34 kpharris Exp $
+ * $Id: Capabilities.hpp,v 1.1.2.2 2011/11/06 03:33:08 kpharris Exp $
  *
  * Part of GNU Panorama
  *
@@ -84,7 +84,7 @@ namespace panorama
 		UV_CALCULATION = 16,
 		LOCAL_SYSTEM_CALCULATION = 32,
 		TIME_SAMPLING = 64,
-		ALL = TIME_SAMPLING * 2 - 1
+		ALL = (TIME_SAMPLING * 2) - 1
 	);
 
 	CAPABILITIES_DECLARATION(ObjectCapabilities,
@@ -96,7 +96,7 @@ namespace panorama
 		CONTAINER = 16,
 		IMPLICIT = 32,
 		SIMPLE = 64, // A simple shape with fast intersection test (sphere, plane, etc).
-		ALL = 2 * SIMPLE - 1
+		ALL = (2 * SIMPLE) - 1
 	);
 
 	CAPABILITIES_DECLARATION(MaterialCapabilities,
@@ -105,8 +105,26 @@ namespace panorama
 		EMISSIVE = 2, // emits light
 		REFLECTIVE = 4, // specular reflection
 		TRANSMISSIVE = 8, // implies refraction of some kind
-		ALL = 2 * TRANSMISSIVE - 1
+		ALL = (2 * TRANSMISSIVE) - 1
 	);
 
-} // namespace amethyst
+	CAPABILITIES_DECLARATION(ColorCapabilities,
+		NONE = 0,
+		GRAYSCALE = 1, // mono color
+		RGB = 2, // tri-color
+		TRANSPARENT = 4, // supports alpha
+		SPECTRA = 8, // spectral function or map as a color value
+		ALL = (2 * SPECTRA) - 1
+	);
+
+	CAPABILITIES_DECLARATION(ImageCapabilities,
+		NONE = 0,
+		LOSSLESS = 1, // Lossless image format
+		COMPRESSED = 2,
+		HIGH_BITWIDTH = 4, // 12 or more bits per channel
+		BINARY = 8,
+		ALL = (2 * BINARY) - 1
+	);
+
+} // namespace panorama
 #endif /* !defined(PANORAMA_CAPABILITIES_HPP) */
