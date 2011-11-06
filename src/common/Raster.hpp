@@ -1,5 +1,5 @@
 /*
- * $Id: Raster.hpp,v 1.1.2.2 2009/02/23 04:56:13 kpharris Exp $
+ * $Id: Raster.hpp,v 1.1.2.3 2011/11/06 03:37:48 kpharris Exp $
  *
  * Part of GNU Panorama -- a framework for graphics production.
  * Copyright (C) 2009 Kevin Harris
@@ -27,6 +27,7 @@
  */
 
 #include "panorama/common/BaseClass.hpp"
+#include "panorama/common/GenericRectangle.hpp"
 #include "blocxx/Array.hpp" // for blocxx::OutOfBoundsException
 #include "blocxx/Exception.hpp"
 #include "blocxx/Format.hpp"
@@ -44,7 +45,7 @@ namespace panorama
 	 * have iterators (at this time).
 	 *
 	 * @author Kevin Harris <kpharris@users.sourceforge.net>
-	 * @version $Revision: 1.1.2.2 $
+	 * @version $Revision: 1.1.2.3 $
 	 *
 	 */
 	template <typename T>
@@ -92,6 +93,11 @@ namespace panorama
 		 */
 		const Scanline<T> operator[](unsigned y)const;
 
+		bool inside(int x, int y) const
+		{
+			return (y >= 0) && (y < int(height)) && (x >= 0) && (x < int(width));
+		}
+
 		/**
 		 * Return a Raster which contains the elements in the range
 		 * (x1,y1) to (x2,y2) inclusive.
@@ -100,6 +106,8 @@ namespace panorama
 		 */
 		Raster<T> subRaster(unsigned x1, unsigned y1,
 			unsigned x2, unsigned y2) const;
+
+		Raster<T> subRaster(const GenericRectangle<unsigned>& rect) const;
 
 		/**
 		 * Resize the current Raster to the given width and height.  If preserve is
@@ -151,7 +159,7 @@ namespace panorama
 		}
 
 		/** Get the width of the raster */
-		unsigned getWidth()  const
+		unsigned getWidth() const
 		{
 			return width;
 		}
@@ -204,7 +212,7 @@ namespace panorama
 	 * row number be changed.
 	 *
 	 * @author Kevin Harris
-	 * @version $Revision: 1.1.2.2 $
+	 * @version $Revision: 1.1.2.3 $
 	 */
 	template <class T>
 	class Scanline
@@ -271,9 +279,6 @@ namespace panorama
 	// Member functions for class Raster
 	// **********************************************************************
 
-	//--------------------------------------
-	// Default constructor for class Raster
-	//--------------------------------------
 	template <class T>
 	Raster<T>::Raster():
 		width(0), height(0),
@@ -281,9 +286,6 @@ namespace panorama
 	{
 	} // Raster()
 
-	//--------------------------------------
-	// Default constructor for class Raster
-	//--------------------------------------
 	template <class T>
 	Raster<T>::Raster(unsigned w, unsigned h):
 		width(w), height(h),
@@ -302,9 +304,6 @@ namespace panorama
 		}
 	} // Raster(unsigned,unsigned)
 
-	//-----------------------------
-	// Destructor for class Raster
-	//-----------------------------
 	template <class T>
 	Raster<T>::~Raster()
 	{
@@ -315,9 +314,6 @@ namespace panorama
 		height = 0;
 	} // ~Raster()
 
-	//-----------------------------------
-	// Copy constructor for class Raster
-	//-----------------------------------
 	template <class T>
 	Raster<T>::Raster(const Raster<T>& old)
 		: BaseClass(old)
@@ -346,10 +342,6 @@ namespace panorama
 		}
 	} // Raster(Raster)
 
-
-	//--------------------------------------
-	// Assignment operator for class Raster
-	//--------------------------------------
 	template <class T>
 	Raster<T>& Raster<T>::operator= (const Raster<T>& old)
 	{
@@ -367,6 +359,7 @@ namespace panorama
 		return(*this);
 	} // Raster::operator=(Raster)
 
+#if !defined(NO_BOUNDS_CHECKING)
 #define X_WITHIN_WIDTH(x) \
 	do \
 	{ \
@@ -385,6 +378,10 @@ namespace panorama
 		} \
 	} \
 	while(0)
+#else
+#define X_WITHIN_WIDTH(x)
+#define Y_WITHIN_HEIGHT(y)
+#endif
 
 	template<class T>
 	inline T& Raster<T>::operator()(unsigned x, unsigned y)
@@ -419,6 +416,12 @@ namespace panorama
 		Y_WITHIN_HEIGHT(y);
 
 		return Scanline<T>(*const_cast<Raster<T>*>(this), y);
+	}
+
+	template <class T>
+	Raster<T> Raster<T>::subRaster(const GenericRectangle<unsigned>& rect) const
+	{
+		return subRaster(rect.left, rect.top, rect.right, rect.bottom);
 	}
 
 	template <class T>
