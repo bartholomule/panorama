@@ -1,5 +1,5 @@
 /*
- * $Id: GenericRGBAColor.hpp,v 1.1.2.3 2011/11/04 21:44:30 kpharris Exp $
+ * $Id: GenericRGBAColor.hpp,v 1.1.2.4 2011/11/06 03:39:16 kpharris Exp $
  *
  * Part of "Panorama" a playground for graphics development
  * Copyright (C) 2003 Kevin Harris
@@ -28,6 +28,8 @@
 #include "blocxx/Compare.hpp"
 #include <limits>
 
+// FIXME! Add color capabilities
+
 namespace panorama
 {
 	template <typename T>
@@ -35,6 +37,10 @@ namespace panorama
 	{
 		static T min() throw() { return 0; }
 		static T max() throw() { return std::numeric_limits<T>::is_exact ? std::numeric_limits<T>::max() : T(1); }
+		static T clamp(T t, T tmin, T tmax) { return std::max(std::min(t, tmax), tmin); }
+		static T clamp(T t) { return clamp(t, min(), max()); }
+
+		static const bool have_alpha = true;
 
 		enum COLOR_VALUES
 		{
@@ -47,6 +53,10 @@ namespace panorama
 	{
 		static T min() throw() { return 0; }
 		static T max() throw() { return std::numeric_limits<T>::is_exact ? std::numeric_limits<T>::max() : T(1); }
+		static T clamp(T t, T tmin, T tmax) { return std::max(std::min(t, tmax), tmin); }
+		static T clamp(T t) { return clamp(t, min(), max()); }
+
+		static const bool have_alpha = true;
 
 		enum COLOR_VALUES
 		{
@@ -78,7 +88,7 @@ namespace panorama
 	 * class as an array of three ints.
 	 *
 	 * @author Kevin Harris <kpharris@users.sourceforge.net>
-	 * @version $Revision: 1.1.2.3 $
+	 * @version $Revision: 1.1.2.4 $
 	 *
 	 */
 	template <typename T, typename ColorTraits = RGBAColorTraits<T> >
@@ -86,6 +96,7 @@ namespace panorama
 	{
 	public:
 		typedef T number_type;
+		typedef ColorTraits color_traits_type;
 
 		// This tag allows use in the StringDumpable.hpp toString functions
 		// without requiring the overridden virtual functions.
@@ -98,6 +109,8 @@ namespace panorama
 			B = ColorTraits::B,
 			A = ColorTraits::A,
 		};
+
+		static const bool HasAlpha = true;
 
 	protected:
 		T components[4]; ///< Components of RGBA in an 'array'
@@ -282,10 +295,13 @@ namespace panorama
 	template <typename T, typename ColorTraits>
 	GenericRGBAColor<T, ColorTraits>& GenericRGBAColor<T, ColorTraits>::operator *=(T factor)
 	{
-		components[0] *= factor;
-		components[1] *= factor;
-		components[2] *= factor;
-		components[3] *= factor;
+		components[ColorTraits::R] *= factor;
+		components[ColorTraits::G] *= factor;
+		components[ColorTraits::B] *= factor;
+
+		// multiply the OPACITY by the factor, not the transparency.
+		T newalpha = ColorTraits::max() - (ColorTraits::max() - components[ColorTraits::A]) * factor;
+		components[ColorTraits::A] = ColorTraits::clamp(newalpha);
 		return *this;
 	} // GenericRGBAColor::operator*=(T)
 

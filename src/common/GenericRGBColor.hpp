@@ -1,5 +1,5 @@
 /*
- * $Id: GenericRGBColor.hpp,v 1.1.2.2 2011/11/04 21:44:30 kpharris Exp $
+ * $Id: GenericRGBColor.hpp,v 1.1.2.3 2011/11/06 03:39:16 kpharris Exp $
  *
  * Part of "Panorama" a playground for graphics development
  * Copyright (C) 2003 Kevin Harris
@@ -26,13 +26,19 @@
 #include "blocxx/Compare.hpp"
 #include <limits>
 
+// FIXME! Add color capabilities
+
 namespace panorama
 {
 	template <typename T>
 	struct RGBColorTraits
 	{
+		typedef T value_type;
 		static T min() throw() { return 0; }
 		static T max() throw() { return std::numeric_limits<T>::is_exact ? std::numeric_limits<T>::max() : T(1); }
+		static T clamp(T t, T tmin, T tmax) { return std::max(std::min(t, tmax), tmin); }
+		static T clamp(T t) { return clamp(t, min(), max()); }
+		static const bool have_alpha = false;
 
 		enum COLOR_VALUES
 		{
@@ -43,8 +49,13 @@ namespace panorama
 	template <typename T>
 	struct BGRColorTraits
 	{
+		typedef T value_type;
 		static T min() throw() { return 0; }
 		static T max() throw() { return std::numeric_limits<T>::is_exact ? std::numeric_limits<T>::max() : T(1); }
+		static T clamp(T t, T tmin, T tmax) { return std::max(std::min(t, tmax), tmin); }
+		static T clamp(T t) { return clamp(t, min(), max()); }
+
+		static const bool have_alpha = false;
 
 		enum COLOR_VALUES
 		{
@@ -76,7 +87,7 @@ namespace panorama
 	 * class as an array of three ints.
 	 *
 	 * @author Kevin Harris <kpharris@users.sourceforge.net>
-	 * @version $Revision: 1.1.2.2 $
+	 * @version $Revision: 1.1.2.3 $
 	 *
 	 */
 	template <typename T, typename ColorTraits = RGBColorTraits<T> >
@@ -84,6 +95,7 @@ namespace panorama
 	{
 	public:
 		typedef T number_type;
+		typedef ColorTraits color_traits_type;
 
 		// This tag allows use in the StringDumpable.hpp toString functions
 		// without requiring the overridden virtual functions.
@@ -95,6 +107,8 @@ namespace panorama
 			G = ColorTraits::G,
 			B = ColorTraits::B
 		};
+
+		static const bool HasAlpha = false;
 
 	protected:
 		T components[3]; ///< Components of RGB in an 'array'
