@@ -1,8 +1,11 @@
 SUBDIRS = \
 	src \
-	data \
-	doc \
 	test
+
+#	data \
+#	doc \
+#
+
 
 #	hlapi \
 #	llapi \
