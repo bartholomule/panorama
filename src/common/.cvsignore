@@ -4,6 +4,6 @@
 Makefile
 Makefile.in
 *.la
-Config.h
-Config.h.in
+Config.hpp
+Config.hpp.in
 stamp-h1
