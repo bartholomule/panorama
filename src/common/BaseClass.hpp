@@ -1,5 +1,5 @@
 /*
- * $Id: BaseClass.hpp,v 1.1.2.1 2009/02/22 10:09:56 kpharris Exp $
+ * $Id: BaseClass.hpp,v 1.1.2.2 2011/11/06 03:34:10 kpharris Exp $
  *
  * Part of GNU Panorama -- A framework for graphics production.
  * Copyright (C) 2009 Kevin Harris
@@ -37,10 +37,10 @@ namespace panorama
 	 * classes as ancestors.
 	 *
 	 * @author Kevin Harris <kpharris@users.sourceforge.net>
-	 * @version $Revision: 1.1.2.1 $
+	 * @version $Revision: 1.1.2.2 $
 	 *
 	 */
-	class BaseClass : public StringDumpable, public Cloneable
+	class BaseClass : public virtual StringDumpable, public virtual Cloneable
 	{
 	public:
 		BaseClass();
