@@ -1,5 +1,5 @@
 /*
- * $Id: GenericCoord2.hpp,v 1.1.2.4 2010/03/03 17:54:09 kpharris Exp $
+ * $Id: GenericCoord2.hpp,v 1.1.2.5 2011/11/06 03:37:10 kpharris Exp $
  *
  * Part of GNU Panorama
  * Copyright (C) 2003 Kevin Harris
@@ -47,6 +47,7 @@
 #include <cmath>
 #include <algorithm>
 #include "panorama/common/StringDumpable.hpp"
+#include "panorama/common/Fuzzy.hpp"
 
 namespace panorama
 {
@@ -66,7 +67,7 @@ namespace panorama
 			};
 		typedef T base;
 
-		GenericCoord2()
+		GenericCoord2():coords(T(), T())
 		{
 		}
 		inline GenericCoord2(T x, T y):coords(x,y)
@@ -376,6 +377,18 @@ namespace panorama
 			"," +
 			panorama::toString(y(), indent.indentInside(), prefix) +
 			"}";
+	}
+
+	template <class T>
+	bool operator==(const GenericCoord2<T>& lhs, const GenericCoord2<T>& rhs)
+	{
+		return fuzzyEquals(lhs.x(), rhs.x()) && fuzzyEquals(lhs.y(), rhs.y());
+	}
+
+	template <class T>
+	bool operator!=(const GenericCoord2<T>& lhs, const GenericCoord2<T>& rhs)
+	{
+		return !(lhs == rhs);
 	}
 
 } // namespace panorama

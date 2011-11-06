@@ -1,5 +1,5 @@
 /*
- * $Id: GenericPoint2.hpp,v 1.1.2.2 2010/03/03 17:54:10 kpharris Exp $
+ * $Id: GenericPoint2.hpp,v 1.1.2.3 2011/11/06 03:37:10 kpharris Exp $
  *
  * Part of GNU Panorama
  * Copyright (C) 2003 Kevin Harris
@@ -41,6 +41,7 @@
 
 #include "panorama/common/GenericCoord2.hpp"
 #include "panorama/common/GenericVector2.hpp"
+#include "panorama/common/Fuzzy.hpp"
 
 namespace panorama
 {
@@ -173,6 +174,12 @@ namespace panorama
 	{
 		return(std::max(v.x(), v.y()));
 	}
+	
+	template <class T>
+	inline GenericPoint2<T> midpoint(const GenericPoint2<T>& p1, const GenericPoint2<T>& p2)
+	{
+		return GenericPoint2<T>((p1.x() + p2.x()) / 2, (p1.y() + p2.y()) / 2);
+	}
 
 	template <class T>
 	void GenericPoint2<T>::collectInternalMembers(MemberStringDumpCollector& collector) const
@@ -195,6 +202,18 @@ namespace panorama
 			"," +
 			panorama::toString(y(), indent.indentInside(), prefix) +
 			")";
+	}
+
+	template <class T>
+	bool operator==(const GenericPoint2<T>& lhs, const GenericPoint2<T>& rhs)
+	{
+		return fuzzyEquals(lhs.x(), rhs.x()) && fuzzyEquals(lhs.y(), rhs.y());
+	}
+
+	template <class T>
+	bool operator!=(const GenericPoint2<T>& lhs, const GenericPoint2<T>& rhs)
+	{
+		return !(lhs == rhs);
 	}
 
 } // namespace panorama
