@@ -1,5 +1,5 @@
 /*
- * $Id: Raster.hpp,v 1.1.2.3 2011/11/06 03:37:48 kpharris Exp $
+ * $Id: Raster.hpp,v 1.1.2.4 2011/11/07 06:09:45 kpharris Exp $
  *
  * Part of GNU Panorama -- a framework for graphics production.
  * Copyright (C) 2009 Kevin Harris
@@ -45,7 +45,7 @@ namespace panorama
 	 * have iterators (at this time).
 	 *
 	 * @author Kevin Harris <kpharris@users.sourceforge.net>
-	 * @version $Revision: 1.1.2.3 $
+	 * @version $Revision: 1.1.2.4 $
 	 *
 	 */
 	template <typename T>
@@ -195,6 +195,13 @@ namespace panorama
 		T* raster_data;
 
 		void swap(Raster<T>& rast);
+
+	protected:
+		// Only subclasses can do this.
+		T* getRawData()
+		{
+			return raster_data;
+		}
 	}; // class Raster
 
 	/**
@@ -212,7 +219,7 @@ namespace panorama
 	 * row number be changed.
 	 *
 	 * @author Kevin Harris
-	 * @version $Revision: 1.1.2.3 $
+	 * @version $Revision: 1.1.2.4 $
 	 */
 	template <class T>
 	class Scanline
