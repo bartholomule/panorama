@@ -1,5 +1,5 @@
 /*
- * $Id: GenericRGBColor.hpp,v 1.1.2.3 2011/11/06 03:39:16 kpharris Exp $
+ * $Id: GenericRGBColor.hpp,v 1.1.2.4 2011/11/07 06:10:09 kpharris Exp $
  *
  * Part of "Panorama" a playground for graphics development
  * Copyright (C) 2003 Kevin Harris
@@ -22,11 +22,10 @@
 #if       !defined(PANORAMA__GENERIC_RGBCOLOR_HPP)
 #define            PANORAMA__GENERIC_RGBCOLOR_HPP
 
-#include "StringDumpable.hpp"
+#include "panorama/common/StringDumpable.hpp"
+#include "panorama/common/Capabilities.hpp"
 #include "blocxx/Compare.hpp"
 #include <limits>
-
-// FIXME! Add color capabilities
 
 namespace panorama
 {
@@ -87,7 +86,7 @@ namespace panorama
 	 * class as an array of three ints.
 	 *
 	 * @author Kevin Harris <kpharris@users.sourceforge.net>
-	 * @version $Revision: 1.1.2.3 $
+	 * @version $Revision: 1.1.2.4 $
 	 *
 	 */
 	template <typename T, typename ColorTraits = RGBColorTraits<T> >
@@ -219,6 +218,11 @@ namespace panorama
 		blocxx::String toString(const Indentation& indent = Indentation(), StringDumpable::PrefixType prefix = StringDumpable::E_PREFIX_NONE ) const;
 
 		blocxx::String name() const;
+
+		ColorCapabilities capabilities() const
+		{
+			return ColorCapabilities(ColorCapabilities::RGB);
+		}
 	}; // class GenericRGBColor
 
 	/** Copy constructor */
