@@ -1,8 +1,8 @@
 /*
- * $Id: GenericImage.hpp,v 1.1.2.1 2011/11/06 03:30:51 kpharris Exp $
+ * $Id: GenericImage.hpp,v 1.1.2.2 2011/11/07 06:08:00 kpharris Exp $
  *
  * Part of "Panorama" a playground for graphics development
- * Copyright (C) 2003 Kevin Harris
+ * Copyright (C) 2010 Kevin Harris
   *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,9 +24,6 @@
 
 #include "panorama/common/Raster.hpp"
 #include "panorama/common/GenericRGBColor.hpp"
-
-// FIXME! Subclass this for RGB and alpha images.
-// FIXME! Add image capabilities
 
 namespace panorama
 {
@@ -59,20 +56,20 @@ namespace panorama
 	 * </font>
 	 *
 	 * @author Kevin Harris <kpharris@users.sourceforge.net>
-	 * @version $Revision: 1.1.2.1 $
+	 * @version $Revision: 1.1.2.2 $
 	 * @see Raster
 	 * @see RGBColor
 	 *
 	 */
-	template <typename ColorType, typename T = typename ColorType::number_type>
+	template <typename ColorType>
 	class GenericImage : public Raster<ColorType>
 	{
 	public:
 		typedef ColorType color_type;
-		typedef Raster<color_type> parent;
+		typedef Raster<color_type> parent_type;
 
 		GenericImage();
-		GenericImage(const parent& r);
+		GenericImage(const parent_type& r);
 		GenericImage(unsigned width, unsigned height);
 		virtual ~GenericImage();
 		GenericImage(const GenericImage& old);
@@ -89,50 +86,52 @@ namespace panorama
 
 		GenericImage subImage(const GenericRectangle<unsigned>& rect) const
 		{
-			return GenericImage(parent::subRaster(rect));
+			return GenericImage(parent_type::subRaster(rect));
 		}
 
 		GenericImage subImage(unsigned x1, unsigned y1, unsigned x2, unsigned y2) const
 		{
 			return subImage(GenericRectangle<unsigned>(x1, x2, y1, y2));
 		}
+
+		virtual ImageCapabilities capabilities() const;
 	}; // class GenericImage
 
-	template <typename ColorType, typename T>
-	GenericImage<ColorType,T>::GenericImage()
-		: parent()
+	template <typename ColorType>
+	GenericImage<ColorType>::GenericImage()
+		: parent_type()
 	{
 
 	} // GenericImage()
 
-	template <typename ColorType, typename T>
-	GenericImage<ColorType,T>::GenericImage(const parent& r) :
-		parent(r)
+	template <typename ColorType>
+	GenericImage<ColorType>::GenericImage(const parent_type& r) :
+		parent_type(r)
 	{
 	}
 
-	template <typename ColorType, typename T>
-	GenericImage<ColorType,T>::GenericImage(unsigned width, unsigned height):
-		parent(width, height)
+	template <typename ColorType>
+	GenericImage<ColorType>::GenericImage(unsigned width, unsigned height):
+		parent_type(width, height)
 	{
 
 	} // GenericImage(w,h)
 
-	template <typename ColorType, typename T>
-	GenericImage<ColorType,T>::~GenericImage()
+	template <typename ColorType>
+	GenericImage<ColorType>::~GenericImage()
 	{
 
 	} // ~GenericImage()
 
-	template <typename ColorType, typename T>
-	GenericImage<ColorType,T>::GenericImage(const GenericImage<ColorType,T>& old):
-		parent(old)
+	template <typename ColorType>
+	GenericImage<ColorType>::GenericImage(const GenericImage<ColorType>& old):
+		parent_type(old)
 	{
 
 	} // GenericImage(GenericImage)
 
-	template <typename ColorType, typename T>
-	GenericImage<ColorType,T>& GenericImage<ColorType,T>::operator= (const GenericImage<ColorType,T>& old)
+	template <typename ColorType>
+	GenericImage<ColorType>& GenericImage<ColorType>::operator= (const GenericImage<ColorType>& old)
 	{
 		// Generic check for self-assignment
 		if( &old != this )
@@ -140,28 +139,28 @@ namespace panorama
 			// The class currently has no members, but if they are added, they need
 			// to be assigned here.
 
-			parent::operator=(old);
+			parent_type::operator=(old);
 		}
 		return(*this);
 	} // GenericImage::operator=(GenericImage)
 
-	template <typename ColorType, typename T>
-	void GenericImage<ColorType,T>::collectInternalMembers(MemberStringDumpCollector& collector) const
+	template <typename ColorType>
+	void GenericImage<ColorType>::collectInternalMembers(MemberStringDumpCollector& collector) const
 	{
-		parent::collectInternalMembers(collector);
+		parent_type::collectInternalMembers(collector);
 	}
 
-	template <typename ColorType, typename T>
-	bool GenericImage<ColorType,T>::visible(int x, int y) const
+	template <typename ColorType>
+	bool GenericImage<ColorType>::visible(int x, int y) const
 	{
-		return parent::inside(x,y);
+		return parent_type::inside(x,y);
 	}
 
-	template <typename ColorType, typename T>
-	GenericImage<ColorType,T> scaleImage(const GenericImage<ColorType,T>& img, unsigned scale)
+	template <typename ColorType>
+	GenericImage<ColorType> scaleImage(const GenericImage<ColorType>& img, unsigned scale)
 	{
 		// FIXME! Allow scales other than block (eg. interpolated)
-		GenericImage<ColorType,T> ret_image(img.getWidth() * scale, img.getHeight() * scale);
+		GenericImage<ColorType> ret_image(img.getWidth() * scale, img.getHeight() * scale);
 
 		for(unsigned y = 0; y < ret_image.getHeight(); ++y)
 		{
@@ -173,6 +172,27 @@ namespace panorama
 			}
 		}
 		return ret_image;
+	}
+
+	template <typename ColorType>
+	ImageCapabilities GenericImage<ColorType>::capabilities() const
+	{
+		ImageCapabilities caps = ImageCapabilities::NONE;
+		typedef typename ColorType::number_type number_type;
+
+		if( std::numeric_limits<number_type>::is_exact )
+		{
+			if( sizeof(number_type) > 1 )
+			{
+				caps |= ImageCapabilities::HIGH_BITWIDTH;
+			}
+			caps |= ImageCapabilities::LOSSLESS;
+		}
+		else
+		{
+			caps |= ImageCapabilities::HIGH_BITWIDTH;
+		}
+		return caps;
 	}
 
 } // namespace panorama
