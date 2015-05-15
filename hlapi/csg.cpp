@@ -23,7 +23,6 @@ void TCsg::mergeUnion (TSpanList& rtLIST1, const TSpanList& rktLIST2, const TVec
 {
 
   Byte                        bList;
-  const TSurfaceData*         pktData;
   bool                        gUnionInside;
   TSpanList::iterator         tIter1      = rtLIST1.begin();
   TSpanList::const_iterator   tIter2      = rktLIST2.begin();
@@ -49,21 +48,19 @@ void TCsg::mergeUnion (TSpanList& rtLIST1, const TSpanList& rktLIST2, const TVec
   {
     if ( gEmptyLeft )
     {
-      pktData = &((*tIter2).second);
       bList   = 2;
       
       gRInside = !gRInside;
     }
     else if ( gEmptyRight )
     {
-      pktData = &((*tIter1).second);
       bList   = 1;
         
       gLInside = !gLInside;
     }
     else
     {
-      pktData = &((*tIter1).second);
+      const TSurfaceData* pktData = &((*tIter1).second);
       if ( pktData->distance() <= (*tIter2).second.distance() )
       {
         bList = 1;
@@ -71,7 +68,6 @@ void TCsg::mergeUnion (TSpanList& rtLIST1, const TSpanList& rktLIST2, const TVec
       }
       else
       {
-        pktData = &((*tIter2).second);
         bList   = 2;
 
         gRInside = !gRInside;
@@ -120,7 +116,6 @@ void TCsg::mergeIntersection (TSpanList& rtLIST1, const TSpanList& rktLIST2, con
 {
 
   Byte                        bList;
-  const TSurfaceData*         pktData;
   bool                        gIntersectionInside;
   TSpanList::iterator         tIter1      = rtLIST1.begin();
   TSpanList::const_iterator   tIter2      = rktLIST2.begin();
@@ -146,21 +141,19 @@ void TCsg::mergeIntersection (TSpanList& rtLIST1, const TSpanList& rktLIST2, con
   {
     if ( gEmptyLeft )
     {
-      pktData = &((*tIter2).second);
       bList   = 2;
       
       gRInside = !gRInside;
     }
     else if ( gEmptyRight )
     {
-      pktData = &((*tIter1).second);
       bList   = 1;
         
       gLInside = !gLInside;
     }
     else
     {
-      pktData = &((*tIter1).second);
+      const TSurfaceData* pktData = &((*tIter1).second);
       if ( pktData->distance() <= (*tIter2).second.distance() )
       {
         bList = 1;
@@ -168,7 +161,6 @@ void TCsg::mergeIntersection (TSpanList& rtLIST1, const TSpanList& rktLIST2, con
       }
       else
       {
-        pktData = &((*tIter2).second);
         bList   = 2;
 
         gRInside = !gRInside;
@@ -217,7 +209,6 @@ void TCsg::mergeDifference (TSpanList& rtLIST1, const TSpanList& rktLIST2, const
 {
 
   Byte                        bList;
-  const TSurfaceData*         pktData;
   bool                        gDiffInside;
   TSpanList::iterator         tIter1      = rtLIST1.begin();
   TSpanList::const_iterator   tIter2      = rktLIST2.begin();
@@ -243,21 +234,18 @@ void TCsg::mergeDifference (TSpanList& rtLIST1, const TSpanList& rktLIST2, const
   {
     if ( gEmptyLeft )
     {
-      pktData = &((*tIter2).second);
       bList   = 2;
       
       gRInside = !gRInside;
     }
     else if ( gEmptyRight )
     {
-      pktData = &((*tIter1).second);
       bList   = 1;
         
       gLInside = !gLInside;
     }
     else
     {
-      pktData = &((*tIter1).second);
       if ( (*tIter1).first <= (*tIter2).first )
       {
         bList = 1;
@@ -265,7 +253,6 @@ void TCsg::mergeDifference (TSpanList& rtLIST1, const TSpanList& rktLIST2, const
       }
       else
       {
-        pktData = &((*tIter2).second);
         bList   = 2;
 
         gRInside = !gRInside;
@@ -339,7 +326,6 @@ bool TCsg::findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) const
   TObjectList::const_iterator   tIter              = tObjectList.begin();
   bool                          gIntersection      = false;
   bool                          gLeftIntersection  = false;
-  bool                          gRightIntersection = false;
 
   if ( !tBoundingBox.intersects (rktRAY) )
   {
@@ -355,27 +341,28 @@ bool TCsg::findAllIntersections (const TRay& rktRAY, TSpanList& rtLIST) const
 
   for (tIter++; ( tIter != tObjectList.end() ) ;tIter++)
   {
-    gRightIntersection = (*tIter)->findAllIntersections (rktRAY, tList);
-
-    switch (eOperation)
-    {
+    if( (*tIter)->findAllIntersections (rktRAY, tList) )
+	 {
+      switch (eOperation)
+      {
       case FX_CSG_UNION:
-      {
-        mergeUnion (rtLIST, tList, rktRAY.direction());
-      }
-      break;
-      
+         {
+           mergeUnion (rtLIST, tList, rktRAY.direction());
+         }
+         break;
+
       case FX_CSG_INTERSECTION:
-      {
-        mergeIntersection (rtLIST, tList, rktRAY.direction());
-      }
-      break;
-      
+         {
+           mergeIntersection (rtLIST, tList, rktRAY.direction());
+         }
+       break;
+
       case FX_CSG_DIFFERENCE:
-      {
-        mergeDifference (rtLIST, tList, rktRAY.direction());
-      }
-    }
+        {
+          mergeDifference (rtLIST, tList, rktRAY.direction());
+        }
+     }
+   }
 
     tList.clear();
     if ( !rtLIST.empty() )

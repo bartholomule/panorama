@@ -41,14 +41,11 @@ bool TCylinder::initialize (void)
   bool val = true;
   TVector tAxis;
   TVector tCentre;
-  TScalar tDistance;
-  TMatrix tMatrix = *ptMatrix;
-  
+
   tCentre      = (tTopPoint + tBottomPoint) / 2.0;
   
   tAxis     = tCentre - tTopPoint;
   tHeight   = tAxis.norm();
-  tDistance = tCentre.norm();
   
   // Canonical cylinder has endpoints at < 0, 1, 0 > and < 0,-1, 0 >   
   // First, scale the canonical cylinder to the correct dimensions
@@ -82,7 +79,6 @@ bool TCylinder::initialize (void)
     tAxisYProyection     = dotProduct (tAxis, TVector (0, 1, 0));
     tAxistTmpZProyection = dotProduct (tAxis, tTmpZ);
 
-    //translate (TVector (0, -tDistance, 0) );
     rotate (tTmpX * 1.0, tTmpX * 2.0, atan2 (tAxistTmpZProyection, tAxisYProyection) * 180 / PI);
   }
 
@@ -91,16 +87,6 @@ bool TCylinder::initialize (void)
   tBoundingBox.set (TVector (-1, -1, -1), TVector (1, 1, 1));
   tBoundingBox.applyTransform (*ptMatrix);
 
-/*
-  TVector tTP = tTopPoint;
-  TVector tBP( 0,-1, 0);
-
-  tTP.printDebug();
-  tTP = (*ptInverseMatrix) * tTP;
-  tTP.printDebug();
-  tTP = (*ptMatrix) * tTP;
-  tTP.printDebug();
-*/    
   return val && TObject::initialize();
   
 }  /* initialize() */

@@ -27,10 +27,8 @@
 extern multimap<string, string>   tConfigData;
 
 #if defined(FREETYPE_MAJOR) && (FREETYPE_MAJOR >= 2)
-#warning "Using Freetype 2"
 #include "ft2.cpp"
 #elif defined(TT_FREETYPE_MAJOR) && (TT_FREETYPE_MAJOR <= 1)
-#warning "Using Freetype 1"
 #include "ft1.cpp"
 #else
 #error "Unknown freetype library!"

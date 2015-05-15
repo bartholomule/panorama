@@ -68,9 +68,10 @@ void TWorleyBasis::checkVoxel (const TVector& rktBASE_POINT,
 
   for (Byte J = 0; ( J < bPoints ) ;J++)
   {
-    tPoint.set (rktBASE_POINT.x() + atData [aiPermutation [mod (zRandomInt++, FX_RANDOM_TABLE_SIZE)]],
-                rktBASE_POINT.y() + atData [aiPermutation [mod (zRandomInt++, FX_RANDOM_TABLE_SIZE)]],
-                rktBASE_POINT.z() + atData [aiPermutation [mod (zRandomInt++, FX_RANDOM_TABLE_SIZE)]]);
+    tPoint.set (
+      rktBASE_POINT.x() + atData [aiPermutation [mod (zRandomInt + 0, FX_RANDOM_TABLE_SIZE)]],
+      rktBASE_POINT.y() + atData [aiPermutation [mod (zRandomInt + 1, FX_RANDOM_TABLE_SIZE)]],
+      rktBASE_POINT.z() + atData [aiPermutation [mod (zRandomInt + 2, FX_RANDOM_TABLE_SIZE)]]);
     tPointData.tPoint    = tPoint;
     tPointData.tVector   = tPoint - rktPOINT;
     tPointData.tDistance = distance (tPoint, rktPOINT);

@@ -16,7 +16,7 @@
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include <fstream.h>
+#include <fstream>
 #include "hlapi/image_manager.h"
 #include "tiff_io.h"
 #include <tiffio.h>
@@ -66,7 +66,7 @@ int TImageTiff::save (const TImage* pktIMAGE) {
   if(compression)
   {
 #if defined(LZW_SUPPORT)
-#warning "Using LZW compresion when compression is requested"
+		 // #warning "Using LZW compresion when compression is requested"
     cerr << "TiffIO:Warning:LZW comressed TIFF images may not be useable with"
 	 << endl
 	 << "  some installations of panorama." << endl;

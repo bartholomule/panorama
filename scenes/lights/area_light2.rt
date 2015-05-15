@@ -86,28 +86,28 @@ aggregate
   {
     translate <-2.5,0,2.5>
     normal <.707,0,-.707>
-  }      
+  }
   material : extends MyLambertian
   {
     color CWhite
   }
-  
+
 }
 
 
 scene
 {
   camera	c
-  width		400
-  height	400
+  width  400
+  height 400
   output
   {
     type        "png"
     name        "area_light2.png"
   }
-  renderer : class Raytracer 
+  renderer : class Raytracer
   {
-//  sampling "adaptive"
+//    sampling "adaptive"
 //    max_diff 0.01
     aa_depth 8
     sampling "stochastic"

@@ -68,7 +68,6 @@ inline TColor TBsdfWard::evaluateReflection (const TSurfaceData& rktDATA, const 
 {
   
   TScalar      tCosNH;
-  TScalar      tCosVH;
   TScalar      tCosNV;
   TVector      tHalfway = rktLIGHT - rktDATA.ray().direction();
   TVector      tTangent_x;
@@ -89,7 +88,8 @@ inline TColor TBsdfWard::evaluateReflection (const TSurfaceData& rktDATA, const 
 
   tCosNV = dotProduct (rktDATA.normal(), -rktDATA.ray().direction());
   tCosNH = dotProduct (rktDATA.normal(), tHalfway);
-  tCosVH = dotProduct (-rktDATA.ray().direction(), tHalfway);
+  // Checkme: There was an unused variable here which may indicate a bug in the implementation:
+  // tCosVH = dotProduct (-rktDATA.ray().direction(), tHalfway);
 
   //
   // Obtain tangent vectors (z = normal - x/y = tangents)

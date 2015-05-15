@@ -362,8 +362,8 @@ TColor TGradient::getColorAt (const TScalar& rktPOS) const
   TScalar            tMiddle;
   TScalar            tFactor;
   TScalar            tSegmentLength;
-  TScalar            tLeftH, tLeftS, tLeftV;
-  TScalar            tRightH, tRightS, tRightV;
+  TScalar            tLeftH = 0, tLeftS = 0, tLeftV = 0;
+  TScalar            tRightH = 0, tRightS = 0, tRightV = 0;
   TGradientSegment*  ptSegment;
   
   ptSegment = NULL; /* to keep -Wall quiet :-) */

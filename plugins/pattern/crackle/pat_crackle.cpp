@@ -152,8 +152,6 @@ void TVoronoi::BuildPointCache(const TVector& rktPOINT) const
   TVector      tOffset, tNewPoint;
   TScalar      tX, tY, tZ;
   int          iCount = 0;
-  static int   i = 0;
-  long         l;
 
   for (tX = -2.0; tX < 2.5; tX += 1.0)
   {
@@ -164,14 +162,13 @@ void TVoronoi::BuildPointCache(const TVector& rktPOINT) const
         if ((fabs (tX) > 1.5) + (fabs (tY) > 1.5) + (fabs (tZ) > 1.5) <= 1 )
         {
            tOffset.set (tX, tY, tZ);
-           l = GeneratePointInCube (tOffset + rktPOINT, tNewPoint);
+					 GeneratePointInCube (tOffset + rktPOINT, tNewPoint);
            atPointCache[iCount++] = tNewPoint;
         }
       }
     }
   }
 
-  i = 1;
   iPointsInCache = iCount;
 
 }  /* BuildPointCache() */

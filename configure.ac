@@ -251,8 +251,6 @@ AC_OUTPUT(\
         data/include/Makefile \
         data/texture/Makefile \
         doc/Makefile \
-        doc/config \
-	doc/pluginrc \
         doc/developers/Makefile \
         doc/users/Makefile \
         doc/api/Makefile \

@@ -24,7 +24,7 @@
 
 #define ktHashBit           5
 #define ktHashSize          (size_t) (1 << (3 * ktHashBit) )   // Hash table size (32768)
-#define ktMask              (1 << ktHashBit) - 1               // 32 - 1 = 31 (11111)
+#define ktMask              ((1 << ktHashBit) - 1)             // 32 - 1 = 31 (11111)
 #define ktLatticeCoordMax   32767
 #define ktLatticeCoordMin   -32768
 

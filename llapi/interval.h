@@ -28,50 +28,59 @@ template <class TItem>
 class TBaseInterval
 {
 
-  protected:
+protected:
 
-    TItem   tMin, tMax;
-    bool    gEmpty;
+   TItem   tMin, tMax;
+   bool    gEmpty;
 
-  public:
+public:
 
-    TBaseInterval (void) :
-      gEmpty (true) {}
-      
-    TBaseInterval (TItem tVALUE1, TItem tVALUE2);
+   TBaseInterval (void)
+      : tMin(0)
+      , tMax(0)
+      , gEmpty (true)
+   {
+   }
 
-    TBaseInterval (const TBaseInterval& rktINT) :
-      tMin (rktINT.tMin),
-      tMax (rktINT.tMax),
-      gEmpty (rktINT.gEmpty) {}
-      
-    TBaseInterval& operator = (const TBaseInterval& rktINT)
-    {
+   TBaseInterval (TItem tVALUE1, TItem tVALUE2);
+
+   TBaseInterval (const TBaseInterval& rktINT)
+      : tMin (rktINT.tMin)
+      , tMax (rktINT.tMax)
+      , gEmpty (rktINT.gEmpty)
+   {
+   }
+
+   TBaseInterval& operator = (const TBaseInterval& rktINT)
+   {
       tMin   = rktINT.tMin;
       tMax   = rktINT.tMax;
       gEmpty = rktINT.gEmpty;
 
       return *this;
-    }
+   }
 
-    void set (TItem tVALUE1, TItem tVALUE2);
-    TItem adjustValue (TItem tVALUE) const;
+   void set (TItem tVALUE1, TItem tVALUE2);
+   TItem adjustValue (TItem tVALUE) const;
 
-    TItem min (void) const { return tMin; }
-    TItem max (void) const { return tMax; }
-    TItem mid (void) const { return (tMin + tMax) / 2; }
-    TItem size (void) const { return (tMax - tMin); }
-    bool empty (void) const { return gEmpty; }
+   TItem min (void) const { return tMin; }
+   TItem max (void) const { return tMax; }
+   TItem mid (void) const { return (tMin + tMax) / 2; }
+   TItem size (void) const { return (tMax - tMin); }
+   bool empty (void) const { return gEmpty; }
 
-    bool inside (TItem tVALUE) const;
+   bool inside (TItem tVALUE) const;
 
-    void printDebug (void) const;
+   void printDebug (void) const;
     
 };  /* class TBaseInterval */
 
 
 template <class TItem>
 inline TBaseInterval<TItem>::TBaseInterval (TItem tVALUE1, TItem tVALUE2)
+  : tMin()
+  , tMax()
+  , gEmpty(true)
 {
 
   set (tVALUE1, tVALUE2);

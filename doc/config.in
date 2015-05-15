@@ -3,7 +3,7 @@
 #
 
 # Plugin list
-PluginConfigFile=@prefix@/etc/pluginrc
+PluginConfigFile=@prefix@/etc/panorama/pluginrc
 
 # Path to the plugins directory
 PluginPath=@prefix@/lib/panorama/plugins

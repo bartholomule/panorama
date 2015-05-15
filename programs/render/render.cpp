@@ -18,6 +18,7 @@
 
 #include "llapi/warning_eliminator.h"
 #include <ctime>
+#include <cstring>
 #include <iostream>
 #include "llapi/file.h"
 #include "llapi/scene.h"
@@ -180,12 +181,12 @@ void SetPaths (void)
     _tLocalPath = FilenameConvert(string (pcEnv) + "/.panorama/");
     if ( !FileExists (_tLocalPath + "config") )
     {
-      _tLocalPath = FilenameConvert(_tTopDir + "/etc/");
+      _tLocalPath = FilenameConvert(_tTopDir + "/etc/panorama/");
     }
   }
   else
   {
-    _tLocalPath = FilenameConvert(_tTopDir + "/etc/");
+    _tLocalPath = FilenameConvert(_tTopDir + "/etc/panorama/");
   }
 
   _tLogFileName = FilenameConvert(_tLocalPath + "panorama.log");
@@ -220,7 +221,7 @@ int main (int argc, char *argv[])
 
   if ( !FileExists (_tLocalPath + "config") )
   {
-    cerr << "WARNING: No configuration file." << endl;
+		 cerr << "WARNING: No configuration file in " << _tLocalPath << endl;
   }
   else
   {

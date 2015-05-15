@@ -21,11 +21,15 @@ FILES = AUTHORS \
         pluginrc \
         config
 
-all:
+all: config pluginrc
 		@set -e; \
 		for i in $(DIRS); do \
-                  $(MAKE) -C $$i all; \
-                done
+          $(MAKE) -C $$i all; \
+      done
+
+
+%: %.in
+	${BUILD_TOP}/config.status --file $@:$<
 
 deps:
 
@@ -34,8 +38,8 @@ install:        all
 		for i in $(FILES); do \
 		  @INSTALL_DATA@ ${SRC_DIR}/$$i ${DOC_DIR}; \
 		done
-		@@INSTALL_DATA@ ${SRC_DIR}/config ${CONFIG_DIR}
-		@@INSTALL_DATA@ ${SRC_DIR}/pluginrc ${CONFIG_DIR}
+		@INSTALL_DATA@ ${SRC_DIR}/config ${CONFIG_DIR}
+		@INSTALL_DATA@ ${SRC_DIR}/pluginrc ${CONFIG_DIR}
 		@${SRC_DIR}/${BUILD_TOP}/mkinstalldirs ${DOC_DIR}/developers ${DOC_DIR}/users
 		@set -e; \
 		for i in $(DIRS); do \
@@ -43,10 +47,11 @@ install:        all
                 done
 
 clean:
-		@set -e
-		@for i in $(DIRS); do \
-                  $(MAKE) -C $$i clean; \
-                done
+	@set -e
+	@for i in $(DIRS); do \
+		$(MAKE) -C $$i clean; \
+	done
+	rm -f pluginrc config
 
 distclean:
 		@set -e

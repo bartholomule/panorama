@@ -57,7 +57,7 @@ PROF = -fomit-frame-pointer
 endif
 
 CXXFLAGS += ${OPT} ${STAT} ${PROF} -ansi -fno-exceptions -fno-rtti \
-	   -Wall -Wstrict-prototypes ${DEFS} ${INCLUDE}
+	   -Wall -Werror ${DEFS} ${INCLUDE}
 
 ifeq (@STATIC_LINK@,1)
 CXXFLAGS += -static

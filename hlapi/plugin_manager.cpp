@@ -25,6 +25,7 @@
 
 #include <fstream>
 #include <iostream>
+#include <cstring>
 #include "llapi/file.h"
 #include "hlapi/plugin_manager.h"
 
@@ -60,7 +61,7 @@ int TPluginManager::loadPlugin (const string& rktNAME)
     while ( ( iter != tConfigData.end() ) && ( (*iter).first == "PluginPath" ) )
     {
       string   tAux (iter->second + '/' + rktNAME);
-      
+
       if ( FileExists (tAux) )
       {
         pvHandle = dlopen (tAux.c_str(), RTLD_NOW | RTLD_GLOBAL);

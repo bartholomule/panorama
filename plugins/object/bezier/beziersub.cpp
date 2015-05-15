@@ -144,9 +144,6 @@ Byte TBezierSubsurface::_curveSubdivisionDepth (const TVector& C0,
                                                 const TVector& C3)
 {
   Byte bDepth, bSecondDepth;
-  bool gCloseEnough;
-
-  gCloseEnough = true;
 
   if ( _lineDistance (C1, C0, C3) <= MAX_DEVIATION 
        && _lineDistance (C2, C0, C3) <= MAX_DEVIATION )

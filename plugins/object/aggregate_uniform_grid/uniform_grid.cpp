@@ -667,7 +667,6 @@ bool TUniformGrid::findFirstIntersection1 (const TRay& rktRAY, TSurfaceData& rtD
   bool              gX  = false;
   bool              gY  = false;
   bool              gZ  = false;
-  bool              g1b = false;
   
   tRayLocX = rktRAY.location().x();
   tRayLocY = rktRAY.location().y();
@@ -685,7 +684,6 @@ bool TUniformGrid::findFirstIntersection1 (const TRay& rktRAY, TSurfaceData& rtD
     {
       return false;
     }
-    g1b = true;
   }
 
   tRayDirX = rktRAY.direction().x();
@@ -966,7 +964,6 @@ bool TUniformGrid::findFirstIntersection2 (const TRay& rktRAY, TSurfaceData& rtD
   TVector           tPointOut;
   bool              gX  = false;
   bool              gZ  = false;
-  bool              g1b = false;
   
   tRayLocX = rktRAY.location().x();
   tRayLocY = rktRAY.location().y();
@@ -983,7 +980,6 @@ bool TUniformGrid::findFirstIntersection2 (const TRay& rktRAY, TSurfaceData& rtD
     {
       return false;
     }
-    g1b = true;
   }
 
   tRayDirX = rktRAY.direction().x();
@@ -1185,7 +1181,6 @@ bool TUniformGrid::findFirstIntersection3 (const TRay& rktRAY, TSurfaceData& rtD
   TVector           tPointOut;
   bool              gY  = false;
   bool              gZ  = false;
-  bool              g1b = false;
   
   tRayLocX = rktRAY.location().x();
   tRayLocY = rktRAY.location().y();
@@ -1203,7 +1198,6 @@ bool TUniformGrid::findFirstIntersection3 (const TRay& rktRAY, TSurfaceData& rtD
     {
       return false;
     }
-    g1b = true;
   }
 
   tRayDirY = rktRAY.direction().y();
@@ -1405,7 +1399,6 @@ bool TUniformGrid::findFirstIntersection4 (const TRay& rktRAY, TSurfaceData& rtD
   TVector           tPointOut;
   bool              gX  = false;
   bool              gY  = false;
-  bool              g1b = false;
   
   tRayLocX = rktRAY.location().x();
   tRayLocY = rktRAY.location().y();
@@ -1423,7 +1416,6 @@ bool TUniformGrid::findFirstIntersection4 (const TRay& rktRAY, TSurfaceData& rtD
     {
       return false;
     }
-    g1b = true;
   }
 
   tRayDirX = rktRAY.direction().x();
@@ -1620,7 +1612,6 @@ bool TUniformGrid::findFirstIntersection5 (const TRay& rktRAY, TSurfaceData& rtD
   TVector           tPointIn;
   TVector           tPointOut;
   bool              gY  = false;
-  bool              g1b = false;
   
   tRayLocX = rktRAY.location().x();
   tRayLocY = rktRAY.location().y();
@@ -1638,7 +1629,6 @@ bool TUniformGrid::findFirstIntersection5 (const TRay& rktRAY, TSurfaceData& rtD
     {
       return false;
     }
-    g1b = true;
   }
 
   tRayDirY = rktRAY.direction().y();
@@ -1765,7 +1755,6 @@ bool TUniformGrid::findFirstIntersection6 (const TRay& rktRAY, TSurfaceData& rtD
   TVector           tPointIn;
   TVector           tPointOut;
   bool              gX  = false;
-  bool              g1b = false;
   
   tRayLocX = rktRAY.location().x();
   tRayLocY = rktRAY.location().y();
@@ -1783,7 +1772,6 @@ bool TUniformGrid::findFirstIntersection6 (const TRay& rktRAY, TSurfaceData& rtD
     {
       return false;
     }
-    g1b = true;
   }
 
   tRayDirX = rktRAY.direction().x();
@@ -1910,7 +1898,6 @@ bool TUniformGrid::findFirstIntersection7 (const TRay& rktRAY, TSurfaceData& rtD
   TVector           tPointIn;
   TVector           tPointOut;
   bool              gZ  = false;
-  bool              g1b = false;
   
   tRayLocX = rktRAY.location().x();
   tRayLocY = rktRAY.location().y();
@@ -1928,7 +1915,6 @@ bool TUniformGrid::findFirstIntersection7 (const TRay& rktRAY, TSurfaceData& rtD
     {
       return false;
     }
-    g1b = true;
   }
 
   tRayDirZ = rktRAY.direction().z();

@@ -19,6 +19,7 @@
 %{
 
 #include <string>
+#include <cstring>
 #include <iostream>
 #include "llapi/llapi_all.h"
 #include "hlapi/mesh_object.h"

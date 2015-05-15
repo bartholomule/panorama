@@ -63,8 +63,8 @@ Makefile:	config.status ${SRC_DIR}/Makefile.in
 config.status:	${SRC_DIR}/configure
 		$(SHELL) config.status --recheck
 
-${SRC_DIR}/configure:	${SRC_DIR}/configure.in
-			cd ${SRC_DIR} && autoconf
+${SRC_DIR}/configure:	${SRC_DIR}/configure.ac
+			cd ${SRC_DIR} && autoreconf
 
 LIBTOOL_DEPS = @LIBTOOL_DEPS@
 libtool: $(LIBTOOL_DEPS)

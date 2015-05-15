@@ -971,7 +971,6 @@ TColor TRaytracer::specularTransmittedLight (const TSurfaceData& rktDATA, Word w
 
   TColor         tRadiance;
   TColor         rho;
-  bool           gEntering;
   TSurfaceData   tSurfaceData;
   bool           gTIR       = false;
   TRay           tRay       = rktDATA.ray();
@@ -982,7 +981,7 @@ TColor TRaytracer::specularTransmittedLight (const TSurfaceData& rktDATA, Word w
   {
     tRay.setLimit (SCALAR_MAX);
 
-    gEntering = tRay.refract (tNormal, ptMaterial->ior (rktDATA), gTIR);
+    tRay.refract (tNormal, ptMaterial->ior (rktDATA), gTIR);
 
     tRay.setLocation (rktDATA.point());
 

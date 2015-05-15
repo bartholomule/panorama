@@ -17,6 +17,7 @@
 */
 
 #include "llapi/file.h"
+#include <cstring>
 
 string FilenameConvert(const string& rktNAME)
 {

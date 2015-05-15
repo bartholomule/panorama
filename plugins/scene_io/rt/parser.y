@@ -21,6 +21,7 @@
 #include <map>
 #include <stack>
 #include <string>
+#include <cstring>
 #include <iostream>
 #include "llapi/llapi_all.h"
 #include "hlapi/hlapi_all.h"

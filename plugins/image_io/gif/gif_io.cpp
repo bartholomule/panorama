@@ -16,7 +16,7 @@
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include <fstream.h>
+#include <fstream>
 #include <cstdio>
 #include "hlapi/image_manager.h"
 #include "gif_io.h"
